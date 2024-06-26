@@ -1,0 +1,10 @@
+camera_control                             unit test
+
+Main.Connection_Data_Type
+   Camera
+   Main_Data
+Ada_Lib.GNOGA.Connection_Data_Type
+   Main_Window
+   Manual
+   Options   Ada_Lib.Options.Options_Class_Access
+Gnoga.Types.Connection_Data_Type

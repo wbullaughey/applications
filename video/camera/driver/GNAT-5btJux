@@ -1,0 +1,24 @@
+camera_aunit
+camera_aunit) main_task_00007FABC7008800: 00:00:00.00(0> video-lib.adb:81 Video.Lib.Initialize Out result TRUE 
+level 0 in Protected_Level
+camera_aunit) main_task_00007FABC7008800: 00:00:00.00(0> camera-lib.adb:59 Camera.Lib.Initialize Out result TRUE 
+level 0 in Protected_Level
+running suite: 'Control' routine: 'Test_Create_Control'
+Invalid configuration file: Full_Path: '/Users/wayne/Project/git/alr/applications/video/camera/driver/control_window_state.cfg' does not exist
+Exception in Set_Up ADA_LIB.CONFIGURATION.FAILED: Full_Path: '/Users/wayne/Project/git/alr/applications/video/camera/driver/control_window_state.cfg' does not exist message: 'could not load configuration Setup_Path: 'control_window_setup.cfg' State_Path: 'control_window_state.cfg''' called from Widgets.Control.Unit_Test.Set_Up at widgets-control-unit_test.adb:93
+camera_aunit) main_task_00007FABC7008800: 00:00:00.01[0] ada_lib-unit_test-test_cases.adb:209 Ada_Lib.Unit_Test.Test_Cases.Root_Test.Set_Up_Failed 
+------ exception trace --------
+main_task_00007FABC7008800 @ 00:00:00.01
+exception: ADA_LIB.CONFIGURATION.FAILED caught at aunit-simple_test_cases.adb:124
+Fault Message: Full_Path: '/Users/wayne/Project/git/alr/applications/video/camera/driver/control_window_state.cfg' does not exist
+-------------------------------------------
+report camera test results
+
+FAIL Control : Test_Create_Control
+    exception:ADA_LIB.CONFIGURATION.FAILED
+    at message:Full_Path: '/Users/wayne/Project/git/alr/applications/video/camera/driver/control_window_state.cfg' does not exist:0
+
+Total Tests Run:   1
+Successful Tests:  0
+Failed Assertions: 1
+Unexpected Errors: 0

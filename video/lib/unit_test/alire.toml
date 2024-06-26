@@ -1,0 +1,28 @@
+name = "video_lib_unit_test"
+description = "video library unit test"
+version = "0.1.0-dev"
+
+authors = ["Wayne Bullaughey"]
+maintainers = ["Wayne Bullaughey <wlb122@verizon.net>"]
+maintainers-logins = ["wbullaughey"]
+
+[[depends-on]]
+video_lib = "*"
+
+[[pins]]
+video_lib  = { path = "../lib" }
+
+[[depends-on]]
+ada_lib = "*"
+
+[[pins]]
+ada_lib  = { path = "../../../../ada_lib" }
+
+[[depends-on]]
+aunit = "*"
+
+[[pins]]
+aunit  = { path = "../../../../aunit" }
+
+
+

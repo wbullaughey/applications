@@ -1,0 +1,17 @@
+camera_aunit
+camera_aunit) main_task_00007FDFFB808800: 00:00:00.00(0> video-lib.adb:81 Video.Lib.Initialize Out result TRUE 
+level 0 in Protected_Level
+camera_aunit) main_task_00007FDFFB808800: 00:00:00.00(0> camera-lib.adb:59 Camera.Lib.Initialize Out result TRUE 
+level 0 in Protected_Level
+running suite: 'State' routine: 'Test_Load'
+Invalid configuration file: Full_Path: '/Users/wayne/Project/git/alr/applications/video/camera/driver/test_state.cfg' does not exist
+report camera test results
+
+FAIL State : Test_Load
+    exception Full_Path: '/Users/wayne/Project/git/alr/applications/video/camera/driver/test_state.cfg' does not exist
+    at configuration-camera-state-unit_tests.adb:127
+
+Total Tests Run:   1
+Successful Tests:  0
+Failed Assertions: 1
+Unexpected Errors: 0

@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "../../ada_lib/src"
+		}
+	],
+	"settings": {
+		"search.useIgnoreFiles": true
+	}
+}

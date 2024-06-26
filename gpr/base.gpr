@@ -1,0 +1,187 @@
+abstract project Base is
+   type Boolean_Type is ("false", "true");
+   type Library_Type is ("static", "dynamic");
+   type OS_Type is ("linux", "macosx", "windows", "Windows_NT");
+   type Architecture_Type is ("linux", "board", "macosx", "ppm", "windows");
+   type Optimization_Type is ("default", "full", "gdb", "none");
+   type Target_Type is ("release", "debug", "unit_test");
+   type Tools_Type is ("native", "gnat");      -- not used for cross compiles
+                                                -- native uses /usr/bin/gcc
+                                                -- gnat uses /usr/gnat/bin/gcc
+
+   PREFIX := external ("PREFIX", "~");          -- root directory for installation
+   GCC_Architecture := external ("GCC_ARCHITECTURE");
+   Library_Kind : Library_Type := external ("LIB", "static");
+   Architecture : Architecture_Type := external ("ARCHITECTURE");
+   Current_Directory := external ("CURRENT_DIRECTORY", "");       -- directory build.sh is in
+   Project_Directory := external ("PROJECT_DIRECTORY", "");       -- specific project directory
+   Board_Directory := external ("Board_Directory", "");   -- board directory
+   Root_Directory := external ("ROOT_DIRECTORY", "");             -- level projects are checked out to
+   Extra_C_Flags := external ("EXTRA_C_FLAGS", "");
+   Extra_CPP_Flags := external ("EXTRA_CPP_FLAGS", "");
+   Optimization_Flags: Optimization_Type := external ("optimization", "none");
+   Options_Directory := external ("OPTIONS_DIRECTORY", ".");
+   SVN_PROJECT_VERSION := """" & external ("SVN_PROJECT_VERSION", "0") & """";
+   Target: Target_Type := external ("TARGET");
+   Tools: Tools_Type := external ("TOOLS", "native");
+   OS : OS_Type := external ("OS");
+   Build_Date  := """" & external ("BUILD_DATE") & """";
+   HOME := external ("HOME");
+
+   Optimization := ( );
+   Unit_Test_Compile_Switchs := ( );
+   Debug_Switches := ( );
+   Ada_Debug_Switches := ( );
+   case Target is
+
+        when "release" =>
+            Ada_Debug_Switches := ( "-O2" );
+
+        when "debug" =>
+            Debug_Switches := ( "-g", "-DDEBUG" );
+            Ada_Debug_Switches := ( "-g" );
+
+        when "unit_test" =>
+            Unit_Test_Compile_Switchs := (
+               "-DUNIT_TEST",
+               "-DUSE_GTEST",
+               "-DGTEST_HAS_GLOBAL_WSTRING=0",
+               "-DGTEST_HAS_STD_WSTRING=0"
+            );
+
+    end case;
+
+    OS_Family := "";
+    case OS is
+
+       when "macosx" | "linux" =>
+         OS_Family := "linux_and_macosx";
+
+       when "windows" | "Windows_NT" =>
+         OS_Family := "windows";
+         OS := "windows";
+
+    end case;
+
+   Minimal_Switches := Optimization & Debug_Switches &
+         Unit_Test_Compile_Switchs & (
+                "-Wall",
+                "-fpic",
+                "-Wno-long-long",
+                "-DARCHITECTURE=" & Architecture,
+                "-DSVN_PROJECT_VERSION=" & SVN_PROJECT_VERSION,
+                "-DBUILD_DATE=" & BUILD_DATE
+    );
+
+    Strict_Switches := (
+--                "-Wuninitialized",
+                "-Wshadow",
+                "-Wconversion",
+                "-Wredundant-decls"
+    );
+
+    Standard_Switches := Minimal_Switches;
+    Minimal_CPP_Switches := Minimal_Switches;
+    Default_Switches := Standard_Switches & (
+--          "-Wextra",
+            "-Wswitch-default"
+--          "-Wswitch-enum"
+    );
+    Default_C_Switches := Default_Switches & (
+         "-std=gnu99",
+        Extra_C_Flags
+    );
+
+    Default_CPP_Switches := Default_C_Switches & (
+        Extra_CPP_Flags
+    );
+
+    Architecture_Directory := Architecture;
+
+    User := external ("USER", "");
+    case Architecture is
+
+         when "linux" =>
+            case Tools is
+                    when "gnat" =>
+                        Architecture_Directory := "gnat-" & GCC_Architecture;
+                        Default_C_Switches :=
+                            Default_Switches & (
+                                "-std=gnu99"
+                        );
+
+                    when "native" =>
+                  Architecture_Directory := "gnat-" & GCC_Architecture;
+                        Default_C_Switches :=
+                            Default_C_Switches & (
+                                "-std=gnu99"
+                        );
+
+                end case;
+                OS := "linux";
+
+            when "ppm" =>
+                OS := "linux";
+                Default_C_Switches := Default_Switches;
+
+                Default_CPP_Switches := Default_Switches;
+
+            when "board" =>
+                OS := "linux";
+                Default_C_Switches := ( "-Dboard" ) &Default_Switches;
+
+            when "macosx" |"windows" =>
+                OS := Architecture;
+                Architecture_Directory := GCC_Architecture;
+
+    end case;
+
+    Linker_Map_Option := "-Wl,Map=map.txt";
+
+    case Optimization_Flags is
+        when "none" =>
+            Optimization := ( "-O0" );
+
+        when "default" =>
+            Optimization := ( "-O" );
+
+        when "full" =>
+            Optimization := ( "-O3" );
+
+        when "gdb" =>
+            Optimization := ( "-Og" );
+
+    end case;
+
+   Default_Ada_Switches := Ada_Debug_Switches & (
+--                      "-g",               -- generate dbug info
+                        "-fstack-check",    -- per subprogram stack check
+                        "-gnat12",          -- Ada 2012
+                        "-gnata",           -- activate assertions
+                        "-gnatf",           -- full errors
+--                      "-gnatN",           -- front end inlineing
+                        "-gnato",           -- default overflow checking on
+                        "-gnatE",           -- Full dynamic elaboration checks
+--                      "-gnatp",           -- suppress all runtime checks
+                        "-gnatwa",          -- most optional warnings
+                  "-gnatwl",        -- activate elaboration check warnings
+                  "-O2"
+                        );
+
+    Default_Ada95_Switches := (
+--                      "-g",
+                        "-fstack-check",
+                        "-gnata",
+                        "-gnatf",
+--                      "-gnatg", "-a",
+--                      "-gnatN",
+                        "-gnato",
+--                      "-gnatE",
+                        "-gnatwa",
+                        "-gnatwl"
+--                      "-O3"
+                        );
+
+    Ada_Compiler_Switches:=("-g", "-gnata", "-gnatq", "-gnatQ");
+
+end Base;

@@ -1,0 +1,56 @@
+camera_driver command line options:
+    -?                  : trace test condition                (Ada_Lib)
+    -a <trace options>  : Ada_Lib library trace options       (Ada_Lib)
+    -D <subdirectory>   : subdirectory to run camera app from (camera_driver)
+    -h                  : this message                        (Ada_Lib)
+    -l                  : list output from camera app         (camera_driver)
+    -P                  : pause                               (Ada_Lib)
+    -r                  : remote camera                       (camera_driver)
+    -R <routine>        : routine to run, multiple allowed    (camera_driver)
+    -t                  : driver trace options                (camera_driver)
+    -u <suite>          : suite to run, multiple allowed      (camera_driver)
+    -v                  : verbose                             (Ada_Lib)
+    -X <options>        : options to pass                     (camera_driver)
+    -@i                 : indent trace                        (Ada_Lib)
+    -@p                 : include program in trace            (Ada_Lib)
+    -@t                 : include task in trace               (Ada_Lib)
+    -@x                 : exclude time in trace               (Ada_Lib)
+
+CAC ada_lib trace library options (-a)
+      a               all
+      b               database subscribe
+      c               Ada_Lib.Command_Line Trace
+      C               Ada_Lib.Configuration Trace
+      d               database partial
+      D               database all
+      e               Event
+      g               GNOGA
+      h               Help
+      i               interrupt
+      I               Ada_Lib.interface
+      l               lock
+      m               timer
+      M               mail
+      o               os
+      O               Ada_Lib.Options
+      p               parser
+      P               database post
+      r               run remote, database connect
+      R               Ada_Lib.Runstring_Options.Debug
+      s               socket
+      S               socket Stream
+      t               Ada_Lib.Trace
+      T               Ada_Lib.Trace_Tasks
+      -               Ada_Lib.Text
+      @c              Template Compile
+      @d              Template Detail
+      @D              Ada_Lib.Directory trace
+      @e              Template Evaluate
+      @E              Template Expand
+      @l              Template Load
+
+driver trace options (-t)
+      a               all
+      o               program options trace
+      p               program trace
+      t               driver trace

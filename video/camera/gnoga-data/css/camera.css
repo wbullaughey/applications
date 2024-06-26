@@ -1,0 +1,76 @@
+.Center_Box_Style {
+   border-color: red;
+   border-style: solid;
+   border-width: 5px;
+   width: 1000px;
+   height: 600px;
+}
+.Configured_Card {
+  display: flex;
+  width: 3000px;
+  padding: 5px;
+<!--border: 1px solid black;     --!>
+<!--background-color: red;       --!>
+}
+
+.Coordinate_Style {
+   background-color: lightgrey;
+   text-align: center;
+   width: 3em;
+}
+.Control_Cell {
+   position: relative;
+}
+.Control_Image {
+   border: 1px solid grey;
+   object-fit:cover;
+   top: 0;
+   left: 0;
+   width: 60px;
+   height:60px;
+}
+.Control_Text {
+   position: absolute;
+   top: -15px;
+   right: 5px;
+   font-size: 18px;
+<!--transform: translate(-50%, -50%);     --!>
+   color: transparent;
+   -webkit-text-stroke-width: 1px;
+<!---webkit-text-stroke-color: black;     --!>
+   font-size: 24px;
+}
+.Control_Card {
+  padding: 5px;
+  border: 1px solid blue;
+  background-color: white;
+}
+.Horizontal_Slider_Style {
+   border: black;
+   width: 100%;
+   height: 15px;
+}
+.Preset_Style {
+   background-color: lightgrey;
+   text-align: center;
+   width: 3em;
+}
+.Horizontal_Slider_Style {
+   border: black;
+   width: 100%;
+   height: 15px;
+}
+.Vertical_Slider_Blank_Style {
+   background-color: green;
+   top: 0;
+   width: 100%; /* Set the desired width */
+   height: 200px; /* Set the desired height */
+}
+.Vertical_Slider_Solid_Style {
+   bottom: 0;
+   background-color: blue;
+   left: 0;
+   width: 100%;
+   height: 500px; /* Set the initial progress height */
+}
+

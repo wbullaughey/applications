@@ -1,0 +1,9 @@
+  00:00:00.00>1) ada_lib-options_interface.adb:310 instantiated at ada_lib-options.ads:158 Ada_Lib.Options.Nested_Options_Package.Verify_Preinitialize In options tag RUNTIME_OPTIONS.OPTIONS_TYPE
+Ada_Lib_Options not initialized
+Ada_Lib.Options.Nested_Options_Package.Verify_Preinitialize ada_lib-options_interface.adb:321 instantiated at ada_lib-options.ads:158
+  00:00:00.00(1> ada_lib-options_interface.adb:322 instantiated at ada_lib-options.ads:158 Ada_Lib.Options.Nested_Options_Package.Verify_Preinitialize Out result FALSE 
+------ exception trace --------
+main_task_00007F82E4808800 @ 00:00:00.01
+exception: ADA.ASSERTIONS.ASSERTION_ERROR caught at video_aunit.adb:52
+Fault Message: failed precondition from runtime_options.ads:36
+-------------------------------------------

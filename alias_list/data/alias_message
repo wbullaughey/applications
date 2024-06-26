@@ -1,0 +1,12 @@
+This message was sent to you since your email %{forward} is on the the alias list %{alias}.
+
+We are updating the email alias list for UCWC. The alias list lets you send an email to an address like president@ucwc.org which then gets sent to Matt's personal email address. Some of the aliases get sent to just one address. Others like board@ucwc.org get sent to all members of the Board of the UCWC.
+
+Please reply to this message with the answers to three questions:
+
+    1) Do you know if the email list %{alias} is still in use?
+    2) And if so, should your email %{forward} still be on the email list %{alias}?
+    3) If you should be taken off, do you know of someone who should replace you or be added to the %{alias} alias?
+
+Thank you
+Wayne Bullaughey

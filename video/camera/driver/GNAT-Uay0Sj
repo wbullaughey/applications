@@ -1,0 +1,29 @@
+camera_aunit
+camera_aunit) main_task_00007FD1A2808800: 00:00:00.00(0> video-lib.adb:81 Video.Lib.Initialize Out result TRUE 
+level 0 in Protected_Level
+camera_aunit) main_task_00007FD1A2808800: 00:00:00.00(0> camera-lib.adb:59 Camera.Lib.Initialize Out result TRUE 
+level 0 in Protected_Level
+running suite: 'Video_Commands' routine: 'Test_Position_Down_Right'
+Invalid configuration file: Full_Path: '/Users/wayne/Project/git/alr/applications/video/camera/driver/camera_state_path.cfg' does not exist
+------ exception trace --------
+Exception in Set_Up ADA_LIB.CONFIGURATION.FAILED: Full_Path: '/Users/wayne/Project/git/alr/applications/video/camera/driver/camera_state_path.cfg' does not exist' called from Camera.Lib.Test.Set_Up at camera-lib-test.adb:153
+-------------------------------------------------
+camera_aunit) main_task_00007FD1A2808800: 00:00:00.01[0] ada_lib-unit_test-test_cases.adb:209 Ada_Lib.Unit_Test.Test_Cases.Root_Test.Set_Up_Failed 
+------ exception trace --------
+main_task_00007FD1A2808800 @ 00:00:00.01
+exception: ADA.ASSERTIONS.ASSERTION_ERROR caught at camera-lib-base.adb:259
+Fault Message: failed precondition from ada_lib-socket_io-stream_io.ads:271
+-------------------------------------------
+report camera test results
+
+ERROR Video_Commands : Test_Position_Down_Right
+    ADA.ASSERTIONS.ASSERTION_ERROR
+    Exception Message: failed precondition from ada_lib-socket_io-stream_io.ads:271
+    Traceback:
+        0x000000010066DD01 0x000000010047AAC6 0x000000010047ABC4 0x000000010038BB7D 0x0000000100387A5D 0x000000010038B241 0x00000001003896FC 0x000000010036225F 0x00000001003FF5F9 0x00000001003FC768 0x00000001003FD936 0x000000010040073F 0x000000010040CC04 0x000000010040CE33 0x00000001003668C1 0x000000010028D509 0x00000001006D9739
+
+
+Total Tests Run:   1
+Successful Tests:  0
+Failed Assertions: 0
+Unexpected Errors: 1

@@ -1,0 +1,38 @@
+with "ada_lib.gpr";
+with "ada_lib_testing.gpr";
+with "default_config.gpr";
+with "applications.gpr";
+with "aunit.gpr";
+with "camera_lib.gpr";
+with "config/driver_unit_test_config.gpr";
+with "default_config.gpr";
+with "gnoga.gpr";
+with "../../../../../local.gpr";
+with "test_lib.gpr";
+with "video_lib.gpr";
+
+project Driver_Unit_Test is
+
+   for Source_Dirs use ("src/", "config/");
+   for Object_Dir use "obj/" & Driver_Unit_Test_Config.Build_Profile;
+   for Create_Missing_Dirs use "True";
+   for Exec_Dir use "bin";
+   for Main use ("driver_unit_test.adb");
+
+   package Compiler is
+      for Default_Switches ("Ada") use Default_Config.Ada_Compiler_Switches;
+   end Compiler;
+
+   package Binder is
+      for Switches ("Ada") use ("-Es"); --  Symbolic traceback
+   end Binder;
+
+   package Linker is
+      for Default_Switches ("Ada") use Local.Linker_Switches;
+   end Linker;
+
+   package Install is
+      for Artifacts (".") use ("share");
+   end Install;
+
+end Driver_Unit_Test;

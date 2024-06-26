@@ -1,0 +1,72 @@
+name = "camera_tests"
+description = "aunit tests for camera"
+version = "0.1.0-dev"
+
+authors = ["Wayne Bullaughey"]
+maintainers = ["Wayne Bullaughey <wlb122@verizon.net>"]
+maintainers-logins = ["wbullaughey"]
+
+executables = ["camera_aunit"]
+
+[[depends-on]]
+camera_lib = "*"
+
+[[pins]]
+camera_lib  = { path = "../lib" }
+
+[[depends-on]]
+camera_lib_unit_test = "*"
+
+[[pins]]
+camera_lib_unit_test  = { path = "../lib/unit_test" }
+
+[[depends-on]]
+video_lib = "*"
+
+[[pins]]
+video_lib  = { path = "../../lib" }
+
+[[depends-on]]
+video_lib_unit_test = "*"
+
+[[pins]]
+video_lib_unit_test  = { path = "../../lib/unit_test" }
+
+[[depends-on]]
+test_lib = "*"
+
+[[pins]]
+test_lib  = { path = "../test_lib" }
+
+[[depends-on]]
+ada_lib = "*"
+
+[[pins]]
+ada_lib  = { path = "../../../ada_lib" }
+
+[[depends-on]]
+aunit = "*"
+
+[[pins]]
+aunit  = { path = "../../../aunit" }
+
+[[depends-on]]
+ada_lib_testing = "*"
+
+[[pins]]
+ada_lib_testing  = { path = "../../../ada_lib/ada_lib_testing" }
+
+[[depends-on]]
+gnoga = "*"
+
+[[pins]]
+gnoga  = { path = "../../../vendor/github.com/gnoga" }
+
+[[depends-on]]
+applications = "*"
+
+[[pins]]
+applications  = { path = "../../.." }
+
+
+

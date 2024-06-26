@@ -1,0 +1,100 @@
+Find all "gnoga-.*.adb", Regular expression (Perl)
+File /Users/wayne/Project/git/alr/applications/video/camera/unit_test/list-camera_aunit.txt
+  43 62:          main_task_00007FA1B9008800: 00:00:00.00(5) ada_lib-gnoga-unit_test.adb:148 Ada_Lib.GNOGA.Unit_Test.Set_Up In Initialize_GNOGA TRUE test driver FALSE
+  46 62:          main_task_00007FA1B9008800: 00:00:00.00(5) ada_lib-gnoga-unit_test.adb:153 Ada_Lib.GNOGA.Unit_Test.Set_Up URL_Opened FALSE Initialize_GNOGA TRUE
+  47 62:          main_task_00007FA1B9008800: 00:00:00.00(5) ada_lib-gnoga-unit_test.adb:156 Ada_Lib.GNOGA.Unit_Test.Set_Up
+  48 56:            main_task_00007FA1B9008800: 00:00:00.00(6) gnoga-application.adb:128 Gnoga.Application.Open_URL In
+  49 56:            main_task_00007FA1B9008800: 00:00:00.00(6) gnoga-application.adb:130 Gnoga.Application.Open_URL Out
+  50 64:            main_task_00007FA1B9008800: 00:00:00.00(6) ada_lib-gnoga-base.adb:58 Ada_Lib.GNOGA.Base.Initialize_GNOGA In  verbose TRUE
+  51 58:              main_task_00007FA1B9008800: 00:00:00.00(7) gnoga-application-multi_connect.adb:158 Gnoga.Application.Multi_Connect.Initialize In boot: 'boot_jqueryui.html'
+  53 58:              main_task_00007FA1B9008800: 00:00:00.00(7) gnoga-server.adb:108 Gnoga.Server.Executable_Directory Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/unit_test/bin/camera_aunit'
+  54 58:              main_task_00007FA1B9008800: 00:00:00.00(7) gnoga-server.adb:94 Gnoga.Server.Application_Directory Exe: '/Users/wayne/Project/git/alr/applications/video/camera/unit_test/bin/'
+  56 58:              main_task_00007FA1B9008800: 00:00:00.00(7) gnoga-server.adb:108 Gnoga.Server.Executable_Directory Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/unit_test/bin/camera_aunit'
+  58 58:              main_task_00007FA1B9008800: 00:00:00.00(7) gnoga-server.adb:108 Gnoga.Server.Executable_Directory Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/unit_test/bin/camera_aunit'
+  59 58:              main_task_00007FA1B9008800: 00:00:00.00(7) gnoga-server.adb:94 Gnoga.Server.Application_Directory Exe: '/Users/wayne/Project/git/alr/applications/video/camera/unit_test/bin/'
+  60 58:              main_task_00007FA1B9008800: 00:00:00.00(7) gnoga-server.adb:108 Gnoga.Server.Executable_Directory Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/unit_test/bin/camera_aunit'
+  61 58:              main_task_00007FA1B9008800: 00:00:00.00(7) gnoga-server.adb:94 Gnoga.Server.Application_Directory Exe: '/Users/wayne/Project/git/alr/applications/video/camera/unit_test/bin/'
+  62 58:              main_task_00007FA1B9008800: 00:00:00.00(7) gnoga-server.adb:67 Gnoga.Server.Find_Subdirectory Sub: 'html' Dir: '/Users/wayne/Project/git/alr/applications/video/camera/unit_test/html/' Html: '/Users/wayne/Project/git/alr/applications/video/camera/unit_test/html/'
+  64 58:              main_task_00007FA1B9008800: 00:00:00.00(7) gnoga-server.adb:108 Gnoga.Server.Executable_Directory Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/unit_test/bin/camera_aunit'
+  65 58:              main_task_00007FA1B9008800: 00:00:00.00(7) gnoga-server.adb:94 Gnoga.Server.Application_Directory Exe: '/Users/wayne/Project/git/alr/applications/video/camera/unit_test/bin/'
+  66 58:              main_task_00007FA1B9008800: 00:00:00.00(7) gnoga-server.adb:108 Gnoga.Server.Executable_Directory Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/unit_test/bin/camera_aunit'
+  67 58:              main_task_00007FA1B9008800: 00:00:00.00(7) gnoga-server.adb:94 Gnoga.Server.Application_Directory Exe: '/Users/wayne/Project/git/alr/applications/video/camera/unit_test/bin/'
+  68 58:              main_task_00007FA1B9008800: 00:00:00.00(7) gnoga-server.adb:67 Gnoga.Server.Find_Subdirectory Sub: 'upload' Dir: '/Users/wayne/Project/git/alr/applications/video/camera/unit_test/upload/' Html: '/Users/wayne/Project/git/alr/applications/video/camera/unit_test/html/'
+  70 58:              main_task_00007FA1B9008800: 00:00:00.00(7) gnoga-server.adb:108 Gnoga.Server.Executable_Directory Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/unit_test/bin/camera_aunit'
+  71 58:              main_task_00007FA1B9008800: 00:00:00.00(7) gnoga-server.adb:94 Gnoga.Server.Application_Directory Exe: '/Users/wayne/Project/git/alr/applications/video/camera/unit_test/bin/'
+  72 58:              main_task_00007FA1B9008800: 00:00:00.00(7) gnoga-server.adb:108 Gnoga.Server.Executable_Directory Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/unit_test/bin/camera_aunit'
+  73 58:              main_task_00007FA1B9008800: 00:00:00.00(7) gnoga-server.adb:94 Gnoga.Server.Application_Directory Exe: '/Users/wayne/Project/git/alr/applications/video/camera/unit_test/bin/'
+  74 58:              main_task_00007FA1B9008800: 00:00:00.00(7) gnoga-server.adb:108 Gnoga.Server.Executable_Directory Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/unit_test/bin/camera_aunit'
+  75 58:              main_task_00007FA1B9008800: 00:00:00.00(7) gnoga-server.adb:94 Gnoga.Server.Application_Directory Exe: '/Users/wayne/Project/git/alr/applications/video/camera/unit_test/bin/'
+  77 58:              main_task_00007FA1B9008800: 00:00:00.00(7) gnoga-server.adb:108 Gnoga.Server.Executable_Directory Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/unit_test/bin/camera_aunit'
+  78 58:              main_task_00007FA1B9008800: 00:00:00.00(7) gnoga-server.adb:94 Gnoga.Server.Application_Directory Exe: '/Users/wayne/Project/git/alr/applications/video/camera/unit_test/bin/'
+  79 58:              main_task_00007FA1B9008800: 00:00:00.00(7) gnoga-server.adb:108 Gnoga.Server.Executable_Directory Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/unit_test/bin/camera_aunit'
+  80 58:              main_task_00007FA1B9008800: 00:00:00.00(7) gnoga-server.adb:94 Gnoga.Server.Application_Directory Exe: '/Users/wayne/Project/git/alr/applications/video/camera/unit_test/bin/'
+  81 58:              main_task_00007FA1B9008800: 00:00:00.00(7) gnoga-server.adb:67 Gnoga.Server.Find_Subdirectory Sub: 'js' Dir: '/Users/wayne/Project/git/alr/applications/video/camera/unit_test/js/' Html: '/Users/wayne/Project/git/alr/applications/video/camera/unit_test/html/'
+  83 58:              main_task_00007FA1B9008800: 00:00:00.00(7) gnoga-server.adb:108 Gnoga.Server.Executable_Directory Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/unit_test/bin/camera_aunit'
+  84 58:              main_task_00007FA1B9008800: 00:00:00.00(7) gnoga-server.adb:94 Gnoga.Server.Application_Directory Exe: '/Users/wayne/Project/git/alr/applications/video/camera/unit_test/bin/'
+  85 58:              main_task_00007FA1B9008800: 00:00:00.00(7) gnoga-server.adb:108 Gnoga.Server.Executable_Directory Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/unit_test/bin/camera_aunit'
+  86 58:              main_task_00007FA1B9008800: 00:00:00.00(7) gnoga-server.adb:94 Gnoga.Server.Application_Directory Exe: '/Users/wayne/Project/git/alr/applications/video/camera/unit_test/bin/'
+  87 58:              main_task_00007FA1B9008800: 00:00:00.00(7) gnoga-server.adb:67 Gnoga.Server.Find_Subdirectory Sub: 'css' Dir: '/Users/wayne/Project/git/alr/applications/video/camera/unit_test/css/' Html: '/Users/wayne/Project/git/alr/applications/video/camera/unit_test/html/'
+  89 58:              main_task_00007FA1B9008800: 00:00:00.00(7) gnoga-server.adb:108 Gnoga.Server.Executable_Directory Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/unit_test/bin/camera_aunit'
+  90 58:              main_task_00007FA1B9008800: 00:00:00.00(7) gnoga-server.adb:94 Gnoga.Server.Application_Directory Exe: '/Users/wayne/Project/git/alr/applications/video/camera/unit_test/bin/'
+  91 58:              main_task_00007FA1B9008800: 00:00:00.00(7) gnoga-server.adb:108 Gnoga.Server.Executable_Directory Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/unit_test/bin/camera_aunit'
+  92 58:              main_task_00007FA1B9008800: 00:00:00.00(7) gnoga-server.adb:94 Gnoga.Server.Application_Directory Exe: '/Users/wayne/Project/git/alr/applications/video/camera/unit_test/bin/'
+  93 58:              main_task_00007FA1B9008800: 00:00:00.00(7) gnoga-server.adb:67 Gnoga.Server.Find_Subdirectory Sub: 'img' Dir: '/Users/wayne/Project/git/alr/applications/video/camera/unit_test/img/' Html: '/Users/wayne/Project/git/alr/applications/video/camera/unit_test/html/'
+  98 58:              main_task_00007FA1B9008800: 00:00:00.00(7) gnoga-application-multi_connect.adb:171 Gnoga.Application.Multi_Connect.Initialize Out
+  99 56:            main_task_00007FA1B9008800: 00:00:00.00(6) gnoga-application-multi_connect.adb:182 Gnoga.Application.Multi_Connect.On_Connect_Handler path: 'default'
+  100 64:            main_task_00007FA1B9008800: 00:00:00.00(6) ada_lib-gnoga-base.adb:89 Ada_Lib.GNOGA.Base.Initialize_GNOGA
+  101 57:  message_loop_00007FA1B9812C00: 00:00:00.00(1) ada_lib-gnoga-base.adb:178 Ada_Lib.GNOGA.Base.Message_Loop_Task In
+  102 54:  gnoga_http_server_00007FA1B9816400: 00:00:00.00(1) gnoga-server-connection.adb:273 Gnoga.Server.Connection.Gnoga_HTTP_Server_Type In
+  103 54:  gnoga_http_server_00007FA1B9816400: 00:00:00.00(1) gnoga-server-connection.adb:275 Gnoga.Server.Connection.Gnoga_HTTP_Server_Type
+  105 54:  gnoga_http_server_00007FA1B9816400: 00:00:00.00(1) gnoga-server-connection.adb:291 Gnoga.Server.Connection.Gnoga_HTTP_Server_Type
+  106 64:            main_task_00007FA1B9008800: 00:00:00.11(6) ada_lib-gnoga-base.adb:96 Ada_Lib.GNOGA.Base.Initialize_GNOGA
+  107 48:listener.doer_00007FA1BB008200: 00:00:00.15(0) gnoga-server.adb:108 Gnoga.Server.Executable_Directory Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/unit_test/bin/camera_aunit'
+  108 48:listener.doer_00007FA1BB008200: 00:00:00.15(0) gnoga-server.adb:94 Gnoga.Server.Application_Directory Exe: '/Users/wayne/Project/git/alr/applications/video/camera/unit_test/bin/'
+  109 48:listener.doer_00007FA1BB008200: 00:00:00.15(0) gnoga-server.adb:108 Gnoga.Server.Executable_Directory Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/unit_test/bin/camera_aunit'
+  110 48:listener.doer_00007FA1BB008200: 00:00:00.15(0) gnoga-server.adb:94 Gnoga.Server.Application_Directory Exe: '/Users/wayne/Project/git/alr/applications/video/camera/unit_test/bin/'
+  111 48:listener.doer_00007FA1BB008200: 00:00:00.15(0) gnoga-server.adb:67 Gnoga.Server.Find_Subdirectory Sub: 'html' Dir: '/Users/wayne/Project/git/alr/applications/video/camera/unit_test/html/' Html: '/Users/wayne/Project/git/alr/applications/video/camera/unit_test/html/'
+  112 48:listener.doer_00007FA1BB008200: 00:00:00.15(0) gnoga-server.adb:108 Gnoga.Server.Executable_Directory Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/unit_test/bin/camera_aunit'
+  113 48:listener.doer_00007FA1BB008200: 00:00:00.15(0) gnoga-server.adb:94 Gnoga.Server.Application_Directory Exe: '/Users/wayne/Project/git/alr/applications/video/camera/unit_test/bin/'
+  114 48:listener.doer_00007FA1BB008200: 00:00:00.15(0) gnoga-server.adb:108 Gnoga.Server.Executable_Directory Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/unit_test/bin/camera_aunit'
+  115 48:listener.doer_00007FA1BB008200: 00:00:00.15(0) gnoga-server.adb:94 Gnoga.Server.Application_Directory Exe: '/Users/wayne/Project/git/alr/applications/video/camera/unit_test/bin/'
+  116 48:listener.doer_00007FA1BB008200: 00:00:00.15(0) gnoga-server.adb:67 Gnoga.Server.Find_Subdirectory Sub: 'html' Dir: '/Users/wayne/Project/git/alr/applications/video/camera/unit_test/html/' Html: '/Users/wayne/Project/git/alr/applications/video/camera/unit_test/html/'
+  118 48:listener.doer_00007FA1BB008200: 00:00:00.16(0) gnoga-server.adb:108 Gnoga.Server.Executable_Directory Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/unit_test/bin/camera_aunit'
+  119 48:listener.doer_00007FA1BB008200: 00:00:00.16(0) gnoga-server.adb:94 Gnoga.Server.Application_Directory Exe: '/Users/wayne/Project/git/alr/applications/video/camera/unit_test/bin/'
+  120 48:listener.doer_00007FA1BB008200: 00:00:00.16(0) gnoga-server.adb:108 Gnoga.Server.Executable_Directory Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/unit_test/bin/camera_aunit'
+  121 48:listener.doer_00007FA1BB008200: 00:00:00.16(0) gnoga-server.adb:94 Gnoga.Server.Application_Directory Exe: '/Users/wayne/Project/git/alr/applications/video/camera/unit_test/bin/'
+  122 48:listener.doer_00007FA1BB008200: 00:00:00.16(0) gnoga-server.adb:67 Gnoga.Server.Find_Subdirectory Sub: 'js' Dir: '/Users/wayne/Project/git/alr/applications/video/camera/unit_test/js/' Html: '/Users/wayne/Project/git/alr/applications/video/camera/unit_test/html/'
+  123 48:listener.doer_00007FA1BB008200: 00:00:00.16(0) gnoga-server.adb:108 Gnoga.Server.Executable_Directory Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/unit_test/bin/camera_aunit'
+  124 48:listener.doer_00007FA1BB008200: 00:00:00.16(0) gnoga-server.adb:94 Gnoga.Server.Application_Directory Exe: '/Users/wayne/Project/git/alr/applications/video/camera/unit_test/bin/'
+  125 48:listener.doer_00007FA1BB008200: 00:00:00.16(0) gnoga-server.adb:108 Gnoga.Server.Executable_Directory Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/unit_test/bin/camera_aunit'
+  126 48:listener.doer_00007FA1BB008200: 00:00:00.16(0) gnoga-server.adb:94 Gnoga.Server.Application_Directory Exe: '/Users/wayne/Project/git/alr/applications/video/camera/unit_test/bin/'
+  127 48:listener.doer_00007FA1BB008200: 00:00:00.16(0) gnoga-server.adb:67 Gnoga.Server.Find_Subdirectory Sub: 'css' Dir: '/Users/wayne/Project/git/alr/applications/video/camera/unit_test/css/' Html: '/Users/wayne/Project/git/alr/applications/video/camera/unit_test/html/'
+  128 48:listener.doer_00007FA1BB008200: 00:00:00.16(0) gnoga-server.adb:108 Gnoga.Server.Executable_Directory Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/unit_test/bin/camera_aunit'
+  129 48:listener.doer_00007FA1BB008200: 00:00:00.16(0) gnoga-server.adb:94 Gnoga.Server.Application_Directory Exe: '/Users/wayne/Project/git/alr/applications/video/camera/unit_test/bin/'
+  130 48:listener.doer_00007FA1BB008200: 00:00:00.16(0) gnoga-server.adb:108 Gnoga.Server.Executable_Directory Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/unit_test/bin/camera_aunit'
+  131 48:listener.doer_00007FA1BB008200: 00:00:00.16(0) gnoga-server.adb:94 Gnoga.Server.Application_Directory Exe: '/Users/wayne/Project/git/alr/applications/video/camera/unit_test/bin/'
+  132 48:listener.doer_00007FA1BB008200: 00:00:00.16(0) gnoga-server.adb:67 Gnoga.Server.Find_Subdirectory Sub: 'js' Dir: '/Users/wayne/Project/git/alr/applications/video/camera/unit_test/js/' Html: '/Users/wayne/Project/git/alr/applications/video/camera/unit_test/html/'
+  133 48:listener.doer_00007FA1BB008200: 00:00:00.16(0) gnoga-server.adb:108 Gnoga.Server.Executable_Directory Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/unit_test/bin/camera_aunit'
+  134 48:listener.doer_00007FA1BB008200: 00:00:00.16(0) gnoga-server.adb:94 Gnoga.Server.Application_Directory Exe: '/Users/wayne/Project/git/alr/applications/video/camera/unit_test/bin/'
+  135 48:listener.doer_00007FA1BB008200: 00:00:00.16(0) gnoga-server.adb:108 Gnoga.Server.Executable_Directory Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/unit_test/bin/camera_aunit'
+  136 48:listener.doer_00007FA1BB008200: 00:00:00.16(0) gnoga-server.adb:94 Gnoga.Server.Application_Directory Exe: '/Users/wayne/Project/git/alr/applications/video/camera/unit_test/bin/'
+  137 48:listener.doer_00007FA1BB008200: 00:00:00.16(0) gnoga-server.adb:67 Gnoga.Server.Find_Subdirectory Sub: 'js' Dir: '/Users/wayne/Project/git/alr/applications/video/camera/unit_test/js/' Html: '/Users/wayne/Project/git/alr/applications/video/camera/unit_test/html/'
+  139 64:            main_task_00007FA1B9008800: 00:00:00.21(6) ada_lib-gnoga-base.adb:99 Ada_Lib.GNOGA.Base.Initialize_GNOGA
+  140 43:  S4664b_00007FA1BB808200: 00:00:00.45(1) gnoga-application-multi_connect.adb:96 Gnoga.Application.Multi_Connect.On_Connect In ID 1
+  141 45:    S4664b_00007FA1BB808200: 00:00:00.45(2) gnoga-gui-window.adb:149 Gnoga.Gui.Window.Attach In Connection_ID 1 ID: 'window'
+  142 45:    S4664b_00007FA1BB808200: 00:00:00.45(2) gnoga-gui-window.adb:169 Gnoga.Gui.Window.Attach Out
+  143 43:  S4664b_00007FA1BB808200: 00:00:00.45(1) gnoga-application-multi_connect.adb:84 Gnoga.Application.Multi_Connect.On_Connect.Get_Path p: ''
+  144 43:  S4664b_00007FA1BB808200: 00:00:00.45(1) gnoga-application-multi_connect.adb:115 Gnoga.Application.Multi_Connect.On_Connect path: ''
+
+
+  147 53:    S4664b_00007FA1BB808200: 00:00:00.45(2) ada_lib-gnoga-unit_test.adb:204 Ada_Lib.GNOGA.Unit_Test.Test_Handler In URL: 'http://127.0.0.1:8080/'
+  148 53:    S4664b_00007FA1BB808200: 00:00:00.45(2) ada_lib-gnoga-base.adb:134 Ada_Lib.GNOGA.Base.Set_Main_Created value TRUE
+  149 53:    S4664b_00007FA1BB808200: 00:00:00.45(2) ada_lib-gnoga-unit_test.adb:210 Ada_Lib.GNOGA.Unit_Test.Test_Handler Out
+  150 64:            main_task_00007FA1B9008800: 00:00:00.51(6) ada_lib-gnoga-base.adb:104 Ada_Lib.GNOGA.Base.Initialize_GNOGA Out
+  151 62:          main_task_00007FA1B9008800: 00:00:00.51(5) ada_lib-gnoga-unit_test.adb:166 Ada_Lib.GNOGA.Unit_Test.Set_Up
+  152 62:          main_task_00007FA1B9008800: 00:00:00.51(5) ada_lib-gnoga-unit_test.adb:169 Ada_Lib.GNOGA.Unit_Test.Set_Up Out
+  166 62:          main_task_00007FA1B9008800: 00:00:00.51(5) ada_lib-gnoga-unit_test.adb:179 Ada_Lib.GNOGA.Unit_Test.Tear_Down In
+  167 62:          main_task_00007FA1B9008800: 00:00:00.51(5) ada_lib-gnoga-unit_test.adb:181 Ada_Lib.GNOGA.Unit_Test.Tear_Down
+  168 62:          main_task_00007FA1B9008800: 00:00:00.52(5) ada_lib-gnoga-base.adb:134 Ada_Lib.GNOGA.Base.Set_Main_Created value FALSE
+  169 62:          main_task_00007FA1B9008800: 00:00:00.52(5) ada_lib-gnoga-unit_test.adb:189 Ada_Lib.GNOGA.Unit_Test.Tear_Down Out
+Total found: 95

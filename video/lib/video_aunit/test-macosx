@@ -1,0 +1,77 @@
+#!/bin/bash
+export SUITE=$1
+shift 1
+export ROUTINE=$1   # all or test routine name
+shift 1
+export APPLICATION=./bin/video_aunit
+export OUTPUT=list-video.txt
+
+echo test-macro  | tee $OUTPUT
+function help {
+   echo  "$APPLICATION -h" | tee -a $OUTPUT
+   $APPLICATION -h | tee -a $OUTPUT
+   exit
+}
+
+function list {
+   echo  suites  | tee $OUTPUT
+   echo     all     - all suites  | tee -a $OUTPUT
+   echo     video   - test video  | tee -a $OUTPUT
+   exit
+}
+
+case "$SUITE" in
+
+#  "all")
+#     export SUITE_OPTION=all
+#     ;;
+#
+   "help")
+      help
+      ;;
+
+   "list")
+      list
+      ;;
+
+   "suites")
+      $APPLICATION -@l | tee $OUTPUT
+      exit
+      ;;
+
+   "Basic_Video")
+      export SUITE_OPTION="-s $SUITE"
+      ;;
+
+   "Video_Commands")
+      export SUITE_OPTION="-s $SUITE"
+      ;;
+
+   "")
+      echo missing suite \"$SUITE\"  | tee -a $OUTPUT
+      exit
+      ;;
+
+   *)
+      echo unrecognize suite \"$SUITE\" | tee -a $OUTPUT
+      exit
+      ;;
+
+esac
+export VERBOSE="-v"
+case "$ROUTINE" in
+
+   all)
+      export ROUTINE=-e all
+      ;;
+
+   *)
+       export ROUTINE_OPTION="-e $ROUTINE"
+       ;;
+
+esac
+
+export COMMAND="$APPLICATION $* $VERBOSE $SUITE_OPTION $ROUTINE_OPTION"
+echo "comand: $COMMAND"  | tee -a $OUTPUT
+$COMMAND 2>&1 | tee -a $OUTPUT
+

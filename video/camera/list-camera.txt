@@ -1,0 +1,391 @@
+comand: bin/camera_control -r -Gm -agG -tlm 
+camera_control
+main_task_00007FA7EF808200: [00:00:00.00] ada_lib-gnoga.adb:33 Ada_Lib.GNOGA.Has_Connection_Data (0) result FALSE 
+main_task_00007FA7EF808200: [00:00:00.00] ada_lib-gnoga.adb:48 Ada_Lib.GNOGA.Set_Connection_Data (1) in Connection_Data MAIN.MAIN_CONNECTION_DATA_TYPE 00007FA7EF104090 from camera_control.adb:33
+  main_task_00007FA7EF808200: [00:00:00.00] ada_lib-gnoga.adb:52 Ada_Lib.GNOGA.Set_Connection_Data (1) out 
+  main_task_00007FA7EF808200: [00:00:00.01] main.adb:604 Main.Run (1) in directory: '' Wait_For_Completion TRUEport 8080
+  main_task_00007FA7EF808200: [00:00:00.01] gnoga-application.adb:128 Gnoga.Application.Open_URL (2) in 
+    main_task_00007FA7EF808200: [00:00:00.01] gnoga-application.adb:130 Gnoga.Application.Open_URL (2) out 
+    main_task_00007FA7EF808200: [00:00:00.01] ada_lib-gnoga-base.adb:58 Ada_Lib.GNOGA.Base.Initialize_GNOGA (2) in GNOGA_Initialized FALSE Wait_For_Completion TRUE port 8080 verbose FALSE
+    main_task_00007FA7EF808200: [00:00:00.01] gnoga-application-multi_connect.adb:156 Gnoga.Application.Multi_Connect.Initialize (3) in boot: 'boot_jqueryui.html' port 8080
+      main_task_00007FA7EF808200: [00:00:00.01] gnoga-server-connection.adb:757 Gnoga.Server.Connection.Initialize (4) in host: '' boot: 'boot_jqueryui.html' port 8080
+        main_task_00007FA7EF808200: [00:00:00.01] gnoga-server-connection.adb:792 Gnoga.Server.Connection.Initialize (4) out 
+        main_task_00007FA7EF808200: [00:00:00.01] gnoga-application-multi_connect.adb:169 Gnoga.Application.Multi_Connect.Initialize (3) out 
+      main_task_00007FA7EF808200: [00:00:00.01] gnoga-application-multi_connect.adb:180 Gnoga.Application.Multi_Connect.On_Connect_Handler (2) path: 'default'
+    main_task_00007FA7EF808200: [00:00:00.01] ada_lib-gnoga-base.adb:84 Ada_Lib.GNOGA.Base.Initialize_GNOGA (2) 
+    message_loop_00007FA7F8018800: [00:00:00.01] ada_lib-gnoga-base.adb:178 Ada_Lib.GNOGA.Base.Message_Loop_Task (1) in 
+  gnoga_http_server_00007FA7EE808800: [00:00:00.01] gnoga-server-connection.adb:273 Gnoga.Server.Connection.Gnoga_HTTP_Server_Type (1) in 
+  gnoga_http_server_00007FA7EE808800: [00:00:00.01] gnoga-server-connection.adb:275 Gnoga.Server.Connection.Gnoga_HTTP_Server_Type (1) 
+  gnoga_http_server_00007FA7EE808800: [00:00:00.01] gnoga-server-connection.adb:291 Gnoga.Server.Connection.Gnoga_HTTP_Server_Type (1) port 8080
+  main_task_00007FA7EF808200: [00:00:00.11] ada_lib-gnoga-base.adb:92 Ada_Lib.GNOGA.Base.Initialize_GNOGA (2) 
+    listener.doer_00007FA7F801C000: [00:00:00.17] gnoga-server.adb:108 Gnoga.Server.Executable_Directory (0) Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/bin/camera_control'
+listener.doer_00007FA7F801C000: [00:00:00.17] gnoga-server.adb:94 Gnoga.Server.Application_Directory (0) Exe: '/Users/wayne/Project/git/alr/applications/video/camera/bin/'
+listener.doer_00007FA7F801C000: [00:00:00.17] gnoga-server.adb:108 Gnoga.Server.Executable_Directory (0) Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/bin/camera_control'
+listener.doer_00007FA7F801C000: [00:00:00.17] gnoga-server.adb:94 Gnoga.Server.Application_Directory (0) Exe: '/Users/wayne/Project/git/alr/applications/video/camera/bin/'
+listener.doer_00007FA7F801C000: [00:00:00.17] gnoga-server.adb:67 Gnoga.Server.Find_Subdirectory (0) Sub: 'html' Dir: '/Users/wayne/Project/git/alr/applications/video/camera/html/' Html: '/Users/wayne/Project/git/alr/applications/video/camera/html/'
+listener.doer_00007FA7F801C000: [00:00:00.17] gnoga-server.adb:108 Gnoga.Server.Executable_Directory (0) Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/bin/camera_control'
+listener.doer_00007FA7F801C000: [00:00:00.17] gnoga-server.adb:94 Gnoga.Server.Application_Directory (0) Exe: '/Users/wayne/Project/git/alr/applications/video/camera/bin/'
+listener.doer_00007FA7F801C000: [00:00:00.17] gnoga-server.adb:108 Gnoga.Server.Executable_Directory (0) Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/bin/camera_control'
+listener.doer_00007FA7F801C000: [00:00:00.17] gnoga-server.adb:94 Gnoga.Server.Application_Directory (0) Exe: '/Users/wayne/Project/git/alr/applications/video/camera/bin/'
+listener.doer_00007FA7F801C000: [00:00:00.17] gnoga-server.adb:67 Gnoga.Server.Find_Subdirectory (0) Sub: 'html' Dir: '/Users/wayne/Project/git/alr/applications/video/camera/html/' Html: '/Users/wayne/Project/git/alr/applications/video/camera/html/'
+listener.doer_00007FA7F801C000: [00:00:00.19] gnoga-server.adb:108 Gnoga.Server.Executable_Directory (0) Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/bin/camera_control'
+listener.doer_00007FA7F801C000: [00:00:00.19] gnoga-server.adb:94 Gnoga.Server.Application_Directory (0) Exe: '/Users/wayne/Project/git/alr/applications/video/camera/bin/'
+listener.doer_00007FA7F801C000: [00:00:00.19] gnoga-server.adb:108 Gnoga.Server.Executable_Directory (0) Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/bin/camera_control'
+listener.doer_00007FA7F801C000: [00:00:00.19] gnoga-server.adb:94 Gnoga.Server.Application_Directory (0) Exe: '/Users/wayne/Project/git/alr/applications/video/camera/bin/'
+listener.doer_00007FA7F801C000: [00:00:00.19] gnoga-server.adb:67 Gnoga.Server.Find_Subdirectory (0) Sub: 'js' Dir: '/Users/wayne/Project/git/alr/applications/video/camera/js/' Html: '/Users/wayne/Project/git/alr/applications/video/camera/html/'
+listener.doer_00007FA7F801C000: [00:00:00.19] gnoga-server.adb:108 Gnoga.Server.Executable_Directory (0) Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/bin/camera_control'
+listener.doer_00007FA7F801C000: [00:00:00.19] gnoga-server.adb:94 Gnoga.Server.Application_Directory (0) Exe: '/Users/wayne/Project/git/alr/applications/video/camera/bin/'
+listener.doer_00007FA7F801C000: [00:00:00.19] gnoga-server.adb:108 Gnoga.Server.Executable_Directory (0) Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/bin/camera_control'
+listener.doer_00007FA7F801C000: [00:00:00.20] gnoga-server.adb:94 Gnoga.Server.Application_Directory (0) Exe: '/Users/wayne/Project/git/alr/applications/video/camera/bin/'
+listener.doer_00007FA7F801C000: [00:00:00.20] gnoga-server.adb:67 Gnoga.Server.Find_Subdirectory (0) Sub: 'css' Dir: '/Users/wayne/Project/git/alr/applications/video/camera/css/' Html: '/Users/wayne/Project/git/alr/applications/video/camera/html/'
+listener.doer_00007FA7F801C000: [00:00:00.20] gnoga-server.adb:108 Gnoga.Server.Executable_Directory (0) Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/bin/camera_control'
+listener.doer_00007FA7F801C000: [00:00:00.20] gnoga-server.adb:94 Gnoga.Server.Application_Directory (0) Exe: '/Users/wayne/Project/git/alr/applications/video/camera/bin/'
+listener.doer_00007FA7F801C000: [00:00:00.20] gnoga-server.adb:108 Gnoga.Server.Executable_Directory (0) Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/bin/camera_control'
+listener.doer_00007FA7F801C000: [00:00:00.20] gnoga-server.adb:94 Gnoga.Server.Application_Directory (0) Exe: '/Users/wayne/Project/git/alr/applications/video/camera/bin/'
+listener.doer_00007FA7F801C000: [00:00:00.20] gnoga-server.adb:67 Gnoga.Server.Find_Subdirectory (0) Sub: 'js' Dir: '/Users/wayne/Project/git/alr/applications/video/camera/js/' Html: '/Users/wayne/Project/git/alr/applications/video/camera/html/'
+listener.doer_00007FA7F801C000: [00:00:00.20] gnoga-server.adb:108 Gnoga.Server.Executable_Directory (0) Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/bin/camera_control'
+listener.doer_00007FA7F801C000: [00:00:00.20] gnoga-server.adb:94 Gnoga.Server.Application_Directory (0) Exe: '/Users/wayne/Project/git/alr/applications/video/camera/bin/'
+listener.doer_00007FA7F801C000: [00:00:00.20] gnoga-server.adb:108 Gnoga.Server.Executable_Directory (0) Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/bin/camera_control'
+listener.doer_00007FA7F801C000: [00:00:00.20] gnoga-server.adb:94 Gnoga.Server.Application_Directory (0) Exe: '/Users/wayne/Project/git/alr/applications/video/camera/bin/'
+listener.doer_00007FA7F801C000: [00:00:00.20] gnoga-server.adb:67 Gnoga.Server.Find_Subdirectory (0) Sub: 'js' Dir: '/Users/wayne/Project/git/alr/applications/video/camera/js/' Html: '/Users/wayne/Project/git/alr/applications/video/camera/html/'
+main_task_00007FA7EF808200: [00:00:00.21] ada_lib-gnoga-base.adb:95 Ada_Lib.GNOGA.Base.Initialize_GNOGA (2) Main_Created FALSE
+    listener.doer_00007FA7F801C000: [00:00:00.23] gnoga-server-connection.adb:1357 Gnoga.Server.Connection.WebSocket_Open (1) in F: 'gnoga?Old_ID=1'
+  listener.doer_00007FA7F801C000: [00:00:00.23] gnoga-server-connection.adb:1374 Gnoga.Server.Connection.WebSocket_Open (1) out 
+  S4767b_00007FA7FA008A00: [00:00:00.50] gnoga-application-multi_connect.adb:96 Gnoga.Application.Multi_Connect.On_Connect (1) in ID 1
+  S4767b_00007FA7FA008A00: [00:00:00.50] gnoga-gui-window.adb:149 Gnoga.Gui.Window.Attach (2) in Connection_ID 1 ID: 'window'
+    S4767b_00007FA7FA008A00: [00:00:00.50] gnoga-gui-window.adb:169 Gnoga.Gui.Window.Attach (2) out 
+    S4767b_00007FA7FA008A00: [00:00:00.51] gnoga-application-multi_connect.adb:84 Gnoga.Application.Multi_Connect.On_Connect.Get_Path (1) p: ''
+  S4767b_00007FA7FA008A00: [00:00:00.51] gnoga-application-multi_connect.adb:114 Gnoga.Application.Multi_Connect.On_Connect (1) path: ''
+  S4767b_00007FA7FA008A00: [00:00:00.51] ada_lib-gnoga.adb:33 Ada_Lib.GNOGA.Has_Connection_Data (1) result TRUE MAIN.MAIN_CONNECTION_DATA_TYPE
+  S4767b_00007FA7FA008A00: [00:00:00.51] ada_lib-gnoga.adb:20 Ada_Lib.GNOGA.Get_Connection_Data (1) Connection_Data MAIN.MAIN_CONNECTION_DATA_TYPE00007FA7EF104090
+  S4767b_00007FA7FA008A00: [00:00:00.51] main.adb:333 Main.On_Connect (2) in started FALSE gnoga connection Tag MAIN.MAIN_CONNECTION_DATA_TYPE
+    S4767b_00007FA7FA008A00: [00:00:00.51] main.adb:552 Main.Open_Camera (3) in  Camera_URL: 'URL: 'ucwc.dyndns.org'' port 5678
+      S4767b_00007FA7FA008A00: [00:00:00.51] camera-lib-base.adb:237 Camera.Lib.Base.Open (4) in Address URL: 'ucwc.dyndns.org' port 5678
+        2024-06-22 16:53:16.96 : Shutting down long polling connection - 2
+S4767b_00007FA7FA008A00: [00:00:00.83] camera-lib-base.adb:239 Camera.Lib.Base.Open (4) out 
+        S4767b_00007FA7FA008A00: [00:00:00.83] main.adb:560 Main.Open_Camera (3) out 
+      S4767b_00007FA7FA008A00: [00:00:00.84] main.adb:374 Main.On_Connect (2) class path: '/css/camera.css'
+    S4767b_00007FA7FA008A00: [00:00:00.84] main.adb:377 Main.On_Connect (2) 
+    S4767b_00007FA7FA008A00: [00:00:00.85] main.adb:388 Main.On_Connect (2)  create docker
+    S4767b_00007FA7FA008A00: [00:00:00.85] main.adb:391 Main.On_Connect (2)  create pannel
+    S4767b_00007FA7FA008A00: [00:00:00.85] main.adb:395 Main.On_Connect (2)  create navigation
+    S4767b_00007FA7FA008A00: [00:00:00.85] main.adb:104 Main.Create (3) in  create buttons
+      S4767b_00007FA7FA008A00: [00:00:00.85] main.adb:118 Main.Create (3) out 
+      listener.doer_00007FA7F801C000: [00:00:00.85] gnoga-server.adb:108 Gnoga.Server.Executable_Directory (0) Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/bin/camera_control'
+listener.doer_00007FA7F801C000: [00:00:00.85] gnoga-server.adb:94 Gnoga.Server.Application_Directory (0) Exe: '/Users/wayne/Project/git/alr/applications/video/camera/bin/'
+listener.doer_00007FA7F801C000: [00:00:00.85] gnoga-server.adb:108 Gnoga.Server.Executable_Directory (0) Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/bin/camera_control'
+listener.doer_00007FA7F801C000: [00:00:00.85] gnoga-server.adb:94 Gnoga.Server.Application_Directory (0) Exe: '/Users/wayne/Project/git/alr/applications/video/camera/bin/'
+listener.doer_00007FA7F801C000: [00:00:00.85] gnoga-server.adb:67 Gnoga.Server.Find_Subdirectory (0) Sub: 'css' Dir: '/Users/wayne/Project/git/alr/applications/video/camera/css/' Html: '/Users/wayne/Project/git/alr/applications/video/camera/html/'
+S4767b_00007FA7FA008A00: [00:00:00.85] main.adb:400 Main.On_Connect (2)  create deck
+    S4767b_00007FA7FA008A00: [00:00:00.86] main.adb:407 Main.On_Connect (2)  create cards 00007FA7F88087E8
+    S4767b_00007FA7FA008A00: [00:00:00.86] main.adb:411 Main.On_Connect (2) fill deck
+    S4767b_00007FA7FA008A00: [00:00:00.86] main.adb:415 Main.On_Connect (2)  create Tabs
+    S4767b_00007FA7FA008A00: [00:00:00.86] main.adb:422 Main.On_Connect (2)  create Control_Card
+    S4767b_00007FA7FA008A00: [00:00:00.86] gnoga-gui-base.adb:1075 Gnoga.Gui.Base.On_Mouse_Click_Handler (2) 
+    listener.doer_00007FA7F801C000: [00:00:00.86] gnoga-server.adb:108 Gnoga.Server.Executable_Directory (0) Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/bin/camera_control'
+listener.doer_00007FA7F801C000: [00:00:00.86] gnoga-server.adb:94 Gnoga.Server.Application_Directory (0) Exe: '/Users/wayne/Project/git/alr/applications/video/camera/bin/'
+listener.doer_00007FA7F801C000: [00:00:00.86] gnoga-server.adb:108 Gnoga.Server.Executable_Directory (0) Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/bin/camera_control'
+listener.doer_00007FA7F801C000: [00:00:00.86] gnoga-server.adb:94 Gnoga.Server.Application_Directory (0) Exe: '/Users/wayne/Project/git/alr/applications/video/camera/bin/'
+listener.doer_00007FA7F801C000: [00:00:00.86] gnoga-server.adb:67 Gnoga.Server.Find_Subdirectory (0) Sub: 'img' Dir: '/Users/wayne/Project/git/alr/applications/video/camera/img/' Html: '/Users/wayne/Project/git/alr/applications/video/camera/html/'
+listener.doer_00007FA7F801C000: [00:00:00.87] gnoga-server.adb:108 Gnoga.Server.Executable_Directory (0) Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/bin/camera_control'
+listener.doer_00007FA7F801C000: [00:00:00.87] gnoga-server.adb:94 Gnoga.Server.Application_Directory (0) Exe: '/Users/wayne/Project/git/alr/applications/video/camera/bin/'
+listener.doer_00007FA7F801C000: [00:00:00.87] gnoga-server.adb:108 Gnoga.Server.Executable_Directory (0) Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/bin/camera_control'
+listener.doer_00007FA7F801C000: [00:00:00.87] gnoga-server.adb:94 Gnoga.Server.Application_Directory (0) Exe: '/Users/wayne/Project/git/alr/applications/video/camera/bin/'
+listener.doer_00007FA7F801C000: [00:00:00.87] gnoga-server.adb:67 Gnoga.Server.Find_Subdirectory (0) Sub: 'img' Dir: '/Users/wayne/Project/git/alr/applications/video/camera/img/' Html: '/Users/wayne/Project/git/alr/applications/video/camera/html/'
+S4767b_00007FA7FA008A00: [00:00:00.88] gnoga-gui-base.adb:1075 Gnoga.Gui.Base.On_Mouse_Click_Handler (2) 
+    listener.doer_00007FA7F801C000: [00:00:00.88] gnoga-server.adb:108 Gnoga.Server.Executable_Directory (0) Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/bin/camera_control'
+listener.doer_00007FA7F801C000: [00:00:00.88] gnoga-server.adb:94 Gnoga.Server.Application_Directory (0) Exe: '/Users/wayne/Project/git/alr/applications/video/camera/bin/'
+listener.doer_00007FA7F801C000: [00:00:00.88] gnoga-server.adb:108 Gnoga.Server.Executable_Directory (0) Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/bin/camera_control'
+listener.doer_00007FA7F801C000: [00:00:00.88] gnoga-server.adb:94 Gnoga.Server.Application_Directory (0) Exe: '/Users/wayne/Project/git/alr/applications/video/camera/bin/'
+listener.doer_00007FA7F801C000: [00:00:00.88] gnoga-server.adb:67 Gnoga.Server.Find_Subdirectory (0) Sub: 'img' Dir: '/Users/wayne/Project/git/alr/applications/video/camera/img/' Html: '/Users/wayne/Project/git/alr/applications/video/camera/html/'
+S4767b_00007FA7FA008A00: [00:00:00.88] gnoga-gui-base.adb:1075 Gnoga.Gui.Base.On_Mouse_Click_Handler (2) 
+    S4767b_00007FA7FA008A00: [00:00:00.88] gnoga-gui-base.adb:1075 Gnoga.Gui.Base.On_Mouse_Click_Handler (2) 
+    listener.doer_00007FA7F801C000: [00:00:00.88] gnoga-server.adb:108 Gnoga.Server.Executable_Directory (0) Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/bin/camera_control'
+listener.doer_00007FA7F801C000: [00:00:00.88] gnoga-server.adb:94 Gnoga.Server.Application_Directory (0) Exe: '/Users/wayne/Project/git/alr/applications/video/camera/bin/'
+listener.doer_00007FA7F801C000: [00:00:00.88] gnoga-server.adb:108 Gnoga.Server.Executable_Directory (0) Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/bin/camera_control'
+listener.doer_00007FA7F801C000: [00:00:00.88] gnoga-server.adb:94 Gnoga.Server.Application_Directory (0) Exe: '/Users/wayne/Project/git/alr/applications/video/camera/bin/'
+listener.doer_00007FA7F801C000: [00:00:00.88] gnoga-server.adb:67 Gnoga.Server.Find_Subdirectory (0) Sub: 'img' Dir: '/Users/wayne/Project/git/alr/applications/video/camera/img/' Html: '/Users/wayne/Project/git/alr/applications/video/camera/html/'
+S4767b_00007FA7FA008A00: [00:00:00.88] gnoga-gui-base.adb:1075 Gnoga.Gui.Base.On_Mouse_Click_Handler (2) 
+    listener.doer_00007FA7F801C000: [00:00:00.88] gnoga-server.adb:108 Gnoga.Server.Executable_Directory (0) Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/bin/camera_control'
+listener.doer_00007FA7F801C000: [00:00:00.88] gnoga-server.adb:94 Gnoga.Server.Application_Directory (0) Exe: '/Users/wayne/Project/git/alr/applications/video/camera/bin/'
+listener.doer_00007FA7F801C000: [00:00:00.88] gnoga-server.adb:108 Gnoga.Server.Executable_Directory (0) Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/bin/camera_control'
+listener.doer_00007FA7F801C000: [00:00:00.88] gnoga-server.adb:94 Gnoga.Server.Application_Directory (0) Exe: '/Users/wayne/Project/git/alr/applications/video/camera/bin/'
+listener.doer_00007FA7F801C000: [00:00:00.88] gnoga-server.adb:67 Gnoga.Server.Find_Subdirectory (0) Sub: 'img' Dir: '/Users/wayne/Project/git/alr/applications/video/camera/img/' Html: '/Users/wayne/Project/git/alr/applications/video/camera/html/'
+S4767b_00007FA7FA008A00: [00:00:00.88] gnoga-gui-base.adb:1075 Gnoga.Gui.Base.On_Mouse_Click_Handler (2) 
+    S4767b_00007FA7FA008A00: [00:00:00.88] gnoga-gui-base.adb:1075 Gnoga.Gui.Base.On_Mouse_Click_Handler (2) 
+    listener.doer_00007FA7F801C000: [00:00:00.88] gnoga-server.adb:108 Gnoga.Server.Executable_Directory (0) Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/bin/camera_control'
+listener.doer_00007FA7F801C000: [00:00:00.88] gnoga-server.adb:94 Gnoga.Server.Application_Directory (0) Exe: '/Users/wayne/Project/git/alr/applications/video/camera/bin/'
+listener.doer_00007FA7F801C000: [00:00:00.88] gnoga-server.adb:108 Gnoga.Server.Executable_Directory (0) Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/bin/camera_control'
+listener.doer_00007FA7F801C000: [00:00:00.88] gnoga-server.adb:94 Gnoga.Server.Application_Directory (0) Exe: '/Users/wayne/Project/git/alr/applications/video/camera/bin/'
+listener.doer_00007FA7F801C000: [00:00:00.88] gnoga-server.adb:67 Gnoga.Server.Find_Subdirectory (0) Sub: 'img' Dir: '/Users/wayne/Project/git/alr/applications/video/camera/img/' Html: '/Users/wayne/Project/git/alr/applications/video/camera/html/'
+listener.doer_00007FA7F801C000: [00:00:00.88] gnoga-server.adb:108 Gnoga.Server.Executable_Directory (0) Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/bin/camera_control'
+listener.doer_00007FA7F801C000: [00:00:00.88] gnoga-server.adb:94 Gnoga.Server.Application_Directory (0) Exe: '/Users/wayne/Project/git/alr/applications/video/camera/bin/'
+listener.doer_00007FA7F801C000: [00:00:00.88] gnoga-server.adb:108 Gnoga.Server.Executable_Directory (0) Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/bin/camera_control'
+listener.doer_00007FA7F801C000: [00:00:00.88] gnoga-server.adb:94 Gnoga.Server.Application_Directory (0) Exe: '/Users/wayne/Project/git/alr/applications/video/camera/bin/'
+listener.doer_00007FA7F801C000: [00:00:00.88] gnoga-server.adb:67 Gnoga.Server.Find_Subdirectory (0) Sub: 'img' Dir: '/Users/wayne/Project/git/alr/applications/video/camera/img/' Html: '/Users/wayne/Project/git/alr/applications/video/camera/html/'
+listener.doer_00007FA7F801C000: [00:00:00.88] gnoga-server.adb:108 Gnoga.Server.Executable_Directory (0) Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/bin/camera_control'
+listener.doer_00007FA7F801C000: [00:00:00.88] gnoga-server.adb:94 Gnoga.Server.Application_Directory (0) Exe: '/Users/wayne/Project/git/alr/applications/video/camera/bin/'
+listener.doer_00007FA7F801C000: [00:00:00.88] gnoga-server.adb:108 Gnoga.Server.Executable_Directory (0) Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/bin/camera_control'
+listener.doer_00007FA7F801C000: [00:00:00.88] gnoga-server.adb:94 Gnoga.Server.Application_Directory (0) Exe: '/Users/wayne/Project/git/alr/applications/video/camera/bin/'
+listener.doer_00007FA7F801C000: [00:00:00.88] gnoga-server.adb:67 Gnoga.Server.Find_Subdirectory (0) Sub: 'img' Dir: '/Users/wayne/Project/git/alr/applications/video/camera/img/' Html: '/Users/wayne/Project/git/alr/applications/video/camera/html/'
+S4767b_00007FA7FA008A00: [00:00:00.88] gnoga-gui-base.adb:1075 Gnoga.Gui.Base.On_Mouse_Click_Handler (2) 
+    listener.doer_00007FA7F801C000: [00:00:00.88] gnoga-server.adb:108 Gnoga.Server.Executable_Directory (0) Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/bin/camera_control'
+listener.doer_00007FA7F801C000: [00:00:00.88] gnoga-server.adb:94 Gnoga.Server.Application_Directory (0) Exe: '/Users/wayne/Project/git/alr/applications/video/camera/bin/'
+listener.doer_00007FA7F801C000: [00:00:00.88] gnoga-server.adb:108 Gnoga.Server.Executable_Directory (0) Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/bin/camera_control'
+listener.doer_00007FA7F801C000: [00:00:00.88] gnoga-server.adb:94 Gnoga.Server.Application_Directory (0) Exe: '/Users/wayne/Project/git/alr/applications/video/camera/bin/'
+listener.doer_00007FA7F801C000: [00:00:00.88] gnoga-server.adb:67 Gnoga.Server.Find_Subdirectory (0) Sub: 'img' Dir: '/Users/wayne/Project/git/alr/applications/video/camera/img/' Html: '/Users/wayne/Project/git/alr/applications/video/camera/html/'
+S4767b_00007FA7FA008A00: [00:00:00.88] gnoga-gui-base.adb:1075 Gnoga.Gui.Base.On_Mouse_Click_Handler (2) 
+    S4767b_00007FA7FA008A00: [00:00:00.88] gnoga-gui-base.adb:1075 Gnoga.Gui.Base.On_Mouse_Click_Handler (2) 
+    S4767b_00007FA7FA008A00: [00:00:00.88] gnoga-gui-base.adb:1075 Gnoga.Gui.Base.On_Mouse_Click_Handler (2) 
+    S4767b_00007FA7FA008A00: [00:00:00.88] gnoga-gui-base.adb:1075 Gnoga.Gui.Base.On_Mouse_Click_Handler (2) 
+    S4767b_00007FA7FA008A00: [00:00:00.88] gnoga-gui-base.adb:1075 Gnoga.Gui.Base.On_Mouse_Click_Handler (2) 
+    S4767b_00007FA7FA008A00: [00:00:00.89] gnoga-gui-base.adb:1075 Gnoga.Gui.Base.On_Mouse_Click_Handler (2) 
+    S4767b_00007FA7FA008A00: [00:00:00.89] gnoga-gui-base.adb:1075 Gnoga.Gui.Base.On_Mouse_Click_Handler (2) 
+    S4767b_00007FA7FA008A00: [00:00:00.89] gnoga-gui-base.adb:1075 Gnoga.Gui.Base.On_Mouse_Click_Handler (2) 
+    S4767b_00007FA7FA008A00: [00:00:00.89] main.adb:430 Main.On_Connect (2)  add Control_Card card
+    S4767b_00007FA7FA008A00: [00:00:00.89] main.adb:435 Main.On_Connect (2) add Control_Card tab widget name: 'Control_Card'
+    S4767b_00007FA7FA008A00: [00:00:00.89] gnoga-gui-view-card.adb:235 Gnoga.Gui.View.Card.Add_Tab (3) in card: 'Control_Card' label: 'Control_Card' selected TRUE
+      listener.doer_00007FA7F801C000: [00:00:00.89] gnoga-server.adb:108 Gnoga.Server.Executable_Directory (0) Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/bin/camera_control'
+listener.doer_00007FA7F801C000: [00:00:00.89] gnoga-server.adb:94 Gnoga.Server.Application_Directory (0) Exe: '/Users/wayne/Project/git/alr/applications/video/camera/bin/'
+listener.doer_00007FA7F801C000: [00:00:00.89] gnoga-server.adb:108 Gnoga.Server.Executable_Directory (0) Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/bin/camera_control'
+listener.doer_00007FA7F801C000: [00:00:00.89] gnoga-server.adb:94 Gnoga.Server.Application_Directory (0) Exe: '/Users/wayne/Project/git/alr/applications/video/camera/bin/'
+listener.doer_00007FA7F801C000: [00:00:00.89] gnoga-server.adb:67 Gnoga.Server.Find_Subdirectory (0) Sub: 'img' Dir: '/Users/wayne/Project/git/alr/applications/video/camera/img/' Html: '/Users/wayne/Project/git/alr/applications/video/camera/html/'
+listener.doer_00007FA7F801C000: [00:00:00.89] gnoga-server.adb:108 Gnoga.Server.Executable_Directory (0) Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/bin/camera_control'
+listener.doer_00007FA7F801C000: [00:00:00.89] gnoga-server.adb:94 Gnoga.Server.Application_Directory (0) Exe: '/Users/wayne/Project/git/alr/applications/video/camera/bin/'
+listener.doer_00007FA7F801C000: [00:00:00.89] gnoga-server.adb:108 Gnoga.Server.Executable_Directory (0) Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/bin/camera_control'
+listener.doer_00007FA7F801C000: [00:00:00.89] gnoga-server.adb:94 Gnoga.Server.Application_Directory (0) Exe: '/Users/wayne/Project/git/alr/applications/video/camera/bin/'
+listener.doer_00007FA7F801C000: [00:00:00.89] gnoga-server.adb:67 Gnoga.Server.Find_Subdirectory (0) Sub: 'img' Dir: '/Users/wayne/Project/git/alr/applications/video/camera/img/' Html: '/Users/wayne/Project/git/alr/applications/video/camera/html/'
+listener.doer_00007FA7F801C000: [00:00:00.90] gnoga-server.adb:108 Gnoga.Server.Executable_Directory (0) Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/bin/camera_control'
+listener.doer_00007FA7F801C000: [00:00:00.90] gnoga-server.adb:94 Gnoga.Server.Application_Directory (0) Exe: '/Users/wayne/Project/git/alr/applications/video/camera/bin/'
+listener.doer_00007FA7F801C000: [00:00:00.90] gnoga-server.adb:108 Gnoga.Server.Executable_Directory (0) Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/bin/camera_control'
+listener.doer_00007FA7F801C000: [00:00:00.90] gnoga-server.adb:94 Gnoga.Server.Application_Directory (0) Exe: '/Users/wayne/Project/git/alr/applications/video/camera/bin/'
+listener.doer_00007FA7F801C000: [00:00:00.90] gnoga-server.adb:67 Gnoga.Server.Find_Subdirectory (0) Sub: 'img' Dir: '/Users/wayne/Project/git/alr/applications/video/camera/img/' Html: '/Users/wayne/Project/git/alr/applications/video/camera/html/'
+listener.doer_00007FA7F801C000: [00:00:00.90] gnoga-server.adb:108 Gnoga.Server.Executable_Directory (0) Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/bin/camera_control'
+listener.doer_00007FA7F801C000: [00:00:00.90] gnoga-server.adb:94 Gnoga.Server.Application_Directory (0) Exe: '/Users/wayne/Project/git/alr/applications/video/camera/bin/'
+listener.doer_00007FA7F801C000: [00:00:00.90] gnoga-server.adb:108 Gnoga.Server.Executable_Directory (0) Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/bin/camera_control'
+listener.doer_00007FA7F801C000: [00:00:00.90] gnoga-server.adb:94 Gnoga.Server.Application_Directory (0) Exe: '/Users/wayne/Project/git/alr/applications/video/camera/bin/'
+listener.doer_00007FA7F801C000: [00:00:00.90] gnoga-server.adb:67 Gnoga.Server.Find_Subdirectory (0) Sub: 'img' Dir: '/Users/wayne/Project/git/alr/applications/video/camera/img/' Html: '/Users/wayne/Project/git/alr/applications/video/camera/html/'
+listener.doer_00007FA7F801C000: [00:00:00.90] gnoga-server.adb:108 Gnoga.Server.Executable_Directory (0) Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/bin/camera_control'
+listener.doer_00007FA7F801C000: [00:00:00.90] gnoga-server.adb:94 Gnoga.Server.Application_Directory (0) Exe: '/Users/wayne/Project/git/alr/applications/video/camera/bin/'
+listener.doer_00007FA7F801C000: [00:00:00.90] gnoga-server.adb:108 Gnoga.Server.Executable_Directory (0) Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/bin/camera_control'
+listener.doer_00007FA7F801C000: [00:00:00.90] gnoga-server.adb:94 Gnoga.Server.Application_Directory (0) Exe: '/Users/wayne/Project/git/alr/applications/video/camera/bin/'
+listener.doer_00007FA7F801C000: [00:00:00.90] gnoga-server.adb:67 Gnoga.Server.Find_Subdirectory (0) Sub: 'img' Dir: '/Users/wayne/Project/git/alr/applications/video/camera/img/' Html: '/Users/wayne/Project/git/alr/applications/video/camera/html/'
+listener.doer_00007FA7F801C000: [00:00:00.90] gnoga-server.adb:108 Gnoga.Server.Executable_Directory (0) Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/bin/camera_control'
+listener.doer_00007FA7F801C000: [00:00:00.90] gnoga-server.adb:94 Gnoga.Server.Application_Directory (0) Exe: '/Users/wayne/Project/git/alr/applications/video/camera/bin/'
+listener.doer_00007FA7F801C000: [00:00:00.90] gnoga-server.adb:108 Gnoga.Server.Executable_Directory (0) Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/bin/camera_control'
+listener.doer_00007FA7F801C000: [00:00:00.90] gnoga-server.adb:94 Gnoga.Server.Application_Directory (0) Exe: '/Users/wayne/Project/git/alr/applications/video/camera/bin/'
+listener.doer_00007FA7F801C000: [00:00:00.90] gnoga-server.adb:67 Gnoga.Server.Find_Subdirectory (0) Sub: 'img' Dir: '/Users/wayne/Project/git/alr/applications/video/camera/img/' Html: '/Users/wayne/Project/git/alr/applications/video/camera/html/'
+listener.doer_00007FA7F801C000: [00:00:00.90] gnoga-server.adb:108 Gnoga.Server.Executable_Directory (0) Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/bin/camera_control'
+listener.doer_00007FA7F801C000: [00:00:00.90] gnoga-server.adb:94 Gnoga.Server.Application_Directory (0) Exe: '/Users/wayne/Project/git/alr/applications/video/camera/bin/'
+listener.doer_00007FA7F801C000: [00:00:00.90] gnoga-server.adb:108 Gnoga.Server.Executable_Directory (0) Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/bin/camera_control'
+listener.doer_00007FA7F801C000: [00:00:00.90] gnoga-server.adb:94 Gnoga.Server.Application_Directory (0) Exe: '/Users/wayne/Project/git/alr/applications/video/camera/bin/'
+listener.doer_00007FA7F801C000: [00:00:00.90] gnoga-server.adb:67 Gnoga.Server.Find_Subdirectory (0) Sub: 'img' Dir: '/Users/wayne/Project/git/alr/applications/video/camera/img/' Html: '/Users/wayne/Project/git/alr/applications/video/camera/html/'
+S4767b_00007FA7FA008A00: [00:00:00.90] gnoga-gui-view-card.adb:245 Gnoga.Gui.View.Card.Add_Tab (3) out 
+      S4767b_00007FA7FA008A00: [00:00:00.90] main.adb:439 Main.On_Connect (2)  create Adjust_Card
+    S4767b_00007FA7FA008A00: [00:00:00.90] gnoga-gui-base.adb:1075 Gnoga.Gui.Base.On_Mouse_Click_Handler (2) 
+    S4767b_00007FA7FA008A00: [00:00:00.90] gnoga-gui-base.adb:1075 Gnoga.Gui.Base.On_Mouse_Click_Handler (2) 
+    S4767b_00007FA7FA008A00: [00:00:00.90] gnoga-gui-base.adb:1075 Gnoga.Gui.Base.On_Mouse_Click_Handler (2) 
+    S4767b_00007FA7FA008A00: [00:00:00.90] gnoga-gui-base.adb:1075 Gnoga.Gui.Base.On_Mouse_Click_Handler (2) 
+    S4767b_00007FA7FA008A00: [00:00:00.90] gnoga-gui-base.adb:1075 Gnoga.Gui.Base.On_Mouse_Click_Handler (2) 
+    S4767b_00007FA7FA008A00: [00:00:00.90] gnoga-gui-base.adb:1075 Gnoga.Gui.Base.On_Mouse_Click_Handler (2) 
+    S4767b_00007FA7FA008A00: [00:00:00.90] gnoga-gui-base.adb:1075 Gnoga.Gui.Base.On_Mouse_Click_Handler (2) 
+    S4767b_00007FA7FA008A00: [00:00:00.90] gnoga-gui-base.adb:1075 Gnoga.Gui.Base.On_Mouse_Click_Handler (2) 
+    S4767b_00007FA7FA008A00: [00:00:00.90] gnoga-gui-base.adb:1075 Gnoga.Gui.Base.On_Mouse_Click_Handler (2) 
+    listener.doer_00007FA7F801C000: [00:00:00.91] gnoga-server.adb:108 Gnoga.Server.Executable_Directory (0) Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/bin/camera_control'
+listener.doer_00007FA7F801C000: [00:00:00.91] gnoga-server.adb:94 Gnoga.Server.Application_Directory (0) Exe: '/Users/wayne/Project/git/alr/applications/video/camera/bin/'
+listener.doer_00007FA7F801C000: [00:00:00.91] gnoga-server.adb:108 Gnoga.Server.Executable_Directory (0) Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/bin/camera_control'
+listener.doer_00007FA7F801C000: [00:00:00.91] gnoga-server.adb:94 Gnoga.Server.Application_Directory (0) Exe: '/Users/wayne/Project/git/alr/applications/video/camera/bin/'
+listener.doer_00007FA7F801C000: [00:00:00.91] gnoga-server.adb:67 Gnoga.Server.Find_Subdirectory (0) Sub: 'img' Dir: '/Users/wayne/Project/git/alr/applications/video/camera/img/' Html: '/Users/wayne/Project/git/alr/applications/video/camera/html/'
+listener.doer_00007FA7F801C000: [00:00:00.91] gnoga-server.adb:108 Gnoga.Server.Executable_Directory (0) Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/bin/camera_control'
+listener.doer_00007FA7F801C000: [00:00:00.91] gnoga-server.adb:94 Gnoga.Server.Application_Directory (0) Exe: '/Users/wayne/Project/git/alr/applications/video/camera/bin/'
+listener.doer_00007FA7F801C000: [00:00:00.91] gnoga-server.adb:108 Gnoga.Server.Executable_Directory (0) Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/bin/camera_control'
+listener.doer_00007FA7F801C000: [00:00:00.91] gnoga-server.adb:94 Gnoga.Server.Application_Directory (0) Exe: '/Users/wayne/Project/git/alr/applications/video/camera/bin/'
+listener.doer_00007FA7F801C000: [00:00:00.91] gnoga-server.adb:67 Gnoga.Server.Find_Subdirectory (0) Sub: 'img' Dir: '/Users/wayne/Project/git/alr/applications/video/camera/img/' Html: '/Users/wayne/Project/git/alr/applications/video/camera/html/'
+S4767b_00007FA7FA008A00: [00:00:00.91] main.adb:443 Main.On_Connect (2)  add Adjust_Card card
+    S4767b_00007FA7FA008A00: [00:00:00.91] main.adb:448 Main.On_Connect (2)  add Adjust_Card tab 00007FA7F880B4E8
+    S4767b_00007FA7FA008A00: [00:00:00.91] gnoga-gui-view-card.adb:235 Gnoga.Gui.View.Card.Add_Tab (3) in card: 'Adjust_Card' label: 'Adjust_Card' selected FALSE
+      S4767b_00007FA7FA008A00: [00:00:00.91] gnoga-gui-view-card.adb:245 Gnoga.Gui.View.Card.Add_Tab (3) out 
+      S4767b_00007FA7FA008A00: [00:00:00.91] main.adb:452 Main.On_Connect (2)  create Configured_Card
+    listener.doer_00007FA7F801C000: [00:00:00.91] gnoga-server.adb:108 Gnoga.Server.Executable_Directory (0) Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/bin/camera_control'
+listener.doer_00007FA7F801C000: [00:00:00.91] gnoga-server.adb:94 Gnoga.Server.Application_Directory (0) Exe: '/Users/wayne/Project/git/alr/applications/video/camera/bin/'
+listener.doer_00007FA7F801C000: [00:00:00.91] gnoga-server.adb:108 Gnoga.Server.Executable_Directory (0) Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/bin/camera_control'
+listener.doer_00007FA7F801C000: [00:00:00.91] gnoga-server.adb:94 Gnoga.Server.Application_Directory (0) Exe: '/Users/wayne/Project/git/alr/applications/video/camera/bin/'
+listener.doer_00007FA7F801C000: [00:00:00.91] gnoga-server.adb:67 Gnoga.Server.Find_Subdirectory (0) Sub: 'img' Dir: '/Users/wayne/Project/git/alr/applications/video/camera/img/' Html: '/Users/wayne/Project/git/alr/applications/video/camera/html/'
+listener.doer_00007FA7F801C000: [00:00:00.91] gnoga-server.adb:108 Gnoga.Server.Executable_Directory (0) Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/bin/camera_control'
+listener.doer_00007FA7F801C000: [00:00:00.91] gnoga-server.adb:94 Gnoga.Server.Application_Directory (0) Exe: '/Users/wayne/Project/git/alr/applications/video/camera/bin/'
+listener.doer_00007FA7F801C000: [00:00:00.91] gnoga-server.adb:108 Gnoga.Server.Executable_Directory (0) Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/bin/camera_control'
+listener.doer_00007FA7F801C000: [00:00:00.91] gnoga-server.adb:94 Gnoga.Server.Application_Directory (0) Exe: '/Users/wayne/Project/git/alr/applications/video/camera/bin/'
+listener.doer_00007FA7F801C000: [00:00:00.91] gnoga-server.adb:67 Gnoga.Server.Find_Subdirectory (0) Sub: 'img' Dir: '/Users/wayne/Project/git/alr/applications/video/camera/img/' Html: '/Users/wayne/Project/git/alr/applications/video/camera/html/'
+S4767b_00007FA7FA008A00: [00:00:00.91] gnoga-gui-base.adb:1075 Gnoga.Gui.Base.On_Mouse_Click_Handler (2) 
+    S4767b_00007FA7FA008A00: [00:00:00.91] gnoga-gui-base.adb:1075 Gnoga.Gui.Base.On_Mouse_Click_Handler (2) 
+    S4767b_00007FA7FA008A00: [00:00:00.91] gnoga-gui-base.adb:1075 Gnoga.Gui.Base.On_Mouse_Click_Handler (2) 
+    listener.doer_00007FA7F801C000: [00:00:00.92] gnoga-server.adb:108 Gnoga.Server.Executable_Directory (0) Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/bin/camera_control'
+listener.doer_00007FA7F801C000: [00:00:00.92] gnoga-server.adb:94 Gnoga.Server.Application_Directory (0) Exe: '/Users/wayne/Project/git/alr/applications/video/camera/bin/'
+listener.doer_00007FA7F801C000: [00:00:00.92] gnoga-server.adb:108 Gnoga.Server.Executable_Directory (0) Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/bin/camera_control'
+listener.doer_00007FA7F801C000: [00:00:00.92] gnoga-server.adb:94 Gnoga.Server.Application_Directory (0) Exe: '/Users/wayne/Project/git/alr/applications/video/camera/bin/'
+listener.doer_00007FA7F801C000: [00:00:00.92] gnoga-server.adb:67 Gnoga.Server.Find_Subdirectory (0) Sub: 'img' Dir: '/Users/wayne/Project/git/alr/applications/video/camera/img/' Html: '/Users/wayne/Project/git/alr/applications/video/camera/html/'
+listener.doer_00007FA7F801C000: [00:00:00.92] gnoga-server.adb:108 Gnoga.Server.Executable_Directory (0) Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/bin/camera_control'
+listener.doer_00007FA7F801C000: [00:00:00.92] gnoga-server.adb:94 Gnoga.Server.Application_Directory (0) Exe: '/Users/wayne/Project/git/alr/applications/video/camera/bin/'
+listener.doer_00007FA7F801C000: [00:00:00.92] gnoga-server.adb:108 Gnoga.Server.Executable_Directory (0) Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/bin/camera_control'
+listener.doer_00007FA7F801C000: [00:00:00.92] gnoga-server.adb:94 Gnoga.Server.Application_Directory (0) Exe: '/Users/wayne/Project/git/alr/applications/video/camera/bin/'
+listener.doer_00007FA7F801C000: [00:00:00.92] gnoga-server.adb:67 Gnoga.Server.Find_Subdirectory (0) Sub: 'img' Dir: '/Users/wayne/Project/git/alr/applications/video/camera/img/' Html: '/Users/wayne/Project/git/alr/applications/video/camera/html/'
+S4767b_00007FA7FA008A00: [00:00:00.92] gnoga-gui-base.adb:1075 Gnoga.Gui.Base.On_Mouse_Click_Handler (2) 
+    S4767b_00007FA7FA008A00: [00:00:00.92] gnoga-gui-base.adb:1075 Gnoga.Gui.Base.On_Mouse_Click_Handler (2) 
+    S4767b_00007FA7FA008A00: [00:00:00.92] gnoga-gui-base.adb:1075 Gnoga.Gui.Base.On_Mouse_Click_Handler (2) 
+    S4767b_00007FA7FA008A00: [00:00:00.92] gnoga-gui-base.adb:1075 Gnoga.Gui.Base.On_Mouse_Click_Handler (2) 
+    S4767b_00007FA7FA008A00: [00:00:00.92] gnoga-gui-base.adb:1075 Gnoga.Gui.Base.On_Mouse_Click_Handler (2) 
+    S4767b_00007FA7FA008A00: [00:00:00.92] gnoga-gui-base.adb:1075 Gnoga.Gui.Base.On_Mouse_Click_Handler (2) 
+    S4767b_00007FA7FA008A00: [00:00:00.92] gnoga-gui-base.adb:1075 Gnoga.Gui.Base.On_Mouse_Click_Handler (2) 
+    S4767b_00007FA7FA008A00: [00:00:00.92] gnoga-gui-base.adb:1075 Gnoga.Gui.Base.On_Mouse_Click_Handler (2) 
+    S4767b_00007FA7FA008A00: [00:00:00.92] gnoga-gui-base.adb:1075 Gnoga.Gui.Base.On_Mouse_Click_Handler (2) 
+    S4767b_00007FA7FA008A00: [00:00:00.92] gnoga-gui-base.adb:1075 Gnoga.Gui.Base.On_Mouse_Click_Handler (2) 
+    S4767b_00007FA7FA008A00: [00:00:00.92] gnoga-gui-base.adb:1075 Gnoga.Gui.Base.On_Mouse_Click_Handler (2) 
+    listener.doer_00007FA7F801C000: [00:00:00.92] gnoga-server.adb:108 Gnoga.Server.Executable_Directory (0) Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/bin/camera_control'
+listener.doer_00007FA7F801C000: [00:00:00.92] gnoga-server.adb:94 Gnoga.Server.Application_Directory (0) Exe: '/Users/wayne/Project/git/alr/applications/video/camera/bin/'
+listener.doer_00007FA7F801C000: [00:00:00.92] gnoga-server.adb:108 Gnoga.Server.Executable_Directory (0) Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/bin/camera_control'
+listener.doer_00007FA7F801C000: [00:00:00.92] gnoga-server.adb:94 Gnoga.Server.Application_Directory (0) Exe: '/Users/wayne/Project/git/alr/applications/video/camera/bin/'
+listener.doer_00007FA7F801C000: [00:00:00.92] gnoga-server.adb:67 Gnoga.Server.Find_Subdirectory (0) Sub: 'img' Dir: '/Users/wayne/Project/git/alr/applications/video/camera/img/' Html: '/Users/wayne/Project/git/alr/applications/video/camera/html/'
+S4767b_00007FA7FA008A00: [00:00:00.92] gnoga-gui-base.adb:1075 Gnoga.Gui.Base.On_Mouse_Click_Handler (2) 
+    listener.doer_00007FA7F801C000: [00:00:00.93] gnoga-server.adb:108 Gnoga.Server.Executable_Directory (0) Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/bin/camera_control'
+listener.doer_00007FA7F801C000: [00:00:00.93] gnoga-server.adb:94 Gnoga.Server.Application_Directory (0) Exe: '/Users/wayne/Project/git/alr/applications/video/camera/bin/'
+listener.doer_00007FA7F801C000: [00:00:00.93] gnoga-server.adb:108 Gnoga.Server.Executable_Directory (0) Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/bin/camera_control'
+listener.doer_00007FA7F801C000: [00:00:00.93] gnoga-server.adb:94 Gnoga.Server.Application_Directory (0) Exe: '/Users/wayne/Project/git/alr/applications/video/camera/bin/'
+listener.doer_00007FA7F801C000: [00:00:00.93] gnoga-server.adb:67 Gnoga.Server.Find_Subdirectory (0) Sub: 'img' Dir: '/Users/wayne/Project/git/alr/applications/video/camera/img/' Html: '/Users/wayne/Project/git/alr/applications/video/camera/html/'
+S4767b_00007FA7FA008A00: [00:00:00.93] gnoga-gui-base.adb:1075 Gnoga.Gui.Base.On_Mouse_Click_Handler (2) 
+    S4767b_00007FA7FA008A00: [00:00:00.93] gnoga-gui-base.adb:1075 Gnoga.Gui.Base.On_Mouse_Click_Handler (2) 
+    listener.doer_00007FA7F801C000: [00:00:00.93] gnoga-server.adb:108 Gnoga.Server.Executable_Directory (0) Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/bin/camera_control'
+listener.doer_00007FA7F801C000: [00:00:00.93] gnoga-server.adb:94 Gnoga.Server.Application_Directory (0) Exe: '/Users/wayne/Project/git/alr/applications/video/camera/bin/'
+listener.doer_00007FA7F801C000: [00:00:00.93] gnoga-server.adb:108 Gnoga.Server.Executable_Directory (0) Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/bin/camera_control'
+listener.doer_00007FA7F801C000: [00:00:00.93] gnoga-server.adb:94 Gnoga.Server.Application_Directory (0) Exe: '/Users/wayne/Project/git/alr/applications/video/camera/bin/'
+listener.doer_00007FA7F801C000: [00:00:00.93] gnoga-server.adb:67 Gnoga.Server.Find_Subdirectory (0) Sub: 'img' Dir: '/Users/wayne/Project/git/alr/applications/video/camera/img/' Html: '/Users/wayne/Project/git/alr/applications/video/camera/html/'
+S4767b_00007FA7FA008A00: [00:00:00.93] gnoga-gui-base.adb:1075 Gnoga.Gui.Base.On_Mouse_Click_Handler (2) 
+    listener.doer_00007FA7F801C000: [00:00:00.93] gnoga-server.adb:108 Gnoga.Server.Executable_Directory (0) Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/bin/camera_control'
+listener.doer_00007FA7F801C000: [00:00:00.93] gnoga-server.adb:94 Gnoga.Server.Application_Directory (0) Exe: '/Users/wayne/Project/git/alr/applications/video/camera/bin/'
+listener.doer_00007FA7F801C000: [00:00:00.93] gnoga-server.adb:108 Gnoga.Server.Executable_Directory (0) Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/bin/camera_control'
+listener.doer_00007FA7F801C000: [00:00:00.93] gnoga-server.adb:94 Gnoga.Server.Application_Directory (0) Exe: '/Users/wayne/Project/git/alr/applications/video/camera/bin/'
+listener.doer_00007FA7F801C000: [00:00:00.93] gnoga-server.adb:67 Gnoga.Server.Find_Subdirectory (0) Sub: 'img' Dir: '/Users/wayne/Project/git/alr/applications/video/camera/img/' Html: '/Users/wayne/Project/git/alr/applications/video/camera/html/'
+listener.doer_00007FA7F801C000: [00:00:00.93] gnoga-server.adb:108 Gnoga.Server.Executable_Directory (0) Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/bin/camera_control'
+listener.doer_00007FA7F801C000: [00:00:00.93] gnoga-server.adb:94 Gnoga.Server.Application_Directory (0) Exe: '/Users/wayne/Project/git/alr/applications/video/camera/bin/'
+listener.doer_00007FA7F801C000: [00:00:00.93] gnoga-server.adb:108 Gnoga.Server.Executable_Directory (0) Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/bin/camera_control'
+listener.doer_00007FA7F801C000: [00:00:00.93] gnoga-server.adb:94 Gnoga.Server.Application_Directory (0) Exe: '/Users/wayne/Project/git/alr/applications/video/camera/bin/'
+listener.doer_00007FA7F801C000: [00:00:00.93] gnoga-server.adb:67 Gnoga.Server.Find_Subdirectory (0) Sub: 'img' Dir: '/Users/wayne/Project/git/alr/applications/video/camera/img/' Html: '/Users/wayne/Project/git/alr/applications/video/camera/html/'
+S4767b_00007FA7FA008A00: [00:00:00.93] gnoga-gui-base.adb:1075 Gnoga.Gui.Base.On_Mouse_Click_Handler (2) 
+    S4767b_00007FA7FA008A00: [00:00:00.94] gnoga-gui-base.adb:1075 Gnoga.Gui.Base.On_Mouse_Click_Handler (2) 
+    listener.doer_00007FA7F801C000: [00:00:00.94] gnoga-server.adb:108 Gnoga.Server.Executable_Directory (0) Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/bin/camera_control'
+listener.doer_00007FA7F801C000: [00:00:00.94] gnoga-server.adb:94 Gnoga.Server.Application_Directory (0) Exe: '/Users/wayne/Project/git/alr/applications/video/camera/bin/'
+listener.doer_00007FA7F801C000: [00:00:00.94] gnoga-server.adb:108 Gnoga.Server.Executable_Directory (0) Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/bin/camera_control'
+listener.doer_00007FA7F801C000: [00:00:00.94] gnoga-server.adb:94 Gnoga.Server.Application_Directory (0) Exe: '/Users/wayne/Project/git/alr/applications/video/camera/bin/'
+listener.doer_00007FA7F801C000: [00:00:00.94] gnoga-server.adb:67 Gnoga.Server.Find_Subdirectory (0) Sub: 'img' Dir: '/Users/wayne/Project/git/alr/applications/video/camera/img/' Html: '/Users/wayne/Project/git/alr/applications/video/camera/html/'
+listener.doer_00007FA7F801C000: [00:00:00.94] gnoga-server.adb:108 Gnoga.Server.Executable_Directory (0) Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/bin/camera_control'
+listener.doer_00007FA7F801C000: [00:00:00.94] gnoga-server.adb:94 Gnoga.Server.Application_Directory (0) Exe: '/Users/wayne/Project/git/alr/applications/video/camera/bin/'
+listener.doer_00007FA7F801C000: [00:00:00.94] gnoga-server.adb:108 Gnoga.Server.Executable_Directory (0) Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/bin/camera_control'
+listener.doer_00007FA7F801C000: [00:00:00.94] gnoga-server.adb:94 Gnoga.Server.Application_Directory (0) Exe: '/Users/wayne/Project/git/alr/applications/video/camera/bin/'
+listener.doer_00007FA7F801C000: [00:00:00.94] gnoga-server.adb:67 Gnoga.Server.Find_Subdirectory (0) Sub: 'img' Dir: '/Users/wayne/Project/git/alr/applications/video/camera/img/' Html: '/Users/wayne/Project/git/alr/applications/video/camera/html/'
+S4767b_00007FA7FA008A00: [00:00:00.94] gnoga-gui-base.adb:1075 Gnoga.Gui.Base.On_Mouse_Click_Handler (2) 
+    S4767b_00007FA7FA008A00: [00:00:00.94] gnoga-gui-base.adb:1075 Gnoga.Gui.Base.On_Mouse_Click_Handler (2) 
+    S4767b_00007FA7FA008A00: [00:00:00.94] gnoga-gui-base.adb:1075 Gnoga.Gui.Base.On_Mouse_Click_Handler (2) 
+    listener.doer_00007FA7F801C000: [00:00:00.94] gnoga-server.adb:108 Gnoga.Server.Executable_Directory (0) Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/bin/camera_control'
+listener.doer_00007FA7F801C000: [00:00:00.94] gnoga-server.adb:94 Gnoga.Server.Application_Directory (0) Exe: '/Users/wayne/Project/git/alr/applications/video/camera/bin/'
+listener.doer_00007FA7F801C000: [00:00:00.94] gnoga-server.adb:108 Gnoga.Server.Executable_Directory (0) Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/bin/camera_control'
+listener.doer_00007FA7F801C000: [00:00:00.94] gnoga-server.adb:94 Gnoga.Server.Application_Directory (0) Exe: '/Users/wayne/Project/git/alr/applications/video/camera/bin/'
+listener.doer_00007FA7F801C000: [00:00:00.94] gnoga-server.adb:67 Gnoga.Server.Find_Subdirectory (0) Sub: 'img' Dir: '/Users/wayne/Project/git/alr/applications/video/camera/img/' Html: '/Users/wayne/Project/git/alr/applications/video/camera/html/'
+S4767b_00007FA7FA008A00: [00:00:00.94] gnoga-gui-base.adb:1075 Gnoga.Gui.Base.On_Mouse_Click_Handler (2) 
+    S4767b_00007FA7FA008A00: [00:00:00.95] gnoga-gui-base.adb:1075 Gnoga.Gui.Base.On_Mouse_Click_Handler (2) 
+    listener.doer_00007FA7F801C000: [00:00:00.95] gnoga-server.adb:108 Gnoga.Server.Executable_Directory (0) Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/bin/camera_control'
+listener.doer_00007FA7F801C000: [00:00:00.95] gnoga-server.adb:94 Gnoga.Server.Application_Directory (0) Exe: '/Users/wayne/Project/git/alr/applications/video/camera/bin/'
+listener.doer_00007FA7F801C000: [00:00:00.95] gnoga-server.adb:108 Gnoga.Server.Executable_Directory (0) Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/bin/camera_control'
+listener.doer_00007FA7F801C000: [00:00:00.95] gnoga-server.adb:94 Gnoga.Server.Application_Directory (0) Exe: '/Users/wayne/Project/git/alr/applications/video/camera/bin/'
+listener.doer_00007FA7F801C000: [00:00:00.95] gnoga-server.adb:67 Gnoga.Server.Find_Subdirectory (0) Sub: 'img' Dir: '/Users/wayne/Project/git/alr/applications/video/camera/img/' Html: '/Users/wayne/Project/git/alr/applications/video/camera/html/'
+listener.doer_00007FA7F801C000: [00:00:00.95] gnoga-server.adb:108 Gnoga.Server.Executable_Directory (0) Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/bin/camera_control'
+listener.doer_00007FA7F801C000: [00:00:00.95] gnoga-server.adb:94 Gnoga.Server.Application_Directory (0) Exe: '/Users/wayne/Project/git/alr/applications/video/camera/bin/'
+listener.doer_00007FA7F801C000: [00:00:00.95] gnoga-server.adb:108 Gnoga.Server.Executable_Directory (0) Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/bin/camera_control'
+listener.doer_00007FA7F801C000: [00:00:00.95] gnoga-server.adb:94 Gnoga.Server.Application_Directory (0) Exe: '/Users/wayne/Project/git/alr/applications/video/camera/bin/'
+listener.doer_00007FA7F801C000: [00:00:00.95] gnoga-server.adb:67 Gnoga.Server.Find_Subdirectory (0) Sub: 'img' Dir: '/Users/wayne/Project/git/alr/applications/video/camera/img/' Html: '/Users/wayne/Project/git/alr/applications/video/camera/html/'
+S4767b_00007FA7FA008A00: [00:00:00.95] gnoga-gui-base.adb:1075 Gnoga.Gui.Base.On_Mouse_Click_Handler (2) 
+    listener.doer_00007FA7F801C000: [00:00:00.95] gnoga-server.adb:108 Gnoga.Server.Executable_Directory (0) Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/bin/camera_control'
+listener.doer_00007FA7F801C000: [00:00:00.95] gnoga-server.adb:94 Gnoga.Server.Application_Directory (0) Exe: '/Users/wayne/Project/git/alr/applications/video/camera/bin/'
+listener.doer_00007FA7F801C000: [00:00:00.95] gnoga-server.adb:108 Gnoga.Server.Executable_Directory (0) Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/bin/camera_control'
+listener.doer_00007FA7F801C000: [00:00:00.95] gnoga-server.adb:94 Gnoga.Server.Application_Directory (0) Exe: '/Users/wayne/Project/git/alr/applications/video/camera/bin/'
+listener.doer_00007FA7F801C000: [00:00:00.95] gnoga-server.adb:67 Gnoga.Server.Find_Subdirectory (0) Sub: 'img' Dir: '/Users/wayne/Project/git/alr/applications/video/camera/img/' Html: '/Users/wayne/Project/git/alr/applications/video/camera/html/'
+listener.doer_00007FA7F801C000: [00:00:00.95] gnoga-server.adb:108 Gnoga.Server.Executable_Directory (0) Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/bin/camera_control'
+listener.doer_00007FA7F801C000: [00:00:00.95] gnoga-server.adb:94 Gnoga.Server.Application_Directory (0) Exe: '/Users/wayne/Project/git/alr/applications/video/camera/bin/'
+listener.doer_00007FA7F801C000: [00:00:00.95] gnoga-server.adb:108 Gnoga.Server.Executable_Directory (0) Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/bin/camera_control'
+listener.doer_00007FA7F801C000: [00:00:00.95] gnoga-server.adb:94 Gnoga.Server.Application_Directory (0) Exe: '/Users/wayne/Project/git/alr/applications/video/camera/bin/'
+listener.doer_00007FA7F801C000: [00:00:00.95] gnoga-server.adb:67 Gnoga.Server.Find_Subdirectory (0) Sub: 'img' Dir: '/Users/wayne/Project/git/alr/applications/video/camera/img/' Html: '/Users/wayne/Project/git/alr/applications/video/camera/html/'
+listener.doer_00007FA7F801C000: [00:00:00.95] gnoga-server.adb:108 Gnoga.Server.Executable_Directory (0) Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/bin/camera_control'
+listener.doer_00007FA7F801C000: [00:00:00.95] gnoga-server.adb:94 Gnoga.Server.Application_Directory (0) Exe: '/Users/wayne/Project/git/alr/applications/video/camera/bin/'
+listener.doer_00007FA7F801C000: [00:00:00.95] gnoga-server.adb:108 Gnoga.Server.Executable_Directory (0) Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/bin/camera_control'
+listener.doer_00007FA7F801C000: [00:00:00.95] gnoga-server.adb:94 Gnoga.Server.Application_Directory (0) Exe: '/Users/wayne/Project/git/alr/applications/video/camera/bin/'
+listener.doer_00007FA7F801C000: [00:00:00.95] gnoga-server.adb:67 Gnoga.Server.Find_Subdirectory (0) Sub: 'img' Dir: '/Users/wayne/Project/git/alr/applications/video/camera/img/' Html: '/Users/wayne/Project/git/alr/applications/video/camera/html/'
+listener.doer_00007FA7F801C000: [00:00:00.96] gnoga-server.adb:108 Gnoga.Server.Executable_Directory (0) Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/bin/camera_control'
+listener.doer_00007FA7F801C000: [00:00:00.96] gnoga-server.adb:94 Gnoga.Server.Application_Directory (0) Exe: '/Users/wayne/Project/git/alr/applications/video/camera/bin/'
+listener.doer_00007FA7F801C000: [00:00:00.96] gnoga-server.adb:108 Gnoga.Server.Executable_Directory (0) Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/bin/camera_control'
+listener.doer_00007FA7F801C000: [00:00:00.96] gnoga-server.adb:94 Gnoga.Server.Application_Directory (0) Exe: '/Users/wayne/Project/git/alr/applications/video/camera/bin/'
+listener.doer_00007FA7F801C000: [00:00:00.96] gnoga-server.adb:67 Gnoga.Server.Find_Subdirectory (0) Sub: 'img' Dir: '/Users/wayne/Project/git/alr/applications/video/camera/img/' Html: '/Users/wayne/Project/git/alr/applications/video/camera/html/'
+listener.doer_00007FA7F801C000: [00:00:00.96] gnoga-server.adb:108 Gnoga.Server.Executable_Directory (0) Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/bin/camera_control'
+listener.doer_00007FA7F801C000: [00:00:00.96] gnoga-server.adb:94 Gnoga.Server.Application_Directory (0) Exe: '/Users/wayne/Project/git/alr/applications/video/camera/bin/'
+listener.doer_00007FA7F801C000: [00:00:00.96] gnoga-server.adb:108 Gnoga.Server.Executable_Directory (0) Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/bin/camera_control'
+listener.doer_00007FA7F801C000: [00:00:00.96] gnoga-server.adb:94 Gnoga.Server.Application_Directory (0) Exe: '/Users/wayne/Project/git/alr/applications/video/camera/bin/'
+listener.doer_00007FA7F801C000: [00:00:00.96] gnoga-server.adb:67 Gnoga.Server.Find_Subdirectory (0) Sub: 'img' Dir: '/Users/wayne/Project/git/alr/applications/video/camera/img/' Html: '/Users/wayne/Project/git/alr/applications/video/camera/html/'
+listener.doer_00007FA7F801C000: [00:00:00.96] gnoga-server.adb:108 Gnoga.Server.Executable_Directory (0) Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/bin/camera_control'
+listener.doer_00007FA7F801C000: [00:00:00.96] gnoga-server.adb:94 Gnoga.Server.Application_Directory (0) Exe: '/Users/wayne/Project/git/alr/applications/video/camera/bin/'
+listener.doer_00007FA7F801C000: [00:00:00.96] gnoga-server.adb:108 Gnoga.Server.Executable_Directory (0) Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/bin/camera_control'
+listener.doer_00007FA7F801C000: [00:00:00.96] gnoga-server.adb:94 Gnoga.Server.Application_Directory (0) Exe: '/Users/wayne/Project/git/alr/applications/video/camera/bin/'
+listener.doer_00007FA7F801C000: [00:00:00.96] gnoga-server.adb:67 Gnoga.Server.Find_Subdirectory (0) Sub: 'img' Dir: '/Users/wayne/Project/git/alr/applications/video/camera/img/' Html: '/Users/wayne/Project/git/alr/applications/video/camera/html/'
+listener.doer_00007FA7F801C000: [00:00:00.96] gnoga-server.adb:108 Gnoga.Server.Executable_Directory (0) Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/bin/camera_control'
+listener.doer_00007FA7F801C000: [00:00:00.96] gnoga-server.adb:94 Gnoga.Server.Application_Directory (0) Exe: '/Users/wayne/Project/git/alr/applications/video/camera/bin/'
+listener.doer_00007FA7F801C000: [00:00:00.96] gnoga-server.adb:108 Gnoga.Server.Executable_Directory (0) Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/bin/camera_control'
+listener.doer_00007FA7F801C000: [00:00:00.96] gnoga-server.adb:94 Gnoga.Server.Application_Directory (0) Exe: '/Users/wayne/Project/git/alr/applications/video/camera/bin/'
+listener.doer_00007FA7F801C000: [00:00:00.96] gnoga-server.adb:67 Gnoga.Server.Find_Subdirectory (0) Sub: 'img' Dir: '/Users/wayne/Project/git/alr/applications/video/camera/img/' Html: '/Users/wayne/Project/git/alr/applications/video/camera/html/'
+S4767b_00007FA7FA008A00: [00:00:00.96] main.adb:456 Main.On_Connect (2)  add Configured_Card card
+    S4767b_00007FA7FA008A00: [00:00:00.96] main.adb:461 Main.On_Connect (2)  add Configured_Card tab 00007FA7F880B4E8
+    S4767b_00007FA7FA008A00: [00:00:00.96] gnoga-gui-view-card.adb:235 Gnoga.Gui.View.Card.Add_Tab (3) in card: 'Configured_Card' label: 'Configured_Card' selected FALSE
+      listener.doer_00007FA7F801C000: [00:00:00.97] gnoga-server.adb:108 Gnoga.Server.Executable_Directory (0) Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/bin/camera_control'
+listener.doer_00007FA7F801C000: [00:00:00.97] gnoga-server.adb:94 Gnoga.Server.Application_Directory (0) Exe: '/Users/wayne/Project/git/alr/applications/video/camera/bin/'
+listener.doer_00007FA7F801C000: [00:00:00.97] gnoga-server.adb:108 Gnoga.Server.Executable_Directory (0) Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/bin/camera_control'
+listener.doer_00007FA7F801C000: [00:00:00.97] gnoga-server.adb:94 Gnoga.Server.Application_Directory (0) Exe: '/Users/wayne/Project/git/alr/applications/video/camera/bin/'
+listener.doer_00007FA7F801C000: [00:00:00.97] gnoga-server.adb:67 Gnoga.Server.Find_Subdirectory (0) Sub: 'img' Dir: '/Users/wayne/Project/git/alr/applications/video/camera/img/' Html: '/Users/wayne/Project/git/alr/applications/video/camera/html/'
+S4767b_00007FA7FA008A00: [00:00:00.97] gnoga-gui-view-card.adb:245 Gnoga.Gui.View.Card.Add_Tab (3) out 
+      S4767b_00007FA7FA008A00: [00:00:00.97] main.adb:465 Main.On_Connect (2)  create video
+    S4767b_00007FA7FA008A00: [00:00:00.97] main.adb:468 Main.On_Connect (2)  add Video_Card card
+    S4767b_00007FA7FA008A00: [00:00:00.97] main.adb:473 Main.On_Connect (2)  add Video_Card tab
+    S4767b_00007FA7FA008A00: [00:00:00.97] gnoga-gui-view-card.adb:235 Gnoga.Gui.View.Card.Add_Tab (3) in card: 'Video' label: 'Video' selected FALSE
+      S4767b_00007FA7FA008A00: [00:00:00.97] gnoga-gui-view-card.adb:245 Gnoga.Gui.View.Card.Add_Tab (3) out 
+      S4767b_00007FA7FA008A00: [00:00:00.97] main.adb:477 Main.On_Connect (2)  set View dock
+    listener.doer_00007FA7F801C000: [00:00:00.97] gnoga-server.adb:108 Gnoga.Server.Executable_Directory (0) Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/bin/camera_control'
+listener.doer_00007FA7F801C000: [00:00:00.97] gnoga-server.adb:94 Gnoga.Server.Application_Directory (0) Exe: '/Users/wayne/Project/git/alr/applications/video/camera/bin/'
+listener.doer_00007FA7F801C000: [00:00:00.97] gnoga-server.adb:108 Gnoga.Server.Executable_Directory (0) Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/bin/camera_control'
+listener.doer_00007FA7F801C000: [00:00:00.97] gnoga-server.adb:94 Gnoga.Server.Application_Directory (0) Exe: '/Users/wayne/Project/git/alr/applications/video/camera/bin/'
+listener.doer_00007FA7F801C000: [00:00:00.97] gnoga-server.adb:67 Gnoga.Server.Find_Subdirectory (0) Sub: 'img' Dir: '/Users/wayne/Project/git/alr/applications/video/camera/img/' Html: '/Users/wayne/Project/git/alr/applications/video/camera/html/'
+listener.doer_00007FA7F801C000: [00:00:00.97] gnoga-server.adb:108 Gnoga.Server.Executable_Directory (0) Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/bin/camera_control'
+listener.doer_00007FA7F801C000: [00:00:00.97] gnoga-server.adb:94 Gnoga.Server.Application_Directory (0) Exe: '/Users/wayne/Project/git/alr/applications/video/camera/bin/'
+listener.doer_00007FA7F801C000: [00:00:00.97] gnoga-server.adb:108 Gnoga.Server.Executable_Directory (0) Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/bin/camera_control'
+listener.doer_00007FA7F801C000: [00:00:00.97] gnoga-server.adb:94 Gnoga.Server.Application_Directory (0) Exe: '/Users/wayne/Project/git/alr/applications/video/camera/bin/'
+listener.doer_00007FA7F801C000: [00:00:00.97] gnoga-server.adb:67 Gnoga.Server.Find_Subdirectory (0) Sub: 'img' Dir: '/Users/wayne/Project/git/alr/applications/video/camera/img/' Html: '/Users/wayne/Project/git/alr/applications/video/camera/html/'
+listener.doer_00007FA7F801C000: [00:00:00.98] gnoga-server.adb:108 Gnoga.Server.Executable_Directory (0) Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/bin/camera_control'
+listener.doer_00007FA7F801C000: [00:00:00.98] gnoga-server.adb:94 Gnoga.Server.Application_Directory (0) Exe: '/Users/wayne/Project/git/alr/applications/video/camera/bin/'
+listener.doer_00007FA7F801C000: [00:00:00.98] gnoga-server.adb:108 Gnoga.Server.Executable_Directory (0) Exec_Dir: '/Users/wayne/Project/git/alr/applications/video/camera/bin/camera_control'
+listener.doer_00007FA7F801C000: [00:00:00.98] gnoga-server.adb:94 Gnoga.Server.Application_Directory (0) Exe: '/Users/wayne/Project/git/alr/applications/video/camera/bin/'
+listener.doer_00007FA7F801C000: [00:00:00.98] gnoga-server.adb:67 Gnoga.Server.Find_Subdirectory (0) Sub: 'img' Dir: '/Users/wayne/Project/git/alr/applications/video/camera/img/' Html: '/Users/wayne/Project/git/alr/applications/video/camera/html/'
+S4767b_00007FA7FA008A00: [00:00:00.98] ada_lib-gnoga-base.adb:134 Ada_Lib.GNOGA.Base.Set_Main_Created (2) value TRUE
+    S4767b_00007FA7FA008A00: [00:00:00.98] main.adb:490 Main.On_Connect (2) out 
+    2024-06-22 16:53:20.65 : Deleting connection during finalize - 2
+2024-06-22 16:53:20.65 : Deleting connection - 2
+listener.doer_00007FA7F801C000: [00:00:04.21] gnoga-server-connection.adb:1033 Delete_Connection (0) ID 2
+S8260b_00007FA7FA80E000: [00:00:05.31] gnoga-server-connection.adb:1733 Gnoga.Server.Connection.Dispatch_Task_Type (0) event: 'click' data: '24|7|1944|-999|1|false|false|false|false|'
+S8260b_00007FA7FA80E000: [00:00:05.31] main.adb:157 Main.Exit_Button_Click_Handler (1) in 
+  S8260b_00007FA7FA80E000: [00:00:05.31] main.adb:130 Main.Exit_Button_Click (2) in 
+    2024-06-22 16:53:21.74 : Deleting connection - 1
+S4767b_00007FA7FA008A00: [00:00:05.31] gnoga-application-multi_connect.adb:127 Gnoga.Application.Multi_Connect.On_Connect (1) out 
+  S8260b_00007FA7FA80E000: [00:00:05.31] gnoga-server-connection.adb:1033 Delete_Connection (2) ID 1
+    S8260b_00007FA7FA80E000: [00:00:05.31] main.adb:148 Main.Exit_Button_Click (2) out 
+    S8260b_00007FA7FA80E000: [00:00:05.31] main.adb:159 Main.Exit_Button_Click_Handler (1) out 
+  gnoga_http_server_00007FA7EE808800: [00:00:05.31] gnoga-server-connection.adb:324 Gnoga.Server.Connection.Gnoga_HTTP_Server_Type (1) 
+  gnoga_http_server_00007FA7EE808800: [00:00:05.31] gnoga-server-connection.adb:332 Gnoga.Server.Connection.Gnoga_HTTP_Server_Type (1) out 
+  message_loop_00007FA7F8018800: [00:00:05.31] ada_lib-gnoga-base.adb:182 Ada_Lib.GNOGA.Base.Message_Loop_Task (1) 
+  message_loop_00007FA7F8018800: [00:00:05.31] ada_lib-gnoga-base.adb:160 Completed (1) 
+  message_loop_00007FA7F8018800: [00:00:05.31] ada_lib-gnoga-base.adb:170 Wait (1) 
+  main_task_00007FA7EF808200: [00:00:05.31] ada_lib-gnoga-base.adb:104 Ada_Lib.GNOGA.Base.Initialize_GNOGA (2) out 
+    main_task_00007FA7EF808200: [00:00:05.31] main.adb:626 Main.Run (1) out 
+  message_loop_00007FA7F8018800: [00:00:05.31] ada_lib-gnoga-base.adb:187 Ada_Lib.GNOGA.Base.Message_Loop_Task (1) out 
+  

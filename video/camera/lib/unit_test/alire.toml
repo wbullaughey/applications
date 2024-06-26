@@ -1,0 +1,20 @@
+name = "camera_lib_unit_test"
+description = "Camera Lib Unit Test"
+version = "0.1.0-dev"
+
+authors = ["Wayne Bullaughey"]
+maintainers = ["Wayne Bullaughey <wlb122@verizon.net>"]
+maintainers-logins = ["wbullaughey"]
+
+[[depends-on]]
+camera_lib = "*"
+
+[[pins]]
+camera_lib  = { path = ".." }
+
+[[depends-on]]
+aunit = "*"
+
+[[pins]]
+aunit  = { path = "../../../../../aunit" }
+

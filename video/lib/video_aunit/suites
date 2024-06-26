@@ -1,0 +1,23 @@
+video_aunit
+Video_Commands Test_Auto_Focus
+Video_Commands Test_Manual_Focus
+Video_Commands Test_Position_Absolute
+Video_Commands Test_Position_Down
+Video_Commands Test_Position_Down_Left
+Video_Commands Test_Position_Down_Right
+Video_Commands Test_Position_Left
+Video_Commands Test_Position_Relative
+Video_Commands Test_Position_Request
+Video_Commands Test_Position_Right
+Video_Commands Test_Position_Stop
+Video_Commands Test_Position_Up
+Video_Commands Test_Position_Up_Left
+Video_Commands Test_Position_Up_Right
+Video_Commands Test_Recall_Memory
+Video_Commands Test_Recall_Set
+Video_Commands Test_Recall_Speed
+Video_Commands Test_Zoom_Direct
+Video_Commands Test_Zoom_Full
+
+Routines with a * are disabled by default
+

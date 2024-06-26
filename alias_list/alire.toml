@@ -1,0 +1,22 @@
+name = "alias_list"
+description = "Shiny new project"
+version = "0.1.0-dev"
+
+authors = ["Wayne Bullaughey"]
+maintainers = ["Wayne Bullaughey <wlb122@verizon.net>"]
+maintainers-logins = ["wbullaughey"]
+
+executables = ["alias_list"]
+
+[[depends-on]]
+ada_lib = "*"
+
+[[pins]]
+ada_lib  = { path = "../../ada_lib" }
+
+[[depends-on]]
+aunit = "*"
+
+[[pins]]
+aunit  = { path = "../../aunit" }
+

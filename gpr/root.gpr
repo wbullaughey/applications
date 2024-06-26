@@ -1,0 +1,114 @@
+with "base";
+                            -- contains types and flags controlling how things are compiled
+                            -- defines values used as flags for tools
+with "local";
+                            -- sets variables used to control how that level is to be built
+with "application_local";
+                            -- sets application wide values
+
+abstract project Root is
+
+   Build_Path := Base.Current_Directory & "/build/" &
+      Base.Architecture_Directory & "/" & Base.Target & Local.Target_Suffix;
+-- Context := Local.Context;
+   Default_Execute_Directory := "";
+   Execute_Directory := "";
+   UT_Execute_Directory := "";
+   bin_suffix := external ("BIN_SUFFIX", "");
+   Architecture_Switches := ();
+
+   case bin_suffix is
+
+        when "" =>
+        when others =>
+                bin_suffix  := "_" & bin_suffix;
+   end case;
+
+   OS_Family := "";
+   case Base.Architecture is
+
+         when "ppm" =>
+            Execute_Directory := "/embed/board.wlb/" & Base.User & "/ls3";
+            UT_Execute_Directory := "/embed/board.wlb/" & Base.User & "/ls3/ut";
+            Architecture_Switches := (
+--             "-D__S438PCI__",
+               "-D__S438_MODULE_LIBRARY__",
+               "-D__S438_BUILD__"
+            );
+            OS_Family := "linux";
+
+         when "board" =>
+            Execute_Directory := "/embed/board.cac/" & Base.User & "/board";
+            UT_Execute_Directory := "/embed/board.cac/" & Base.User & "/board/ut";
+            Architecture_Switches := (
+               "-I" & Base.Project_Directory & "board/include",
+               "-D__S355_BUILD__",
+               "-D__S355_MODULE_LIBRARY__"
+--             "-DMICRO_HEADER",
+            );
+            OS_Family := "linux";
+
+         when "linux" | "macosx" =>
+            Default_Execute_Directory := Base.Current_Directory & "/build/bin";
+            Execute_Directory := Default_Execute_Directory;
+            OS_Family := "linux_and_macosx";
+
+         when "windows" =>
+--          Build_Path := "c:\build\" & Local.Project_Name & "\" & Base.Target;
+            Default_Execute_Directory := "c:\build\bin";
+            Execute_Directory := Default_Execute_Directory;
+            OS_Family := "windows";
+
+   end case;
+
+   Library_Directory := Build_Path & ".lib";
+   Object_Directory := Build_Path & ".obj";
+
+   Module_Library_Directory := Library_Directory;
+   Module_Object_Directory := Object_Directory;
+   case Application_Local.Directory_Suffix is
+
+        when "" =>
+        when others =>
+            Module_Library_Directory := Module_Library_Directory & Application_Local.Directory_Suffix;
+            Module_Object_Directory := Module_Object_Directory & Application_Local.Directory_Suffix;
+   end case;
+
+   Default_C_Switches :=
+         Architecture_Switches &
+         Base.Default_C_Switches &
+      Local.C_Compiler_Options;
+
+   Default_CPP_Switches :=
+         Architecture_Switches &
+      Base.Default_CPP_Switches &
+      Local.CPP_Compiler_Options;
+
+   package Compiler is
+
+      for Default_Switches ("C") use Default_C_Switches;
+      for Default_Switches ("C++") use Default_CPP_Switches;
+
+      case Base.Architecture is
+
+         when "linux" | "macosx" | "windows" =>
+            for Default_Switches ("Ada") use
+                  Base.Default_Ada_Switches &
+               Local.Ada_Compiler_Options;
+
+         when "board" | "ppm" =>
+            for Default_Switches ("Ada") use Base.Default_Ada95_Switches;
+
+      end case;
+   end Compiler;
+
+   package Binder is
+      for Default_Switches ("Ada") use ("-d_C");
+   end Binder;
+
+   package Linker is
+      for Default_Switches ("C") use Local.C_Linker_Options;
+      for Default_Switches ("C++") use Local.CPP_Linker_Options;
+      for Default_Switches ("Ada") use Local.Ada_Linker_Options;
+   end Linker;
+end Root;

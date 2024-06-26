@@ -1,0 +1,27 @@
+build
+help
+not_used
+workspace
+save
+*.ali
+*.adbx
+*.adsx
+aunit copy
+aunit.try1
+.DS_Store
+*.vpwwildcardcache
+*.vtg
+*.vpwhistu
+list-ada_lib.txt
+IDE/SlickEdit/Debug
+aunit/list-video.txt
+/obj/
+/bin/
+/alire/
+/config/
+/obj/
+/alire/
+/config/
+/obj/
+/alire/
+/config/

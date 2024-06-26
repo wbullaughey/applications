@@ -1,0 +1,61 @@
+with Ada.Text_IO; use Ada.Text_IO;
+with Ada_Lib.Options;
+with Ada_Lib.OS;
+with Ada_Lib.Trace; use Ada_Lib.Trace;
+with Ada_Lib.Trace_Tasks;
+with Ada_lib.Timer;
+--with Camera.Configuration;
+with Command_Name;
+with Driver;
+--with GNOGA.Application;
+--with Gnoga.Gui.Document;
+--with Camera.Lib.Unit_Test;
+--with Runtime_Options;
+
+procedure Camera_Driver is
+
+   Debug                         : Boolean renames Driver.Options.Debug;
+
+begin
+   if Driver.Get_Modifiable_Options.Initialize then
+      Log_In (Debug, "mode " & Driver.Options.Mode);
+      Put_Line (Command_Name);
+      begin
+         case Driver.Options.Mode is
+
+            when Camera.Lib.Unit_Test.List_Suites =>
+               Driver.Run_Suite (Driver.Options.all);
+               Log_Here (Debug, "returned from run suite");
+
+            when Camera.Lib.Unit_Test.Run_Tests =>
+               Driver.Options.Run_Suite;
+
+         end case;
+
+       exception
+
+         when Fault: others =>
+            Trace_Message_Exception (Fault, Who, Here);
+
+      end;
+
+      Ada_lib.Timer.Stop;
+      Log_Here (Debug, "timer stopped, stop trace tasks");
+
+      Ada_lib.Trace_Tasks.Stop;
+      if not Ada_Lib.Trace_Tasks.All_Stopped then
+         Ada_Lib.Trace_Tasks.Report;
+      end if;
+      Log_Out (Debug);
+   else
+      Ada_Lib.Options.Ada_Lib_Options.Help ("Initialize Options failed", False);
+   end if;
+
+   Ada_Lib.OS.Immediate_Halt (0);
+
+exception
+   when Fault: others =>
+      Trace_Exception (Fault);
+      Ada_Lib.OS.Immediate_Halt (0);
+
+end Camera_Driver;

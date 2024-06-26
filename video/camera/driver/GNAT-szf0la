@@ -1,0 +1,19 @@
+camera_aunit
+camera_aunit) main_task_00007F850D808800: 00:00:00.00(0> video-lib.adb:81 Video.Lib.Initialize Out result TRUE 
+level 0 in Protected_Level
+camera_aunit) main_task_00007F850D808800: 00:00:00.00(0> camera-lib.adb:59 Camera.Lib.Initialize Out result TRUE 
+level 0 in Protected_Level
+running suite: 'Video_Commands' routine: 'Test_Zoom_Full'
+Invalid configuration file: Full_Path: '/Users/wayne/Project/git/alr/applications/video/camera/driver/camera_state_path.cfg' does not exist
+------ exception trace --------
+Exception in Set_Up ADA_LIB.CONFIGURATION.FAILED: Full_Path: '/Users/wayne/Project/git/alr/applications/video/camera/driver/camera_state_path.cfg' does not exist' called from Camera.Lib.Test.Set_Up at camera-lib-test.adb:153
+-------------------------------------------------
+camera_aunit) main_task_00007F850D808800: 00:00:00.01[0] ada_lib-unit_test-test_cases.adb:209 Ada_Lib.Unit_Test.Test_Cases.Root_Test.Set_Up_Failed 
+report camera test results
+
+OK Video_Commands : Test_Zoom_Full
+
+Total Tests Run:   1
+Successful Tests:  1
+Failed Assertions: 0
+Unexpected Errors: 0
