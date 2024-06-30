@@ -1,0 +1,14 @@
+obj/
+alire/
+config/
+vendor/
+*.mak
+*.vpwwildcardcache
+*.vpwhistuxml
+*.vtg
+*.cswi
+*.ali
+*.txt
+suites
+GNAT-*
+
