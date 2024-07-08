@@ -205,8 +205,10 @@ package Widgets.Configured is
    type Configured_Card_Type
                            is new Configured_Package.Widget_Type with
                               null record;
-   type Configured_Card_Class_Access
+   type Configured_Card_Access
                            is access all Configured_Card_Type;
+   type Configured_Card_Class_Access
+                           is access all Configured_Card_Type'class;
    procedure Create (
       Configured_Card            : in out Configured_Card_Type;
       Main_Window                : in out Gnoga.GUI.Window.Window_Type'Class;

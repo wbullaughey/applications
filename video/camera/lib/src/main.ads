@@ -1,5 +1,4 @@
 with Ada_Lib.Socket_IO;
-with Base;
 with Gnoga.Gui.Base;
 with Gnoga.Gui.Element.Common;
 --with Gnoga.Gui.Element.Form;
@@ -22,16 +21,6 @@ package Main is
    type Cards_Type;
 
    type Cards_Access_Type        is access all Cards_Type;
-
--- type Connection_Data_Type
---                               is new Base.Connection_Data_Type with null record;
---
--- type Connection_Data_Access
---                               is access all Connection_Data_Type;
--- type Connection_Data_Class_Access
---                               is access all Connection_Data_Type'class;
--- type Connection_Data_Constant_Access
---                               is access constant Connection_Data_Type;
 
    type Navigation_Type          is new Gnoga.Gui.Element.Section.Section_Type
                                     with private;
@@ -82,31 +71,31 @@ package Main is
    ) return Boolean;
 
    function Get_Adjust_Card (
-      Connection_Data            : in out Main_Data_Type
-   ) return Widgets.Adjust.Adjust_Card_Class_Access;
+      Main_Data                     : in out Main_Data_Type
+   ) return Widgets.Adjust.Adjust_Card_Access;
 
    function Get_Cards (
-      Connection_Data            : in out Main_Data_Type
+      Main_Data                     : in out Main_Data_Type
    ) return Cards_Access_Type;
 
    function Get_Configured_Card (
-      Connection_Data            : in out Main_Data_Type
-   ) return Widgets.Configured.Configured_Card_Class_Access;
+      Main_Data                     : in out Main_Data_Type
+   ) return Widgets.Configured.Configured_Card_Access;
 
    function Get_Control_Card (
-      Connection_Data            : in out Main_Data_Type
-   ) return Widgets.Control.Control_Card_Class_Access;
+      Main_Data                     : in out Main_Data_Type
+   ) return Widgets.Control.Control_Card_Access;
 
    function Get_Exit_Button (
-      Connection_Data            : in out Main_Data_Type
+      Main_Data                     : in out Main_Data_Type
    ) return Gnoga.Gui.Element.Common.Pointer_To_Button_Class;
 
    function Get_Main_Window (
-      Connection_Data            : in out Main_Data_Type
+      Main_Data                     : in out Main_Data_Type
    ) return Gnoga.Gui.Window.Pointer_To_Window_Class;
 
    function Get_Tabs (
-      Connection_Data            : in out Main_Data_Type
+      Main_Data                     : in out Main_Data_Type
    ) return Gnoga.Gui.View.Card.Pointer_To_Tab_Class;
 
    function Main_Window (

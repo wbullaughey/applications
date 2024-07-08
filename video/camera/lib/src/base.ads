@@ -1,15 +1,15 @@
 with Ada_Lib.Event;
 with Ada_Lib.GNOGA;
 with Camera.Commands;
---with Gnoga.Gui.Element.Common;
+with Gnoga.Gui.Element.Common;
 with Gnoga.Gui.Plugin.jQueryUI.Widget;
 with Gnoga.Gui.Plugin.Message_Boxes;
---with Gnoga.Gui.View.Card;
---with Gnoga.Gui.Window;
-limited with Main;
---limited with Widgets.Adjust;
---limited with Widgets.Configured;
---limited with Widgets.Control;
+with Gnoga.Gui.View.Card;
+with Gnoga.Gui.Window;
+with Main;
+with Widgets.Adjust;
+with Widgets.Configured;
+with Widgets.Control;
 
 package Base is
 
@@ -45,25 +45,33 @@ package Base is
    procedure Close_Message_Box (
       Connection_Data            : in out Connection_Data_Type);
 
--- function Get_Adjust_Card (
---    Connection_Data            : in out Connection_Data_Type
--- ) return access Widgets.Adjust.Adjust_Card_Type'class;
---
--- function Get_Cards (
---    Connection_Data            : in out Connection_Data_Type
--- ) return access Main.Cards_Type'class;
---
--- function Get_Control_Card (
---    Connection_Data            : in out Connection_Data_Type
--- ) return access Widgets.Control.Control_Card_Type'class;
---
--- function Get_Exit_Button (
---    Connection_Data            : in out Connection_Data_Type
--- ) return Gnoga.Gui.Element.Common.Pointer_To_Button_Class;
---
--- function Get_Tabs (
---    Connection_Data            : in out Connection_Data_Type
--- ) return Gnoga.Gui.View.Card.Pointer_To_Tab_Class;
+   function Get_Adjust_Card (
+      Connection_Data            : in out Connection_Data_Type
+   ) return Widgets.Adjust.Adjust_Card_Access;
+
+   function Get_Cards (
+      Connection_Data            : in out Connection_Data_Type
+   ) return Main.Cards_Access_Type;
+
+   function Get_Configured_Card (
+      Connection_Data            : in out Connection_Data_Type
+   ) return Widgets.Configured.Configured_Card_Access;
+
+   function Get_Control_Card (
+      Connection_Data            : in out Connection_Data_Type
+   ) return Widgets.Control.Control_Card_Access;
+
+   function Get_Exit_Button (
+      Connection_Data            : in out Connection_Data_Type
+   ) return Gnoga.Gui.Element.Common.Pointer_To_Button_Class;
+
+   function Get_Main_Window (
+      Connection_Data            : in out Connection_Data_Type
+   ) return Gnoga.Gui.Window.Pointer_To_Window_Class;
+
+   function Get_Tabs (
+      Connection_Data            : in out Connection_Data_Type
+   ) return Gnoga.Gui.View.Card.Pointer_To_Tab_Class;
 
    procedure Halt;
 

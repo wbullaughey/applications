@@ -1,105 +1,72 @@
 with Ada.Exceptions;
---with Ada_Lib.Options_Interface;
---with Ada_Lib.Parser;
-with ADA_LIB.Trace; use ADA_LIB.Trace;
+with Ada_Lib.GNOGA;
+with Ada_Lib.Timer;
 with Ada_Lib.Unit_Test;
---with Ada_Lib.Unit_Test.Tests;
 with AUnit.Assertions; use AUnit.Assertions;
 with AUnit.Test_Cases;
---with AUnit.Test_Suites;
---with Base;
---with Camera.Command_Queue;
---with Camera.Commands;
---with Camera.Lib.Unit_Test;
---with Configuration.Camera.Setup;
---with Configuration.State; use Configuration;
+with Base;
+with Camera.Lib.Unit_Test;
+with Configuration.Camera.Setup;
+with ADA_LIB.Trace; use ADA_LIB.Trace;
 with Gnoga.Gui.Base;
 with Main;
---with Camera.Lib.Base;
 
 package body Widgets.Adjust.Unit_Test is
 
--- function Create_Mouse_Move_Event (
---    Description             : in     String;
---    Offset                  : in     Ada_Lib.Timer.Duration_Access;
---    Mouse_Event             : in     Gnoga.Gui.Base.Mouse_Event_Record
--- ) return Mouse_Move_Event_Type;
+   type Widgets_Adjust_Test_Type (
+      Brand                      : Camera.Lib.Brand_Type) is new
+                                    Camera.Lib.Unit_Test.Camera_Window_Test_Type (
+                                       Initialize_GNOGA  => True,
+                                       Run_Main          => True) with record
+      Setup                      : Configuration.Camera.Setup.Setup_Type;
+   end record;
+
+   type Widgets_Adjust_Test_Access
+                                 is access Widgets_Adjust_Test_Type;
+
+   overriding
+   function Name (
+      Test                       : in     Widgets_Adjust_Test_Type
+   ) return AUnit.Message_String;
+
+   overriding
+   procedure Register_Tests (
+      Test                       : in out Widgets_Adjust_Test_Type);
+
+   overriding
+   procedure Set_Up (
+      Test                       : in out Widgets_Adjust_Test_Type
+   ) with Post => Test.Verify_Set_Up;
+
+   overriding
+   procedure Tear_Down (
+      Test                       : in out Widgets_Adjust_Test_Type);
 
    procedure Test_Mouse_Move (
       Test                       : in out AUnit.Test_Cases.Test_Case'class);
 
--- Mouse_Move_Event_Type         : Ada_Lib.Timer.Event_Type (
---                                  new String'("mouse move callback event"));
+   package Move_Package is
+
+      type Mouse_Move_Event_Type is new Ada_Lib.Timer.Event_Type with record
+         Mouse_Event                : Gnoga.Gui.Base.Mouse_Event_Record;
+      end record;
+
+      procedure Initialize_Event (
+         Mouse_Move_Evet         : in out Mouse_Move_Event_Type;
+         Connection_Data         : in     Base.Connection_Data_Class_Access;
+         Description             : in     String;
+         Mouse_Event             : in     Gnoga.Gui.Base.Mouse_Event_Record;
+         Wait                    : in     Duration);
+
+      overriding
+      procedure Callback (
+         Event                   : in out Mouse_Move_Event_Type);
+
+   end Move_Package;
+
    State_Test_Path               : constant String := "adjust_state.cfg";
    Setup_Test_Path               : constant String := "adjust_setup.cfg";
-
-   ---------------------------------------------------------------
-   overriding
-   procedure Callback (
-      Event                   : in out Mouse_Move_Event_Type) is
-   ---------------------------------------------------------------
-
-      Connection_Data            : Base.Connection_Data_Type'class renames
-                                    Event.Connection_Data.all;
-      Adjust_Card                : constant Adjust_Card_Class_Access :=
-                                    Connection_Data.Main_Data.Get_Adjust_Card;
-      Cell                       : constant Generic_Cell_Package.
-                                    Cell_Class_Access :=
-                                       Adjust_Card.Get_Cell (
-                                          Center_Column, Center_Row);
-   begin
-      Log_In (Debug, "event " & Event.Mouse_Event.Message'img);
-
-      Cell.Fire_On_Mouse_Move (Event.Mouse_Event);
---    Event.Set_Event;
-      Log_Out (Debug);
-   end Callback;
-
--- ---------------------------------------------------------------
--- function Create_Mouse_Move_Event (
---    Description             : in     String;
---    Offset                  : in     Ada_Lib.Timer.Duration_Access;
---    Mouse_Event             : in     Gnoga.Gui.Base.Mouse_Event_Record
--- ) return Mouse_Move_Event_Type is
--- ---------------------------------------------------------------
---
---    Local_Desription        : aliased String := Description;
---
---    subtype Result_Type is Ada_Lib.Timer.Event_Type (
---       Description_Pointer  => Local_Desription'unchecked_access,
---       Dynamic              => False,
---       Offset               => Offset,
---       Repeating            => False);
---
--- begin
---       return (Result_Type'(Ada_Lib.Timer.Create_Event (
---             Description    => Local_Desription,
---             Dynamic        => False,
---             Offset         => Offset,
---             Repeating      => False)) with
---          Connection_Data   => Null,
---          Mouse_Event       => Mouse_Event);
---
--- end Create_Mouse_Move_Event;
-
-   ---------------------------------------------------------------
-   procedure Initialize_Event (
-      Mouse_Move_Evet         : in out Mouse_Move_Event_Type;
-      Connection_Data         : in     Base.Connection_Data_Class_Access;
-      Description             : in     String;
-      Mouse_Event             : in     Gnoga.Gui.Base.Mouse_Event_Record;
-      Wait                    : in     Duration) is
-   ---------------------------------------------------------------
-
-      Local_Description       : aliased String := Description;
-      Local_Wait              : aliased Duration := Wait;
-
-   begin
-      Mouse_Move_Evet.Connection_Data := Connection_Data;
-      Mouse_Move_Evet.Description_Pointer := Local_Description'unchecked_access;
-      Mouse_Move_Evet.Mouse_Event := Mouse_Event;
-      Mouse_Move_Evet.Offset := Local_Wait'unchecked_access;
-   end Initialize_Event;
+   Suite_Name                   : constant String := "Adjust_Card";
 
    ---------------------------------------------------------------
    overriding
@@ -191,19 +158,19 @@ package body Widgets.Adjust.Unit_Test is
    ---------------------------------------------------------------
    procedure Test_Mouse_Move (
       Test                       : in out AUnit.Test_Cases.Test_Case'class) is
--- pragma Unreferenced (Test);
+   pragma Unreferenced (Test);
    ---------------------------------------------------------------
 
-      use Gnoga.Gui.Base;
+--    use Gnoga.Gui.Base;
 
-      Local_Test        : Widgets_Adjust_Test_Type renames
-                           Widgets_Adjust_Test_Type (Test);
-      Connection_Data   : constant Base.Connection_Data_Class_Access :=
-                           Base.Connection_Data_Class_Access (
-                              Local_Test.Connection_Data);
+--    Local_Test        : Widgets_Adjust_Test_Type renames
+--                         Widgets_Adjust_Test_Type (Test);
+--    Connection_Data   : constant Base.Connection_Data_Access :=
+--                            Base.Connection_Data_Access (
+--                               Ada_Lib.GNOGA.Get_Connection_Data);
 --    Description       : aliased String := "mouse move event";
 --    Wait              : aliased Constant Duration := 0.25;
-      Event             : Mouse_Move_Event_Type; --  := Initialize_Event (
+--    Event             : Move_Package.Mouse_Move_Event_Type; --  := Initialize_Event (
 --                            Connection_Data=> Connection_Data,
 --                            Description    => "mouse move event",
 --                            Mouse_Event    => (
@@ -287,6 +254,49 @@ package body Widgets.Adjust.Unit_Test is
          Assert (False, "exception " & Ada.Exceptions.Exception_Message (Fault));
 
    end Test_Mouse_Move;
+
+   package body Move_Package is
+
+      ---------------------------------------------------------------
+      procedure Initialize_Event (
+         Mouse_Move_Evet         : in out Mouse_Move_Event_Type;
+         Connection_Data         : in     Base.Connection_Data_Class_Access;
+         Description             : in     String;
+         Mouse_Event             : in     Gnoga.Gui.Base.Mouse_Event_Record;
+         Wait                    : in     Duration) is
+      ---------------------------------------------------------------
+
+      begin
+         Mouse_Move_Evet.Initialize (Wait, Description,
+            Dynamic     => False,
+            Repeating   => False);
+         Mouse_Move_Evet.Mouse_Event := Mouse_Event;
+      end Initialize_Event;
+
+      ---------------------------------------------------------------
+      overriding
+      procedure Callback (
+         Event                   : in out Mouse_Move_Event_Type) is
+      ---------------------------------------------------------------
+
+         Connection_Data            : Base.Connection_Data_Type renames
+                                       Base.Connection_Data_Type (
+                                          Ada_Lib.GNOGA.Get_Connection_Data.all);
+         Adjust_Card                : constant Adjust_Card_Access :=
+                                       Connection_Data.Main_Data.Get_Adjust_Card;
+         Cell                       : constant Generic_Cell_Package.
+                                       Cell_Class_Access :=
+                                          Adjust_Card.Get_Cell (
+                                             Center_Column, Center_Row);
+      begin
+         Log_In (Debug, "event " & Event.Mouse_Event.Message'img);
+
+         Cell.Fire_On_Mouse_Move (Event.Mouse_Event);
+   --    Event.Set_Event;
+         Log_Out (Debug);
+      end Callback;
+
+   end Move_Package;
 
 begin
    if Trace_Tests then

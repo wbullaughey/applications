@@ -1,15 +1,15 @@
 with Ada.Exceptions;
 with Ada_Lib.Configuration;
---with Ada_Lib.GNOGA;
+with Ada_Lib.GNOGA;
 --with Ada_Lib.Options;
 --with Ada_Lib.Options_Interface;
 with Ada_Lib.Timer;
 with ADA_LIB.Trace; use ADA_LIB.Trace;
 with Ada_Lib.Unit_Test;
 with AUnit.Assertions; use AUnit.Assertions;
---with Base;
+with Base;
 --with Camera.Lib.Unit_Test;
-with Events;
+--with Events;
 with Gnoga.Gui.View.Card;
 with Main;
 
@@ -17,12 +17,40 @@ package body Widgets.Control.Unit_Test is
 
    use type Gnoga.Gui.View.Pointer_To_View_Base_Class;
 
-   type Button_Push_Event_Type (
-      Description_Pointer  : Ada_Lib.Strings.String_Constant_Access;
-      Offset               : Ada_Lib.Timer.Duration_Access
-    ) is new Events.Button_Push_Event_Type (
-      Description_Pointer  => Description_Pointer,
-      Offset               => Offset) with null record;
+   type Button_Push_Event_Type   is new Ada_Lib.Timer.Event_Type with null record;
+
+   type Test_Type (
+      Brand                      : Standard.Camera.Lib.Brand_Type;
+      Initialize_GNOGA           : Boolean) is new Camera.Lib.Unit_Test.
+                                    Camera_Window_Test_With_Camera_Type (
+                                       Brand             => Brand,
+                                       Initialize_GNOGA  => Initialize_GNOGA,
+                                       Run_Main          => True) with record
+      Setup                      : Configuration.Camera.Setup.Setup_Type;
+   end record;
+
+   type Test_Access is access Test_Type;
+
+   overriding
+   function Name (Test : Test_Type) return AUnit.Message_String;
+
+   overriding
+   procedure Register_Tests (
+      Test                       : in out Test_Type);
+
+   overriding
+   procedure Set_Up (
+      Test                       : in out Test_Type
+   ) with Post => Test.Verify_Set_Up;
+
+   overriding
+   procedure Tear_Down (
+      Test                       : in out Test_Type);
+
+   procedure Test_Create_Control (
+      Test                       : in out AUnit.Test_Cases.Test_Case'class);
+
+   Suite_Name                    : constant String := "Control";
 
    Setup_Test_Path               : constant String := "control_window_setup.cfg";
    State_Test_Path               : constant String := "control_window_state.cfg";
@@ -31,11 +59,13 @@ package body Widgets.Control.Unit_Test is
    overriding
    procedure Callback (
       Event                      : in out Button_Push_Event_Type) is
+   pragma Unreferenced (Event);
    ---------------------------------------------------------------
 
       Connection_Data            : Base.Connection_Data_Type renames
-                                    Event.Connection_Data.all;
-      Control_Card               : constant Control_Card_Class_Access :=
+                                    Base.Connection_Data_Type (
+                                       Ada_Lib.GNOGA.Get_Connection_Data.all);
+      Control_Card               : constant Control_Card_Access :=
                                     Connection_Data.Get_Control_Card;
    begin
       Log_In (Debug);
@@ -137,6 +167,7 @@ package body Widgets.Control.Unit_Test is
    ----------------------------------------------------------------
    procedure Test_Create_Control (
       Test                       : in out AUnit.Test_Cases.Test_Case'class) is
+   pragma Unreferenced (Test);
    ----------------------------------------------------------------
 
    begin
@@ -145,11 +176,11 @@ package body Widgets.Control.Unit_Test is
 --          Ada_Lib.Options.Program_Options.all).Test_Driver then
          Log_Here (Debug);
          declare
-            Local_Test           : Test_Type'class renames
-                                   Test_Type'class (Test);
+--          Local_Test           : Test_Type'class renames
+--                                 Test_Type'class (Test);
             Connection_Data      : constant Base.Connection_Data_Access :=
                                     Base.Connection_Data_Access (
-                                       Local_Test.Connection_Data);
+                                       Ada_Lib.GNOGA.Get_Connection_Data);
             Cards                : constant Main.Cards_Access_Type :=
                                     Connection_Data.Get_Cards;
             Tabs                 : constant Gnoga.Gui.View.Card.
@@ -169,12 +200,10 @@ package body Widgets.Control.Unit_Test is
             end;
 
             declare
-               Description             : aliased String := "button timer";
-               Event                   : Button_Push_Event_Type (
-                  Description_Pointer  => Description'unchecked_access,
-                  Offset               => Ada_Lib.Timer.Wait (0.25));
+               Event                   : Button_Push_Event_Type;
+
             begin
-               Event.Connection_Data := Connection_Data;
+               Event.Initialize (0.25, "button timer");
                delay 0.5;     -- wait for button to be pushed
             end;
          end;

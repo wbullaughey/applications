@@ -2,14 +2,14 @@
 with Ada_Lib.Options.Unit_Test;
 with Ada_Lib.Unit_Test;
 with Ada_Lib.Trace;
-with Ada_Lib.Unit_Test.Tests;
+with Ada_Lib.Unit_Test.Test_Cases;
 with AUnit.Test_Suites;
 
 package Driver.Unit_Test is
 
    Failed                        : exception;
 
-   type Driver_Test_Type         is new Ada_Lib.Unit_Test.Tests.Test_Case_Type
+   type Driver_Test_Type         is new Ada_Lib.Unit_Test.Test_Cases.Test_Case_Type
                                     with null record;
    type Driver_Test_Access       is access Driver_Test_Type;
    type Driver_Test_Class_Access is access Driver_Test_Type'class;

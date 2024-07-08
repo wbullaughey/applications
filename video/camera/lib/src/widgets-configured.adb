@@ -2,13 +2,13 @@ with Ada.Text_IO; use  Ada.Text_IO;
 with Ada_Lib.GNOGA;
 with Ada_Lib.Strings; use Ada_Lib.Strings;
 with ADA_LIB.Trace; use ADA_LIB.Trace;
---with Base;
+with Base;
 with Camera.Lib.Base;
 with Configuration.Camera.Setup;
    use Configuration.Camera;
    use Configuration.Camera.Setup;
 with Configuration.Camera.State; use Configuration.Camera.State;
-with Main;
+--with Main;
 --with Camera.Lib.Base;
 
 package body Widgets.Configured is
@@ -403,7 +403,7 @@ package body Widgets.Configured is
                         " number presets" &
                            Global_Camera_State.Last_Preset'img);
                      Cell.Control_Table.Create (
-                        Main.Get_Main_Window (Connection_Data).all,
+                        Connection_Data.Get_Main_Window.all,
                         Parent   => Column,
                         ID       => ID);
                   end;
@@ -721,8 +721,8 @@ not_implemented;
          Connection_Data         : Base.Connection_Data_Type renames
                                     Base.Connection_Data_Type (
                                        Ada_Lib.GNOGA.Get_Connection_Data.all);
-         Configured_Card         : constant access Configured_Card_Type :=
-                                    Main.Get_Configured_Card (Connection_Data);
+         Configured_Card         : Configured_Card_Type renames
+                                    Connection_Data.Get_Configured_Card.all;
          Cell                    : constant Preset_Package.Cell_Class_Access :=
                                     Preset_Package.Cell_Class_Access (
                                        Object.Parent);
@@ -1011,8 +1011,8 @@ not_implemented;
                end;
 
             when Preset_Field =>
-               Update_Preset_Cell (Configured_Card.all,
-                  Cell.Configuration_ID, Cell.all);
+               Update_Preset_Cell (Configured_Card, Cell.Configuration_ID,
+                  Cell.all);
 
             when Row_Field =>
                Update_Row;

@@ -130,7 +130,9 @@ package Widgets.Control is
    type Control_Card_Type        is new Generic_Package.Widget_Type
                                     with null record;
 
-   type Control_Card_Class_Access  is access all Control_Card_Type;
+   type Control_Card_Access      is access all Control_Card_Type;
+   type Control_Card_Class_Access
+                                 is access all Control_Card_Type'class;
 
    procedure Create (
       Control_Card               : in out Control_Card_Type;
@@ -144,12 +146,5 @@ package Widgets.Control is
       Widget                     : in     Control_Card_Type;
       Verify_Parameter           : in     Generic_Package.
                                              Verify_Parameter_Class_Access);
-private
-
--- type Control_Card_Type        is new Generic_Package.Widget_Type
---                                  with record
---    Control                    : Generic_Package.Widget_Type;
--- end record;
-
 end Widgets.Control;
 

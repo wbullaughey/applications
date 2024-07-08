@@ -8,6 +8,7 @@ with Ada_Lib.Options;
 with Ada_Lib.OS;
 with ADA_LIB.Trace; use ADA_LIB.Trace;
 with Ask;
+with Base;
 with Camera.Commands;
 with Camera.Lib;
 with Configuration.Camera.State;
@@ -133,8 +134,8 @@ package body Main is
       Object            : in out Gnoga.Gui.Base.Base_Type'Class) is
    ---------------------------------------------------------------
 
-      Connection_Data            : Connection_Data_Type renames
-                                    Connection_Data_Type (
+      Connection_Data            : Base.Connection_Data_Type renames
+                                    Base.Connection_Data_Type (
                                        Object.Connection_Data.all);
    begin
       Log_In (Debug);
@@ -185,8 +186,8 @@ package body Main is
 
    ----------------------------------------------------------------
    function Get_Adjust_Card (
-      Connection_Data            : in out Main_Data_Type
-   ) return Widgets.Adjust.Adjust_Card_Class_Access is
+      Main_Data                     : in out Main_Data_Type
+   ) return Widgets.Adjust.Adjust_Card_Access is
    ----------------------------------------------------------------
 
    begin
@@ -196,7 +197,7 @@ package body Main is
 
    ----------------------------------------------------------------
    function Get_Cards (
-      Connection_Data            : in out Main_Data_Type
+      Main_Data                     : in out Main_Data_Type
    ) return Cards_Access_Type is
    ----------------------------------------------------------------
 
@@ -206,8 +207,8 @@ package body Main is
 
    ----------------------------------------------------------------
    function Get_Configured_Card (
-      Connection_Data            : in out Main_Data_Type
-   ) return Widgets.Configured.Configured_Card_Class_Access is
+      Main_Data                     : in out Main_Data_Type
+   ) return Widgets.Configured.Configured_Card_Access is
    ----------------------------------------------------------------
 
    begin
@@ -217,8 +218,8 @@ package body Main is
 
    ----------------------------------------------------------------
    function Get_Control_Card (
-      Connection_Data            : in out Main_Data_Type
-   ) return Widgets.Control.Control_Card_Class_Access is
+      Main_Data                     : in out Main_Data_Type
+   ) return Widgets.Control.Control_Card_Access is
    ----------------------------------------------------------------
 
    begin
@@ -228,7 +229,7 @@ package body Main is
 
    ----------------------------------------------------------------
    function Get_Exit_Button (
-      Connection_Data            : in out Main_Data_Type
+      Main_Data                     : in out Main_Data_Type
    ) return Gnoga.Gui.Element.Common.Pointer_To_Button_Class is
    ----------------------------------------------------------------
 
@@ -239,7 +240,7 @@ package body Main is
 
    ----------------------------------------------------------------
    function Get_Main_Window (
-      Connection_Data            : in out Main_Data_Type
+      Main_Data                     : in out Main_Data_Type
    ) return Gnoga.Gui.Window.Pointer_To_Window_Class is
    ----------------------------------------------------------------
 
@@ -249,7 +250,7 @@ package body Main is
 
    ----------------------------------------------------------------
    function Get_Tabs (
-      Connection_Data            : in out Main_Data_Type
+      Main_Data                     : in out Main_Data_Type
    ) return Gnoga.Gui.View.Card.Pointer_To_Tab_Class is
    ----------------------------------------------------------------
 
@@ -344,8 +345,8 @@ package body Main is
       Log_In (Debug, "started " & Started'img & " gnoga connection Tag " & Tag_Name (
          GNOGA_Connection.all'tag));
       declare
-         Connection_Data            : Connection_Data_Type renames
-                                       Connection_Data_Type (GNOGA_Connection.all);
+         Connection_Data            : Base.Connection_Data_Type renames
+                                       Base.Connection_Data_Type (GNOGA_Connection.all);
          Main_Data                  : Main_Data_Type renames
                                        Connection_Data.Main_Data.all;
          View                       : View_Type renames Main_Data.View;

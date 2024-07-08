@@ -1,9 +1,34 @@
 with Ada.Exceptions;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
+with Ada_Lib.Unit_Test.Test_Cases;
 with AUnit.Assertions; use AUnit.Assertions;
 with AUnit.Test_Cases;
 
 package body Camera.Commands.Unit_Test is
+
+   type Test_Type                is new Ada_Lib.Unit_Test.Test_Cases.Test_Case_Type
+                                    with record
+      Camera                     : Camera_Class_Access := Null;
+   end record;
+
+   type Test_Access is access Test_Type;
+
+   overriding
+   function Name (Test : Test_Type) return AUnit.Message_String;
+
+   overriding
+   procedure Register_Tests (
+      Test                       : in out Test_Type);
+
+   overriding
+   procedure Set_Up (
+      Test                       : in out Test_Type
+   ) with Post => Test.Verify_Set_Up;
+
+   overriding
+   procedure Tear_Down (
+      Test                       : in out Test_Type
+   ) with post => Verify_Torn_Down (Test);
 
    procedure Test_Get_Absolute (
       Test                       : in out AUnit.Test_Cases.Test_Case'class);
@@ -19,6 +44,8 @@ package body Camera.Commands.Unit_Test is
 
    procedure Test_Set_Zoom (
       Test                       : in out AUnit.Test_Cases.Test_Case'class);
+
+   Suite_Name                    : constant String := "Configured";
 
    ---------------------------------------------------------------
    overriding

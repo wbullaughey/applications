@@ -33,11 +33,11 @@ package body Camera.Lib.Base.Command_Tests is
    procedure Set_Up (
       Test                       : in out Test_Type);
 
-   procedure Test_Auto_Focus (
-      Test                       : in out AUnit.Test_Cases.Test_Case'class);
-
-   procedure Test_Manual_Focus (
-      Test                       : in out AUnit.Test_Cases.Test_Case'class);
+-- procedure Test_Auto_Focus (
+--    Test                       : in out AUnit.Test_Cases.Test_Case'class);
+--
+-- procedure Test_Manual_Focus (
+--    Test                       : in out AUnit.Test_Cases.Test_Case'class);
 
    procedure Test_Position_Absolute (
       Test                       : in out AUnit.Test_Cases.Test_Case'class);
@@ -84,17 +84,19 @@ package body Camera.Lib.Base.Command_Tests is
    procedure Test_Recall_Set (
       Test                       : in out AUnit.Test_Cases.Test_Case'class);
 
-   procedure Test_Recall_Speed (
-      Test                       : in out AUnit.Test_Cases.Test_Case'class);
-
-   procedure Test_Zoom_Direct (
-      Test                       : in out AUnit.Test_Cases.Test_Case'class);
-
-   procedure Test_Zoom_Full (
-      Test                       : in out AUnit.Test_Cases.Test_Case'class);
+-- procedure Test_Recall_Speed (
+--    Test                       : in out AUnit.Test_Cases.Test_Case'class);
+--
+-- procedure Test_Zoom_Direct (
+--    Test                       : in out AUnit.Test_Cases.Test_Case'class);
+--
+-- procedure Test_Zoom_Full (
+--    Test                       : in out AUnit.Test_Cases.Test_Case'class);
 
    procedure Wait (
       Length                     : in     Duration);
+
+   Suite_Name                    : constant String := "Video_Commands";
 
    ---------------------------------------------------------------
    overriding
@@ -287,27 +289,27 @@ package body Camera.Lib.Base.Command_Tests is
       return Test_Suite;
    end Suite;
 
-   ---------------------------------------------------------------
-   procedure Test_Auto_Focus (
-      Test                       : in out AUnit.Test_Cases.Test_Case'class) is
-   pragma Unreferenced (Test);
-   ---------------------------------------------------------------
-
-   begin
-      Log_In (Debug);
-      Log_Out (Debug);
-   end Test_Auto_Focus;
-
-   ---------------------------------------------------------------
-   procedure Test_Manual_Focus (
-      Test                       : in out AUnit.Test_Cases.Test_Case'class) is
-   pragma Unreferenced (Test);
-   ---------------------------------------------------------------
-
-   begin
-      Log_In (Debug);
-      Log_Out (Debug);
-   end Test_Manual_Focus;
+-- ---------------------------------------------------------------
+-- procedure Test_Auto_Focus (
+--    Test                       : in out AUnit.Test_Cases.Test_Case'class) is
+-- pragma Unreferenced (Test);
+-- ---------------------------------------------------------------
+--
+-- begin
+--    Log_In (Debug);
+--    Log_Out (Debug);
+-- end Test_Auto_Focus;
+--
+-- ---------------------------------------------------------------
+-- procedure Test_Manual_Focus (
+--    Test                       : in out AUnit.Test_Cases.Test_Case'class) is
+-- pragma Unreferenced (Test);
+-- ---------------------------------------------------------------
+--
+-- begin
+--    Log_In (Debug);
+--    Log_Out (Debug);
+-- end Test_Manual_Focus;
 
    ---------------------------------------------------------------
    procedure Test_Position_Absolute (
@@ -1023,38 +1025,38 @@ package body Camera.Lib.Base.Command_Tests is
       Log_Out (Debug);
    end Test_Recall_Set;
 
-   ---------------------------------------------------------------
-   procedure Test_Recall_Speed (
-      Test                       : in out AUnit.Test_Cases.Test_Case'class) is
-   pragma Unreferenced (Test);
-   ---------------------------------------------------------------
-
-   begin
-      Log_In (Debug);
-      Log_Out (Debug);
-   end Test_Recall_Speed;
-
-   ---------------------------------------------------------------
-   procedure Test_Zoom_Direct (
-      Test                       : in out AUnit.Test_Cases.Test_Case'class) is
-   pragma Unreferenced (Test);
-   ---------------------------------------------------------------
-
-   begin
-      Log_In (Debug);
-      Log_Out (Debug);
-   end Test_Zoom_Direct;
-
-   ---------------------------------------------------------------
-   procedure Test_Zoom_Full (
-      Test                       : in out AUnit.Test_Cases.Test_Case'class) is
-   pragma Unreferenced (Test);
-   ---------------------------------------------------------------
-
-   begin
-      Log_In (Debug);
-      Log_Out (Debug);
-   end Test_Zoom_Full;
+-- ---------------------------------------------------------------
+-- procedure Test_Recall_Speed (
+--    Test                       : in out AUnit.Test_Cases.Test_Case'class) is
+-- pragma Unreferenced (Test);
+-- ---------------------------------------------------------------
+--
+-- begin
+--    Log_In (Debug);
+--    Log_Out (Debug);
+-- end Test_Recall_Speed;
+--
+-- ---------------------------------------------------------------
+-- procedure Test_Zoom_Direct (
+--    Test                       : in out AUnit.Test_Cases.Test_Case'class) is
+-- pragma Unreferenced (Test);
+-- ---------------------------------------------------------------
+--
+-- begin
+--    Log_In (Debug);
+--    Log_Out (Debug);
+-- end Test_Zoom_Direct;
+--
+-- ---------------------------------------------------------------
+-- procedure Test_Zoom_Full (
+--    Test                       : in out AUnit.Test_Cases.Test_Case'class) is
+-- pragma Unreferenced (Test);
+-- ---------------------------------------------------------------
+--
+-- begin
+--    Log_In (Debug);
+--    Log_Out (Debug);
+-- end Test_Zoom_Full;
 
    ---------------------------------------------------------------
    procedure Wait (

@@ -9,12 +9,12 @@ with ADA_LIB.Trace; use ADA_LIB.Trace;
 with Ada_Lib.Unit_Test;
 with AUnit.Assertions; use AUnit.Assertions;
 with AUnit.Test_Cases;
---with Base;
+with Base;
 with Camera.Lib.Base;
 --with Camera.Lib.Unit_Test;
 with Configuration.Camera.Setup; use Configuration.Camera;
    use Configuration.Camera.Setup;
-with Events;
+--with Events;
 with Configuration.Camera.State;
 with Gnoga.Gui.Base;
 with Gnoga.Gui.View.Card;
@@ -26,6 +26,33 @@ package body Widgets.Configured.Unit_Test is
    use type Preset_ID_Type;
 -- use type Gnoga.Gui.Plugin.Message_Boxes.Message_Box_Result;
    use type Gnoga.Gui.View.Pointer_To_View_Base_Class;
+
+   type Test_Type (
+      Initialize_GNOGA           : Boolean) is new
+                                    Camera.Lib.Unit_Test.Camera_Window_Test_Type (
+                                       Initialize_GNOGA,
+                                       Run_Main => True) with record
+      Setup                      : Configuration.Camera.Setup.Setup_Type;
+   end record;
+
+   type Test_Access is access Test_Type;
+
+   overriding
+   function Name (Test : Test_Type) return AUnit.Message_String;
+
+   overriding
+   procedure Register_Tests (
+      Test                       : in out Test_Type);
+
+   overriding
+   procedure Set_Up (
+      Test                       : in out Test_Type
+   ) with Post => Test.Verify_Set_Up;
+
+   overriding
+   procedure Tear_Down (
+      Test                       : in out Test_Type
+   ) with post => Verify_Torn_Down (Test);
 
    procedure Test_Select_Preset (
       Test                       : in out AUnit.Test_Cases.Test_Case'class);
@@ -104,6 +131,8 @@ package body Widgets.Configured.Unit_Test is
 
    Expected_Setup_Path           : constant String :=
                                     "expected_windows_setup.cfg";
+   Suite_Name                    : constant String := "Configured";
+
    Update_Setup_Path             : constant String :=
                                     "widgets_setup_update.cfg";
 
@@ -116,7 +145,7 @@ package body Widgets.Configured.Unit_Test is
                                    Test_Type'class (Test);
       Connection_Data            : constant Base.Connection_Data_Access :=
                                     Base.Connection_Data_Access (
-                                       Local_Test.Connection_Data);
+                                       Ada_Lib.GNOGA.Get_Connection_Data);
       Cards                      : constant Main.Cards_Access_Type :=
                                     Connection_Data.Get_Cards;
       Original_Configuration     : constant Configuration_Type'class :=
@@ -246,7 +275,7 @@ package body Widgets.Configured.Unit_Test is
                                    Test_Type'class (Test);
       Connection_Data            : constant Base.Connection_Data_Access :=
                                     Base.Connection_Data_Access (
-                                       Local_Test.Connection_Data);
+                                       Ada_Lib.GNOGA.Get_Connection_Data);
       Cards                      : constant Main.Cards_Access_Type :=
                                     Connection_Data.Get_Cards;
       Original_Configuration     : constant Configuration_Type'class :=
@@ -397,13 +426,8 @@ package body Widgets.Configured.Unit_Test is
    type Test_Case_Type           is (Accept_Form, Cancel_Form, Not_Set,
                                     Update_Configuration, Update_Label);
 
-   type Button_Push_Event_Type (
-      Description_Pointer  : Ada_Lib.Strings.String_Constant_Access;
-      Offset               : Ada_Lib.Timer.Duration_Access
-    ) is new Events.Button_Push_Event_Type (
-         Description_Pointer  => Description_Pointer,
-         Offset               => Offset) with record
-      Test_Case            : Test_Case_Type := Not_Set;
+   type Button_Push_Event_Type   is new Ada_Lib.Timer.Event_Type with record
+      Test_Case                  : Test_Case_Type := Not_Set;
    end record;
 
    overriding
@@ -429,7 +453,6 @@ package body Widgets.Configured.Unit_Test is
 --    Test                       : in out AUnit.Test_Cases.Test_Case'class);
 
    Description                   : aliased String := "button push callback event";
--- Button_Push_Event             : Events.Button_Push_Event_Type (
    Setup_Test_Path               : constant String := "configured_window_setup.cfg";
    State_Test_Path               : constant String := "configured_window_state.cfg";
    Updated_Column                : constant Preset_Column_Index_Type :=
@@ -443,10 +466,11 @@ package body Widgets.Configured.Unit_Test is
       Event                   : in out Button_Push_Event_Type) is
    ---------------------------------------------------------------
 
-      Connection_Data            : Base.Connection_Data_Type renames
-                                    Event.Connection_Data.all;
-      Configured_Card            : constant Configured_Card_Class_Access :=
-                                    Connection_Data.Get_Configured_Card;
+      Connection_Data         : constant Standard.Base.Connection_Data_Access :=
+                                 Standard.Base.Connection_Data_Access (
+                                    Ada_Lib.GNOGA.Get_Connection_Data);
+      Configured_Card         : constant Configured_Card_Access :=
+                                 Connection_Data.Get_Configured_Card;
    begin
       Log_In (Debug, "test case " & Event.Test_Case'img);
       case Event.Test_Case is
@@ -682,7 +706,7 @@ package body Widgets.Configured.Unit_Test is
          Options.Location, State_Test_Path); -- need to load state 1st
       Test.Setup.Load (Test.State, Setup_Test_Path);
       Camera.Lib.Unit_Test.Camera_Window_Test_Type (Test).Set_Up;
-      Button_Push_Event.Reset_Event;
+--    Button_Push_Event.Reset_Event;
       Log_Out (Debug);
 
    exception
@@ -742,7 +766,7 @@ package body Widgets.Configured.Unit_Test is
                                    Test_Type'class (Test);
       Connection_Data            : constant Base.Connection_Data_Access :=
                                     Base.Connection_Data_Access (
-                                       Local_Test.Connection_Data);
+                                       Ada_Lib.GNOGA.Get_Connection_Data);
       Cards                      : constant Main.Cards_Access_Type :=
                                     Connection_Data.Get_Cards;
       Tabs                       : constant Gnoga.Gui.View.Card.Pointer_To_Tab_Class :=
@@ -761,13 +785,12 @@ package body Widgets.Configured.Unit_Test is
       end;
 
       declare
-         Description             : aliased String := "accept button";
-         Event                   : Button_Push_Event_Type (
-            Description_Pointer  => Description'unchecked_access,
-            Offset               => Ada_Lib.Timer.Wait (0.25));
+         Event                   : Button_Push_Event_Type ;
 
       begin
-         Event.Connection_Data := Connection_Data;
+         Event.Initialize (
+            Wait           => 0.25,
+            Description    => "accept button");
          Event.Test_Case := Accept_Form;
 
 --       Event.Set (Offset => 0.25);
@@ -794,7 +817,7 @@ package body Widgets.Configured.Unit_Test is
                                    Test_Type'class (Test);
       Connection_Data            : constant Base.Connection_Data_Access :=
                                     Base.Connection_Data_Access (
-                                       Local_Test.Connection_Data);
+                                       Ada_Lib.GNOGA.Get_Connection_Data);
       Cards                      : constant Main.Cards_Access_Type :=
                                     Connection_Data.Get_Cards;
       Tabs                       : constant Gnoga.Gui.View.Card.Pointer_To_Tab_Class :=
@@ -813,17 +836,15 @@ package body Widgets.Configured.Unit_Test is
       end;
 
       declare
-         Description             : aliased String := "cancel button";
-         Event                   : Button_Push_Event_Type (
-            Description_Pointer  => Description'unchecked_access,
-            Offset               => Ada_Lib.Timer.Wait (0.25));
+         Event                   : Button_Push_Event_Type;
 
       begin
-         Event.Connection_Data := Connection_Data;
+         Event.Initialize (
+            Wait           => 0.25,
+            Description    => "cancel button");
          Event.Test_Case := Cancel_Form;
---       Event.Set (Offset => 0.25);
---       delay 0.5;     -- wait for button to be pushed
-         Button_Push_Event.Wait_For_Event;
+--       Button_Push_Event.Wait_For_Event;
+         delay 0.5;
       end;
 
 --    Assert (not Parameter.Exception_Occured, "exception in button handler");
@@ -840,8 +861,8 @@ package body Widgets.Configured.Unit_Test is
                                    Test_Type'class (Test);
       Connection_Data            : constant Base.Connection_Data_Access :=
                                     Base.Connection_Data_Access (
-                                       Local_Test.Connection_Data);
-      Cards                      : constant Main.Cards_Access_Type :=
+                                       Ada_Lib.GNOGA.Get_Connection_Data);
+       Cards                      : constant Main.Cards_Access_Type :=
                                     Connection_Data.Get_Cards;
 --    Number_Rows                : constant := 3;
 --    Tabs                       : constant Gnoga.Gui.View.Card.
@@ -990,7 +1011,7 @@ package body Widgets.Configured.Unit_Test is
                                    Test_Type'class (Test);
       Connection_Data            : constant Base.Connection_Data_Access :=
                                     Base.Connection_Data_Access (
-                                       Local_Test.Connection_Data);
+                                       Ada_Lib.GNOGA.Get_Connection_Data);
       Cards                      : constant Main.Cards_Access_Type :=
                                     Connection_Data.Get_Cards;
       Modified_Configuration_ID  : constant := 2;
@@ -1046,7 +1067,7 @@ package body Widgets.Configured.Unit_Test is
                                    Test_Type'class (Test);
       Connection_Data            : constant Base.Connection_Data_Access :=
                                     Base.Connection_Data_Access (
-                                       Local_Test.Connection_Data);
+                                       Ada_Lib.GNOGA.Get_Connection_Data);
       Cards                      : constant Main.Cards_Access_Type :=
                                     Connection_Data.Get_Cards;
       Modified_Configuration_ID  : constant := 2;
@@ -1118,7 +1139,7 @@ package body Widgets.Configured.Unit_Test is
                                    Test_Type'class (Test);
       Connection_Data            : constant Base.Connection_Data_Access :=
                                     Base.Connection_Data_Access (
-                                       Local_Test.Connection_Data);
+                                       Ada_Lib.GNOGA.Get_Connection_Data);
       Cards                      : constant Main.Cards_Access_Type :=
                                     Connection_Data.Get_Cards;
       Tabs                       : constant Gnoga.Gui.View.Card.Pointer_To_Tab_Class :=
@@ -1137,19 +1158,17 @@ package body Widgets.Configured.Unit_Test is
       end;
 
       declare
-         Description             : aliased String := "update button";
-         Event                   : Button_Push_Event_Type (
-            Description_Pointer  => Description'unchecked_access,
-            Offset               => Ada_Lib.Timer.Wait (0.25));
+         Event                   : Button_Push_Event_Type;
 
       begin
-         Event.Connection_Data := Connection_Data;
+         Event.Initialize (
+            Wait           => 0.25,
+            Description    => "update button");
          Event.Test_Case := Update_Label;
---       Event.Set (Offset => 0.25);
          delay 0.5;     -- wait for focus to leave label
       end;
       declare
-         Configured_Card         : constant Configured_Card_Class_Access :=
+         Configured_Card         : constant Configured_Card_Access :=
                                     Connection_Data.Get_Configured_Card;
          Cell                    : constant Preset_Package.Cell_Class_Access :=
                                     Preset_Package.Cell_Class_Access (
@@ -1188,7 +1207,7 @@ package body Widgets.Configured.Unit_Test is
                                    Test_Type'class (Test);
       Connection_Data            : constant Base.Connection_Data_Access :=
                                     Base.Connection_Data_Access (
-                                       Local_Test.Connection_Data);
+                                       Ada_Lib.GNOGA.Get_Connection_Data);
       Cards                      : constant Main.Cards_Access_Type :=
                                     Connection_Data.Get_Cards;
       Expected_Preset_ID         : constant := 5;

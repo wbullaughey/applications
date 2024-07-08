@@ -1,5 +1,5 @@
-with Ada_Lib.Unit_Test.Tests;
-with Ada_Lib.GNOGA.Unit_Test.Base;
+with Ada_Lib.Unit_Test.Test_Cases;
+with Ada_Lib.GNOGA.Unit_Test; -- .Base;
 --with Ada_Lib.Options.AUnit_Lib;
 with Ada_Lib.Options.GNOGA;
 with Ada_Lib.Options.Unit_Test;
@@ -22,7 +22,7 @@ package Camera.Lib.Unit_Test is
 
 -- use type Ada_Lib.Options.Program_Options_Constant_Class_Access;
 
-   type Unit_Test_Type           is abstract new Ada_Lib.Unit_Test.Tests.
+   type Unit_Test_Type           is abstract new Ada_Lib.Unit_Test.Test_Cases.
                                     Test_Case_Type with record
       State                      : aliased Configuration.Camera.State.State_Type;
    end record;
@@ -32,8 +32,8 @@ package Camera.Lib.Unit_Test is
     overriding
     procedure Set_Up (
        Test                       : in out Unit_Test_Type
-    ) with Pre => Test.Verify_Presetup,
-           Post => Test.Verify_Postsetup;
+    ) with Pre => Test.Verify_Pre_Setup,
+           Post => Test.Verify_Post_Setup;
 
     overriding
     procedure Tear_Down (
@@ -68,8 +68,8 @@ package Camera.Lib.Unit_Test is
    overriding
    procedure Set_Up (
       Test                       : in out Camera_Test_Type
-   ) with Pre => Test.Verify_Presetup,
-          Post => Test.Verify_Postsetup;
+   ) with Pre => Test.Verify_Pre_Setup,
+          Post => Test.Verify_Post_Setup;
 
    overriding
    procedure Tear_Down (
@@ -79,7 +79,9 @@ package Camera.Lib.Unit_Test is
    type Camera_Window_Test_Type (
       Initialize_GNOGA           : Boolean;
       Run_Main                   : Boolean) is abstract new Ada_Lib.GNOGA.
-                                    Unit_Test.Base.Test_Type with record
+                                    Unit_Test.GNOGA_Tests_Type (
+                                       Initialize_GNOGA,
+                                       Test_Driver    => False) with record
       Main_Window                : Gnoga.GUI.Window.Window_Type;
       State                      : aliased Configuration.Camera.State.State_Type;
    end record;
@@ -87,8 +89,8 @@ package Camera.Lib.Unit_Test is
    overriding
    procedure Set_Up (
       Test                       : in out Camera_Window_Test_Type
-   ) with Pre => Test.Verify_Presetup,
-          Post => Test.Verify_Postsetup;
+   ) with Pre => Test.Verify_Pre_Setup,
+          Post => Test.Verify_Post_Setup;
 
    -- use for test which create the standard main window which manipulate camera
    type Camera_Window_Test_With_Camera_Type (

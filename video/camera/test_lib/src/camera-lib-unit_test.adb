@@ -6,6 +6,7 @@ with Ada_Lib.Runstring_Options;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
 with Ada_Lib.Unit_Test.Reporter;
 with AUnit.Assertions; use AUnit.Assertions;
+with Base;
 with Camera.Command_Queue;
 with Camera.Commands.Unit_Test;
 with Camera.Lib.Base.Command_Tests;
@@ -390,7 +391,7 @@ not_implemented;
       Log_In (Debug);
       Configuration.Camera.State.Global_Camera_State :=
          Test.State'unchecked_access;
-      Ada_Lib.Unit_Test.Tests.Test_Case_Type (Test).Set_Up;
+      Ada_Lib.Unit_Test.Test_Cases.Test_Case_Type (Test).Set_Up;
       Log_Out (Debug);
    end Set_Up;
 
@@ -443,8 +444,9 @@ not_implemented;
       Test                    : in out Camera_Window_Test_Type) is
    ---------------------------------------------------------------
 
-      Connection_Data         : constant Base.Connection_Data_Access :=
-                                 new Base.Connection_Data_Type;
+      Connection_Data         : constant Standard.Base.Connection_Data_Access :=
+                                 Standard.Base.Connection_Data_Access (
+                                    Ada_Lib.GNOGA.Get_Connection_Data);
 --    Options                 : Standard.Camera.Lib.Options_Type'class
 --                               renames Standard.Camera.Lib.Unit_Test.Options.all;
       Options                 : Camera.Lib.Unit_Test.Unit_Test_Options_Type renames
@@ -457,10 +459,9 @@ not_implemented;
       Connection_Data.Initialize;
       Ada_Lib.GNOGA.Set_Connection_Data (
          Ada_Lib.GNOGA.Connection_Data_Class_Access (Connection_Data));
-      Test.Connection_Data := Ada_Lib.GNOGA.Connection_Data_Class_Access (Connection_Data);
       Configuration.Camera.State.Global_Camera_State :=
          Test.State'unchecked_access;
-      Ada_Lib.GNOGA.Unit_Test.Base.Test_Type (Test).Set_Up;
+      Ada_Lib.GNOGA.Unit_Test.GNOGA_Tests_Type(Test).Set_Up;
 
       if Test.Run_Main then
          Main.Run (
@@ -517,7 +518,7 @@ not_implemented;
 --    if If_Emulation then
 --       Emulator.Halt (Test.Camera.all);
 --    end if;
-      Ada_Lib.Unit_Test.Tests.Test_Case_Type (Test).Tear_Down;
+      Ada_Lib.Unit_Test.Test_Cases.Test_Case_Type (Test).Tear_Down;
    end Tear_Down;
 
    ---------------------------------------------------------------

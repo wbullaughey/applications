@@ -12,8 +12,6 @@ package Camera.Lib.Base.Command_Tests is
 
    function Suite return AUnit.Test_Suites.Access_Test_Suite
    with Pre => Ada_Lib.Options_Interface.Read_Only_Options /= Null;
-   Suite_Name                    : constant String := "Video_Commands";
-
    Debug                         : Boolean := False;
 
 end Camera.Lib.Base.Command_Tests;

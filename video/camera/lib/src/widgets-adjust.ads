@@ -175,8 +175,10 @@ package Widgets.Adjust is
    type Adjust_Card_Type
                            is new Adjust_Package.Widget_Type with
                               null record;
-   type Adjust_Card_Class_Access
+   type Adjust_Card_Access
                            is access all Adjust_Card_Type;
+   type Adjust_Card_Class_Access
+                           is access all Adjust_Card_Type'class;
    procedure Create (
       Adjust_Card                : in out Adjust_Card_Type;
       Main_Window                : in out Gnoga.GUI.Window.Window_Type'Class;

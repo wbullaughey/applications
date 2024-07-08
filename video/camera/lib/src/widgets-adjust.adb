@@ -276,8 +276,8 @@ package body Widgets.Adjust is
                   begin
                      if not Iterator.At_End then
                         declare
-                           Kind  : constant String :=
-                                    Iterator.Get_Value (Do_Next => False);
+--                         Kind  : constant String :=
+--                                  Iterator.Get_Value (Do_Next => False);
                            Result: constant Base.Mouse_Click_Action_Type :=
                                     Action_Table (Column, Row);
                         begin

@@ -9,6 +9,4 @@ package Camera.Lib.Base.Test is
    function Suite return AUnit.Test_Suites.Access_Test_Suite
    with Pre => Ada_Lib.Options_Interface.Read_Only_Options /= Null;
 
-   Suite_Name                    : constant String := "Basic_Video";
-
 end Camera.Lib.Base.Test;

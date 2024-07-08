@@ -83,6 +83,8 @@ package body Camera.Lib.Base.Test is
 -- PTZ_Optics_Remote_URL_Address : constant String := "http://ucwc.dyndns.org";
 -- Local_Port                    : constant String := ":80";
 -- Remote_Port                   : constant String := ":9100";
+   Suite_Name                    : constant String := "Basic_Video";
+
 
    ---------------------------------------------------------------
    overriding

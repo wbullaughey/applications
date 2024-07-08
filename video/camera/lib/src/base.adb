@@ -1,5 +1,7 @@
 with ADA_LIB.Trace; use ADA_LIB.Trace;
-with Main;
+--with Main;
+--with Widgets.Adjust;
+--with Widgets.Configured;
 
 package body Base is
 
@@ -34,44 +36,41 @@ package body Base is
    ----------------------------------------------------------------
    function Get_Adjust_Card (
       Connection_Data            : in out Connection_Data_Type
-   ) return Widgets.Adjust.Adjust_Card_Class_Access is
+   ) return Widgets.Adjust.Adjust_Card_Access is
    ----------------------------------------------------------------
 
    begin
-      return Connection_Data.Main_Data.View.Docker.Deck.Cards.
-         Adjust_Card'unchecked_access;
+      return Connection_Data.Main_Data.Get_Adjust_Card;
    end Get_Adjust_Card;
 
    ----------------------------------------------------------------
    function Get_Cards (
       Connection_Data            : in out Connection_Data_Type
-   ) return Cards_Access_Type is
+   ) return Main.Cards_Access_Type is
    ----------------------------------------------------------------
 
    begin
-      return Connection_Data.Main_Data.View.Docker.Deck.Cards'unchecked_access;
+      return Connection_Data.Main_Data.Get_Cards;
    end Get_Cards;
 
    ----------------------------------------------------------------
    function Get_Configured_Card (
       Connection_Data            : in out Connection_Data_Type
-   ) return Widgets.Configured.Configured_Card_Class_Access is
+   ) return Widgets.Configured.Configured_Card_Access is
    ----------------------------------------------------------------
 
    begin
-      return Connection_Data.Main_Data.View.Docker.Deck.Cards.
-         Configured_Card'unchecked_access;
+      return Connection_Data.Main_Data.Get_Configured_Card;
    end Get_Configured_Card;
 
    ----------------------------------------------------------------
    function Get_Control_Card (
       Connection_Data            : in out Connection_Data_Type
-   ) return Widgets.Control.Control_Card_Class_Access is
+   ) return Widgets.Control.Control_Card_Access is
    ----------------------------------------------------------------
 
    begin
-      return Connection_Data.Main_Data.View.Docker.Deck.Cards.
-         Control_Card'unchecked_access;
+      return Connection_Data.Main_Data.Get_Control_Card;
    end Get_Control_Card;
 
    ----------------------------------------------------------------
@@ -81,8 +80,7 @@ package body Base is
    ----------------------------------------------------------------
 
    begin
-      return Connection_Data.Main_Data.View.Docker.Panel.Navigation.
-         Exit_Button'unchecked_access;
+      return Connection_Data.Main_Data.Get_Exit_Button;
    end Get_Exit_Button;
 
    ----------------------------------------------------------------
@@ -92,7 +90,7 @@ package body Base is
    ----------------------------------------------------------------
 
    begin
-      return Connection_Data.Main_Data.GUI_Window;
+      return Connection_Data.Main_Data.Get_Main_Window;
    end Get_Main_Window;
 
    ----------------------------------------------------------------
@@ -102,7 +100,7 @@ package body Base is
    ----------------------------------------------------------------
 
    begin
-      return Connection_Data.Main_Data.View.Docker.Deck.Tabs'unchecked_access;
+      return Connection_Data.Main_Data.Get_Tabs;
    end Get_Tabs;
 
    ----------------------------------------------------------------

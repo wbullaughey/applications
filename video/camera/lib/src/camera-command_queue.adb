@@ -65,10 +65,7 @@ package body Camera.Command_Queue is
    ----------------------------------------------------------------
    task body Process_Queue_Task is
 
--- use Standard.Camera.Lib.Base;
-
    begin
-Debug := True;
       Log_In (Debug, "started");
       Ada_Lib.Trace_Tasks.Start ("timer task", Here);
       loop
@@ -105,6 +102,6 @@ Debug := True;
    end Process_Queue_Task;
 
 begin
-Debug := True;
+--Debug := True;
    Log_Here (Debug or Elaborate);
 end Camera.Command_Queue;

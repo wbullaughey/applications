@@ -2,7 +2,7 @@ with Ada.Exceptions;
 with Ada.Text_IO; use Ada.Text_IO;
 with Ada_Lib.Options;
 with Ada_Lib.OS;
-with Ada_lib.Timer;
+--with Ada_lib.Timer;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
 with Ada_Lib.Trace_Tasks;
 with Ada_Lib.Unit_Test;

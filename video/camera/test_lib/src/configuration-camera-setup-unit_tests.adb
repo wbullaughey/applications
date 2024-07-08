@@ -3,13 +3,37 @@ with Ada_Lib.Directory.Compare_Files;
 --with Ada_Lib.Options_Interface;
 with Ada_Lib.Strings.Unlimited; use Ada_Lib.Strings.Unlimited;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
-with Ada_Lib.Unit_Test.Tests;
+with Ada_Lib.Unit_Test.Test_Cases;
 with AUnit.Assertions; use AUnit.Assertions;
 with AUnit.Test_Cases;
+with Camera.Lib.Unit_Test;
 
 package body Configuration.Camera.Setup.Unit_Tests is
 
--- use type Standard.Camera.Lib.Options_Constant_Class_Access;
+   type Configuration_Tests_Type is new Standard.Camera.Lib.
+                                    Unit_Test.Camera_Test_Type with record
+      Setup                      : Configuration.Camera.Setup.Setup_Type;
+   end record;
+
+   type Configuration_Tests_Access is access Configuration_Tests_Type;
+
+   overriding
+   function Name (
+      Test                       : in     Configuration_Tests_Type
+   ) return Standard.AUnit.Message_String;
+
+   overriding
+   procedure Register_Tests (
+      Test                       : in out Configuration_Tests_Type);
+
+   overriding
+   procedure Set_Up (
+      Test                       : in out Configuration_Tests_Type
+   ) with Post => Test.Verify_Set_Up;
+
+   overriding
+   procedure Tear_Down (
+      Test                       : in out Configuration_Tests_Type);
 
    procedure Test_Load (
       Test                       : in out AUnit.Test_Cases.Test_Case'class);
@@ -19,6 +43,8 @@ package body Configuration.Camera.Setup.Unit_Tests is
 
    procedure Test_Values (
       Test                       : in out AUnit.Test_Cases.Test_Case'class);
+
+   Suite_Name                    : constant String := "Setup";
 
    Test_Setup               : constant String :=
                                     "test_setup.cfg";
@@ -112,7 +138,7 @@ package body Configuration.Camera.Setup.Unit_Tests is
    begin
       Log_In (Debug);
 --    Ada_Lib.GNOGA.Clear_Connection_Data;
-      Ada_Lib.Unit_Test.Tests.Test_Case_Type (Test).Tear_Down;
+      Ada_Lib.Unit_Test.Test_Cases.Test_Case_Type (Test).Tear_Down;
       Log_Out (Debug);
    end Tear_Down;
 
