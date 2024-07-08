@@ -223,7 +223,7 @@ package body Configuration.Camera.Setup is
    end Has_Preset;
 
    ----------------------------------------------------------------
-   function Is_Set (
+   function Is_Loaded (
       Setup                      : in     Setup_Type
    ) return Boolean is
    ----------------------------------------------------------------
@@ -231,7 +231,7 @@ package body Configuration.Camera.Setup is
    begin
       return Log_Here (Setup.Loaded, Debug,
          "loaded " & Setup.Loaded'img);
-   end Is_Set;
+   end Is_Loaded;
 
    ----------------------------------------------------------------
    procedure Load (
@@ -469,7 +469,7 @@ package body Configuration.Camera.Setup is
       Log_In (Debug, Setup.Loaded'img & " Save_Changes " & Save_Changes'img &
          " modified " & Setup.Modified'img);
 
-      if Setup.Is_Set then
+      if Setup.Is_Loaded then
          if Save_Changes and then Setup.Modified then
             Setup.Update (State);
             Setup.Modified := False;

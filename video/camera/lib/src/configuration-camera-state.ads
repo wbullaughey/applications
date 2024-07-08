@@ -1,3 +1,4 @@
+with Ada_Lib.GNOGA;
 with ADA_LIB.Strings.Unlimited;
 with Ada_Lib.Trace;
 with Configuration.State;
@@ -22,6 +23,21 @@ package Configuration.Camera.State is
    type State_Access             is access all State_Type;
    type State_Class_Access       is access all State_Type'class;
    type State_Constant_Access    is access constant State_Type;
+
+   function Check_Column (
+      Column                     : in     Column_Type
+   ) return Boolean
+   with Pre => Ada_Lib.GNOGA.Has_Connection_Data;
+
+   function Check_Image (
+      Column                     : in     Column_Type;
+      Row                        : in     Row_Type
+   ) return Boolean;
+
+   function Check_Row (
+      Row                        : in     Row_Type
+   ) return Boolean
+   with Pre => Ada_Lib.GNOGA.Has_Connection_Data;
 
    procedure Dump (
       State                      : in     State_Type;
@@ -50,8 +66,15 @@ package Configuration.Camera.State is
       Row                        : in     Row_Type;
       Column                     : in     Column_Type
    ) return Boolean
-   with Pre => State.Is_Set and then
-               Global_Camera_State /= Null;
+   with Pre => State.Is_Loaded and then
+               Check_Image (Column, Row);
+
+   function Image_Name (
+      Column                     : in     Column_Type;
+      Row                        : in     Row_Type
+   ) return String
+   with Pre => Check_Column (Column) and then
+               Check_Row (Row);
 
    function Image_Path (
       State                      : in     State_Type;
@@ -59,28 +82,25 @@ package Configuration.Camera.State is
       Column                     : in     Column_Type;
       Add_Prefix                 : in     Boolean := False
    ) return String
-   with Pre => State.Is_Set and then
-               Global_Camera_State /= Null and then
-               Global_Camera_State.Images /= Null and then
-               Row <= Global_Camera_State.Images.all'last (1) and then
-               Column <= Global_Camera_State.Images.all'last (2);
+   with Pre => State.Is_Loaded and then
+               Check_Image (Column, Row);
 
-   overriding
-   function Is_Set (
-      State                      : in     State_Type
-   ) return Boolean;
+-- overriding
+-- function Is_Loaded (
+--    State                      : in     State_Type
+-- ) return Boolean;
 
    procedure Load_Camera_State (
       State                      : in out State_Type;
       Location                   : in     Configuration.State.Location_Type;
       Name                       : in     String
-   ) with Pre => not State.Is_Set;
+   ) with Pre => not State.Is_Loaded;
 
    overriding
    procedure Unload (
       State                      : in out State_Type);
 
    Default_State                 : constant String := "state.cfg";
-   Global_Camera_State           : State_Access := Null;
+-- Global_Camera_State           : State_Access := Null;
 
 end Configuration.Camera.State;

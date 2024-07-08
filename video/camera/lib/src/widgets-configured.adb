@@ -433,7 +433,7 @@ package body Widgets.Configured is
                         declare
                            Image_Path
                                  : constant String :=
-                                    Check_Image (
+                                    Image_Name (
                                        Row   => Configuration_Row_Index,
                                        Column=> Configuration_Column_Index);
                         begin
@@ -889,7 +889,7 @@ not_implemented;
          -------------------------------------------------------------
 
          begin
-            return Check_Image (
+            return Image_Name (
                Row      => New_Coordinate,
                Column   => Other_Coordinate);
          end Row_Check_Image;
@@ -945,7 +945,7 @@ not_implemented;
          -------------------------------------------------------------
 
          begin
-            return Check_Image (
+            return Image_Name (
                Column   => New_Coordinate,
                Row      => Other_Coordinate);
          end Column_Check_Image;
@@ -1077,7 +1077,7 @@ not_implemented;
                                           else
                                              Global_Camera_Setup.Get_Preset (
                                                 New_Preset_ID));
-               Path              : constant String := Check_Image (
+               Path              : constant String := Image_Name (
                                     Row      => Preset.Row,
                                     Column   => Preset.Column);
                Row_Cell          : constant Preset_Package.Cell_Class_Access :=

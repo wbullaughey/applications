@@ -1,6 +1,7 @@
 with Ada_Lib.Event;
 with Ada_Lib.GNOGA;
 with Camera.Commands;
+with Configuration.Camera.State;
 with Gnoga.Gui.Element.Common;
 with Gnoga.Gui.Plugin.jQueryUI.Widget;
 with Gnoga.Gui.Plugin.Message_Boxes;
@@ -34,6 +35,7 @@ package Base is
                                     Message_Box_Result;
       Mouse_Action               : Mouse_Click_Action_Type := No_Action;
                                     -- application responing to
+      State                      : Configuration.Camera.State.State_Type;
       Update_Event               : Ada_Lib.Event.Event_Type (
                                     new String'("update event"));
    end record;

@@ -381,20 +381,6 @@ not_implemented;
 --    Log_Out (Debug);
 -- end Run_Suite;
 
-   ---------------------------------------------------------------
-   overriding
-   procedure Set_Up (
-      Test                       : in out Unit_Test_Type) is
-   ---------------------------------------------------------------
-
-   begin
-      Log_In (Debug);
-      Configuration.Camera.State.Global_Camera_State :=
-         Test.State'unchecked_access;
-      Ada_Lib.Unit_Test.Test_Cases.Test_Case_Type (Test).Set_Up;
-      Log_Out (Debug);
-   end Set_Up;
-
 ---------------------------------------------------------------
   overriding
   procedure Set_Up (
@@ -413,7 +399,9 @@ not_implemented;
 --      delay 0.2;     -- let emulator initialize
 --     end if;
 
-     Unit_Test_Type (Test).Set_Up;
+      Configuration.Camera.State.Global_Camera_State :=
+         Test.State'unchecked_access;
+      Ada_Lib.Unit_Test.Test_Cases.Test_Case_Type (Test).Set_Up;
 
      Test.State.Load (Options.Location, Camera_State_Path);
      Test.Camera_Address := Test.State.Video_Address;
@@ -510,19 +498,6 @@ not_implemented;
 
    ---------------------------------------------------------------
    overriding
-   procedure Tear_Down (Test : in out Unit_Test_Type) is
-   ---------------------------------------------------------------
-
-   begin
-      Log (Debug, Here, Who);
---    if If_Emulation then
---       Emulator.Halt (Test.Camera.all);
---    end if;
-      Ada_Lib.Unit_Test.Test_Cases.Test_Case_Type (Test).Tear_Down;
-   end Tear_Down;
-
-   ---------------------------------------------------------------
-   overriding
    procedure Tear_Down (
       Test                       : in out Camera_Test_Type) is
    ---------------------------------------------------------------
@@ -535,7 +510,7 @@ not_implemented;
       Gnoga.Application.Multi_Connect.End_Application;
       delay 0.2;
 
-      Unit_Test_Type (Test).Tear_Down;
+      Ada_Lib.Unit_Test.Test_Cases.Test_Case_Type (Test).Tear_Down;
       Log_Out (Debug);
    end Tear_Down;
 

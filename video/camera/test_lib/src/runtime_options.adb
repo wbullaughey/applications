@@ -55,9 +55,6 @@ package body Runtime_Options is
          Ada_Lib.Runstring_Options.Without_Parameters,
          Options_Without_Parameters);
 
-      Configuration.Camera.State.Global_Camera_State :=
-         new Configuration.Camera.State.State_Type;
-
       return Log_Out (
          Camera.Lib.Options.Options_Type (Options).Initialize and then
          Options.Process (

@@ -19,6 +19,75 @@ package body Configuration.Camera.State is
       Images_Access);
 
    ----------------------------------------------------------------
+   function Check_Column (
+      Column                     : in     Column_Type
+   ) return Boolean is
+   ----------------------------------------------------------------
+
+      Connection_Data            : Connection_Data_Type renames
+                                    Connection_Data_Type (
+                                       Ada_Lib.GNOGA.Get_Connection_Data);
+      State                      : State_Type renames Connection_Data.State;
+
+   begin
+      return Column <= State.Number_Columns;
+   end Check_Column;
+
+   ----------------------------------------------------------------
+   function Check_Image (
+      Column                     : in     Column_Type;
+      Row                        : in     Row_Type
+   ) return Boolean is
+   ----------------------------------------------------------------
+
+   begin
+      return Check_Column (Column) and then Check_Row (Row);
+   end Check_Image;
+
+   ----------------------------------------------------------------
+   function Check_Row (
+      Row                        : in     Row_Type
+   ) return Boolean is
+   ----------------------------------------------------------------
+
+      Connection_Data            : Connection_Data_Type renames
+                                    Connection_Data_Type (
+                                       Ada_Lib.GNOGA.Get_Connection_Data);
+      State                      : State_Type renames Connection_Data.State;
+
+   begin
+      return Row <= State.Number_Rows;
+   end Check_Row;
+
+   ----------------------------------------------------------------
+   function Image_Name (
+      Column               : in     Configuration.Camera.Column_Type;
+      Row                  : in     Configuration.Camera.Row_Type
+   ) return String is
+   ----------------------------------------------------------------
+
+      Image_Name                 : constant String :=
+                                    Global_Camera_State.Image_Path (Row, Column);
+      Image_Path        : constant String := "img/" & Image_Name;
+                           -- gnoga ads img/
+   begin
+      Log_Here (Debug, "row" & Row'img &
+         " column" & Column'img &
+         Quote (" image Name", Image_Name) &
+         Quote (" image path", Image_Path));
+
+      if Image_Name'length > 0 then
+         if Ada_Lib.Directory.Exists (Image_Path) then
+            return Image_Path;
+         else
+            raise Failed with Quote ("image path", Image_Path) & " does not exist";
+         end if;
+      else
+         return "";
+      end if;
+   end Image_Name;
+
+   ----------------------------------------------------------------
    procedure Dump (
       State                      : in     State_Type;
       From                       : in     String := Ada_Lib.Trace.Here) is
@@ -94,7 +163,7 @@ package body Configuration.Camera.State is
    ----------------------------------------------------------------
 
    begin
-      return Global_Camera_State.Is_Set;
+      return Global_Camera_State.Is_Loaded;
    end Global_State_Is_Set;
 
    ----------------------------------------------------------------
@@ -133,16 +202,16 @@ package body Configuration.Camera.State is
          State.Images (Row, Column).Coerce;
    end Image_Path;
 
-   ----------------------------------------------------------------
-   overriding
-   function Is_Set (
-      State                      : in     State_Type
-   ) return Boolean is
-   ----------------------------------------------------------------
-
-   begin
-      return State.Set;
-   end Is_Set;
+-- ----------------------------------------------------------------
+-- overriding
+-- function Is_Loaded (
+--    State                      : in     State_Type
+-- ) return Boolean is
+-- ----------------------------------------------------------------
+--
+-- begin
+--    return State.Set;
+-- end Is_Loaded;
 
    ----------------------------------------------------------------
    procedure Load_Camera_State (
@@ -241,7 +310,7 @@ package body Configuration.Camera.State is
 
    begin
       Log_In (Debug, "state set " & State.Set'img);
-      if State.Is_Set then
+      if State.Is_Loaded then
          State.Set := False;
          Free (State.Images);
       end if;

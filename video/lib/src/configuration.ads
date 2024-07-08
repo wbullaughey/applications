@@ -11,7 +11,7 @@ package Configuration is
    URL                            : Address_Kind_Type renames
                                     Ada_Lib.Socket_IO.URL;
    type Base_Type                is tagged record
-      Set                        : Boolean := False;
+      Loaded                     : Boolean := False;
       Updated                    : Boolean := False;
    end record;
 

@@ -20,34 +20,18 @@ package Camera.Lib.Unit_Test is
 
    Failed                        : exception;
 
--- use type Ada_Lib.Options.Program_Options_Constant_Class_Access;
-
-   type Unit_Test_Type           is abstract new Ada_Lib.Unit_Test.Test_Cases.
-                                    Test_Case_Type with record
-      State                      : aliased Configuration.Camera.State.State_Type;
-   end record;
-
-    type Unit_Test_Access           is access Unit_Test_Type;
-
-    overriding
-    procedure Set_Up (
-       Test                       : in out Unit_Test_Type
-    ) with Pre => Test.Verify_Pre_Setup,
-           Post => Test.Verify_Post_Setup;
-
-    overriding
-    procedure Tear_Down (
-       Test                       : in out Unit_Test_Type);
-
    -- use for tests with camera but no web pages
    type Camera_Test_Type (
       Brand                      :Standard.Camera.Lib.Brand_Type) is abstract new
-                                    Unit_Test_Type with record
+                                    Ada_Lib.Unit_Test.Test_Cases.
+                                       Test_Case_Type with record
       Camera                     : Standard.Camera.Commands.
                                     Camera_Class_Access := Null;
       Camera_Address             : Address_Constant_Access := Null;
       Port_Number                : Port_Type;
       Location                   : Configuration.State.Location_Type;
+      State                      : aliased Configuration.Camera.State.State_Type;
+                                 -- State included since now Connection_Data
       case Brand is
          when Standard.Camera.Lib.ALPTOP_Camera =>
             ALPTOP                : aliased Standard.Camera.LIB.ALPTOP.ALPTOP_Type;
@@ -83,7 +67,8 @@ package Camera.Lib.Unit_Test is
                                        Initialize_GNOGA,
                                        Test_Driver    => False) with record
       Main_Window                : Gnoga.GUI.Window.Window_Type;
-      State                      : aliased Configuration.Camera.State.State_Type;
+--    State                      : aliased Configuration.Camera.State.State_Type;
+                                 -- get state from Ada_Lib.GNOGA.Get_Configuration
    end record;
 
    overriding

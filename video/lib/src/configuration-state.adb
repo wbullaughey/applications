@@ -44,14 +44,14 @@ package body Configuration.State is
    end Get_Host_Port;
 
    ----------------------------------------------------------------
-   function Is_Set (
+   function Is_Loaded (
       State                      : in     State_Type
    ) return Boolean is
    ----------------------------------------------------------------
 
    begin
-      return State.Set;
-   end Is_Set;
+      return State.Loaded;
+   end Is_Loaded;
 
    ----------------------------------------------------------------
    procedure Load (
@@ -226,7 +226,7 @@ package body Configuration.State is
          Quote ("video address", State.Video_Address.Image) &
          Quote ("video port", State.Video_Port'img));
 
-      State.Set := True;
+      State.Loaded := True;
       Log_Out (Debug);
 
    exception
@@ -249,7 +249,7 @@ package body Configuration.State is
    -------------------------------------------------------------
 
    begin
-      State.Set := False;
+      State.Loaded := False;
    end Unload;
 
 begin

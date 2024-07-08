@@ -190,7 +190,7 @@ not_implemented;
                Preset_Text       :  Gnoga.Gui.Element.Common.P_Type
                                     renames Cell.Preset_Text;
                Image_Name        : constant String :=
-                                    Check_Image (
+                                    Image_Name (
                                        Configuration.Camera.Column_Type (
                                           Table_Column),
                                        Table_Row);

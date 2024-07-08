@@ -72,7 +72,7 @@ package Configuration.Camera.Setup is
       Setup                      : in     Setup_Type;
       Preset_Id                  : in     Preset_ID_Type
    ) return Preset_Type'class
-   with Pre => Setup.Is_Set;
+   with Pre => Setup.Is_Loaded;
 
    function Get_Preset_ID (
       Setup                      : in     Setup_Type;
@@ -89,15 +89,15 @@ package Configuration.Camera.Setup is
       Setup                      : in     Setup_Type;
       Configuration_ID           : in     Configuration_ID_Type
    ) return Boolean
-   with Pre => Setup.Is_Set;
+   with Pre => Setup.Is_Loaded;
 
    function Has_Preset (
       Setup                      : in     Setup_Type;
       Preset_Id                  : in     Preset_ID_Type
    ) return Boolean
-   with Pre => Setup.Is_Set;
+   with Pre => Setup.Is_Loaded;
 
-   function Is_Set (
+   function Is_Loaded (
       Setup                      : in     Setup_Type
    ) return Boolean;
 
@@ -105,8 +105,8 @@ package Configuration.Camera.Setup is
       Setup                      : in out Setup_Type;
       State                      : in     Configuration.Camera.State.State_Type'class;
       Name                       : in     String
-   ) with Pre => State.Is_Set and then
-                 not Setup.Is_Set;
+   ) with Pre => State.Is_Loaded and then
+                 not Setup.Is_Loaded;
 
    function Make_Image_Name (
       Row                        : in     Configuration.Camera.Row_Type;
@@ -135,7 +135,7 @@ package Configuration.Camera.Setup is
       Setup                      : in     Setup_Type;
       Preset                     : in     Preset_ID_Type
    ) return Row_Type
-   with Pre => Setup.Is_Set;
+   with Pre => Setup.Is_Loaded;
 
    procedure Set_Path (
       Setup                      : in out Setup_Type;
@@ -145,8 +145,8 @@ package Configuration.Camera.Setup is
       Setup                      : in out Setup_Type;
       State                      : in     Configuration.Camera.State.State_Type'class;
       Save_Changes               : in     Boolean
-   ) with Pre => State.Is_Set and then
-                 Setup.Is_Set;
+   ) with Pre => State.Is_Loaded and then
+                 Setup.Is_Loaded;
 
    procedure Update_Configuration (
       Setup                      : in out Setup_Type;
@@ -167,7 +167,7 @@ package Configuration.Camera.Setup is
    procedure Update  (
       Setup                      : in out Setup_Type;
       State                      : in     Configuration.Camera.State.State_Type'class
-   ) with Pre => State.Is_Set;
+   ) with Pre => State.Is_Loaded;
 
    Default_Setup                 : constant String := "setup.cfg";
 

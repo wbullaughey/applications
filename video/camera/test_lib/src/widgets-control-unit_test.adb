@@ -1,15 +1,14 @@
 with Ada.Exceptions;
 with Ada_Lib.Configuration;
 with Ada_Lib.GNOGA;
---with Ada_Lib.Options;
---with Ada_Lib.Options_Interface;
 with Ada_Lib.Timer;
 with ADA_LIB.Trace; use ADA_LIB.Trace;
 with Ada_Lib.Unit_Test;
 with AUnit.Assertions; use AUnit.Assertions;
+with AUnit.Test_Cases;
 with Base;
---with Camera.Lib.Unit_Test;
---with Events;
+with Camera.Lib.Unit_Test;
+with Configuration.Camera.Setup;
 with Gnoga.Gui.View.Card;
 with Main;
 

@@ -1,8 +1,5 @@
 with Ada_Lib.Options;
---with AUnit.Test_Cases;
 with AUnit.Test_Suites;
-with Camera.Lib.Unit_Test;
-with Configuration.Camera.Setup;
 
 package Widgets.Configured.Unit_Test is
 

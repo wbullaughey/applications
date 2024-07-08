@@ -11,7 +11,7 @@ with AUnit.Assertions; use AUnit.Assertions;
 with AUnit.Test_Cases;
 with Base;
 with Camera.Lib.Base;
---with Camera.Lib.Unit_Test;
+with Camera.Lib.Unit_Test;
 with Configuration.Camera.Setup; use Configuration.Camera;
    use Configuration.Camera.Setup;
 --with Events;
@@ -452,7 +452,7 @@ package body Widgets.Configured.Unit_Test is
 -- procedure Test_Update_Valid_Row (
 --    Test                       : in out AUnit.Test_Cases.Test_Case'class);
 
-   Description                   : aliased String := "button push callback event";
+-- Description                   : aliased String := "button push callback event";
    Setup_Test_Path               : constant String := "configured_window_setup.cfg";
    State_Test_Path               : constant String := "configured_window_state.cfg";
    Updated_Column                : constant Preset_Column_Index_Type :=
@@ -760,10 +760,11 @@ package body Widgets.Configured.Unit_Test is
    ----------------------------------------------------------------
    procedure Test_Accept_Configured (
       Test                       : in out AUnit.Test_Cases.Test_Case'class) is
+   pragma Unreferenced (Test);
    ----------------------------------------------------------------
 
-      Local_Test                 : Test_Type'class renames
-                                   Test_Type'class (Test);
+--    Local_Test                 : Test_Type'class renames
+--                                 Test_Type'class (Test);
       Connection_Data            : constant Base.Connection_Data_Access :=
                                     Base.Connection_Data_Access (
                                        Ada_Lib.GNOGA.Get_Connection_Data);
@@ -813,8 +814,8 @@ package body Widgets.Configured.Unit_Test is
       Test                       : in out AUnit.Test_Cases.Test_Case'class) is
    ----------------------------------------------------------------
 
-      Local_Test                 : Test_Type'class renames
-                                   Test_Type'class (Test);
+--    Local_Test                 : Test_Type'class renames
+--                                 Test_Type'class (Test);
       Connection_Data            : constant Base.Connection_Data_Access :=
                                     Base.Connection_Data_Access (
                                        Ada_Lib.GNOGA.Get_Connection_Data);
@@ -1007,8 +1008,8 @@ package body Widgets.Configured.Unit_Test is
       Test                       : in out AUnit.Test_Cases.Test_Case'class) is
    ----------------------------------------------------------------
 
-      Local_Test                 : Test_Type'class renames
-                                   Test_Type'class (Test);
+--    Local_Test                 : Test_Type'class renames
+--                                 Test_Type'class (Test);
       Connection_Data            : constant Base.Connection_Data_Access :=
                                     Base.Connection_Data_Access (
                                        Ada_Lib.GNOGA.Get_Connection_Data);

@@ -1,8 +1,6 @@
 with Ada_Lib.Configuration;
 with Ada_Lib.Socket_IO;
 with ADA_LIB.Strings;
---with Ada_Lib.Trace;
---with GNAT.Sockets;
 
 package Configuration.State is
 
@@ -38,7 +36,7 @@ package Configuration.State is
    ) return Ada_Lib.Socket_IO.Port_Type
    with Pre => State.Video_Port /= Ada_Lib.Socket_IO.Port_Type'last;
 
-   function Is_Set (
+   function Is_Loaded (
       State                      : in     State_Type
    ) return Boolean;
 

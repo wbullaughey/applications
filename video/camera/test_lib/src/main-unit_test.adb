@@ -1,6 +1,5 @@
 with Ada_Lib.GNOGA.Unit_Test;
 with Ada_Lib.Options;
---with Ada_Lib.Strings;
 with Ada_Lib.Timer;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
 with Ada_Lib.Unit_Test;
@@ -8,7 +7,6 @@ with AUnit.Test_Cases;
 with Base;
 with Camera.Lib.Options;
 with Camera.Lib.Unit_Test;
-with Configuration.Camera.Setup;
 with Configuration.Camera.Setup; use Configuration.Camera.Setup;
 
 package body Main.Unit_Test is
@@ -123,13 +121,18 @@ package body Main.Unit_Test is
       Test                       : in out Test_Type) is
    ---------------------------------------------------------------
 
+      Connection_Data            : Connection_Data_Type renames
+                                    Connection_Data_Type (
+                                       Ada_Lib.GNOGA.Get_Connection_Data);
       Options                    : Standard.Camera.Lib.Options_Type'class
                                     renames Standard.Camera.Lib.Unit_Test.Options.all;
+      State                      : State_Type renames Connection_Data.State;
+
    begin
       Log_In (Debug);
-      Test.State.Load_Camera_State (Options.Location, State_Path);
+      State.Load_Camera_State (Options.Location, State_Path);
       -- need to load state 1st
-      Test.Setup.Load (Test.State, Setup_Path);
+      Test.Setup.Load (State, Setup_Path);
       Camera.Lib.Unit_Test.Camera_Window_Test_Type (Test).Set_Up;
       Log_Out (Debug);
    end Set_Up;
@@ -159,11 +162,16 @@ package body Main.Unit_Test is
       Test                       : in out Test_Type) is
    ---------------------------------------------------------------
 
+      Connection_Data            : Connection_Data_Type renames
+                                    Connection_Data_Type (
+                                       Ada_Lib.GNOGA.Get_Connection_Data);
+      State                      : State_Type renames Connection_Data.State;
+
    begin
       Log_In (Debug);
       Ada_Lib.GNOGA.Unit_Test.GNOGA_Tests_Type (Test).Tear_Down;
       Ada_Lib.GNOGA.Clear_Connection_Data;
-      Test.State.Unload;
+      State.Unload;
       Log_Out (Debug);
    end Tear_Down;
 

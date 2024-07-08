@@ -74,8 +74,8 @@ package body Camera.Lib.Options is
          Ada_Lib.Runstring_Options.Without_Parameters,
          Options_Without_Parameters);
 
-      Configuration.Camera.State.Global_Camera_State :=
-         new Configuration.Camera.State.State_Type;
+--    Configuration.Camera.State.Global_Camera_State :=
+--       new Configuration.Camera.State.State_Type;
 
       return Log_Out (
          Options.GNOGA.Initialize and then
