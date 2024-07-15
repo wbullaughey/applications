@@ -1,6 +1,8 @@
 obj/
 alire/
+cache/
 config/
+save/
 vendor/
 *.mak
 *.vpwwildcardcache
@@ -9,6 +11,8 @@ vendor/
 *.cswi
 *.ali
 *.txt
+*.stderr
+*.stdout
 suites
 GNAT-*
 

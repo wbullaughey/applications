@@ -1,4 +1,4 @@
-with Ada.Text_IO;
+--with Ada.Text_IO;
 with ADA_LIB.Trace; use ADA_LIB.Trace;
 with Ada_Lib.Trace_Tasks;
 with Camera.Lib.Base;

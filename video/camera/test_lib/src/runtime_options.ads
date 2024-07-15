@@ -2,7 +2,7 @@ with ADA_LIB.Command_Line_Iterator;
 with ADA_LIB.Options;
 with Ada_Lib.Options_Interface;
 --with ADA_LIB.Strings.Unlimited;
---with ADA_LIB.Trace;
+with ADA_LIB.Trace;
 --with Ada_Lib.Socket_IO;
 with Gnoga.Gui.Base;
 with Camera.Lib.Options;
@@ -37,7 +37,8 @@ package Runtime_Options is
 
    overriding
    function Initialize (
-     Options                     : in out Options_Type
+     Options                     : in out Options_Type;
+     From                        : in     String := Ada_Lib.Trace.Here
    ) return Boolean
    with pre => Options.Verify_Preinitialize;
 

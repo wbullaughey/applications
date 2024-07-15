@@ -1,4 +1,5 @@
 --with Ada_Lib.Directory;
+with Ada_Lib.GNOGA;
 with ADA_LIB.Trace; use ADA_LIB.Trace;
 with Base;
 --with Camera.Lib;
@@ -20,14 +21,16 @@ package body Widgets.Control is
       ID                         : in     String := "") is
    ----------------------------------------------------------------
 
+      Connection_Data            : Base.Connection_Data_Type renames
+                                    Base.Connection_Data_Type (
+                                       Ada_Lib.GNOGA.Get_Connection_Data.all);
       Top_Name                   : constant String := (if ID'length = 0 then
                                        ""
                                     else
                                        ID & "_")
                                     & Widget_Name;
-      State                      : Configuration.Camera.State.State_Type
-                                    renames Configuration.Camera.State.
-                                       Global_Camera_State.all;
+      State                      : Configuration.Camera.State.State_Type renames
+                                    Connection_Data.State;
       Number_Columns             : constant Control_Column_Index_Type :=
                                     Control_Column_Index_Type (
                                        State.Number_Columns);
@@ -190,7 +193,7 @@ not_implemented;
                Preset_Text       :  Gnoga.Gui.Element.Common.P_Type
                                     renames Cell.Preset_Text;
                Image_Name        : constant String :=
-                                    Image_Name (
+                                    Configuration.Camera.State.Image_Name (
                                        Configuration.Camera.Column_Type (
                                           Table_Column),
                                        Table_Row);

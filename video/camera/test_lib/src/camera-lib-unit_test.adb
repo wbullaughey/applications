@@ -1,6 +1,7 @@
 with Ada.Exceptions;
 with Ada.Text_IO;use Ada.Text_IO;
 with Ada_Lib.Help;
+--with Ada_Lib.Options.AUnit.Ada_Lib_Tests;
 --with Ada_Lib.Options.Unit_Test;
 with Ada_Lib.Runstring_Options;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
@@ -36,13 +37,13 @@ package body Camera.Lib.Unit_Test is
                                           Ada_Lib.Options_Interface.Null_Options;
    Help_Recursed                 : Boolean := False;
    Initialize_Recursed           : Boolean := False;
-   Process_Option_Recursed       : Boolean := False;
    Protected_Options             : aliased Unit_Test_Options_Type;
 
 -- use type Ada_Lib.Options_Interface.Interface_Options_Constant_Class_Access;
 
    Camera_State_Path             : constant String := "camera_state_path.cfg";
-
+   Setup_Test_Path               : constant String := "configured_window_setup.cfg";
+   State_Test_Path               : constant String := "configured_window_state.cfg";
 
    ----------------------------------------------------------------------------
    procedure Add_Test (
@@ -88,12 +89,14 @@ package body Camera.Lib.Unit_Test is
    -------------------------------------------------------------------------
    overriding
    function Initialize (
-     Options                     : in out Unit_Test_Options_Type
+     Options                     : in out Unit_Test_Options_Type;
+     From                        : in     String := Ada_Lib.Trace.Here
    ) return Boolean is
    -------------------------------------------------------------------------
 
    begin
-      Log_In_Checked (Initialize_Recursed, Debug_Options or Trace_Options);
+      Log_In_Checked (Initialize_Recursed, Debug_Options or Trace_Options,
+         "from " & From);
       Unit_Test_Options := Options'unchecked_access;
       Ada_Lib.Options_Interface.Set_Ada_Lib_Options (Protected_Options'access);
 
@@ -104,11 +107,12 @@ package body Camera.Lib.Unit_Test is
       Ada_Lib.Runstring_Options.Without_Parameters,
          Options_Without_Parameters);
       return Log_Out_Checked (Initialize_Recursed,
-         Options.Camera_Options.Initialize and then
---       Options.GNOGA_Options.Initialize and then
+--       Options.Camera_Options.Initialize and then
+         Options.AUnit_Options.Initialize and then
 --       Options.GNOGA_Unit_Test_Options.Initialize and then
          Options.Unit_Test.Initialize and then
-         Ada_Lib.Options.Program_Options_Type (Options).Initialize,
+--       Ada_Lib.Options.AUnit.Ada_Lib_Tests.Initialize and then
+         Options_Type (Options).Initialize,
          Debug_Options or Trace_Options);
    end Initialize;
 
@@ -123,17 +127,17 @@ package body Camera.Lib.Unit_Test is
 --    return AUnit.Format (Suite_Name);
 -- end Name;
 
-   ----------------------------------------------------------------------------
-   function Options (
-      From                    : in     String :=
-                                          Standard.GNAT.Source_Info.Source_Location
-   ) return Options_Constant_Class_Access is
-   ----------------------------------------------------------------------------
-
-   begin
-      Log_Here (Debug, "from " & From);
-      return Protected_Options.Camera_Options'access;
-   end Options;
+-- ----------------------------------------------------------------------------
+-- function Options (
+--    From                    : in     String :=
+--                                        Standard.GNAT.Source_Info.Source_Location
+-- ) return Options_Constant_Class_Access is
+-- ----------------------------------------------------------------------------
+--
+-- begin
+--    Log_Here (Debug, "from " & From);
+--    return Protected_Options.Camera_Options'access;
+-- end Options;
 
    ----------------------------------------------------------------------------
    function Options (
@@ -159,7 +163,7 @@ package body Camera.Lib.Unit_Test is
    ----------------------------------------------------------------------------
 
    begin
-      Log_In_Checked (Process_Option_Recursed,Trace_Options or Debug_Options, Option.Image &
+      Log_In (Trace_Options or Debug_Options, Option.Image &
          " options address " & Image (Options'address) &
          " initialized " & Options.Initialized'img &
          " options tag " & Tag_Name (Unit_Test_Options_Type'class (Options)'tag));
@@ -176,16 +180,13 @@ package body Camera.Lib.Unit_Test is
 
          end case;
 
-         return Log_Out_Checked (Process_Option_Recursed, True, Debug_Options or Trace_Options,
+         return Log_Out (True, Debug_Options or Trace_Options,
             " option" & Option.Image & " handled");
       else
-         return Log_Out_Checked (Process_Option_Recursed,
-            Options.Camera_Options.Process_Option (Iterator, Option) or else
---          Options.GNOGA_Options.Process_Option (Iterator, Option) or else
---          Options.GNOGA_Unit_Test_Options.Process_Option (Iterator, Option) or else
+         return Log_Out (
+            Options.AUnit_Options.Process_Option (Iterator, Option) or else
             Options.Unit_Test.Process_Option (Iterator, Option) or else
-            Ada_Lib.Options.Program_Options_Type (
-               Options).Process_Option (Iterator, Option),
+            Options_Type (Options).Process_Option (Iterator, Option),
             Debug_Options or Trace_Options,
             "other " & Option.Image);
       end if;
@@ -202,10 +203,11 @@ package body Camera.Lib.Unit_Test is
    begin
       Log_In_Checked (Help_Recursed, Debug_Options or Trace_Options,
          "help mode " & Help_Mode'img);
-      Options.Camera_Options.Program_Help (Help_Mode);
---    Options.GNOGA_Options.Program_Help (Help_Mode);
+      Options.AUnit_Options.Program_Help (Help_Mode);
+--    Options.Camera_Options.Program_Help (Help_Mode);
 --    Options.GNOGA_Unit_Test_Options.Program_Help (Help_Mode);
       Options.Unit_Test.Program_Help (Help_Mode);
+--    Ada_Lib.Options.AUnit.Ada_Lib_Tests.Program_Help (Help_Mode);
 
       case Help_Mode is
 
@@ -234,8 +236,7 @@ package body Camera.Lib.Unit_Test is
 
       end case;
 
-     Ada_Lib.Options.Program_Options_Type (Options).Program_Help (
-         Help_Mode);
+     Options_Type (Options).Program_Help (Help_Mode);
      Log_Out_Checked (Help_Recursed, Debug_Options or Trace_Options);
 
    end Program_Help;
@@ -387,11 +388,30 @@ not_implemented;
       Test                       : in out Camera_Test_Type) is
 ---------------------------------------------------------------
 
-      Options                    : Standard.Camera.Lib.Options_Type'class
-                                    renames Standard.Camera.Lib.Unit_Test.Options.all;
   begin
-     Log_In (Debug, "brand " & Test.Brand'img &
-        " location " & Test.Location'img);
+     Test.Set_Up_Optional_Load (True);
+  end Set_Up;
+
+   ---------------------------------------------------------------
+   procedure Set_Up_Optional_Load (
+      Test                       : in out Camera_Test_Type;
+      Load                       : in     Boolean) is
+   ---------------------------------------------------------------
+
+      Connection_Data            : constant Standard.Base.Connection_Data_Access :=
+                                    new Standard.Base.Connection_Data_Type;
+      Options                    : Standard.Camera.Lib.Unit_Test.
+                                    Unit_Test_Options_Type'class
+                                       renames Standard.Camera.Lib.Unit_Test.
+                                          Options.all;
+      State                      : Configuration.Camera.State.State_Type renames
+                                    Connection_Data.State;
+  begin
+      Log_In (Debug or Trace_Set_Up, "load " & Load'img &
+         " brand " & Test.Brand'img &
+         " location " & Test.Location'img);
+      Ada_Lib.GNOGA.Set_Connection_Data (
+         Ada_Lib.GNOGA.Connection_Data_Class_Access (Connection_Data));
 
 --     if Options.If_Emulation then
 --        Not_Implemented;
@@ -399,32 +419,33 @@ not_implemented;
 --      delay 0.2;     -- let emulator initialize
 --     end if;
 
-      Configuration.Camera.State.Global_Camera_State :=
-         Test.State'unchecked_access;
       Ada_Lib.Unit_Test.Test_Cases.Test_Case_Type (Test).Set_Up;
 
-     Test.State.Load (Options.Location, Camera_State_Path);
-     Test.Camera_Address := Test.State.Video_Address;
-     Test.Port_Number := Test.State.Video_Port;
+     if Load then
+        State.Load (Options.Location, Camera_State_Path);
+        Test.Camera_Address := State.Video_Address;
+        Test.Port_Number := State.Video_Port;
 
-     case Test.Brand is
+        case Test.Brand is
 
-        when Standard.Camera.Lib.ALPTOP_Camera =>
-            not_implemented;
+           when Standard.Camera.Lib.ALPTOP_Camera =>
+               not_implemented;
 
-        when Standard.Camera.LIB.PTZ_Optics_Camera =>
-            Test.Camera := Test.PTZ_Optics'unchecked_access;
-            Test.Camera.Open (Test.State.Video_Address.all, Test.Port_Number);
-        when Standard.Camera.Lib.No_Camera =>
-           raise Failed with "no camera set";
+           when Standard.Camera.LIB.PTZ_Optics_Camera =>
+               Test.Camera := Test.PTZ_Optics'unchecked_access;
+               Test.Camera.Open (State.Video_Address.all, Test.Port_Number);
 
-     end case;
-     Log_Out (Debug);
+           when Standard.Camera.Lib.No_Camera =>
+              raise Failed with "no camera set";
+
+        end case;
+     end if;
+     Log_Out (Debug or Trace_Set_Up);
 
   exception
      when Fault: others =>
         Test.Set_Up_Exception (Fault);
-  end Set_Up;
+   end Set_Up_Optional_Load;
 
    ---------------------------------------------------------------
    overriding
@@ -433,33 +454,32 @@ not_implemented;
    ---------------------------------------------------------------
 
       Connection_Data         : constant Standard.Base.Connection_Data_Access :=
-                                 Standard.Base.Connection_Data_Access (
-                                    Ada_Lib.GNOGA.Get_Connection_Data);
---    Options                 : Standard.Camera.Lib.Options_Type'class
---                               renames Standard.Camera.Lib.Unit_Test.Options.all;
-      Options                 : Camera.Lib.Unit_Test.Unit_Test_Options_Type renames
-                                 Camera.Lib.Unit_Test.Unit_Test_Options_Type (
-                                    Ada_Lib.Options.Program_Options.all);
---    Test_Driver             : constant Boolean := Options.Program_Options.Test_Driver;
-
+                                 new Standard.Base.Connection_Data_Type;
+      Options                 : Standard.Camera.Lib.Unit_Test.
+                                 Unit_Test_Options_Type'class
+                                    renames Standard.Camera.Lib.Unit_Test.
+                                       Options.all;
+      State                      : Configuration.Camera.State.State_Type renames
+                                    Connection_Data.State;
    begin
-      Log_In (Debug);
-      Connection_Data.Initialize;
+      Log_In (Debug or Trace_Set_Up);
       Ada_Lib.GNOGA.Set_Connection_Data (
          Ada_Lib.GNOGA.Connection_Data_Class_Access (Connection_Data));
-      Configuration.Camera.State.Global_Camera_State :=
-         Test.State'unchecked_access;
+      Connection_Data.Initialize;
+      State.Load (
+         Options.Location, State_Test_Path); -- need to load state 1st
+      Test.Setup.Load (State, Setup_Test_Path);
       Ada_Lib.GNOGA.Unit_Test.GNOGA_Tests_Type(Test).Set_Up;
 
-      if Test.Run_Main then
-         Main.Run (
-            Directory            => Camera.Lib.Options.Current_Directory,
-            Port                 => Options.GNOGA_Options.HTTP_Port,
-            Verbose              => True,
-            Wait_For_Completion  => False);
-      end if;
+         if not Test.Initialize_GNOGA then
+            Main.Run (
+               Directory            => Camera.Lib.Options.Current_Directory,
+               Port                 => Options.GNOGA_Options.HTTP_Port,
+               Verbose              => True,
+               Wait_For_Completion  => False);
+         end if;
 
-      Log_Out (Debug);
+      Log_Out (Debug or Trace_Set_Up);
 
    exception
       when Fault: others =>
@@ -502,10 +522,15 @@ not_implemented;
       Test                       : in out Camera_Test_Type) is
    ---------------------------------------------------------------
 
+      Connection_Data            : Standard.Base.Connection_Data_Type renames
+                                    Standard.Base.Connection_Data_Type (
+                                       Ada_Lib.GNOGA.Get_Connection_Data.all);
+      State                      : Configuration.Camera.State.State_Type renames
+                                    Connection_Data.State;
    begin
       Log_In (Debug);
       Test.Camera.Close;
-      Test.State.Unload;
+      State.Unload;
 
       Gnoga.Application.Multi_Connect.End_Application;
       delay 0.2;

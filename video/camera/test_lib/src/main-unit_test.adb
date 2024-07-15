@@ -8,6 +8,7 @@ with Base;
 with Camera.Lib.Options;
 with Camera.Lib.Unit_Test;
 with Configuration.Camera.Setup; use Configuration.Camera.Setup;
+with Configuration.Camera.State;
 
 package body Main.Unit_Test is
 
@@ -16,11 +17,8 @@ package body Main.Unit_Test is
                                     Camera.Lib.Unit_Test.
                                        Camera_Window_Test_With_Camera_Type (
                                           Brand             => Brand,
-                                          Initialize_GNOGA  => True,
-                                          Run_Main          => False) with record
-      Setup                      : Configuration.Camera.Setup.Setup_Type;
---    State                      : aliased Configuration.Camera.State.State_Type;
-   end record;
+                                          Initialize_GNOGA  => True) with
+                                             null record;
 
    type Test_Access is access Test_Type;
 
@@ -121,20 +119,23 @@ package body Main.Unit_Test is
       Test                       : in out Test_Type) is
    ---------------------------------------------------------------
 
-      Connection_Data            : Connection_Data_Type renames
-                                    Connection_Data_Type (
-                                       Ada_Lib.GNOGA.Get_Connection_Data);
-      Options                    : Standard.Camera.Lib.Options_Type'class
-                                    renames Standard.Camera.Lib.Unit_Test.Options.all;
-      State                      : State_Type renames Connection_Data.State;
+      Connection_Data            : Base.Connection_Data_Type renames
+                                    Base.Connection_Data_Type (
+                                       Ada_Lib.GNOGA.Get_Connection_Data.all);
+      Options                    : Standard.Camera.Lib.Unit_Test.
+                                    Unit_Test_Options_Type'class
+                                       renames Standard.Camera.Lib.Unit_Test.
+                                          Options.all;
+      State                      : Configuration.Camera.State.State_Type renames
+                                    Connection_Data.State;
 
    begin
-      Log_In (Debug);
-      State.Load_Camera_State (Options.Location, State_Path);
+      Log_In (Debug or Trace_Set_Up);
+      State.Load (Options.Location, State_Path);
       -- need to load state 1st
       Test.Setup.Load (State, Setup_Path);
       Camera.Lib.Unit_Test.Camera_Window_Test_Type (Test).Set_Up;
-      Log_Out (Debug);
+      Log_Out (Debug or Trace_Set_Up);
    end Set_Up;
 
    ---------------------------------------------------------------
@@ -146,7 +147,7 @@ package body Main.Unit_Test is
       Test_Suite                 : constant AUnit.Test_Suites.Access_Test_Suite :=
                                     new AUnit.Test_Suites.Test_Suite;
       Tests                      : constant Test_Access := new Test_Type (
-                                    Options.Camera_Options.Brand);
+                                    Options.Brand);
 
    begin
       Log_In (Debug);
@@ -162,11 +163,11 @@ package body Main.Unit_Test is
       Test                       : in out Test_Type) is
    ---------------------------------------------------------------
 
-      Connection_Data            : Connection_Data_Type renames
-                                    Connection_Data_Type (
-                                       Ada_Lib.GNOGA.Get_Connection_Data);
-      State                      : State_Type renames Connection_Data.State;
-
+      Connection_Data            : Base.Connection_Data_Type renames
+                                    Base.Connection_Data_Type (
+                                       Ada_Lib.GNOGA.Get_Connection_Data.all);
+      State                      : Configuration.Camera.State.State_Type renames
+                                    Connection_Data.State;
    begin
       Log_In (Debug);
       Ada_Lib.GNOGA.Unit_Test.GNOGA_Tests_Type (Test).Tear_Down;
@@ -183,8 +184,8 @@ package body Main.Unit_Test is
 
       Options                 : Camera.Lib.Unit_Test.Unit_Test_Options_Type'
                                  class renames Camera.Lib.
-                                    Unit_Test.Unit_Test_Options_Type'class (
-                                       Ada_Lib.Options.Program_Options.all);
+                                    Unit_Test.Unit_Test_Options_Constant_Class_Access (
+                                       Ada_Lib.Options.Program_Options).all;
       Button_Press_Event      : Button_Push_Event_Type;
 --    Local_Test              : Test_Type'class renames Test_Type'class (Test);
    begin

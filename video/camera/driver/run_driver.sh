@@ -1,84 +1,126 @@
-#!/bin/bash
-export DRIVER=$1
-export OUTPUT=$2
-shift 2
-
-rm $OUTPUT
-export TARGET=camera_aunit
+#!/bin/zsh
+export OUTPUT=list-camera_driver.txt
 export CURRENT_DIRECTORY=`pwd`
-export OUTPUT="$CURRENT_DIRECTORY/$OUTPUT"
-echo CURRENT_DIRECTORY $CURRENT_DIRECTORY | tee -a $OUTPUT
-echo OUTPUT = $OUTPUT| tee -a $OUTPUT
-echo start driver run tee $OUTPUT
-
-for (( ;; ))
-do
-   echo next parameter $1  | tee -a $OUTPUT
-
-   if [[ "$1" == -* ]]; then
-     export DRIVER_OPTIONS="$DRIVER_OPTIONS $1"
-     echo DRIVER_OPTIONS = "$DRIVER_OPTIONS"  | tee -a $OUTPUT
-     shift 1
-   else
-      break
-   fi
-done
-
-echo DRIVER_OPTIONS \'$DRIVER_OPTIONS\' | tee -a $OUTPUT
-
 export TARGET_SUBDIRECTORY=`realpath "$CURRENT_DIRECTORY/../unit_test"`
-export SUITE=$1
-shift 1
+export OPTIONS="-r -D $TARGET_SUBDIRECTORY"
+export PARAMETERS=("$@")
+echo PARAMETERS: $PARAMETERS
+echo OUPUT=$OUTPUT
+echo camera driver 2>&1 | tee $OUTPUT
+export TRACE=0
 
-if [[ /$SUITE/ == // ]]; then
-   echo all tests  | tee -a $OUTPUT
-else
-   while [[ /$1/ != // ]]
-   do
-      export ROUTINES="$ROUTINES -r $1"   #  test routine name
-      shift 1
-      echo ROUTINES "$ROUTINES" | tee -a $OUTPUT
+trace() {
+   if (( $TRACE > 0 )) then
+      echo $* 2>&1 | tee -a $OUTPUT
+   fi
+}
+
+remove_1() {
+   PARAMETERS=("${PARAMETERS[@]:1}")
+   trace shifted $PARAMETERS
+}
+
+parameters() {
+   trace parameters function /$PARAMETERS/
+   for PARAMETER ("$PARAMETERS[@]"); do
+      trace option $PARAMETER
+      export FIRST=${PARAMETER:0:1}
+      trace FIRST $FIRST
+      case $FIRST in
+         "-")
+           trace option: $PARAMETER | tee -a $OUTPUT
+           export OPTIONS="$OPTIONS $PARAMETER"
+           remove_1
+           ;;
+
+         "@")
+           trace option: $PARAMETER
+           export OPTIONS="$OPTIONS -X${PARAMETER[@]:1}"
+           trace OPTIONS $OPTIONS
+           remove_1
+           ;;
+
+         *)
+            break;
+           ;;
+      esac
    done
+}
 
-   export TESTS="-u $SUITE $ROUTINES"
-fi
-case $DRIVER in
+trace PARAMETERS $PARAMETERS
 
-   "driver")
-      export DRIVER_SUBDIRECTORY="$CURRENT_DIRECTORY/bin"
-      export APPLICATION=camera_driver
+parameters  # process leading options
+
+export MODE="${PARAMETERS[1]}"
+trace MODE $MODE | tee -a $OUTPUT
+remove_1
+parameters  # process leading options
+case "$MODE" in
+
+   "help")
+      bin/camera_driver -h | tee $OUTPUT
+      exit
       ;;
 
-   "test_driver")
-      export DRIVER_SUBDIRECTORY="$CURRENT_DIRECTORY/unit_test/bin"
-      export APPLICATION=driver_unit_test
+   "camera")
+      export APPLICATION=../bin/camera_driver
       ;;
 
-   *)
-      echo "bad DRIVER $DRIVER" | tee -a $OUTPUT
-      exit;
+   "test")
+      export APPLICATION=../unit_test/bin/camera_aunit
+      ;;
+
+   "")
+      echo missing mode
+      exit
       ;;
 
 esac
-echo TARGET_SUBDIRECTORY $TARGET_SUBDIRECTORY | tee -a $OUTPUT
-echo DRIVER_SUBDIRECTORY $DRIVER_SUBDIRECTORY | tee -a $OUTPUT
+trace APPLICATION $APPLICATION
 
-export BIN_DIRECTORY=TARGET_SUBDIRECTORY/bin
+export SUITE="${PARAMETERS[1]}"
+remove_1
+parameters  # process leading options
+trace "suite: $SUITE"
+case "$SUITE" in
 
-echo BIN_DIRECTORY = $BIN_DIRECTORY  | tee -a $OUTPUT
-echo APPLICATION = $APPLICATION  | tee -a $OUTPUT
-ls -l $BIN_DIRECTORY
+   "")
+      echo no suites specified, run all
+      ;;
 
-cd $BIN_DIRECTORY
-echo pwd `pwd`  | tee -a $OUTPUT
+   *)
+      export OPTIONS="$OPTIONS -u $SUITE"
+      ;;
 
-export COMMAND="$DRIVER_SUBDIRECTORY/$APPLICATION $DRIVER_OPTIONS \
-   -D $TARGET_SUBDIRECTORY $OPTIONS $OPTIONS $TESTS"
+esac
 
+export ROUTINE="${PARAMETERS[1]}"
+remove_1
+parameters  # process leading options
+
+export VERBOSE="-v -X -v"
+case "$ROUTINE" in
+
+   all)
+      ;;
+
+   "")
+      echo no routine specified, run all
+      ;;
+
+   *)
+      export OPTIONS="$OPTIONS -R $ROUTINE"
+       ;;
+
+esac
+
+parameters  # process leading options
+
+trace final OPTIONS $OPTIONS
+export COMMAND="./bin/camera_driver $OPTIONS $VERBOSE"
+echo comand: $COMMAND 2>&1 | tee -a $OUTPUT
 rm GNAT-*
+eval $COMMAND 2>&1 | tee -a $OUTPUT
 
-echo "command: $COMMAND"  | tee -a $OUTPUT
-cd $DRIVER_SUBDIRECTORY
-pwd
-$COMMAND 2>&1 | tee -a $OUTPUT
+
 

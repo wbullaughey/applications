@@ -215,7 +215,8 @@ package body Driver is
    ---------------------------------------------------------------
    overriding
    function Initialize (
-     Options                     : in out Driver_Options_Type
+     Options                     : in out Driver_Options_Type;
+     From                        : in     String := Ada_Lib.Trace.Here
    ) return Boolean is
    ---------------------------------------------------------------
 
@@ -227,7 +228,8 @@ package body Driver is
             Selected_Parameters.With_Parameters.all) &
          " without parameters" & Ada_Lib.Options_Interface.Image (
             Selected_Parameters.Without_Parameters.all) &
-         " Initialized " & Options.Initialized'img);
+         " Initialized " & Options.Initialized'img &
+         " from " & From);
       Protected_Options := Options'unchecked_access;
       Ada_Lib.Runstring_Options.Options.Register (
          Ada_Lib.Runstring_Options.With_Parameters,
@@ -245,12 +247,13 @@ package body Driver is
    ---------------------------------------------------------------
    overriding
    function Initialize (
-     Options                     : in out Program_Options_Type
+     Options                     : in out Program_Options_Type;
+     From                        : in     String := Ada_Lib.Trace.Here
    ) return Boolean is
    ---------------------------------------------------------------
 
    begin
-      Log_In (Debug_Options or Trace_Options);
+      Log_In (Debug_Options or Trace_Options, "from " & From);
       return Log_Out (Options.Driver_Options.Initialize and then
          Ada_Lib.Options.Program_Options_Type (Options).Initialize,
          Debug_Options or Trace_Options);
@@ -400,7 +403,8 @@ package body Driver is
                            Quote (" Argument", Argument));
 
                         Protected_Options.Camera_Options :=
-                           Protected_Options.Camera_Options & Argument & " ";
+                           Protected_Options.Camera_Options & Argument (
+                              Argument'first + 2 .. Argument'last);
 
                         Log_Here (Debug_Options or Trace_Options, Quote ("options",
                            Protected_Options.Camera_Options));

@@ -106,7 +106,8 @@ package Configuration.Camera.Setup is
       State                      : in     Configuration.Camera.State.State_Type'class;
       Name                       : in     String
    ) with Pre => State.Is_Loaded and then
-                 not Setup.Is_Loaded;
+                 not Setup.Is_Loaded,
+          Post => Setup.Is_Loaded;
 
    function Make_Image_Name (
       Row                        : in     Configuration.Camera.Row_Type;
@@ -176,14 +177,14 @@ package Configuration.Camera.Setup is
       Configuration_ID  => Configuration_Not_Set,
       Label             => Ada_Lib.Strings.Unlimited.Null_String,
       Preset_ID         => Preset_Not_Set,
-      Set               => False,
+      Loaded            => False,
       Updated           => False);
 
    Null_Preset                      : constant Preset_Type := (
       Column            => Column_Not_Set,
       Preset_ID         => Preset_Not_Set,
       Row               => Row_Not_Set,
-      Set               => False,
+      Loaded            => False,
       Updated           => False);
 
 

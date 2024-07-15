@@ -35,6 +35,7 @@ package body Camera.Lib is
                                     Ada_Lib.Options_Interface.Options_Type :=
                                        Ada_Lib.Options_Interface.Create_Options (
                                           "Elr");
+   Recursed                      : Boolean := False;
 
    -------------------------------------------------------------------------
    function Camera_Options
@@ -49,16 +50,17 @@ package body Camera.Lib is
    -------------------------------------------------------------------------
    overriding
    function Initialize (
-      Options               : in out Options_Type
+      Options               : in out Options_Type;
+      From                  : in     String := Ada_Lib.Trace.Here
    ) return Boolean is
    -------------------------------------------------------------------------
 
    begin
-      Log_In (Debug_Options or Trace_Options,
+      Log_In_Checked (Recursed, Debug_Options or Trace_Options,
          "With Parameters " & Ada_Lib.Options_Interface.Image (
             Options_With_Parameters, False) &
          " Without Parameters " & Ada_Lib.Options_Interface.Image (
-            Options_Without_Parameters, False));
+            Options_Without_Parameters, False) & " from " & From);
 
       Ada_Lib.Runstring_Options.Options.Register (
          Ada_Lib.Runstring_Options.With_Parameters,
@@ -67,7 +69,8 @@ package body Camera.Lib is
          Ada_Lib.Runstring_Options.Without_Parameters,
          Options_Without_Parameters);
 
-      return Log_Out (Video.Lib.Options_Type (Options).Initialize,
+      return Log_Out_Checked (Recursed,
+         Video.Lib.Options_Type (Options).Initialize,
          Debug_Options or Trace_Options);
    end Initialize;
 

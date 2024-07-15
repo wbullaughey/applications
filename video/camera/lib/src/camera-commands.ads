@@ -25,6 +25,10 @@ package Camera.Commands is
       Pan                        :    out Absolute_Type;
       Tilt                       :    out Absolute_Type);
 
+   procedure Get_Zoom (
+      Camera                     : in out Camera_Type;
+      Zoom                       :    out Absolute_Type);
+
    procedure Position_Relative (
       Camera                     : in out Camera_Type;
       Pan                        : in      Relative_Type;
@@ -43,6 +47,7 @@ package Camera.Commands is
       Camera                     : in out Camera_Type;
       On                         : in     Boolean);
 
+   -- sets camera to a preset
    procedure Set_Preset (
       Camera                     : in out Camera_Type;
       Preset_ID                  : in     Configuration.Camera.Preset_ID_Type;

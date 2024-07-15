@@ -1,6 +1,7 @@
 with Ada.Exceptions;
 with Ada.Unchecked_Deallocation;
 with Ada_Lib.Configuration;
+with Ada_Lib.Directory;
 with Ada_Lib.Options_Interface;
 --with Ada_Lib.Parser;
 with Ada_Lib.Socket_IO;
@@ -8,6 +9,7 @@ with Ada_Lib.Strings.Unlimited; use Ada_Lib.Strings; use Ada_Lib.Strings.Unlimit
 with Ada.Text_IO; use Ada.Text_IO;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
 with AUnit.Assertions; use AUnit.Assertions;
+with Base;
 with Camera.Lib.Options;
 --with Hex_IO;
 --with Video.Lib;
@@ -24,9 +26,9 @@ package body Configuration.Camera.State is
    ) return Boolean is
    ----------------------------------------------------------------
 
-      Connection_Data            : Connection_Data_Type renames
-                                    Connection_Data_Type (
-                                       Ada_Lib.GNOGA.Get_Connection_Data);
+      Connection_Data            : Base.Connection_Data_Type renames
+                                    Base.Connection_Data_Type (
+                                       Ada_Lib.GNOGA.Get_Connection_Data.all);
       State                      : State_Type renames Connection_Data.State;
 
    begin
@@ -50,9 +52,9 @@ package body Configuration.Camera.State is
    ) return Boolean is
    ----------------------------------------------------------------
 
-      Connection_Data            : Connection_Data_Type renames
-                                    Connection_Data_Type (
-                                       Ada_Lib.GNOGA.Get_Connection_Data);
+      Connection_Data            : Base.Connection_Data_Type renames
+                                    Base.Connection_Data_Type (
+                                       Ada_Lib.GNOGA.Get_Connection_Data.all);
       State                      : State_Type renames Connection_Data.State;
 
    begin
@@ -66,8 +68,13 @@ package body Configuration.Camera.State is
    ) return String is
    ----------------------------------------------------------------
 
+      Connection_Data            : Base.Connection_Data_Type renames
+                                    Base.Connection_Data_Type (
+                                       Ada_Lib.GNOGA.Get_Connection_Data.all);
+      State                      : Configuration.Camera.State.State_Type renames
+                                    Connection_Data.State;
       Image_Name                 : constant String :=
-                                    Global_Camera_State.Image_Path (Row, Column);
+                                    State.Image_Path (Row, Column);
       Image_Path        : constant String := "img/" & Image_Name;
                            -- gnoga ads img/
    begin
@@ -157,14 +164,14 @@ package body Configuration.Camera.State is
       return State.Number_Rows;
    end Get_Number_Rows;
 
-   ----------------------------------------------------------------
-   function Global_State_Is_Set
-   return Boolean is
-   ----------------------------------------------------------------
-
-   begin
-      return Global_Camera_State.Is_Loaded;
-   end Global_State_Is_Set;
+-- ----------------------------------------------------------------
+-- function Global_State_Is_Set
+-- return Boolean is
+-- ----------------------------------------------------------------
+--
+-- begin
+--    return Global_Camera_State.Is_Loaded;
+-- end Global_State_Is_Set;
 
    ----------------------------------------------------------------
    function Has_Image (
@@ -214,7 +221,8 @@ package body Configuration.Camera.State is
 -- end Is_Loaded;
 
    ----------------------------------------------------------------
-   procedure Load_Camera_State (
+   overriding
+   procedure Load (
       State                      : in out State_Type;
       Location                   : in     Configuration.State.Location_Type;
       Name                       : in     String) is
@@ -285,7 +293,7 @@ package body Configuration.Camera.State is
       end loop;
 
       Config.Close;
-      State.Set := True;
+      State.Loaded := True;
 --Hex_IO.Dump_32 (State.Number_Columns'address, 32, 1, "number columns");
       Log_Out (Debug);
 
@@ -301,7 +309,7 @@ package body Configuration.Camera.State is
          Trace_Exception (Debug, Fault);
          raise;
 
-   end Load_Camera_State;
+   end Load;
    ----------------------------------------------------------------
    overriding
    procedure Unload (
@@ -309,9 +317,9 @@ package body Configuration.Camera.State is
    ----------------------------------------------------------------
 
    begin
-      Log_In (Debug, "state set " & State.Set'img);
+      Log_In (Debug, "state set " & State.Loaded'img);
       if State.Is_Loaded then
-         State.Set := False;
+         State.Loaded := False;
          Free (State.Images);
       end if;
       Log_Out (Debug);

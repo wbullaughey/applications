@@ -28,12 +28,13 @@ package body Widgets.Configured.Unit_Test is
    use type Gnoga.Gui.View.Pointer_To_View_Base_Class;
 
    type Test_Type (
-      Initialize_GNOGA           : Boolean) is new
-                                    Camera.Lib.Unit_Test.Camera_Window_Test_Type (
-                                       Initialize_GNOGA,
-                                       Run_Main => True) with record
-      Setup                      : Configuration.Camera.Setup.Setup_Type;
-   end record;
+      Brand                      : Camera.Lib.Brand_Type) is new
+                                    Camera.Lib.Unit_Test.
+                                       Camera_Window_Test_With_Camera_Type (
+                                          Brand             => Brand,
+                                          Initialize_GNOGA  => False) with
+                                          -- Set_Up will use Main.Run to initialize
+                                             null record;
 
    type Test_Access is access Test_Type;
 
@@ -44,10 +45,10 @@ package body Widgets.Configured.Unit_Test is
    procedure Register_Tests (
       Test                       : in out Test_Type);
 
-   overriding
-   procedure Set_Up (
-      Test                       : in out Test_Type
-   ) with Post => Test.Verify_Set_Up;
+-- overriding
+-- procedure Set_Up (
+--    Test                       : in out Test_Type
+-- ) with Post => Test.Verify_Set_Up;
 
    overriding
    procedure Tear_Down (
@@ -286,6 +287,8 @@ package body Widgets.Configured.Unit_Test is
                                        Cards.Card (Widget_Name);
       Configured_Card            : Configured_Card_Type renames
                                    Configured_Card_Type (Current_Card.all);
+      State                      : Configuration.Camera.State.State_Type renames
+                                    Connection_Data.State;
    begin
       Log_In (Debug, "field " & Field'img &
          " Modified_Configuration_ID" & Modified_Configuration_ID'img &
@@ -333,7 +336,7 @@ package body Widgets.Configured.Unit_Test is
                                  ),
                Expected_Configuration_ID
                               => Modified_Configuration_ID,
-               Expected_Image => Local_Test.State.Image_Path (
+               Expected_Image => State.Image_Path (
                                     Column => (case Field is
                                           when Column_Field =>
                                              Column_Type (
@@ -453,8 +456,8 @@ package body Widgets.Configured.Unit_Test is
 --    Test                       : in out AUnit.Test_Cases.Test_Case'class);
 
 -- Description                   : aliased String := "button push callback event";
-   Setup_Test_Path               : constant String := "configured_window_setup.cfg";
-   State_Test_Path               : constant String := "configured_window_state.cfg";
+-- Setup_Test_Path               : constant String := "configured_window_setup.cfg";
+-- State_Test_Path               : constant String := "configured_window_state.cfg";
    Updated_Column                : constant Preset_Column_Index_Type :=
                                        Label_Field;
    Updated_Label_Content         : constant String := "updated label content";
@@ -688,39 +691,44 @@ package body Widgets.Configured.Unit_Test is
       Cell.Row_Coordinate.Fire_On_Focus_Out;
    end Row_Fire;
 
-   ---------------------------------------------------------------
-   overriding
-   procedure Set_Up (
-      Test                       : in out Test_Type) is
-   ---------------------------------------------------------------
-
-      Options                 : Standard.Camera.Lib.Options_Type'class
-                                 renames Standard.Camera.Lib.Unit_Test.Options.all;
---    Connection_Data            : constant Base.Connection_Data_Access :=
---                                  new Base.Connection_Data_Type;
-   begin
-      Log_In (Debug, "test tag " & Tag_Name (Test_Type'class (Test)'tag));
---    Ada_Lib.GNOGA.Set_Connection_Data ( -- moved to parent
---       Ada_Lib.GNOGA.Connection_Data_Class_Access (Connection_Data));
-      Test.State.Load_Camera_State (
-         Options.Location, State_Test_Path); -- need to load state 1st
-      Test.Setup.Load (Test.State, Setup_Test_Path);
-      Camera.Lib.Unit_Test.Camera_Window_Test_Type (Test).Set_Up;
---    Button_Push_Event.Reset_Event;
-      Log_Out (Debug);
-
-   exception
-      when Fault: Failed =>
-         Test.Set_Up_Message_Exception (Fault, "could not load configuration" &
-            Quote (" Setup_Path", Setup_Test_Path) &
-            Quote (" State_Path", State_Test_Path));
-         raise;
-
-      when Fault: others =>
-         Trace_Exception (Debug, Fault);
-         Assert (False, "exception message " & Ada.Exceptions.Exception_Message (Fault));
-
-   end Set_Up;
+--   ---------------------------------------------------------------
+--   overriding
+--   procedure Set_Up (
+--      Test                       : in out Test_Type) is
+--   ---------------------------------------------------------------
+--
+--      Options                    : Standard.Camera.Lib.Unit_Test.
+--                                    Unit_Test_Options_Type'class
+--                                       renames Standard.Camera.Lib.Unit_Test.
+--                                          Options.all;
+--      Connection_Data            : Base.Connection_Data_Type renames
+--                                    Base.Connection_Data_Type (
+--                                       Ada_Lib.GNOGA.Get_Connection_Data.all);
+--      State                      : Configuration.Camera.State.State_Type renames
+--                                    Connection_Data.State;
+--   begin
+--      Log_In (Debug or Trace_Set_Up, "test tag " & Tag_Name (Test_Type'class (Test)'tag));
+----    Ada_Lib.GNOGA.Set_Connection_Data ( -- moved to parent
+----       Ada_Lib.GNOGA.Connection_Data_Class_Access (Connection_Data));
+----    State.Load (
+----       Options.Location, State_Test_Path); -- need to load state 1st
+----    Test.Setup.Load (State, Setup_Test_Path);
+--      Camera.Lib.Unit_Test.Camera_Window_Test_Type (Test).Set_Up;
+----    Button_Push_Event.Reset_Event;
+--      Log_Out (Debug or Trace_Set_Up);
+--
+--   exception
+--      when Fault: Failed =>
+--         Test.Set_Up_Message_Exception (Fault, "could not load configuration" &
+--            Quote (" Setup_Path", Setup_Test_Path) &
+--            Quote (" State_Path", State_Test_Path));
+--         raise;
+--
+--      when Fault: others =>
+--         Trace_Exception (Debug, Fault);
+--         Assert (False, "exception message " & Ada.Exceptions.Exception_Message (Fault));
+--
+--   end Set_Up;
 
    ---------------------------------------------------------------
    function Suite return AUnit.Test_Suites.Access_Test_Suite is
@@ -730,7 +738,8 @@ package body Widgets.Configured.Unit_Test is
 --                                  renames Camera.Lib.Unit_Test.Options.all;
       Test_Suite                 : constant AUnit.Test_Suites.Access_Test_Suite :=
                                     new AUnit.Test_Suites.Test_Suite;
-      Tests                      : constant Test_Access := new Test_Type (False);
+      Tests                      : constant Test_Access := new Test_Type (
+                                    Camera.Lib.PTZ_Optics_Camera);
 
    begin
       Log_In (Debug);
@@ -746,12 +755,17 @@ package body Widgets.Configured.Unit_Test is
       Test                       : in out Test_Type) is
    ---------------------------------------------------------------
 
+      Connection_Data            : Base.Connection_Data_Type renames
+                                    Base.Connection_Data_Type (
+                                       Ada_Lib.GNOGA.Get_Connection_Data.all);
+      State                      : Configuration.Camera.State.State_Type renames
+                                    Connection_Data.State;
    begin
       Log_In (Debug);
       Ada_Lib.GNOGA.Clear_Connection_Data;
 
       if Test.Setup.Loaded then
-         Test.Setup.Unload (Test.State, Save_Changes => False);
+         Test.Setup.Unload (State, Save_Changes => False);
       end if;
       Camera.Lib.Unit_Test.Camera_Window_Test_Type (Test).Tear_Down;
       Log_Out (Debug);
@@ -812,6 +826,7 @@ package body Widgets.Configured.Unit_Test is
    ----------------------------------------------------------------
    procedure Test_Cancel_Configured (
       Test                       : in out AUnit.Test_Cases.Test_Case'class) is
+   pragma Unreferenced (Test);
    ----------------------------------------------------------------
 
 --    Local_Test                 : Test_Type'class renames
@@ -865,10 +880,8 @@ package body Widgets.Configured.Unit_Test is
                                        Ada_Lib.GNOGA.Get_Connection_Data);
        Cards                      : constant Main.Cards_Access_Type :=
                                     Connection_Data.Get_Cards;
---    Number_Rows                : constant := 3;
---    Tabs                       : constant Gnoga.Gui.View.Card.
---                                  Pointer_To_Tab_Class :=
---                                     Connection_Data.Get_Tabs;
+      State                      : Configuration.Camera.State.State_Type renames
+                                    Connection_Data.State;
    begin
       Log_In (Debug);
 
@@ -881,7 +894,7 @@ package body Widgets.Configured.Unit_Test is
       begin
          -- test configurations
          for Configuration_Index in Configuration_ID_Type'first ..
-               Local_Test.State.Number_Configurations loop
+               State.Number_Configurations loop
             declare
                Configuration     : Configuration_Type
                                     renames Global_Camera_Setup.Configurations (
@@ -1006,6 +1019,7 @@ package body Widgets.Configured.Unit_Test is
    ----------------------------------------------------------------
    procedure Test_Select_Preset (
       Test                       : in out AUnit.Test_Cases.Test_Case'class) is
+   pragma Unreferenced (Test);
    ----------------------------------------------------------------
 
 --    Local_Test                 : Test_Type'class renames
@@ -1082,6 +1096,8 @@ package body Widgets.Configured.Unit_Test is
                                        Cards.Card (Widget_Name);
       Configured_Card            : Configured_Card_Type renames
                                    Configured_Card_Type (Current_Card.all);
+      State                      : Configuration.Camera.State.State_Type renames
+                                    Connection_Data.State;
    begin
       Log_In (Debug, "Modified_Configuration_ID" & Modified_Configuration_ID'img &
          " original configuration id" & Original_Configuration.
@@ -1116,7 +1132,7 @@ package body Widgets.Configured.Unit_Test is
                Expected_Column=> Original_Preset.Column,
                Expected_Configuration_ID
                               => Modified_Configuration_ID,
-               Expected_Image => Local_Test.State.Image_Path (
+               Expected_Image => State.Image_Path (
                                     Original_Preset.Row,
                                     Original_Preset.Column,
                                     Add_Prefix => True),
@@ -1143,6 +1159,8 @@ package body Widgets.Configured.Unit_Test is
                                        Ada_Lib.GNOGA.Get_Connection_Data);
       Cards                      : constant Main.Cards_Access_Type :=
                                     Connection_Data.Get_Cards;
+      State                      : Configuration.Camera.State.State_Type renames
+                                    Connection_Data.State;
       Tabs                       : constant Gnoga.Gui.View.Card.Pointer_To_Tab_Class :=
                                     Connection_Data.Get_Tabs;
    begin
@@ -1185,7 +1203,7 @@ package body Widgets.Configured.Unit_Test is
       end;
 
       Local_Test.Setup.Set_Path (Update_Setup_Path);
-      Local_Test.Setup.Unload (Local_Test.State, Save_Changes => True);
+      Local_Test.Setup.Unload (State, Save_Changes => True);
 
       Assert (Ada_Lib.Directory.Compare_Files (Update_Setup_Path,
          Expected_Setup_Path), "files did not compare");
@@ -1225,6 +1243,8 @@ package body Widgets.Configured.Unit_Test is
                                        Cards.Card (Widget_Name);
       Configured_Card            : Configured_Card_Type renames
                                    Configured_Card_Type (Current_Card.all);
+      State                      : Configuration.Camera.State.State_Type renames
+                                    Connection_Data.State;
    begin
       Log_In (Debug, "preset field " &
          " Modified_Configuration_ID" & Modified_Configuration_ID'img &
@@ -1265,7 +1285,7 @@ package body Widgets.Configured.Unit_Test is
                Expected_Column=> Expected_Preset.Column,
                Expected_Configuration_ID
                               => Modified_Configuration_ID,
-               Expected_Image => Local_Test.State.Image_Path (Expected_Preset.Row,
+               Expected_Image => State.Image_Path (Expected_Preset.Row,
                                     Expected_Preset.Column,
                                     Add_Prefix => True),
                Expected_Label => Original_Configuration.Label.Coerce,

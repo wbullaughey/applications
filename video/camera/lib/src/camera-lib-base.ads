@@ -29,7 +29,8 @@ package Camera.Lib.Base is
       Memory_Reset,
       Power,
       Zoom_Direct,
-      Zoom_Full
+      Zoom_Full,
+      Zoom_Inquire
    );
 
    type Option_Type (

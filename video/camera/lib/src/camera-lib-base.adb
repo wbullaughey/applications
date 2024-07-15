@@ -71,6 +71,17 @@ package body Camera.Lib.Base is
    end Apply_Parameters;
 
    ---------------------------------------------------------------
+   procedure Camera_No_Found (
+      Address                    : in     String;
+      Port                       : in     GNAT.Sockets.Port_Type) is
+   ---------------------------------------------------------------
+
+   begin
+      raise Failed with Quote ("Camera address", Address) &
+         " port" & Port'img & " not found";
+   end Camera_No_Found;
+
+   ---------------------------------------------------------------
    overriding
    procedure Close (
       Camera                     : in out Base_Camera_Type) is
@@ -182,14 +193,7 @@ package body Camera.Lib.Base is
    exception
 
       when Fault: GNAT.Sockets.Host_Error | Ada_Lib.Socket_IO.Failed =>
-         declare
-            Message              : constant String :=
-                                    Quote ("Camera address", Host_Address) &
-                                       " not found";
-         begin
-            Trace_Message_Exception (Debug, Fault, Message);
-            raise Failed with Message;
-         end;
+         Camera_No_Found (Host_Address, Port);
 
    end Host_Open;
 
@@ -214,14 +218,7 @@ package body Camera.Lib.Base is
    exception
 
       when Fault: GNAT.Sockets.Host_Error | Ada_Lib.Socket_IO.Failed =>
-         declare
-            Message              : constant String :=
-                                    Quote ("Camera address", Address) &
-                                    " not found";
-         begin
-            Trace_Message_Exception (Debug, Fault, Message);
-            raise Failed with Message;
-         end;
+         Camera_No_Found (Address, Port);
 
    end IP_Open;
 
@@ -241,14 +238,7 @@ package body Camera.Lib.Base is
    exception
 
       when Fault: GNAT.Sockets.Host_Error | Ada_Lib.Socket_IO.Failed =>
-         declare
-            Message              : constant String :=
-                                    "Camera address " & Address.Image &
-                                    " not found";
-         begin
-            Trace_Message_Exception (Debug, Fault, Message);
-            raise Failed with Message;
-         end;
+         Camera_No_Found (Address.Image, Port);
 
    end Open;
 

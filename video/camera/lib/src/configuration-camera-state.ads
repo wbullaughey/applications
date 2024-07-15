@@ -46,8 +46,8 @@ package Configuration.Camera.State is
    function File_Path
    return String;
 
-   function Global_State_Is_Set
-   return Boolean;
+-- function Global_State_Is_Set
+-- return Boolean;
 
    function Get_Number_Columns (
       State                      : in     State_Type
@@ -90,7 +90,8 @@ package Configuration.Camera.State is
 --    State                      : in     State_Type
 -- ) return Boolean;
 
-   procedure Load_Camera_State (
+   overriding
+   procedure Load (
       State                      : in out State_Type;
       Location                   : in     Configuration.State.Location_Type;
       Name                       : in     String

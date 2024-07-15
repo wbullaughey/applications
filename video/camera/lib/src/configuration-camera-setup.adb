@@ -252,8 +252,7 @@ package body Configuration.Camera.Setup is
    begin
       Log_In (Debug, Quote ("file name", Name) &
          Quote (" Current_Directory", Current_Directory) &
-         Quote (" path", Path) &
-         " Number_Configurations" & State.Number_Configurations'img);
+         Quote (" path", Path));
 
       Global_Camera_Setup := Setup'unchecked_access;
       Config.Load (Path, False);
@@ -302,7 +301,7 @@ package body Configuration.Camera.Setup is
                      Column      => Column,
                      Row         => Row,
                      Preset_ID   => Preset_ID,
-                     Set         => True,
+                     Loaded      => True,
                      Updated     => False);
                end;
             else
@@ -355,7 +354,7 @@ package body Configuration.Camera.Setup is
                      Configuration_ID  => Configuration_ID,
                      Label             => Ada_Lib.Strings.Unlimited.Coerce (Label),
                      Preset_ID         => Preset_ID,
-                     Set               => True,
+                     Loaded            => True,
                      Updated           => False);
                end;
             end if;

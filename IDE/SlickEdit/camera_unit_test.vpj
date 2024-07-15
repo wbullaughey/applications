@@ -54,13 +54,14 @@
         <F N="../../video/camera/unit_test/build.sh"/>
         <F N="../../video/camera/unit_test/camera_tests.gpr"/>
         <F N="../../video/camera/unit_test/config/camera_tests_config.gpr"/>
-        <F N="../../video/camera/unit_test/driver_run.sh"/>
+        <F N="../../../../../../bin/debugvs.sh"/>
         <F N="../../video/camera/driver/help"/>
         <F N="../../video/camera/unit_test/help"/>
         <F N="../../video/camera/unit_test/list-camera_aunit.txt"/>
         <F N="../../video/camera/unit_test/list-camera_driver.txt"/>
         <F N="../../video/camera/unit_test/load_test_setup.cfg"/>
         <F N="../../video/camera/unit_test/run.sh"/>
+        <F N="../../video/camera/unit_test/run_driver.sh"/>
         <F N="../../video/camera/unit_test/suites"/>
         <F N="../../video/lib/video_aunit/test-macosx"/>
     </Files>

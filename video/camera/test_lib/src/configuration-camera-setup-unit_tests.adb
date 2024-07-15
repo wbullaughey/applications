@@ -1,19 +1,22 @@
 with Ada.Exceptions;
 with Ada_Lib.Directory.Compare_Files;
+with Ada_Lib.GNOGA;
 --with Ada_Lib.Options_Interface;
 with Ada_Lib.Strings.Unlimited; use Ada_Lib.Strings.Unlimited;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
-with Ada_Lib.Unit_Test.Test_Cases;
+with Ada_Lib.Unit_Test;
 with AUnit.Assertions; use AUnit.Assertions;
 with AUnit.Test_Cases;
+with Base;
 with Camera.Lib.Unit_Test;
+
+--with Configuration.State;
 
 package body Configuration.Camera.Setup.Unit_Tests is
 
    type Configuration_Tests_Type is new Standard.Camera.Lib.
-                                    Unit_Test.Camera_Test_Type with record
-      Setup                      : Configuration.Camera.Setup.Setup_Type;
-   end record;
+                                    Unit_Test.Camera_Test_Type with
+                                       null record;
 
    type Configuration_Tests_Access is access Configuration_Tests_Type;
 
@@ -31,9 +34,9 @@ package body Configuration.Camera.Setup.Unit_Tests is
       Test                       : in out Configuration_Tests_Type
    ) with Post => Test.Verify_Set_Up;
 
-   overriding
-   procedure Tear_Down (
-      Test                       : in out Configuration_Tests_Type);
+-- overriding
+-- procedure Tear_Down (
+--    Test                       : in out Configuration_Tests_Type);
 
    procedure Test_Load (
       Test                       : in out AUnit.Test_Cases.Test_Case'class);
@@ -94,14 +97,10 @@ package body Configuration.Camera.Setup.Unit_Tests is
       Test                    : in out Configuration_Tests_Type) is
    ---------------------------------------------------------------
 
-      Options                 : Standard.Camera.Lib.Options_Type'class
-                                 renames Standard.Camera.Lib.Unit_Test.Options.all;
    begin
-      Log_In (Debug);
-      Test.State.Load_Camera_State (
-         Options.Location,Test_State);
-      Standard.Camera.Lib.Unit_Test.Camera_Test_Type (Test).Set_Up;
-      Log_Out (Debug);
+      Log_In (Debug or Trace_Set_Up);
+      Test.Set_Up_Optional_Load (False);
+      Log_Out (Debug or Trace_Set_Up);
 
    exception
       when Fault: others =>
@@ -114,8 +113,10 @@ package body Configuration.Camera.Setup.Unit_Tests is
    function Suite return AUnit.Test_Suites.Access_Test_Suite is
    ---------------------------------------------------------------
 
-      Options                 : Standard.Camera.Lib.Options_Type'class
-                                 renames Standard.Camera.Lib.Unit_Test.Options.all;
+      Options                    : Standard.Camera.Lib.Unit_Test.
+                                    Unit_Test_Options_Type'class
+                                       renames Standard.Camera.Lib.Unit_Test.
+                                          Options.all;
       Test_Suite              : constant AUnit.Test_Suites.Access_Test_Suite :=
                                  new AUnit.Test_Suites.Test_Suite;
       Tests                   : constant Configuration_Tests_Access :=
@@ -129,31 +130,43 @@ package body Configuration.Camera.Setup.Unit_Tests is
       return Test_Suite;
    end Suite;
 
-   ---------------------------------------------------------------
-   overriding
-   procedure Tear_Down (
-      Test                       : in out Configuration_Tests_Type) is
-   ---------------------------------------------------------------
-
-   begin
-      Log_In (Debug);
---    Ada_Lib.GNOGA.Clear_Connection_Data;
-      Ada_Lib.Unit_Test.Test_Cases.Test_Case_Type (Test).Tear_Down;
-      Log_Out (Debug);
-   end Tear_Down;
+--   ---------------------------------------------------------------
+--   overriding
+--   procedure Tear_Down (
+--      Test                       : in out Configuration_Tests_Type) is
+--   ---------------------------------------------------------------
+--
+--   begin
+--      Log_In (Debug);
+----    Ada_Lib.GNOGA.Clear_Connection_Data;
+--      Ada_Lib.Unit_Test.Test_Cases.Test_Case_Type (Test).Tear_Down;
+--      Log_Out (Debug);
+--   end Tear_Down;
 
    ---------------------------------------------------------------
    procedure Test_Load (
       Test                       : in out AUnit.Test_Cases.Test_Case'class) is
    ---------------------------------------------------------------
 
+      Connection_Data            : Base.Connection_Data_Type renames
+                                    Base.Connection_Data_Type (
+                                       Ada_Lib.GNOGA.Get_Connection_Data.all);
       Local_Test                 : Configuration_Tests_Type renames
                                     Configuration_Tests_Type (Test);
+      Options                    : Standard.Camera.Lib.Unit_Test.
+                                    Unit_Test_Options_Type'class renames
+                                       Standard.Camera.Lib.Unit_Test.Options.all;
+      State                      : Configuration.Camera.State.State_Type renames
+                                    Connection_Data.State;
 
    begin
       Log_In (Debug);
-      Local_Test.Setup.Load (
-         Configuration.Camera.State.Global_Camera_State.all, Test_Setup);
+      Connection_Data.State.Load (Options.Location, Test_State);
+      Local_Test.Setup.Load (Connection_Data.State, Test_Setup);
+      Local_Test.Camera_Address := State.Video_Address;
+      Local_Test.Port_Number := State.Video_Port;
+      Local_Test.Camera := Local_Test.PTZ_Optics'unchecked_access;
+      Local_Test.Camera.Open (State.Video_Address.all, Local_Test.Port_Number);
       Log_Out (Debug);
 
    exception
@@ -170,6 +183,9 @@ package body Configuration.Camera.Setup.Unit_Tests is
       Test                       : in out AUnit.Test_Cases.Test_Case'class) is
    ---------------------------------------------------------------
 
+      Connection_Data            : Base.Connection_Data_Type renames
+                                    Base.Connection_Data_Type (
+                                       Ada_Lib.GNOGA.Get_Connection_Data.all);
       Configuration_ID           : constant Configuration_ID_Type := 3;
       Expected_Setup             : constant String :=
                                     "expected_updated_test_setup.cfg";
@@ -185,8 +201,7 @@ package body Configuration.Camera.Setup.Unit_Tests is
 
    begin
       Log_In (Debug);
-      Local_Test.Setup.Load (
-         Configuration.Camera.State.Global_Camera_State.all, Test_Setup);
+      Local_Test.Setup.Load (Connection_Data.State, Test_Setup);
       if Debug then
          Local_Test.Setup.Get_Configuration (Configuration_ID).Dump;
          Local_Test.Setup.Get_Preset (Preset_ID).Dump;
@@ -196,13 +211,12 @@ package body Configuration.Camera.Setup.Unit_Tests is
       Updated_Setup.Update_Configuration (Configuration_ID, New_Label);
       Updated_Setup.Update_Configuration (Configuration_ID, New_Preset_ID);
       Updated_Setup.Update_Preset (New_Preset_ID, New_Row, New_Column);
-      Updated_Setup.Update (
-         Configuration.Camera.State.Global_Camera_State.all);
+      Updated_Setup.Update (Connection_Data.State);
       if Debug then
          Updated_Setup.Get_Configuration (Configuration_ID).Dump;
          Updated_Setup.Get_Preset (New_Preset_ID).Dump;
       end if;
-      Assert (Updated_Setup.Is_Set, "setup not loaded");
+      Assert (Updated_Setup.Is_Loaded, "setup not loaded");
       Assert (Updated_Setup.Has_Configuration (Configuration_ID),
          "configuration " &Configuration_ID'img & " deos not exist");
       Assert (Updated_Setup.Has_Preset (New_Preset_ID), "preset " &
@@ -250,6 +264,9 @@ package body Configuration.Camera.Setup.Unit_Tests is
       Test                       : in out AUnit.Test_Cases.Test_Case'class) is
    ---------------------------------------------------------------
 
+      Connection_Data            : Base.Connection_Data_Type renames
+                                    Base.Connection_Data_Type (
+                                       Ada_Lib.GNOGA.Get_Connection_Data.all);
       Expected_Number_Columns    : constant := 3;
       Expected_Number_Rows       : constant := 4;
       Expected_Number_Configurations
@@ -257,6 +274,8 @@ package body Configuration.Camera.Setup.Unit_Tests is
       Expected_Last_Presets      : constant := 5;
       Local_Test                 : Configuration_Tests_Type renames
                                     Configuration_Tests_Type (Test);
+      State                      : Configuration.Camera.State.State_Type renames
+                                    Connection_Data.State;
 
 --    type Expect_Image_Type     is array (Row_Type range 1 .. Expected_Number_Rows,
 --                                     Column_Type range 1 .. Expected_Number_Columns) of
@@ -272,69 +291,68 @@ package body Configuration.Camera.Setup.Unit_Tests is
                                           Column      => 2,
                                           Row         => 2,
                                           Preset_ID   => 0,
-                                          Set         => True,
+                                          Loaded      => True,
                                           Updated     => False),
                                        1  => (
                                           Column      => 1,
                                           Row         => 1,
                                           Preset_ID   => 1,
-                                          Set         => True,
+                                          Loaded      => True,
                                           Updated     => False),
                                        3  => (
                                           Column      => 3,
                                           Row         => 1,
                                           Preset_ID   => 3,
-                                          Set         => True,
+                                          Loaded      => True,
                                           Updated     => False),
                                        5 =>  (
                                           Column      => 2,
                                           Row         => 1,
                                           Preset_ID   => 5,
-                                          Set         => True,
+                                          Loaded      => True,
                                           Updated     => False),
                                        others => Null_Preset );
       Number_Configurations      : constant Configuration_ID_Type :=
-                                    Local_Test.State.Number_Configurations;
+                                    State.Number_Configurations;
       Expected_Configurations    : constant Configurations_Type (
                                     1 .. Number_Configurations) := (
                                        1 => (
                                           Configuration_ID  => 1,
                                           Label             => Coerce ("Preset 5"),
                                           Preset_ID         => 5,
-                                          Set               => True,
+                                          Loaded            => True,
                                           Updated           => False),
                                        2 => (
                                           Configuration_ID  => 2,
                                           Label             => Coerce ("Preset 3"),
                                           Preset_ID         => 3,
-                                          Set               => True,
+                                          Loaded            => True,
                                           Updated           => False),
                                        3 => (
                                           Configuration_ID  => 3,
                                           Label             => Coerce ("Preset 1"),
                                           Preset_ID         => 1,
-                                          Set               => True,
+                                          Loaded            => True,
                                           Updated           => False),
                                        4 => (
                                           Configuration_ID  => 4,
                                           Label             => Coerce ("Preset 0"),
                                           Preset_ID         => 0,
-                                          Set               => True,
+                                          Loaded            => True,
                                           Updated           => False),
                                        others => Null_Configuration);
 
    begin
       Log_In (Debug);
       Local_Test.Setup.Load (
-         Configuration.Camera.State.Global_Camera_State.all, Test_Setup);
+         Connection_Data.State, Test_Setup);
 
       declare
          Number_Columns          : constant Column_Type :=
-                                    Local_Test.State.Number_Columns;
+                                    State.Number_Columns;
          Last_Preset             : constant Preset_ID_Type :=
-                                    Local_Test.State.Last_Preset;
-         Number_Rows             : constant Row_Type := Local_Test.
-                                    State.Number_Rows;
+                                    State.Last_Preset;
+         Number_Rows             : constant Row_Type := State.Number_Rows;
 
       begin
          Log_Here (Debug,

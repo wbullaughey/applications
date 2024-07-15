@@ -7,8 +7,10 @@ with Ada_Lib.Unit_Test;
 with AUnit.Assertions; use AUnit.Assertions;
 with AUnit.Test_Cases;
 with Base;
+with Configuration.Camera.State;
 with Camera.Lib.Unit_Test;
 with Configuration.Camera.Setup;
+--with Configuration.State;
 with Gnoga.Gui.View.Card;
 with Main;
 
@@ -23,10 +25,9 @@ package body Widgets.Control.Unit_Test is
       Initialize_GNOGA           : Boolean) is new Camera.Lib.Unit_Test.
                                     Camera_Window_Test_With_Camera_Type (
                                        Brand             => Brand,
-                                       Initialize_GNOGA  => Initialize_GNOGA,
-                                       Run_Main          => True) with record
-      Setup                      : Configuration.Camera.Setup.Setup_Type;
-   end record;
+                                       Initialize_GNOGA  => False) with
+                                       -- Set_Up will use Main.Run to initialize
+                                          null record;
 
    type Test_Access is access Test_Type;
 
@@ -107,15 +108,22 @@ package body Widgets.Control.Unit_Test is
       Test                       : in out Test_Type) is
    ---------------------------------------------------------------
 
-      Options                 : Standard.Camera.Lib.Options_Type'class
-                                 renames Standard.Camera.Lib.Unit_Test.Options.all;
+      Connection_Data            : Base.Connection_Data_Type renames
+                                    Base.Connection_Data_Type (
+                                       Ada_Lib.GNOGA.Get_Connection_Data.all);
+      Options                    : Standard.Camera.Lib.Unit_Test.
+                                    Unit_Test_Options_Type'class
+                                       renames Standard.Camera.Lib.Unit_Test.
+                                          Options.all;
+      State                      : Configuration.Camera.State.State_Type renames
+                                    Connection_Data.State;
    begin
-      Log_In (Debug);
-      Test.State.Load_Camera_State (Options.Location, State_Test_Path);
+      Log_In (Debug or Trace_Set_Up);
+      State.Load (Options.Location, State_Test_Path);
       -- need to load state 1st
-      Test.Setup.Load (Test.State, Setup_Test_Path);
+      Test.Setup.Load (State, Setup_Test_Path);
       Camera.Lib.Unit_Test.Camera_Window_Test_Type (Test).Set_Up;
-      Log_Out (Debug);
+      Log_Out (Debug or Trace_Set_Up);
 
    exception
       when Fault: Ada_Lib.Configuration.Failed =>
@@ -125,8 +133,8 @@ package body Widgets.Control.Unit_Test is
          raise;
 
       when Fault: others =>
-         Trace_Exception (Debug, Fault);
-         Log_Exception (Debug);
+         Trace_Exception (Debug or Trace_Set_Up, Fault);
+         Log_Exception (Debug or Trace_Set_Up);
          Assert (False, "exception message " & Ada.Exceptions.Exception_Message (Fault));
 
    end Set_Up;
@@ -140,7 +148,7 @@ package body Widgets.Control.Unit_Test is
       Test_Suite                 : constant AUnit.Test_Suites.Access_Test_Suite :=
                                     new AUnit.Test_Suites.Test_Suite;
       Tests                      : constant Test_Access := new Test_Type (
-                                    Brand    => Options.Camera_Options.Brand,
+                                    Brand    => Options.Brand,
                                     Initialize_GNOGA  => True);
 
    begin

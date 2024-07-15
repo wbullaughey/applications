@@ -5,7 +5,7 @@ with Ada_Lib.Options_Interface;
 with Ada_Lib.OS;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
 with Ada_Lib.Trace_Tasks;
-with Ada_lib.Timer;
+--with Ada_lib.Timer;
 --with Camera.Configuration;
 with Command_Name;
 with Driver;
@@ -36,7 +36,7 @@ begin
       Put_Line (Command_Name);
       Driver.Queue_Tests;
       Driver.Run_Selection;
-      Ada_lib.Timer.Stop;
+--    Ada_lib.Timer.Stop;
       Log_Here (Debug, "timer stopped, stop trace tasks");
 
       Ada_lib.Trace_Tasks.Stop;

@@ -29,7 +29,8 @@ package Driver is
 
    overriding
    function Initialize (
-     Options                     : in out Driver_Options_Type
+     Options                     : in out Driver_Options_Type;
+     From                        : in     String := Ada_Lib.Trace.Here
    ) return Boolean
    with pre => Options.Verify_Preinitialize;
 
@@ -57,7 +58,8 @@ package Driver is
 
    overriding
    function Initialize (
-     Options                     : in out Program_Options_Type
+     Options                     : in out Program_Options_Type;
+     From                        : in     String := Ada_Lib.Trace.Here
    ) return Boolean;
 
    overriding

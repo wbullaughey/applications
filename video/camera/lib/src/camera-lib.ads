@@ -49,7 +49,8 @@ package Camera.Lib is
 
    overriding
    function Initialize (
-      Options               : in out Options_Type
+      Options               : in out Options_Type;
+      From                        : in     String := Ada_Lib.Trace.Here
    ) return Boolean
    with pre => Options.Verify_Preinitialize;
 

@@ -4,9 +4,10 @@ with Ada_Lib.Options_Interface;
 with Ada_Lib.Strings;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
 with Ada_Lib.Unit_Test.Test_Cases;
+with Base;
 with AUnit.Assertions; use AUnit.Assertions;
 with AUnit.Test_Cases;
-with Camera.Lib.Unit_Test;
+--with Camera.Lib.Unit_Test;
 with Hex_IO;
 
 package body Configuration.Camera.State.Unit_Tests is
@@ -48,7 +49,7 @@ package body Configuration.Camera.State.Unit_Tests is
 
    procedure Test_Values (
       Test                       : in out AUnit.Test_Cases.Test_Case'class
-   ) with Pre => Global_Camera_State /= Null;
+   ) with Pre => Ada_Lib.GNOGA.Has_Connection_Data;
 
    Suite_Name                    : constant String := "State";
 
@@ -95,14 +96,15 @@ package body Configuration.Camera.State.Unit_Tests is
    ---------------------------------------------------------------
 
    begin
-      Log_In (Debug);
+log_here;
+      Log_In (Debug or Trace_Set_Up);
       Ada_Lib.GNOGA.Set_Connection_Data (new Connection_Data_Type);
       Standard.Camera.Lib.Unit_Test.Camera_Test_Type (Test).Set_Up ;
-      Log_Out (Debug);
+      Log_Out (Debug or Trace_Set_Up);
 
    exception
       when Fault: others =>
-         Trace_Exception (Debug, Fault);
+         Trace_Exception (Debug or Trace_Set_Up, Fault);
          Assert (False, "exception message " & Ada.Exceptions.Exception_Message (Fault));
 
    end Set_Up;
@@ -112,15 +114,17 @@ package body Configuration.Camera.State.Unit_Tests is
    return AUnit.Test_Suites.Access_Test_Suite is
    ---------------------------------------------------------------
 
-      Options                    : Standard.Camera.Lib.Options_Type'class
-                                    renames Standard.Camera.Lib.Unit_Test.Options.all;
+      Options                    : Standard.Camera.Lib.Unit_Test.
+                                    Unit_Test_Options_Type'class
+                                       renames Standard.Camera.Lib.Unit_Test.
+                                          Options.all;
       Test_Suite                 : constant AUnit.Test_Suites.Access_Test_Suite
                                     := new AUnit.Test_Suites.Test_Suite;
       Tests                      : constant Configuration_Tests_Access :=
                                     new Configuration_Tests_Type (Options.Brand);
 
    begin
-      Log_In (Debug); --, "test state address " & Image (Tests.State'address) & " pointer address " & image (Global_Camera_State'address));
+      Log_In (Debug, Quote ("suite", Suite_Name));
       Ada_Lib.Unit_Test.Suite (Suite_Name);  -- used for listing suites
       Test_Suite.Add_Test (Tests);
       Log_Out (Debug);
@@ -143,16 +147,21 @@ package body Configuration.Camera.State.Unit_Tests is
    ---------------------------------------------------------------
    procedure Test_Load (
       Test                       : in out AUnit.Test_Cases.Test_Case'class) is
+   pragma Unreferenced (Test);
    ---------------------------------------------------------------
 
-      Options                    : Standard.Camera.Lib.Options_Type'class
-                                    renames Standard.Camera.Lib.Unit_Test.Options.all;
-      Local_Test                 : Configuration_Tests_Type renames
-                                    Configuration_Tests_Type (Test);
+      Connection_Data            : Base.Connection_Data_Type renames
+                                    Base.Connection_Data_Type (
+                                       Ada_Lib.GNOGA.Get_Connection_Data.all);
+      Options                    : Standard.Camera.Lib.Unit_Test.
+                                    Unit_Test_Options_Type'class
+                                       renames Standard.Camera.Lib.Unit_Test.
+                                          Options.all;
+      State                      : Configuration.Camera.State.State_Type renames
+                                    Connection_Data.State;
    begin
       Log_In (Debug);
-      Local_Test.State.Load_Camera_State (
-         Options.Location, Test_State);
+      State.Load (Options.Location, Test_State);
       Log_Out (Debug);
 
    exception
@@ -167,8 +176,12 @@ package body Configuration.Camera.State.Unit_Tests is
    ---------------------------------------------------------------
    procedure Test_Values (
       Test                       : in out AUnit.Test_Cases.Test_Case'class) is
+   pragma Unreferenced (Test);
    ---------------------------------------------------------------
 
+      Connection_Data            : Base.Connection_Data_Type renames
+                                    Base.Connection_Data_Type (
+                                       Ada_Lib.GNOGA.Get_Connection_Data.all);
       Expected_Number_Columns    : constant := 3;
       Expected_Number_Rows       : constant := 4;
       Expected_Number_Configurations
@@ -213,16 +226,18 @@ package body Configuration.Camera.State.Unit_Tests is
 --                                     3  => ( 1, 2 ),
 --                                     5  => ( 1, 3 ),
 --                                     others => Null_Preset );
-      Local_Test                 : Configuration_Tests_Type renames
-                                    Configuration_Tests_Type (Test);
-      Options                    : Standard.Camera.Lib.Options_Type'class
-                                    renames Standard.Camera.Lib.Unit_Test.Options.all;
+--    Local_Test                 : Configuration_Tests_Type renames
+--                                  Configuration_Tests_Type (Test);
+      Options                    : Standard.Camera.Lib.Unit_Test.
+                                    Unit_Test_Options_Type'class
+                                       renames Standard.Camera.Lib.Unit_Test.
+                                          Options.all;
       State                      : Configuration.Camera.State.State_Type
-                                    renames Local_Test.State;
+                                    renames Connection_Data.State;
    begin
       Log_In (Debug, "location " & Options.Location'img);
-      State.Load_Camera_State (Options.Location, Test_State);
-      Log_Here (Debug, "set " & State.Set'img & " Number_Columns " &
+      State.Load (Options.Location, Test_State);
+      Log_Here (Debug, "set " & State.Loaded'img & " Number_Columns " &
          " address " & Image (State.Number_Columns'address) &
          " bits " & State.Number_Columns'size'img);
 Hex_IO.Dump_32 (State.Number_Columns'address, 32, 1, "number columns");
@@ -267,7 +282,7 @@ Hex_IO.Dump_32 (State.Number_Columns'address, 32, 1, "number columns");
          for Row in 1 .. Number_Rows loop
             for Column in 1 .. Number_Columns loop
                declare
-                  Have_Image     : constant Boolean := Local_Test.State.
+                  Have_Image     : constant Boolean := State.
                                     Has_Image (Row, Column);
                   Value          : Ada_Lib.Strings.String_Access renames
                                     Expected_Images (Row, Column);
@@ -278,7 +293,7 @@ Hex_IO.Dump_32 (State.Number_Columns'address, 32, 1, "number columns");
                   elsif Have_Image then
 --log_here;
                      declare
-                        Image    : constant String := Local_Test.State.
+                        Image    : constant String := State.
                                     Image_Path (Row, Column);
                      begin
                         Assert (Image = Value.all,

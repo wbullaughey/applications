@@ -68,18 +68,20 @@ package body Video.Lib is
    -------------------------------------------------------------------------
    overriding
    function Initialize (
-     Options                     : in out Options_Type
+     Options                     : in out Options_Type;
+     From                        : in     String := Here
    ) return Boolean is
    -------------------------------------------------------------------------
 
    begin
-      Log_In (Options_Debug or Trace_Options);
+      Log_In (Options_Debug or Trace_Options, "from " & From);
 
       Ada_Lib.Runstring_Options.Options.Register (
          Ada_Lib.Runstring_Options.With_Parameters,
          Options_With_Parameters);
 
-      return Log_Out (Ada_Lib.Options.Nested_Options_Type (Options).Initialize,
+      return Log_Out (Ada_Lib.Options.Program_Options_Type (
+            Options).Initialize,
          Options_Debug or Trace_Options);
    end Initialize;
 
@@ -127,8 +129,9 @@ package body Video.Lib is
          return Log_Out (True, Options_Debug or Trace_Options,
             " option" & Option.Image & " handled");
       else
-         return Log_Out (False, Trace_Options or Options_Debug, "other option" &
-            Option.Image);
+         return Log_Out (Ada_Lib.Options.Program_Options_Type (
+            Options).Process_Option (Iterator, Option),
+            Trace_Options or Options_Debug, "other option" & Option.Image);
       end if;
    end Process_Option;
 
@@ -158,13 +161,14 @@ package body Video.Lib is
 
          Put_Line (Component & " trace options (-" & Debug_Option & ")");
          Put_Line ("      a               all");
-         Put_Line ("      c               Configuration.State debug");
+--       Put_Line ("      c               Configuration.State debug");
          Put_Line ("      l               library debug");
          Put_Line ("      o               options debug");
          Put_Line ("      s               Trace simulator");
 
       end case;
 
+      Ada_Lib.Options.Program_Options_Type (Options).Program_Help (Help_Mode);
       Log_Out (Options_Debug or Trace_Options);
    end Program_Help;
 

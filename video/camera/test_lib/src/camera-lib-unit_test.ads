@@ -1,9 +1,9 @@
 with Ada_Lib.Unit_Test.Test_Cases;
 with Ada_Lib.GNOGA.Unit_Test; -- .Base;
---with Ada_Lib.Options.AUnit_Lib;
 with Ada_Lib.Options.GNOGA;
 with Ada_Lib.Options.Unit_Test;
---with AUnit.Ada_Lib.Options;
+with Ada_Lib.Trace;
+with AUnit.Ada_Lib.Options;
 with AUnit.Options;
 with AUnit.Simple_Test_Cases;
 with AUnit.Test_Results;
@@ -11,7 +11,7 @@ with AUnit.Test_Suites;
 with Camera.Commands;
 with Camera.LIB.ALPTOP;
 with Camera.Commands.PTZ_Optics;
-with Configuration.Camera.State;
+with Configuration.Camera.Setup;
 with Configuration.State;
 with GNAT.Source_Info;
 with Gnoga.GUI.Window;
@@ -30,8 +30,7 @@ package Camera.Lib.Unit_Test is
       Camera_Address             : Address_Constant_Access := Null;
       Port_Number                : Port_Type;
       Location                   : Configuration.State.Location_Type;
-      State                      : aliased Configuration.Camera.State.State_Type;
-                                 -- State included since now Connection_Data
+      Setup                      : Configuration.Camera.Setup.Setup_Type;
       case Brand is
          when Standard.Camera.Lib.ALPTOP_Camera =>
             ALPTOP                : aliased Standard.Camera.LIB.ALPTOP.ALPTOP_Type;
@@ -55,20 +54,22 @@ package Camera.Lib.Unit_Test is
    ) with Pre => Test.Verify_Pre_Setup,
           Post => Test.Verify_Post_Setup;
 
+   procedure Set_Up_Optional_Load (
+      Test                       : in out Camera_Test_Type;
+      Load                       : in     Boolean);
+
    overriding
    procedure Tear_Down (
       Test                       : in out Camera_Test_Type);
 
    -- use for test which create the standard main window which don't manipulate camera
    type Camera_Window_Test_Type (
-      Initialize_GNOGA           : Boolean;
-      Run_Main                   : Boolean) is abstract new Ada_Lib.GNOGA.
+      Initialize_GNOGA           : Boolean) is abstract new Ada_Lib.GNOGA.
                                     Unit_Test.GNOGA_Tests_Type (
-                                       Initialize_GNOGA,
-                                       Test_Driver    => False) with record
+                                       Initialize_GNOGA  => Initialize_GNOGA,
+                                       Test_Driver       => False) with record
       Main_Window                : Gnoga.GUI.Window.Window_Type;
---    State                      : aliased Configuration.Camera.State.State_Type;
-                                 -- get state from Ada_Lib.GNOGA.Get_Configuration
+      Setup                      : Configuration.Camera.Setup.Setup_Type;
    end record;
 
    overriding
@@ -80,15 +81,15 @@ package Camera.Lib.Unit_Test is
    -- use for test which create the standard main window which manipulate camera
    type Camera_Window_Test_With_Camera_Type (
       Brand                      : Standard.Camera.Lib.Brand_Type;
-      Initialize_GNOGA           : Boolean;
-      Run_Main                   : Boolean) is abstract new Camera_Window_Test_Type (
-                                    Initialize_GNOGA  => Initialize_GNOGA,
-                                    Run_Main          => Run_Main) with null record;
+      Initialize_GNOGA           : Boolean) is abstract new
+                                    Camera_Window_Test_Type (
+                                       Initialize_GNOGA) with null record;
 
    -- allocated options for unit test of camera library
-   type Unit_Test_Options_Type   is new Ada_Lib.Options.Program_Options_Type
+   type Unit_Test_Options_Type   is new Options_Type
                                     with record
-      Camera_Options             : aliased Standard.Camera.Lib.Options_Type;
+      AUnit_Options              : AUnit.Ada_Lib.Options.AUnit_Options_Type;
+--    Camera_Options             : aliased Standard.Camera.Lib.Options_Type;
       GNOGA_Options              : Ada_Lib.Options.GNOGA.GNOGA_Options_Type;
 --    GNOGA_Unit_Test_Options    : Ada_Lib.GNOGA.Unit_Test.
 --                                  GNOGA_Unit_Test_Options_Type;
@@ -109,14 +110,15 @@ package Camera.Lib.Unit_Test is
 
    overriding
    function Initialize (
-     Options                     : in out Unit_Test_Options_Type
+     Options                     : in out Unit_Test_Options_Type;
+     From                        : in     String := Ada_Lib.Trace.Here
    ) return Boolean
    with pre => Options.Verify_Preinitialize;
 
-   function Options (
-      From                    : in     String := Standard.GNAT.Source_Info.
-                                          Source_Location
-   ) return Options_Constant_Class_Access;
+-- function Options (
+--    From                    : in     String := Standard.GNAT.Source_Info.
+--                                        Source_Location
+-- ) return Options_Constant_Class_Access;
 
    function Options (
       From                    : in     String := Standard.GNAT.Source_Info.

@@ -1,5 +1,5 @@
 with Ada.Text_IO; use  Ada.Text_IO;
-with Ada_Lib.GNOGA;
+--with Ada_Lib.GNOGA;
 with Ada_Lib.Strings; use Ada_Lib.Strings;
 with ADA_LIB.Trace; use ADA_LIB.Trace;
 with Base;
@@ -45,7 +45,7 @@ package body Widgets.Configured is
          Value_Field                : in out Field_Type;
          Form_Field                 : in out Gnoga.Gui.Element.Form.Number_Type;
          Value                      : in     Field_Type;
-         From                       : in     String := Here);
+         From                       : in     String := Ada_Lib.Trace.Here);
 
    end Field_Package;
 
@@ -69,7 +69,7 @@ package body Widgets.Configured is
          Value_Field                : in out Field_Type;
          Form_Field                 : in out Gnoga.Gui.Element.Form.Number_Type;
          Value                      : in     Field_Type;
-         From                       : in     String := Here) is
+         From                       : in     String := Ada_Lib.Trace.Here) is
       ---------------------------------------------------------------
 
       begin
@@ -107,9 +107,11 @@ package body Widgets.Configured is
       Cards                      : in out Gnoga.Gui.View.View_Base_Type'Class) is
    ----------------------------------------------------------------
 
-      State                      : State_Type
-                                    renames
-                                       Global_Camera_State.all;
+      Connection_Data            : Base.Connection_Data_Type renames
+                                    Base.Connection_Data_Type (
+                                       Ada_Lib.GNOGA.Get_Connection_Data.all);
+      State                      : Configuration.Camera.State.State_Type renames
+                                    Connection_Data.State;
       Number_Configurations      : constant
                                     Configuration_ID_Type :=
                                        State.Number_Configurations;
@@ -202,7 +204,7 @@ package body Widgets.Configured is
       procedure Column_Package_Update (
          Cell                 : in     Cell_Class_Access;
          Coordinate           : in     Column_Type
-      ) with Pre =>Global_Camera_State /= Null;
+      ) with Pre =>Ada_Lib.GNOGA.Has_Connection_Data;
 
 --    procedure Refresh_Row (
 --       Row                        : in     Gnoga.Gui.Base.Pointer_To_Base_Class);
@@ -210,7 +212,7 @@ package body Widgets.Configured is
       procedure Row_Package_Update (
          Cell                 : in     Cell_Class_Access;
          Coordinate           : in     Row_Type
-      )  with Pre =>Global_Camera_State /= Null;
+      )  with Pre =>Ada_Lib.GNOGA.Has_Connection_Data;
 
       procedure Select_Handler (
          Object                  : in out Gnoga.Gui.Base.Base_Type'Class;
@@ -223,7 +225,7 @@ package body Widgets.Configured is
          Configured_Card            : in out Configured_Card_Type;
          Configuration_ID           : in     Configuration_ID_Type;
          Preset_Cell                : in out Preset_Package.Cell_Type'class
-      ) with Pre => Configuration.Camera.State.Global_Camera_State /= Null;
+      ) with Pre => Ada_Lib.GNOGA.Has_Connection_Data;
 
       ----------------------------------------------------------------
       procedure Allocate_Column (
@@ -282,10 +284,13 @@ package body Widgets.Configured is
          Coordinate           : in     Column_Type) is
       -------------------------------------------------------------
 
+         Connection_Data      : Base.Connection_Data_Type renames
+                                 Base.Connection_Data_Type (
+                                    Ada_Lib.GNOGA.Get_Connection_Data.all);
+         State                : Configuration.Camera.State.State_Type renames
+                                    Connection_Data.State;
       begin
-         Column_Package.Update (
-            Global_Camera_State.all,
-            Cell.Column_Number,
+         Column_Package.Update (State, Cell.Column_Number,
             Cell.Column_Coordinate, Coordinate);
       end Column_Package_Update;
 
@@ -352,6 +357,8 @@ package body Widgets.Configured is
                                                    Preset_ID)
                                        else
                                            Null_Preset);
+         State                   : Configuration.Camera.State.State_Type renames
+                                    Connection_Data.State;
       begin
          Log_In (Debug, "row " & Table_Row'img &
             " Column " & Table_Column'img &
@@ -401,7 +408,7 @@ package body Widgets.Configured is
                         Quote (" row id", Row.ID) &
                         Quote (" column id", Column.ID) &
                         " number presets" &
-                           Global_Camera_State.Last_Preset'img);
+                           State.Last_Preset'img);
                      Cell.Control_Table.Create (
                         Connection_Data.Get_Main_Window.all,
                         Parent   => Column,
@@ -427,7 +434,7 @@ package body Widgets.Configured is
                   begin
                      Log_Here (Debug, "row" & Configuration_Row_Index'img &
                         " column" & Configuration_Column_Index'img);
-                     if Global_Camera_State.Has_Image (
+                     if State.Has_Image (
                            Configuration_Row_Index,
                            Configuration_Column_Index) then
                         declare
@@ -594,7 +601,7 @@ not_implemented;
       procedure Dump (
          Cell                    : in     Cell_Type;
          Enable                  : in     Boolean;
-         From                    : in     String := Here) is
+         From                    : in     String := Ada_Lib.Trace.Here) is
       ----------------------------------------------------------------
 
       begin
@@ -670,10 +677,14 @@ not_implemented;
          Coordinate           : in     Row_Type) is
       -------------------------------------------------------------
 
+         Connection_Data      : Base.Connection_Data_Type renames
+                                 Base.Connection_Data_Type (
+                                    Ada_Lib.GNOGA.Get_Connection_Data.all);
+         State                : Configuration.Camera.State.State_Type renames
+                                 Connection_Data.State;
       begin
-         Row_Package.Update (
-            Global_Camera_State.all,
-            Cell.Row_Number, Cell.Row_Coordinate, Coordinate);
+         Row_Package.Update (State, Cell.Row_Number, Cell.Row_Coordinate,
+            Coordinate);
       end Row_Package_Update;
 
       ----------------------------------------------------------------
@@ -734,6 +745,8 @@ not_implemented;
          Preset                  : constant Preset_Type'class :=
                                     Global_Camera_Setup.Get_Preset (
                                        Configuration.Preset_ID);
+         State                   : Standard.Configuration.Camera.State.State_Type renames
+                                    Connection_Data.State;
 
          generic
 
@@ -763,7 +776,7 @@ not_implemented;
                Coordinate        : in     Coordinate_Type);
 
          procedure Update_Coordinate
-         with Pre => Global_Camera_State /= Null;
+         with Pre => Ada_Lib.GNOGA.Has_Connection_Data;
 
          -------------------------------------------------------------
          function Column_Cell_Coordinate(
@@ -802,7 +815,7 @@ not_implemented;
                   " old " & Coordinate_Name & Cell_Number (Cell)'img &
                   " column" & Preset_Other_Coordinate (Preset)'img);
 
-               if Row_Package.Valid (Global_Camera_State.all, Raw_Coordinate) then
+               if Row_Package.Valid (State, Raw_Coordinate) then
                   declare
 --                   Current_Preset_Cell : constant Cell_Class_Access := Cell_Class_Access (
 --                                  Configured_Card.Get_Cell (Preset_Field,
@@ -845,7 +858,7 @@ not_implemented;
                            Global_Camera_Setup.Update_Configuration (
                               Cell.Configuration_ID, New_Preset_ID);
                            Preset_ID_Package.Update (
-                              Global_Camera_State.all, Preset_Cell.Preset_ID,
+                              State, Preset_Cell.Preset_ID,
                               Preset_Cell.Preset_ID_Field, New_Preset_ID);
 
                            Image_Cell.Image_Div.Image.URL_Source (Path);
@@ -1045,6 +1058,9 @@ not_implemented;
          Preset_Cell                : in out Preset_Package.Cell_Type'class) is
       ----------------------------------------------------------------
 
+         Connection_Data            : Base.Connection_Data_Type renames
+                                       Base.Connection_Data_Type (
+                                          Ada_Lib.GNOGA.Get_Connection_Data.all);
          Raw_Value                  : constant String :=
                                        Preset_Cell.Preset_ID_Field.Value;
          New_Preset_ID              : constant Preset_ID_Type :=
@@ -1052,6 +1068,8 @@ not_implemented;
                                           Preset_Not_Set
                                        else
                                           Preset_ID_Type'value (Raw_Value));
+         State                      : Configuration.Camera.State.State_Type renames
+                                       Connection_Data.State;
       begin
          Log_In (Debug, "Configuration_ID" & Configuration_ID'img &
             Quote (" raw preset value", Raw_Value) &
@@ -1088,9 +1106,7 @@ not_implemented;
                Log_Here (Debug, Quote ("image", Path));
                Global_Camera_Setup.Update_Configuration (
                   Configuration_ID, New_Preset_ID);
-               Preset_ID_Package.Update (
-                  Global_Camera_State.all,
-                  Preset_Cell.Preset_ID,
+               Preset_ID_Package.Update (State, Preset_Cell.Preset_ID,
                   Preset_Cell.Preset_ID_Field, New_Preset_ID);
 
                Column_Package_Update (Column_Cell, Preset.Column);

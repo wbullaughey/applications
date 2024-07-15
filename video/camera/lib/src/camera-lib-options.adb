@@ -11,7 +11,7 @@ with Ada_Lib.Runstring_Options;
 --with ADA_LIB.Text;
 with ADA_LIB.Trace; use ADA_LIB.Trace;
 with Command_Name;
-with Configuration.Camera.State;
+--with Configuration.Camera.State;
 --with Configuration.State;
 --with Controller;
 --with Debug_Options;
@@ -59,12 +59,13 @@ package body Camera.Lib.Options is
    -------------------------------------------------------------------------
    overriding
    function Initialize (
-     Options                     : in out Options_Type
+     Options                     : in out Options_Type;
+     From                        : in     String := Ada_Lib.Trace.Here
    ) return Boolean is
    -------------------------------------------------------------------------
 
    begin
-      Log_In (Debug_Options or Trace_Options, "options address " &
+      Log_In (Debug_Options or Trace_Options, "from " & From & " options address " &
          Image (Options'address) &
          " protected options address " & Image (Protected_Options'address));
       Ada_Lib.Runstring_Options.Options.Register (

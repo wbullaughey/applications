@@ -5,22 +5,26 @@ with Ada_Lib.Unit_Test;
 with AUnit.Assertions; use AUnit.Assertions;
 with AUnit.Test_Cases;
 with Base;
+--with Configuration.Camera.State;
+with Camera.Commands;
 with Camera.Lib.Unit_Test;
-with Configuration.Camera.Setup;
+--with Configuration.Camera.Setup;
+--with Configuration.State;
 with ADA_LIB.Trace; use ADA_LIB.Trace;
 with Gnoga.Gui.Base;
+with Interfaces;
 with Main;
 
 package body Widgets.Adjust.Unit_Test is
 
-   type Widgets_Adjust_Test_Type (
-      Brand                      : Camera.Lib.Brand_Type) is new
-                                    Camera.Lib.Unit_Test.Camera_Window_Test_Type (
-                                       Initialize_GNOGA  => True,
-                                       Run_Main          => True) with record
-      Setup                      : Configuration.Camera.Setup.Setup_Type;
-   end record;
+   use type Interfaces.Integer_16;
 
+   type Widgets_Adjust_Test_Type is new
+                                    Camera.Lib.Unit_Test.
+                                       Camera_Window_Test_Type (
+                                          Initialize_GNOGA  => False) with
+                                          -- Set_Up will use Main.Run to initialize
+                                             null record;
    type Widgets_Adjust_Test_Access
                                  is access Widgets_Adjust_Test_Type;
 
@@ -33,14 +37,14 @@ package body Widgets.Adjust.Unit_Test is
    procedure Register_Tests (
       Test                       : in out Widgets_Adjust_Test_Type);
 
-   overriding
-   procedure Set_Up (
-      Test                       : in out Widgets_Adjust_Test_Type
-   ) with Post => Test.Verify_Set_Up;
+-- overriding
+-- procedure Set_Up (
+--    Test                       : in out Widgets_Adjust_Test_Type
+-- ) with Post => Test.Verify_Set_Up;
 
-   overriding
-   procedure Tear_Down (
-      Test                       : in out Widgets_Adjust_Test_Type);
+-- overriding
+-- procedure Tear_Down (
+--    Test                       : in out Widgets_Adjust_Test_Type);
 
    procedure Test_Mouse_Move (
       Test                       : in out AUnit.Test_Cases.Test_Case'class);
@@ -52,8 +56,8 @@ package body Widgets.Adjust.Unit_Test is
       end record;
 
       procedure Initialize_Event (
-         Mouse_Move_Evet         : in out Mouse_Move_Event_Type;
-         Connection_Data         : in     Base.Connection_Data_Class_Access;
+         Mouse_Move_Event        : in out Mouse_Move_Event_Type;
+         Connection_Data         : in     Base.Connection_Data_Access;
          Description             : in     String;
          Mouse_Event             : in     Gnoga.Gui.Base.Mouse_Event_Record;
          Wait                    : in     Duration);
@@ -64,9 +68,9 @@ package body Widgets.Adjust.Unit_Test is
 
    end Move_Package;
 
-   State_Test_Path               : constant String := "adjust_state.cfg";
-   Setup_Test_Path               : constant String := "adjust_setup.cfg";
-   Suite_Name                   : constant String := "Adjust_Card";
+-- State_Test_Path               : constant String := "adjust_state.cfg";
+-- Setup_Test_Path               : constant String := "adjust_setup.cfg";
+   Suite_Name                    : constant String := "Adjust_Card";
 
    ---------------------------------------------------------------
    overriding
@@ -97,42 +101,52 @@ package body Widgets.Adjust.Unit_Test is
 
    end Register_Tests;
 
-   ---------------------------------------------------------------
-   overriding
-   procedure Set_Up (
-      Test                       : in out Widgets_Adjust_Test_Type) is
-   ---------------------------------------------------------------
-
-      Options                 : Standard.Camera.Lib.Options_Type'class
-                                 renames Standard.Camera.Lib.Unit_Test.Options.all;
-   begin
-      Log_In (Debug);
-      Test.State.Load_Camera_State (
-         Options.Location, State_Test_Path); -- need to load state 1st
-      Test.Setup.Load (Test.State, Setup_Test_Path);
-      Camera.Lib.Unit_Test.Camera_Window_Test_Type (Test).Set_Up ;
---    Mouse_Move_Event_Type.Reset_Event;
-      Log_Out (Debug);
-
-   exception
-      when Fault: others =>
-         Trace_Exception (Debug, Fault);
-         Assert (False, "exception message " &
-            Ada.Exceptions.Exception_Message (Fault));
-
-   end Set_Up;
+--   ---------------------------------------------------------------
+--   overriding
+--   procedure Set_Up (
+--      Test                       : in out Widgets_Adjust_Test_Type) is
+--   ---------------------------------------------------------------
+--
+--   begin
+--      Log_In (Debug or Trace_Set_Up);
+--      Camera.Lib.Unit_Test.Camera_Window_Test_Type (Test).Set_Up ;
+--      declare
+--         Connection_Data            : Base.Connection_Data_Type renames
+--                                       Base.Connection_Data_Type (
+--                                          Ada_Lib.GNOGA.Get_Connection_Data.all);
+--         Options                    : Standard.Camera.Lib.Unit_Test.
+--                                       Unit_Test_Options_Type'class
+--                                          renames Standard.Camera.Lib.Unit_Test.
+--                                             Options.all;
+--         State                      : Configuration.Camera.State.State_Type renames
+--                                       Connection_Data.State;
+--      begin
+--         State.Load (Options.Location, State_Test_Path); -- need to load state 1st
+----       Test.Setup.Load (State, Setup_Test_Path);
+--      end;
+--      Log_Out (Debug or Trace_Set_Up);
+--
+--   exception
+--      when Fault: others =>
+--         Trace_Exception (Debug or Trace_Set_Up, Fault);
+--         Assert (False, "exception message " &
+--            Ada.Exceptions.Exception_Message (Fault));
+--
+--   end Set_Up;
 
    ---------------------------------------------------------------
    function Suite
    return AUnit.Test_Suites.Access_Test_Suite is
    ---------------------------------------------------------------
 
-      Options                    : Camera.Lib.Options_Type'class
-                                    renames Camera.Lib.Unit_Test.Options.all;
+--    Options                    : Standard.Camera.Lib.Unit_Test.
+--                                  Unit_Test_Options_Type'class
+--                                     renames Standard.Camera.Lib.Unit_Test.
+--                                        Options.all;
       Test_Suite                 : constant AUnit.Test_Suites.Access_Test_Suite
                                     := new AUnit.Test_Suites.Test_Suite;
       Tests                      : constant Widgets_Adjust_Test_Access :=
-                                    new Widgets_Adjust_Test_Type (Options.Brand);
+                                    new Widgets_Adjust_Test_Type;
 
    begin
       Log_In (Debug); --, "test state address " & Image (Tests.State'address) & " pointer address " & image (Global_Camera_State'address));
@@ -142,18 +156,18 @@ package body Widgets.Adjust.Unit_Test is
       return Test_Suite;
    end Suite;
 
-   ---------------------------------------------------------------
-   overriding
-   procedure Tear_Down (
-      Test                       : in out Widgets_Adjust_Test_Type) is
-   ---------------------------------------------------------------
-
-   begin
-      Log_In (Debug);
---    Ada_Lib.GNOGA.Clear_Connection_Data;
-      Camera.Lib.Unit_Test.Camera_Window_Test_Type (Test).Tear_Down ;
-      Log_Out (Debug);
-   end Tear_Down;
+--   ---------------------------------------------------------------
+--   overriding
+--   procedure Tear_Down (
+--      Test                       : in out Widgets_Adjust_Test_Type) is
+--   ---------------------------------------------------------------
+--
+--   begin
+--      Log_In (Debug);
+----    Ada_Lib.GNOGA.Clear_Connection_Data;
+--      Camera.Lib.Unit_Test.Camera_Window_Test_Type (Test).Tear_Down ;
+--      Log_Out (Debug);
+--   end Tear_Down;
 
    ---------------------------------------------------------------
    procedure Test_Mouse_Move (
@@ -161,89 +175,54 @@ package body Widgets.Adjust.Unit_Test is
    pragma Unreferenced (Test);
    ---------------------------------------------------------------
 
---    use Gnoga.Gui.Base;
+      use Gnoga.Gui.Base;
 
---    Local_Test        : Widgets_Adjust_Test_Type renames
---                         Widgets_Adjust_Test_Type (Test);
---    Connection_Data   : constant Base.Connection_Data_Access :=
---                            Base.Connection_Data_Access (
---                               Ada_Lib.GNOGA.Get_Connection_Data);
---    Description       : aliased String := "mouse move event";
---    Wait              : aliased Constant Duration := 0.25;
---    Event             : Move_Package.Mouse_Move_Event_Type; --  := Initialize_Event (
---                            Connection_Data=> Connection_Data,
---                            Description    => "mouse move event",
---                            Mouse_Event    => (
---                               Message        => Mouse_Move,
---                               X              => 100,
---                               Y              => 200,
---                               Screen_X       => 100,
---                               Screen_Y       => 200,
---                               Left_Button    => False,
---                               Middle_Button  => False,
---                               Right_Button   => False,
---                               Alt            => False,
---                               Control        => False,
---                               Shift          => False,
---                               Meta           => False),
---                            Wait           => 0.25);
---                         Description_Pointer  => Description'unchecked_Access,
---                         Offset               => Wait'unchecked_Access,
---                         Connection_Data      => Connection_Data,
---    Event             : Mouse_Move_Event_Type (
---                         Description_Pointer  => Description'unchecked_Access,
---                         Offset               => Wait'unchecked_Access,
---                         Connection_Data      => Connection_Data,
---                         Mouse_Event => (
---                            Message        => Mouse_Move,
---                            X              => 100,
---                            Y              => 200,
---                            Screen_X       => 100,
---                            Screen_Y       => 200,
---                            Left_Button    => False,
---                            Middle_Button  => False,
---                            Right_Button   => False,
---                            Alt            => False,
---                            Control        => False,
---                            Shift          => False,
---                            Meta           => False));
+      Connection_Data   : constant Base.Connection_Data_Access :=
+                              Base.Connection_Data_Access (
+                                 Ada_Lib.GNOGA.Get_Connection_Data);
+      Camera            : Standard.Camera.Commands.Camera_Class_Access renames
+                           Connection_Data.Camera;
+      Event             : Move_Package.Mouse_Move_Event_Type;
 
---    Adjust_Card                : constant Adjust_Card_Class_Access :=
---                                  Connection_Data.Get_Adjust_Card;
+      Adjust_Card       : constant Adjust_Card_Access :=
+                           Connection_Data.Get_Adjust_Card;
+      Pan               : Standard.Camera.Commands.Absolute_Type;
+      Pan_Offset        : constant := 100;
+      Tilt              : Standard.Camera.Commands.Absolute_Type;
+      Tilt_Offset       : constant := 200;
+
    begin
       Log_In (Debug);
---                            Connection_Data=> Connection_Data,
---                            Description    => "mouse move event",
---                            Mouse_Event    => (
---                               Message        => Mouse_Move,
---                               X              => 100,
---                               Y              => 200,
---                               Screen_X       => 100,
---                               Screen_Y       => 200,
---                               Left_Button    => False,
---                               Middle_Button  => False,
---                               Right_Button   => False,
---                               Alt            => False,
---                               Control        => False,
---                               Shift          => False,
---                               Meta           => False),
---                            Wait           => 0.25);
---    Event.Connection_Data := Connection_Data;
---    Event.Mouse_Event := Mouse_Event_Record'(
---       Message        => Mouse_Move,
---       X              => 100,
---       Y              => 200,
---       Screen_X       => 100,
---       Screen_Y       => 200,
---       Left_Button    => False,
---       Middle_Button  => False,
---       Right_Button   => False,
---       Alt            => False,
---       Control        => False,
---       Shift          => False,
---       Meta           => False);
+      Move_Package.Initialize_Event (Event,
+         Connection_Data=> Connection_Data,
+         Description    => "mouse move event",
+         Mouse_Event    => (
+            Message        => Mouse_Move,
+            X              => Pan_Offset,
+            Y              => Tilt_Offset,
+            Screen_X       => 100,
+            Screen_Y       => 200,
+            Left_Button    => False,
+            Middle_Button  => False,
+            Right_Button   => False,
+            Alt            => False,
+            Control        => False,
+            Shift          => False,
+            Meta           => False),
+         Wait           => 0.25);
 
+      Camera.Set_Absolute (
+         Pan      => 0,
+         Tilt     => 0);
+
+      Adjust_Card.Fire_On_Mouse_Click (Event.Mouse_Event);
       delay 0.5;     -- wait for button to be pushed
+      Camera.Get_Absolute (Pan, Tilt);
+      Assert (Pan = Pan_Offset, "wrong pan" & Pan'img &
+         " expected" & Pan_Offset'img);
+      Assert (Tilt = Tilt_Offset, "wrong tilt" & Tilt'img &
+         " expected" & Tilt_Offset'img);
+
       Log_Out (Debug);
 
    exception
@@ -259,18 +238,18 @@ package body Widgets.Adjust.Unit_Test is
 
       ---------------------------------------------------------------
       procedure Initialize_Event (
-         Mouse_Move_Evet         : in out Mouse_Move_Event_Type;
-         Connection_Data         : in     Base.Connection_Data_Class_Access;
+         Mouse_Move_Event         : in out Mouse_Move_Event_Type;
+         Connection_Data         : in     Base.Connection_Data_Access;
          Description             : in     String;
          Mouse_Event             : in     Gnoga.Gui.Base.Mouse_Event_Record;
          Wait                    : in     Duration) is
       ---------------------------------------------------------------
 
       begin
-         Mouse_Move_Evet.Initialize (Wait, Description,
+         Mouse_Move_Event.Initialize (Wait, Description,
             Dynamic     => False,
             Repeating   => False);
-         Mouse_Move_Evet.Mouse_Event := Mouse_Event;
+         Mouse_Move_Event.Mouse_Event := Mouse_Event;
       end Initialize_Event;
 
       ---------------------------------------------------------------

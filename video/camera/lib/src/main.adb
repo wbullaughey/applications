@@ -20,8 +20,8 @@ with Camera.Commands.PTZ_Optics;
 
 package body Main is
 
-   use type Base.Connection_Data_Class_Access;
-   use type Configuration.Camera.State.State_Access;
+-- use type Base.Connection_Data_Class_Access;
+-- use type Configuration.Camera.State.State_Access;
    use type Gnoga.Types.Pointer_to_Connection_Data_Class;
 
    procedure Exit_Button_Click_Handler (
@@ -38,7 +38,7 @@ package body Main is
       Main_Window                : in out Gnoga.Gui.Window.Window_Type'Class;
       Connection                 : access Gnoga.Application.Multi_Connect.
                                              Connection_Holder_Type
-   ) with Pre => Configuration.Camera.State.Global_Camera_State /= Null;
+   ) with Pre => Ada_Lib.GNOGA.Has_Connection_Data;
 
    --  Application event handlers
 -- procedure On_Exit (
@@ -336,17 +336,14 @@ package body Main is
    pragma Unreferenced (Connection);
    ----------------------------------------------------------------
 
-      GNOGA_Connection           : constant Ada_Lib.GNOGA.Connection_Data_Class_Access :=
-                                    Ada_Lib.GNOGA.Get_Connection_Data;
+      Connection_Data            : Base.Connection_Data_Type renames
+                                    Base.Connection_Data_Type (
+                                       Ada_Lib.GNOGA.Get_Connection_Data.all);
       State                      : Configuration.Camera.State.State_Type
-                                    renames Configuration.Camera.State.
-                                       Global_Camera_State.all;
+                                    renames Connection_Data.State;
    begin
-      Log_In (Debug, "started " & Started'img & " gnoga connection Tag " & Tag_Name (
-         GNOGA_Connection.all'tag));
+      Log_In (Debug, "started " & Started'img);
       declare
-         Connection_Data            : Base.Connection_Data_Type renames
-                                       Base.Connection_Data_Type (GNOGA_Connection.all);
          Main_Data                  : Main_Data_Type renames
                                        Connection_Data.Main_Data.all;
          View                       : View_Type renames Main_Data.View;
@@ -551,15 +548,15 @@ package body Main is
                                           Camera_Class_Access) is
    ---------------------------------------------------------------
 
---    Location                   : Configuration.State.Location_Type renames
---                                  Runtime_Options.Options.
---                                     Camera_Library.Location;
+      Connection_Data            : Base.Connection_Data_Type renames
+                                    Base.Connection_Data_Type (
+                                       Ada_Lib.GNOGA.Get_Connection_Data.all);
+      State                      : Configuration.Camera.State.State_Type renames
+                                    Connection_Data.State;
       Port_Number                : constant Ada_Lib.Socket_IO.Port_Type :=
-                                    Configuration.Camera.State.
-                                       Global_Camera_State.Get_Host_Port;
+                                    State.Get_Host_Port;
       Camera_Address             : constant Ada_Lib.Socket_IO.Address_Type :=
-                                       Configuration.Camera.State.
-                                          Global_Camera_State.Get_Host_Address;
+                                       State.Get_Host_Address;
    begin
       Log_In (Debug,
          Quote (" Camera_URL", Camera_Address.Image) &
@@ -586,13 +583,12 @@ package body Main is
       Object            : in out Gnoga.Gui.Base.Base_Type'Class) is
    ---------------------------------------------------------------
 
-      State                      : Configuration.Camera.State.State_Type
-                                    renames Configuration.Camera.State.
-                                       Global_Camera_State.all;
+      Connection_Data            : Base.Connection_Data_Type renames
+                                    Base.Connection_Data_Type (
+                                       Ada_Lib.GNOGA.Get_Connection_Data.all);
+      State                      : Configuration.Camera.State.State_Type renames
+                                    Connection_Data.State;
       Camera_CSS                 : constant String := State.CSS_Path.Coerce;
-      Connection_Data            : constant Base.Connection_Data_Class_Access :=
-                                    Base.Connection_Data_Class_Access (
-                                       Object.Connection_Data);
       Main_Data                  : Main_Data_Type renames Connection_Data.
                                     Main_Data.all;
 

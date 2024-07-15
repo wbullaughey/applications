@@ -1,8 +1,10 @@
+with Ada_Lib.GNOGA;
 with Ada_Lib.Unit_Test;
 with AUnit.Assertions; use AUnit.Assertions;
 with AUnit.Test_Cases;
 --with Ada_Lib.Options.Unit_Test;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
+with Base;
 with Camera.Commands;
 with Camera.Lib.Unit_Test;
 with Interfaces;
@@ -244,9 +246,15 @@ package body Camera.Lib.Base.Command_Tests is
       Test                       : in out Test_Type) is
    ---------------------------------------------------------------
 
+      Connection_Data         : constant Standard.Base.Connection_Data_Access :=
+                                 new Standard.Base.Connection_Data_Type;
    begin
-      Log_In (Debug);
+      Log_In (Debug or Trace_Set_Up);
+      Ada_Lib.GNOGA.Set_Connection_Data (
+         Ada_Lib.GNOGA.Connection_Data_Class_Access (Connection_Data));
+      Connection_Data.Initialize;
       Camera.Lib.Unit_Test.Camera_Test_Type (Test).Set_Up;
+
       begin
          Test.Camera.Set_Power (True);
       exception
@@ -255,15 +263,17 @@ package body Camera.Lib.Base.Command_Tests is
                "ignore exception in Set_Up for Set_Power");
       end;
       Test.Camera.Set_Preset (Test.Camera.Get_Default_Preset);
-      Log_Out (Debug);
+      Log_Out (Debug or Trace_Set_Up);
    end Set_Up;
 
    ---------------------------------------------------------------
    function Suite return AUnit.Test_Suites.Access_Test_Suite is
    ---------------------------------------------------------------
 
-      Options                    : Standard.Camera.Lib.Options_Type'class
-                                    renames Standard.Camera.Lib.Unit_Test.Options.all;
+      Options                    : Standard.Camera.Lib.Unit_Test.
+                                       Unit_Test_Options_Type'class
+                                    renames Standard.Camera.Lib.Unit_Test.
+                                       Options.all;
       Brand                      : Brand_Type renames Options.Brand;
       Test_Suite                 : constant AUnit.Test_Suites.Access_Test_Suite :=
                                     new AUnit.Test_Suites.Test_Suite;
@@ -614,14 +624,23 @@ package body Camera.Lib.Base.Command_Tests is
                                     Camera.Commands.Absolute_Type (Count * 2);
 
          begin
-            Log_Here (Debug, "Count" & Count'img);
-            Local_Test.Camera.Position_Relative (Count, Count * 2);
+            Log_Here (Debug, "Count" & Count'img &
+               "initial pan" & Initial_Pan'img &
+               " initial Tilt" & Initial_Tilt'img);
+            Local_Test.Camera.Position_Relative (
+               Pan   => Count,
+               Tilt  => Count * 2);
             Local_Test.Camera.Get_Absolute (Pan, Tilt);
-            Log_Here (Debug, "pan" & Pan'img & " tilt" & Tilt'img);
+            Log_Here (Debug, "pan" & Pan'img & " tilt" & Tilt'img &
+               " expected pan" & Expected_Pan'img &
+               " expected tilt" & Expected_Tilt'img);
             Assert (abs (Pan - Expected_Pan) <= 1, "bad pan" & Pan'img &
-               " expected" & Expected_Pan'img);
+               " expected" & Expected_Pan'img & " for count" & Count'img);
             Assert (abs (Tilt - Expected_Tilt) <= 2, "bad Tilt" & Tilt'img &
-               " expected" & Expected_Tilt'img);
+               " expected" & Expected_Tilt'img & " for count" & Count'img);
+            -- update initial to last read
+            Initial_Pan := Pan;
+            Initial_Tilt := Tilt;
          end;
       end loop;
       Assert (Ask_Pause (Local_Test.Manual,
@@ -1063,8 +1082,10 @@ package body Camera.Lib.Base.Command_Tests is
       Length                     : in     Duration) is
    ---------------------------------------------------------------
 
-      Options                    : Standard.Camera.Lib.Options_Type'class
-                                    renames Standard.Camera.Lib.Unit_Test.Options.all;
+      Options                    : Standard.Camera.Lib.Unit_Test.
+                                    Unit_Test_Options_Type'class
+                                       renames Standard.Camera.Lib.Unit_Test.
+                                          Options.all;
    begin
       if not Options.If_Emulation then
          delay Length;

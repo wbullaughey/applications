@@ -132,6 +132,73 @@ package body Camera.Commands is
    end Get_Absolute;
 
    ---------------------------------------------------------------
+   procedure Get_Zoom (
+      Camera                     : in out Camera_Type;
+      Zoom                       :    out Absolute_Type) is
+   ---------------------------------------------------------------
+
+      Last_Zoom                   : Absolute_Type := Absolute_Type'last;
+
+   begin
+      Log_In (Debug);
+      loop
+         declare
+            Accumulator          : Interfaces.Unsigned_16;
+            Conversion           : Absolute_Type;
+            for Conversion'address use Accumulator'address;
+            Response_Buffer      : Maximum_Response_Type;
+            Timeout              : constant Ada_Lib.Time.Time_Type :=
+                                    Ada_Lib.Time.Now + 60.0;
+         begin
+            Camera.Process_Command (Standard.Camera.Lib.Base.Zoom_Inquire,
+               Options           => Standard.Camera.Lib.Base.Null_Option,
+               Response          => Response_Buffer);
+
+            if Debug then
+               Ada_Lib.Socket_IO.Stream_IO.Dump ("response", Response_Buffer (1 .. 11));
+            end if;
+
+            Accumulator := 0;
+            for I in Index_Type'(3) .. 6 loop
+               Log_Here (Debug, I'img & ": " &
+                  Ada_lib.Socket_IO.Hex (Response_Buffer (I)));
+               Accumulator := Accumulator * 16#10# +
+                  Interfaces.Unsigned_16 (Response_Buffer (I) and 16#F#);
+            end loop;
+            Log_Here (Debug, Hex_IO.Hex (Accumulator) &
+               " conversion" & Conversion'img);
+            Zoom := Conversion;
+
+            if Last_Zoom /= Absolute_Type'last then
+               declare
+                  Delta_Zoom            : constant Integer := abs (
+                                          Integer (Last_Zoom) - Integer (Zoom));
+                  Delta_Message        : constant String :=
+                                          " delta zoom" & Delta_Zoom'img;
+               begin
+                  Log_Here (Debug, "Zoom" & Zoom'img & Delta_Message);
+                  if    Delta_Zoom < 2 then
+                     Log_Out (Debug);
+                     return;
+                  elsif Ada_Lib.Time.Now > Timeout then
+                     declare
+                        Message        : constant String :=
+                                          "Get_Absolute did not converge. " &
+                                          Delta_Message;
+                     begin
+                        Log_Exception (Debug, Message);
+                        raise Failed with Message;
+                     end;
+                  end if;
+               end;
+            end if;
+
+            Last_Zoom := Zoom;
+         end;
+      end loop;
+   end Get_Zoom;
+
+   ---------------------------------------------------------------
    procedure Position_Relative (
       Camera                     : in out Camera_Type;
       Pan                        : in      Relative_Type;
@@ -245,7 +312,7 @@ package body Camera.Commands is
 
    begin
       Log_In (Debug, "preset id" & Preset_ID'img);
-      Camera.Process_Command (Standard.Camera.Lib.Base.Memory_Set,
+      Camera.Process_Command (Standard.Camera.Lib.Base.Memory_Recall,
          Options     => ( 1 =>
                (
                   Data           => Data_Type (Preset_ID),
@@ -266,4 +333,7 @@ package body Camera.Commands is
       Log_Out (Debug);
    end Set_Preset;
 
+begin
+--Debug := True;
+   Log_Here (Debug or Trace_Options or Elaborate);
 end Camera.Commands;
