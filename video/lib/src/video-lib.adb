@@ -80,7 +80,7 @@ package body Video.Lib is
          Ada_Lib.Runstring_Options.With_Parameters,
          Options_With_Parameters);
 
-      return Log_Out (Ada_Lib.Options.Program_Options_Type (
+      return Log_Out (Ada_Lib.Options.Nested_Options_Type (
             Options).Initialize,
          Options_Debug or Trace_Options);
    end Initialize;
@@ -129,7 +129,7 @@ package body Video.Lib is
          return Log_Out (True, Options_Debug or Trace_Options,
             " option" & Option.Image & " handled");
       else
-         return Log_Out (Ada_Lib.Options.Program_Options_Type (
+         return Log_Out (Ada_Lib.Options.Nested_Options_Type (
             Options).Process_Option (Iterator, Option),
             Trace_Options or Options_Debug, "other option" & Option.Image);
       end if;
@@ -168,7 +168,7 @@ package body Video.Lib is
 
       end case;
 
-      Ada_Lib.Options.Program_Options_Type (Options).Program_Help (Help_Mode);
+      Ada_Lib.Options.Nested_Options_Type (Options).Program_Help (Help_Mode);
       Log_Out (Options_Debug or Trace_Options);
    end Program_Help;
 

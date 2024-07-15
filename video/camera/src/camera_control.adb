@@ -32,11 +32,10 @@ begin
       Connection_Data.Initialize;
       Ada_Lib.GNOGA.Set_Connection_Data (
          Ada_Lib.GNOGA.Connection_Data_Class_Access (Connection_Data));
-      Configuration.Camera.State.Global_Camera_State.Load (
-         Options.Camera_Library.Location,
-         Configuration.Camera.State.Default_State);
-      Camera_Setup.Load (
-         Configuration.Camera.State.Global_Camera_State.all,
+      Connection_Data.State.Load (
+         Location => Options.Camera_Library.Location,
+         Name     => Configuration.Camera.State.File_Path);
+      Camera_Setup.Load (Connection_Data.State,
          Configuration.Camera.Setup.File_Path);
       Log_Here (Debug);
 
