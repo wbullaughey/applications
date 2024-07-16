@@ -70,7 +70,7 @@ package Video.Lib is
                                  is Buffer_Type (1 .. 30);
 
    type Options_Type             is limited new Ada_Lib.Options.
-                                    Nested_Options_Type with record
+                                    Program_Options_Type with record
       Address_Kind               : Configuration.Address_Kind_Type;
       If_Emulation               : Boolean := False;
       Location                   : Configuration.State.Location_Type :=
