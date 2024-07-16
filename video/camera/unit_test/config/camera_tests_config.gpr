@@ -54,5 +54,3 @@ abstract project Camera_Tests_Config is
    Build_Profile : Build_Profile_Kind := "development";
 
 end Camera_Tests_Config;
-
-
