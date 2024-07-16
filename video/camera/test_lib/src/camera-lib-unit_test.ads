@@ -92,7 +92,7 @@ package Camera.Lib.Unit_Test is
 --    Camera_Options             : aliased Standard.Camera.Lib.Options_Type;
       GNOGA_Options              : Ada_Lib.Options.GNOGA.GNOGA_Options_Type;
 --    GNOGA_Unit_Test_Options    : Ada_Lib.GNOGA.Unit_Test.
---                                  GNOGA_Unit_Test_Options_Type;
+--                                  GNOGA_Unit_Test_Options_Type;F
       Main_Debug                 : Boolean := False;
       Unit_Test                  : Ada_Lib.Options.Unit_Test.
                                     Unit_Test_Options_Type (False);

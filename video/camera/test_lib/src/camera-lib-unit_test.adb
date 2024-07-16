@@ -204,9 +204,7 @@ package body Camera.Lib.Unit_Test is
       Log_In_Checked (Help_Recursed, Debug_Options or Trace_Options,
          "help mode " & Help_Mode'img);
       Options.AUnit_Options.Program_Help (Help_Mode);
-log_here;
       Options.Unit_Test.Program_Help (Help_Mode);
-log_here;
 
       case Help_Mode is
 
@@ -235,7 +233,6 @@ log_here;
 
       end case;
 
-log_here;
      Options_Type (Options).Program_Help (Help_Mode);
      Log_Out_Checked (Help_Recursed, Debug_Options or Trace_Options);
 
@@ -621,9 +618,9 @@ begin
       Debug := Trace_Tests;
    end if;
 --Debug := True;
-Debug_Options := True;
+--Debug_Options := True;
 --Elaborate := True;
-Trace_Options := True;
+--Trace_Options := True;
 -- Include_Program := True;
    Log_Here (Debug or Trace_Options);
 -- Options := Protected_Options'access;

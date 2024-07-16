@@ -1,6 +1,4 @@
 obj/
-# alire/
-# cache/
 save/
 vendor/
 *.mak
