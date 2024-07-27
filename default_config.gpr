@@ -8,6 +8,7 @@ abstract project Default_Config is
            ,"-gnat2012"
            ,"-Wl,-Map=output.map"
            ,"-gnatE" -- dynamic elaboration
+           ,"-gnatf"
 --         ,"-gnatel" -- elaboration info
            ,"-Og" -- Optimize for debug
 --         ,"-ffunction-sections" -- Separate ELF section for each function
@@ -47,7 +48,7 @@ abstract project Default_Config is
    Linker_Options := ( );
    case OS_Version is
 
-      when "12.7.4"=>
+      when "12.7.5"=>
          Linker_Options := ( );
 
       when Others =>

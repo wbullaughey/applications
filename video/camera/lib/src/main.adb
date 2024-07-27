@@ -2,7 +2,7 @@ with Ada.Exceptions;
 with Ada.Directories;
 with Ada.IO_Exceptions;
 with Ada.Text_IO; use  Ada.Text_IO;
-with Ada_Lib.Help;
+with Ada_Lib.Options.Help;
 with Ada_Lib.GNOGA.Base;
 with Ada_Lib.Options;
 with Ada_Lib.OS;
@@ -680,7 +680,7 @@ package body Main is
             begin
                Iterator.Initialize (
 --                Window                  => Object'unchecked_access,
-                  Modifiers               => Ada_Lib.Help.Modifiers,
+                  Modifiers               => Ada_Lib.Options.Help.Modifiers,
                   Source                  => Response,
                   Include_Options         => True,
                   Include_Non_Options     => True);

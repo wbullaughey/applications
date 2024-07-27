@@ -1,13 +1,13 @@
 --with Ada.Command_Line;
 --with Ada.Exceptions;
 with Ada.Text_IO;use Ada.Text_IO;
---with Ada_Lib.Command_Line_Iterator;
-with Ada_Lib.Help;
+--with Ada_Lib.Options;
+with Ada_Lib.Options.Help;
 --with Ada_Lib.Options.GNOGA;
 --with ADA_LIB.Strings.Unlimited;
 --with Ada_Lib.Test;
 with ADA_LIB.OS;
-with Ada_Lib.Runstring_Options;
+with Ada_Lib.Options.Runstring;
 --with ADA_LIB.Template;
 --with ADA_LIB.Text;
 with ADA_LIB.Trace; use ADA_LIB.Trace;
@@ -19,10 +19,10 @@ with Debug_Options;
 
 package body Runtime_Options is
 
-   Options_With_Parameters       : constant Ada_Lib.Options_Interface.Options_Type :=
-                                    Ada_Lib.Options_Interface.Create_Options ('t');
-   Options_Without_Parameters    : constant Ada_Lib.Options_Interface.Options_Type :=
-                                    Ada_Lib.Options_Interface.Create_Options ('E');
+   Options_With_Parameters       : constant Ada_Lib.Options.Options_Type :=
+                                    Ada_Lib.Options.Create_Options ('t');
+   Options_Without_Parameters    : constant Ada_Lib.Options.Options_Type :=
+                                    Ada_Lib.Options.Create_Options ('E');
    Protected_Options             : aliased Options_Type;
 
    -------------------------------------------------------------------------
@@ -53,10 +53,10 @@ package body Runtime_Options is
 
    begin
       Log_In (debug or Trace_Options);
-      Ada_Lib.Runstring_Options.Options.Register (
-         Ada_Lib.Runstring_Options.With_Parameters, Options_With_Parameters);
-      Ada_Lib.Runstring_Options.Options.Register (
-         Ada_Lib.Runstring_Options.Without_Parameters,
+      Ada_Lib.Options.Runstring.Options.Register (
+         Ada_Lib.Options.Runstring.With_Parameters, Options_With_Parameters);
+      Ada_Lib.Options.Runstring.Options.Register (
+         Ada_Lib.Options.Runstring.Without_Parameters,
          Options_Without_Parameters);
       return Log_Out (Protected_Options.Unit_Test.Initialize and then
          Video.Lib.Options_Type (Protected_Options).Initialize, Debug) and then
@@ -64,7 +64,7 @@ package body Runtime_Options is
             Include_Options      => True,
             Include_Non_Options  => True,
             Modifiers            => String'(
-               1 => Ada_Lib.Help.Modifier));
+               1 => Ada_Lib.Options.Help.Modifier));
 --    Options.Initialized := True;
 --    if not Protected_Options.Set_Options then      -- set any local pointers, calls down derivation tree
 --       Put_Line ("Set_Options did not call to root");
@@ -77,16 +77,15 @@ package body Runtime_Options is
    overriding
    function Process_Option (
       Options                    : in out Options_Type;
-      Iterator                   : in out ADA_LIB.Command_Line_Iterator.Abstract_Package.Abstract_Iterator_Type'class;
-      Option                     : in     Ada_Lib.Options_Interface.
-                                             Option_Type'class
+      Iterator                   : in out Ada_Lib.Command_Line_Iterator.Abstract_Package.Abstract_Iterator_Type'class;
+      Option                     : in     Ada_Lib.Options.Option_Type'class
    ) return Boolean is
    ----------------------------------------------------------------------------
 
    begin
       Log_In (Trace_Options or Debug, Option.Image);
 
---    if Ada_Lib.Options_Interface.Has_Option (Option, Options_With_Parameters,
+--    if Ada_Lib.Options.Has_Option (Option, Options_With_Parameters,
       if Option.Is_Registered then
 --          Options_Without_Parameters) then
          case Option.Option is
@@ -146,8 +145,8 @@ package body Runtime_Options is
       case Help_Mode is
 
       when Ada_Lib.Options.Program =>
-         Ada_Lib.Help.Add_Option ('E', "", "simulate video",Command_Name);
-         Ada_Lib.Help.Add_Option ('t', "trace options", "trace options", Command_Name);
+         Ada_Lib.Options.Help.Add_Option ('E', "", "simulate video",Command_Name);
+         Ada_Lib.Options.Help.Add_Option ('t', "trace options", "trace options", Command_Name);
          New_Line;
 
       when Ada_Lib.Options.Traces =>
@@ -168,8 +167,8 @@ begin
 --Debug := True;
 --Trace_Options := True;
    Options := Protected_Options'access;
-   Ada_Lib.Options_Interface.Set_Ada_Lib_Options (
-      Ada_Lib.Options_Interface.Interface_Options_Class_Access (Options));
+   Ada_Lib.Options.Set_Options (
+      Ada_Lib.Options.Interface_Options_Class_Access (Options));
    Log_Here (Debug or Trace_Options or Elaborate, "options " & Image (Options.all'address));
 
 exception

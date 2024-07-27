@@ -1,4 +1,4 @@
-﻿with Ada_Lib.Command_Line_Iterator;
+﻿with Ada_Lib.Options;
 with Ada_Lib.Options.Unit_Test;
 with Ada_Lib.Unit_Test;
 with Ada_Lib.Trace;
@@ -38,8 +38,7 @@ package Driver.Unit_Test is
      Options                    : in out Driver_Unit_Test_Options_Type;
      Iterator                   : in out Ada_Lib.Command_Line_Iterator.
                                           Abstract_Package.Abstract_Iterator_Type'class;
-      Option                     : in     Ada_Lib.Options_Interface.
-                                             Option_Type'class
+      Option                     : in     Ada_Lib.Options.Option_Type'class
    ) return Boolean
    with pre => Options.Initialized;
 

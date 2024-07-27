@@ -3,11 +3,11 @@ with Ada.Text_IO; use Ada.Text_IO;
 with Ada.Unchecked_Deallocation;
 --with Ada_Lib.Address;
 with Ada_Lib.Configuration;
-with Ada_Lib.Options_Interface;
+with Ada_Lib.Options;
 with Ada_Lib.Parser;
 with ADA_LIB.Strings.Unlimited; use Ada_Lib.Strings; use Ada_Lib.Strings.Unlimited;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
-with Camera.Lib.Options;
+with Camera.Lib;
 
 package body Configuration.Camera.Setup is
 
@@ -97,9 +97,9 @@ package body Configuration.Camera.Setup is
    ----------------------------------------------------------------
 
       Setup_Path                 : Ada_Lib.Strings.Unlimited.String_Type
-                                    renames Standard.Camera.Lib.Options.
+                                    renames Standard.Camera.Lib.
                                        Options_Constant_Class_Access (
-                                          Ada_Lib.Options_Interface.Read_Only_Options).
+                                          Ada_Lib.Options.Read_Only_Options).
                                              Setup_Path;
 
    begin
@@ -242,7 +242,7 @@ package body Configuration.Camera.Setup is
 
       Config                     : Ada_Lib.Configuration.Configuration_Type;
       Current_Directory          : constant String :=
-                                    Standard.Camera.Lib.Options.Current_Directory;
+                                    Standard.Camera.Lib.Current_Directory;
       Path                       : constant String :=
                                     (if Current_Directory'length > 0 then
                                        Current_Directory & "/"
@@ -499,7 +499,7 @@ package body Configuration.Camera.Setup is
       Configurations             : Configurations_Access renames
                                     Setup.Configurations;
       Current_Directory          : constant String :=
-                                    Standard.Camera.Lib.Options.Current_Directory;
+                                    Standard.Camera.Lib.Current_Directory;
       Presets                    : Presets_Access renames
                                     Setup.Presets;
    begin

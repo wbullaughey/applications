@@ -1,7 +1,7 @@
 with Ada.Directories;
 with Ada.Text_IO; use Ada.Text_IO;
 with Ada_Lib.Options;
-with Ada_Lib.Options_Interface;
+with Ada_Lib.Options;
 with Ada_Lib.OS;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
 with Ada_Lib.Trace_Tasks;
@@ -21,8 +21,8 @@ procedure Camera_Driver is
                                     Driver_Options.Main_Debug;
 
 begin
-   Ada_Lib.Options_Interface.Set_Ada_Lib_Options (
-      Ada_Lib.Options_Interface.Interface_Options_Class_Access'(
+   Ada_Lib.Options.Set_Options (
+      Ada_Lib.Options.Interface_Options_Class_Access'(
          Protected_Options'unchecked_access));
 
    Protected_Options.Driver_Options.Camera_Directory.Construct (
@@ -45,7 +45,7 @@ begin
       end if;
       Log_Out (Debug);
    else
-      Ada_Lib.Options.Program_Options.Help ("Initialize Options failed", False);
+      Ada_Lib.Options.Read_Only_Options.Help ("Initialize Options failed", False);
    end if;
 
    Ada_Lib.OS.Immediate_Halt (Ada_Lib.OS.No_Error);

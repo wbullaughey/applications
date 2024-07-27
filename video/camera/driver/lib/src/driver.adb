@@ -2,11 +2,11 @@
 --with Ada.Directories;
 --with Ada.Strings.Fixed;
 with Ada.Text_IO;use Ada.Text_IO;
-with Ada_Lib.Help;
+with Ada_Lib.Options.Help;
 --with Ada_Lib.Options.Unit_Test;
 with Ada_Lib.OS.Run;
 with Ada_Lib.Parser;
-with Ada_Lib.Runstring_Options;
+with Ada_Lib.Options.Runstring;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
 with Command_Name;
 
@@ -25,8 +25,8 @@ package body Driver is
    end record;
 
    type Parameter_Type           is record
-      With_Parameters            : Ada_Lib.Options_Interface.Options_Access;
-      Without_Parameters         : Ada_Lib.Options_Interface.Options_Access;
+      With_Parameters            : Ada_Lib.Options.Options_Access;
+      Without_Parameters         : Ada_Lib.Options.Options_Access;
    end record;
 
    type Parameters_Type          is array (Boolean) of Parameter_Type;
@@ -50,31 +50,27 @@ package body Driver is
    Camera_Option                 : constant Character := 'X';
    Directory_Option              : constant Character := 'D';
 -- Options_With_Parameters       : aliased constant
---                                  Ada_Lib.Options_Interface.Options_Type :=
---                                     Ada_Lib.Options_Interface.Create_Options (
+--                                  Ada_Lib.Options.Options_Type :=
+--                                     Ada_Lib.Options.Create_Options (
 --                                        Camera_Option & Directory_Option & "Rstu");
 -- Options_Without_Parameters    : aliased constant
---                                  Ada_Lib.Options_Interface.Options_Type :=
---                                     Ada_Lib.Options_Interface.Create_Options (
+--                                  Ada_Lib.Options.Options_Type :=
+--                                     Ada_Lib.Options.Create_Options (
 --                                        "lr");
    Parameters                    : constant Parameters_Type := (
                                     False    => (
                                        With_Parameters      =>
-                                          Ada_Lib.Options_Interface.
-                                             Create_Options (Camera_Option &
+                                          Ada_Lib.Options.Actual.Create_Options (Camera_Option &
                                                 Directory_Option & "Rstu"),
                                        Without_Parameters   =>
-                                          Ada_Lib.Options_Interface.
-                                             Create_Options ("lr")
+                                          Ada_Lib.Options.Actual.Create_Options ("lr")
                                     ),
                                     True    => (
                                        With_Parameters      =>
-                                          Ada_Lib.Options_Interface.
-                                             Create_Options (Camera_Option &
+                                          Ada_Lib.Options.Actual.Create_Options (Camera_Option &
                                                 Directory_Option & "Rtu"),
                                        Without_Parameters   =>
-                                          Ada_Lib.Options_Interface.
-                                             Create_Options ("l")
+                                          Ada_Lib.Options.Actual.Create_Options ("l")
                                     )
                                  );
    Protected_Options             : Driver_Options_Class_Access := Null;
@@ -198,7 +194,7 @@ package body Driver is
    begin
       Log_Here (Debug_Options or Trace_Options, "from " & From);
       return Driver_Options_Class_Access (
-         Ada_Lib.Options_Interface.Get_Modifiable_Options);
+         Ada_Lib.Options.Get_Modifiable_Options);
    end Get_Modifiable_Options;
 
    ---------------------------------------------------------------
@@ -224,22 +220,22 @@ package body Driver is
                                     Parameters (Options.Testing);
    begin
       Log_In (Debug_Options or Trace_Options, "testing " & Options.Testing'img &
-         " with parameters " & Ada_Lib.Options_Interface.Image (
+         " with parameters " & Ada_Lib.Options.Image (
             Selected_Parameters.With_Parameters.all) &
-         " without parameters" & Ada_Lib.Options_Interface.Image (
+         " without parameters" & Ada_Lib.Options.Image (
             Selected_Parameters.Without_Parameters.all) &
          " Initialized " & Options.Initialized'img &
          " from " & From);
       Protected_Options := Options'unchecked_access;
-      Ada_Lib.Runstring_Options.Options.Register (
-         Ada_Lib.Runstring_Options.With_Parameters,
+      Ada_Lib.Options.Runstring.Options.Register (
+         Ada_Lib.Options.Runstring.With_Parameters,
             Selected_Parameters.With_Parameters.all);
-      Ada_Lib.Runstring_Options.Options.Register (
-         Ada_Lib.Runstring_Options.Without_Parameters,
+      Ada_Lib.Options.Runstring.Options.Register (
+         Ada_Lib.Options.Runstring.Without_Parameters,
             Selected_Parameters.Without_Parameters.all);
 
       return Log_Out (
-         Ada_Lib.Options.Nested_Options_Type (Options).Initialize,
+         Ada_Lib.Options.Actual.Nested_Options_Type (Options).Initialize,
          Debug_Options or Trace_Options);
 
    end Initialize;
@@ -322,10 +318,8 @@ package body Driver is
    overriding
    function Process_Option (  -- process one option
      Options                    : in out Driver_Options_Type;
-     Iterator                   : in out Ada_Lib.Command_Line_Iterator.
-                                          Abstract_Package.Abstract_Iterator_Type'class;
-      Option                     : in     Ada_Lib.Options_Interface.
-                                             Option_Type'class
+     Iterator                   : in out Ada_Lib.Options.Command_Line_Iterator_Interface'class;
+      Option                     : in     Ada_Lib.Options.Option_Type'class
    ) return Boolean is
    ---------------------------------------------------------------
 
@@ -335,11 +329,11 @@ package body Driver is
       Log_In (Debug_Options or Trace_Options, "testing " & Options.Testing'img &
          " " & Option.Image);
 
-      if Ada_Lib.Options_Interface.Has_Option (Option,
+      if Ada_Lib.Options.Has_Option (Option,
          Selected_Parameters.With_Parameters.all,
          Selected_Parameters.Without_Parameters.all) then
          case Option.Kind is
-            when Ada_Lib.Options_Interface.Plain =>
+            when Ada_Lib.Options.Plain =>
                case Option.Option is
 
                   when Directory_Option =>
@@ -415,10 +409,10 @@ package body Driver is
 
                end case;
 
-            when Ada_Lib.Options_Interface.Modified =>
+            when Ada_Lib.Options.Modified =>
                raise Failed with "Has_Option incorrectly passed " & Option.Image;
 
-            when Ada_Lib.Options_Interface.Nil_Option =>
+            when Ada_Lib.Options.Nil_Option =>
                raise Failed with "nil option";
 
          end case;
@@ -426,7 +420,7 @@ package body Driver is
          return Log_Out (True, Debug_Options or Trace_Options, Option.Image &
             " handled");
       else
-         return Log_Out (Ada_Lib.Options.Nested_Options_Type (
+         return Log_Out (Ada_Lib.Options.Actual.Nested_Options_Type (
             Options).Process_Option (Iterator, Option), Debug or Trace_Options,
             "not handled");
       end if;
@@ -443,10 +437,8 @@ package body Driver is
    overriding
    function Process_Option (  -- process one option
      Options                    : in out Program_Options_Type;
-     Iterator                   : in out Ada_Lib.Command_Line_Iterator.
-                                          Abstract_Package.Abstract_Iterator_Type'class;
-      Option                     : in     Ada_Lib.Options_Interface.
-                                             Option_Type'class
+     Iterator                   : in out Ada_Lib.Options.Command_Line_Iterator_Interface'class;
+      Option                    : in     Ada_Lib.Options.Option_Type'class
    ) return Boolean is
    ---------------------------------------------------------------
 
@@ -471,24 +463,24 @@ package body Driver is
    begin
       Log_In (Debug_Options or Trace_Options, "help mode " & Help_Mode'img &
          Quote (" component", Component));
-      Ada_Lib.Options.Nested_Options_Type (Options).Program_Help (Help_Mode);
+      Ada_Lib.Options.Actual.Nested_Options_Type (Options).Program_Help (Help_Mode);
 
       case Help_Mode is
 
       when Ada_Lib.Options.Program =>
-         Ada_Lib.Help.Add_Option (Directory_Option, "subdirectory",
+         Ada_Lib.Options.Help.Add_Option (Directory_Option, "subdirectory",
             "subdirectory to run camera app from", Component);
-         Ada_Lib.Help.Add_Option ('l', "", "list output from camera app",
+         Ada_Lib.Options.Help.Add_Option ('l', "", "list output from camera app",
             Component);
-         Ada_Lib.Help.Add_Option ('R', "routine",
+         Ada_Lib.Options.Help.Add_Option ('R', "routine",
             "routine to run, multiple allowed", Component);
-         Ada_Lib.Help.Add_Option ('r', "",
+         Ada_Lib.Options.Help.Add_Option ('r', "",
             "remote camera", Component);
-         Ada_Lib.Help.Add_Option ('t', "", "driver trace options",
+         Ada_Lib.Options.Help.Add_Option ('t', "", "driver trace options",
             Component);
-         Ada_Lib.Help.Add_Option ('u', "suite",
+         Ada_Lib.Options.Help.Add_Option ('u', "suite",
             "suite to run, multiple allowed", Component);
-         Ada_Lib.Help.Add_Option (Camera_Option, "options", "options to pass",
+         Ada_Lib.Options.Help.Add_Option (Camera_Option, "options", "options to pass",
             Component);
 
       when Ada_Lib.Options.Traces =>
@@ -613,9 +605,7 @@ package body Driver is
    overriding
    procedure Trace_Parse (
       Options                    : in out Driver_Options_Type;
-      Iterator                   : in out Ada_Lib.Command_Line_Iterator.
-                                       Abstract_Package.
-                                          Abstract_Iterator_Type'class) is
+      Iterator                   : in out Ada_Lib.Options.Command_Line_Iterator_Interface'class) is
    ----------------------------------------------------------------------------
 
    begin
@@ -627,9 +617,7 @@ package body Driver is
    overriding
    procedure Trace_Parse (
       Options                    : in out Program_Options_Type;
-      Iterator                   : in out Ada_Lib.Command_Line_Iterator.
-                                       Abstract_Package.
-                                          Abstract_Iterator_Type'class) is
+      Iterator                   : in out Ada_Lib.Options.Command_Line_Iterator_Interface'class) is
    ----------------------------------------------------------------------------
 
    begin

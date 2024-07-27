@@ -1,7 +1,7 @@
-with ADA_LIB.Command_Line_Iterator;
+with Ada_Lib.Options;
 with Ada_Lib.Options.Unit_Test;
 with Ada_Lib.Options;
-with Ada_Lib.Options_Interface;
+with Ada_Lib.Options;
 with Gnoga.Gui.Base;
 with Video.Lib;
 
@@ -41,8 +41,7 @@ package Runtime_Options is
    function Process_Option (  -- process one option
      Options                     : in out Options_Type;
      Iterator                    : in out Runtime_Iterator_Type'class;
-      Option                     : in     Ada_Lib.Options_Interface.
-                                             Option_Type'class
+      Option                     : in     Ada_Lib.Options.Option_Type'class
    ) return Boolean
    with pre => Options.Initialized;
 

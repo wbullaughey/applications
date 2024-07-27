@@ -9,6 +9,7 @@ with AUnit.Test_Cases;
 with Ada_Lib.Unit_Test;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
 with Ada_Lib.Unit_Test.Test_Cases;
+with Camera.Lib;
 with GNAT.Sockets;
 with Hex_IO;
 with Camera.Commands.PTZ_Optics;
@@ -128,10 +129,11 @@ package body Camera.Lib.Base.Test is
       Test                       : in out AUnit.Test_Cases.Test_Case'class) is
    ---------------------------------------------------------------
 
-      Options                    : Standard.Camera.Lib.Unit_Test.
-                                    Unit_Test_Options_Type'class
-                                       renames Standard.Camera.Lib.Unit_Test.
-                                          Options.all;
+      Options                    : Camera.Lib.Unit_Test.
+                                    Unit_Test_Options_Constant_Class_Access :=
+                                       Camera.Lib.Unit_Test.
+                                          Unit_Test_Options_Constant_Class_Access (
+                                             Camera.Lib.Get_Options);
       First_Port                 : constant GNAT.Sockets.Port_Type := 1;
       Last_Port                  : constant GNAT.Sockets.Port_Type := 9999;
       Local_Test                 : Test_Type renames Test_Type (Test);

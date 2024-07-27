@@ -1,7 +1,7 @@
-with ADA_LIB.Command_Line_Iterator;
+with Ada_Lib.Command_Line_Iterator;
+with Ada_Lib.Options.Actual;
 --with Ada_Lib.Configuration;
-with Ada_Lib.Options_Interface;
-with ADA_LIB.Options;
+with Ada_Lib.Options.GNOGA;
 with ADA_LIB.Strings.Unlimited;
 --with GNAT.Source_Info;
 with Hex_IO;
@@ -11,10 +11,6 @@ with Video.Lib;
 package Camera.Lib is
 
    Failed                        : exception;
-
-   subtype Abstract_Iterator_Type
-                                 is Ada_Lib.Command_Line_Iterator.
-                                    Abstract_Package.Abstract_Iterator_Type;
 
    type Brand_Type               is (ALPTOP_Camera, PTZ_Optics_Camera, No_Camera);
 
@@ -36,16 +32,34 @@ package Camera.Lib is
    type Options_Type is limited new Video.Lib.Options_Type with
                                     record
       Brand                      : Brand_Type := PTZ_Optics_Camera;
+      Debug                      : Boolean := False;
       Directory                  : ADA_LIB.Strings.Unlimited.String_Type;
                                     -- set by runstring option 'c'
+      GNOGA                      : Ada_Lib.Options.GNOGA.GNOGA_Options_Type;
       Lib_Debug                  : Boolean := False;
+      Setup_Path                 : Ada_Lib.Strings.Unlimited.String_Type;
       Simulate                   : Boolean := False;
+      State_Path                 : Ada_Lib.Strings.Unlimited.String_Type;
+      Template                   : Ada_Lib.Strings.Unlimited.String_Type;
    end record;
 
    type Options_Access           is access all Options_Type;
    type Options_Class_Access     is access all Options_Type'class;
    type Options_Constant_Class_Access
                                  is access constant Options_Type'class;
+
+   function Check_Options (
+      From                       : in     String := Ada_Lib.Trace.Here
+   ) return Boolean;
+
+   function Current_Directory -- set by runstring option 'c' else null
+   return String
+   with Pre => Ada_Lib.Options.Have_Options;
+
+   function Get_Modifyable_Options return Options_Class_Access
+   with Pre => Check_Options;
+   function Get_Options return Options_Constant_Class_Access
+   with Pre => Check_Options;
 
    overriding
    function Initialize (
@@ -56,19 +70,18 @@ package Camera.Lib is
 
    overriding
    function Process_Option (  -- process one option
-     Options                     : in out Options_Type;
-     Iterator                    : in out Abstract_Iterator_Type'class;
-      Option                     : in     Ada_Lib.Options_Interface.
-                                             Option_Type'class
+      Options              : in out Options_Type;
+      Iterator             : in out Ada_Lib.Options.
+                                       Command_Line_Iterator_Interface'class;
+      Option               : in     Ada_Lib.Options.Option_Type'class
    ) return Boolean
    with pre => Options.Initialized;
 
-   overriding
+-- overriding
    procedure Trace_Parse (
-      Options                    : in out Options_Type;
-      Iterator                   : in out Ada_Lib.Command_Line_Iterator.
-                                             Abstract_Package.
-                                                Abstract_Iterator_Type'class);
+      Options              : in out Options_Type;
+      Iterator             : in out Ada_Lib.Options.
+                                       Command_Line_Iterator_Interface'class);
 
    type General_Camera_Type      is abstract new Camera_Type
                                     with null record;

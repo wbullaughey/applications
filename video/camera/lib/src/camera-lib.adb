@@ -1,9 +1,9 @@
 with Ada.Exceptions;
 with Ada.Text_IO;use Ada.Text_IO;
-with Ada_Lib.Help;
---with Ada_Lib.Options_Interface;
+with Ada_Lib.Options.Help;
+--with Ada_Lib.Options;
 with ADA_LIB.OS;
-with Ada_Lib.Runstring_Options;
+with Ada_Lib.Options.Runstring;
 with Ada_Lib.Socket_IO;
 with Ada_Lib.Strings;
 with ADA_LIB.Trace; use Ada_Lib.Trace;
@@ -24,16 +24,16 @@ with Windows.Top;
 package body Camera.Lib is
 
    use type Configuration.State.Location_Type;
--- use type Ada_Lib.Options_Interface.Interface_Options_Constant_Class_Access;
+-- use type Ada_Lib.Options.Interface_Options_Constant_Class_Access;
 
    Trace_Option                  : constant Character := 't';
    Options_With_Parameters       : aliased constant
-                                    Ada_Lib.Options_Interface.Options_Type :=
-                                       Ada_Lib.Options_Interface.Create_Options (
+                                    Ada_Lib.Options.Options_Type :=
+                                       Ada_Lib.Options.Create_Options (
                                           "cp" & Trace_Option);
    Options_Without_Parameters    : aliased constant
-                                    Ada_Lib.Options_Interface.Options_Type :=
-                                       Ada_Lib.Options_Interface.Create_Options (
+                                    Ada_Lib.Options.Options_Type :=
+                                       Ada_Lib.Options.Create_Options (
                                           "Elr");
    Recursed                      : Boolean := False;
 
@@ -44,8 +44,44 @@ package body Camera.Lib is
 
    begin
       return Options_Constant_Class_Access (
-         Ada_Lib.Options_Interface.Read_Only_Options);
+         Ada_Lib.Options.Modifiable);
    end Camera_Options;
+
+   -------------------------------------------------------------------------
+   function Check_Options (
+      From                       : in     String := Ada_Lib.Trace.Here
+   ) return Boolean is
+   -------------------------------------------------------------------------
+
+   begin
+      return Log_Here (Option_Pointer /= Null, Debug_Options or Trace_Options,
+         "from " & From);
+   end Check_Options;
+
+   -------------------------------------------------------------------------
+   function Current_Directory  -- set by runstring option 'c' else null
+   return String is
+   -------------------------------------------------------------------------
+
+   begin
+      return Option_Pointer.Camera_Library.Directory.Coerce;
+   end Current_Directory;
+
+   -------------------------------------------------------------------------
+   function Get_Modifyable_Options return Options_Class_Access is
+   -------------------------------------------------------------------------
+
+   begin
+      return Option_Pointer;
+   end Get_Modifyable_Options;
+
+   -------------------------------------------------------------------------
+   function Get_Options return Options_Constant_Class_Access is
+   -------------------------------------------------------------------------
+
+   begin
+      return Options_Constant_Class_Access (Option_Pointer);
+   end Get_Options;
 
    -------------------------------------------------------------------------
    overriding
@@ -57,16 +93,16 @@ package body Camera.Lib is
 
    begin
       Log_In_Checked (Recursed, Debug_Options or Trace_Options,
-         "With Parameters " & Ada_Lib.Options_Interface.Image (
+         "With Parameters " & Ada_Lib.Options.Image (
             Options_With_Parameters, False) &
-         " Without Parameters " & Ada_Lib.Options_Interface.Image (
+         " Without Parameters " & Ada_Lib.Options.Image (
             Options_Without_Parameters, False) & " from " & From);
 
-      Ada_Lib.Runstring_Options.Options.Register (
-         Ada_Lib.Runstring_Options.With_Parameters,
+      Ada_Lib.Options.Runstring.Options.Register (
+         Ada_Lib.Options.Runstring.With_Parameters,
          Options_With_Parameters);
-      Ada_Lib.Runstring_Options.Options.Register (
-         Ada_Lib.Runstring_Options.Without_Parameters,
+      Ada_Lib.Options.Runstring.Options.Register (
+         Ada_Lib.Options.Runstring.Without_Parameters,
          Options_Without_Parameters);
 
       return Log_Out_Checked (Recursed,
@@ -102,17 +138,17 @@ package body Camera.Lib is
       begin
          Log_Here (Debug_Options or Trace_Options);
          Iterator.Initialize (Include_Options, Include_Non_Options,
-            Modifiers   => Ada_Lib.Help.Modifiers);
+            Modifiers   => Ada_Lib.Options.Help.Modifiers);
 --       Protected_Options.Process (Iterator);
 
       exception
          when Fault: Ada_Lib.Options.Failed =>
             Trace_Exception (Debug_Options or Trace_Options, Fault);
-            Ada_Lib.Options.Program_Options.Help (Ada.Exceptions.Exception_Message (Fault), True);
+            Ada_Lib.Options.Read_Only_Options.Help (Ada.Exceptions.Exception_Message (Fault), True);
 
          when Fault: others =>
             Trace_Exception (Debug_Options or Trace_Options, Fault);
-            Ada_Lib.Options.Program_Options.Help (Ada.Exceptions.Exception_Message (Fault), True);
+            Ada_Lib.Options.Read_Only_Options.Help (Ada.Exceptions.Exception_Message (Fault), True);
       end;
 
       Log_Out (Debug_Options or Trace_Options);
@@ -154,16 +190,16 @@ package body Camera.Lib is
 -- ----------------------------------------------------------------------------
 --
 -- begin
---    if Ada_Lib.Options_Interface.Read_Only_Options = Null then
+--    if Ada_Lib.Options.Read_Only_Options = Null then
 --       raise Failed with "Read_Only_Options not set called from " & From;
 --    end if;
 --
 --    Log_Here (Debug, "from " & From &
 --       " Read_Only_Options tag " & Tag_Name (
---          Ada_Lib.Options_Interface.Read_Only_Options.all'tag));
+--          Ada_Lib.Options.Read_Only_Options.all'tag));
 --
 --    return Options_Constant_Class_Access (
---       Ada_Lib.Options_Interface.Read_Only_Options);
+--       Ada_Lib.Options.Read_Only_Options);
 -- end Options;
 
    ----------------------------------------------------------------------------
@@ -171,16 +207,15 @@ package body Camera.Lib is
    overriding
    function Process_Option (
       Options                    : in out Options_Type;
-      Iterator                   : in out ADA_LIB.Command_Line_Iterator.Abstract_Package.Abstract_Iterator_Type'class;
-      Option                     : in     Ada_Lib.Options_Interface.
-                                             Option_Type'class
+      Iterator                   : in out Ada_Lib.Command_Line_Iterator.Abstract_Package.Abstract_Iterator_Type'class;
+      Option                     : in     Ada_Lib.Options.Option_Type'class
    ) return Boolean is
    ----------------------------------------------------------------------------
 
    begin
       Log_In (Trace_Options or Debug_Options, Option.Image);
 
-      if Ada_Lib.Options_Interface.Has_Option (Option, Options_With_Parameters,
+      if Ada_Lib.Options.Has_Option (Option, Options_With_Parameters,
             Options_Without_Parameters) then
          case Option.Option is
 
@@ -246,12 +281,12 @@ package body Camera.Lib is
       when Ada_Lib.Options.Program =>
          Log_Here (Debug_Options or Trace_Options, Quote ("Component", Component));
 
-         Ada_Lib.Help.Add_Option ('c', "directory", "current directory", Component);
-         Ada_Lib.Help.Add_Option ('l', "", "local camera", Component);
-         Ada_Lib.Help.Add_Option ('r', "", "remote camera", Component);
-         Ada_Lib.Help.Add_Option ('E', "", "simulate camera", Component);
-         Ada_Lib.Help.Add_Option (Trace_Option, "trace options", "trace options", Component);
---       Ada_Lib.Help.Add_Option ('u', "camera URL", "URL", Component);
+         Ada_Lib.Options.Help.Add_Option ('c', "directory", "current directory", Component);
+         Ada_Lib.Options.Help.Add_Option ('l', "", "local camera", Component);
+         Ada_Lib.Options.Help.Add_Option ('r', "", "remote camera", Component);
+         Ada_Lib.Options.Help.Add_Option ('E', "", "simulate camera", Component);
+         Ada_Lib.Options.Help.Add_Option (Trace_Option, "trace options", "trace options", Component);
+--       Ada_Lib.Options.Help.Add_Option ('u', "camera URL", "URL", Component);
          New_Line;
 
       when Ada_Lib.Options.Traces =>
@@ -279,6 +314,19 @@ package body Camera.Lib is
       Video.Lib.Options_Type (Options).Program_Help (Help_Mode);
       Log_Out (Debug_Options or Trace_Options);
    end Program_Help;
+
+   ----------------------------------------------------------------------------
+   procedure Set_Options (
+      Options                    : in     Options_Class_Access;
+      From                       : in     String := Ada_Lib.Trace.Here) is
+   ----------------------------------------------------------------------------
+
+   begin
+      Log_Here (Debug_Options or Trace_Options, "from " & From);
+      Option_Pointer := Options;
+      Ada_Lib.Options.Set_Options (
+         Ada_Lib.Options.Interface_Options_Class_Access (Options));
+   end Set_Options;
 
    ----------------------------------------------------------------------------
    overriding

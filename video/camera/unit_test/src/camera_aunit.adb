@@ -6,20 +6,23 @@ with Ada_Lib.OS;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
 with Ada_Lib.Trace_Tasks;
 with Ada_Lib.Unit_Test;
+with Camera.Lib;
 with Camera.Lib.Unit_Test;
 with Camera.Command_Queue;
 with Command_Name;
 
 procedure Camera_AUnit is
 
+   Options              : aliased Camera.Lib.Unit_Test.Unit_Test_Options_Type;
+
 begin
 --Trace_Tests := True;
    Put_Line (Command_Name);
+   Ada_Lib.Options.Set_Ada_Lib_Options (Camera.Lib.Options_Class_Access'(
+      Options'access));
    if Camera.Lib.Unit_Test.Initialize then
       Log_In (Debug);
       declare
-         Options              : Camera.Lib.Unit_Test.Unit_Test_Options_Type'class
-                                 renames Standard.Camera.Lib.Unit_Test.Options.all;
          Debug                : Boolean renames Options.Main_Debug;
 
       begin
@@ -50,7 +53,7 @@ begin
 exception
 
    when Fault: Camera.Lib.Unit_Test.Failed =>
-      Ada_Lib.Options.Program_Options.Help (Ada.Exceptions.Exception_Message (
+      Ada_Lib.Options.Read_Only_Options.Display_Help (Ada.Exceptions.Exception_Message (
          Fault), True);
 
    when Fault: others =>

@@ -120,17 +120,18 @@ package Camera.Lib.Unit_Test is
 --                                        Source_Location
 -- ) return Options_Constant_Class_Access;
 
-   function Options (
-      From                    : in     String := Standard.GNAT.Source_Info.
-                                          Source_Location
-   ) return Unit_Test_Options_Constant_Class_Access;
+-- replaced with Camera.Lib.Get_Options
+-- function Options (
+--    From                    : in     String := Standard.GNAT.Source_Info.
+--                                        Source_Location
+-- ) return Unit_Test_Options_Constant_Class_Access;
 
    overriding
    function Process_Option (  -- process one option
-     Options                    : in out Unit_Test_Options_Type;
-     Iterator                   : in out Runtime_Iterator_Type'class;
-      Option                     : in     Ada_Lib.Options_Interface.
-                                             Option_Type'class
+      Options              : in out Unit_Test_Options_Type;
+      Iterator             : in out Ada_Lib.Options.
+                                       Command_Line_Iterator_Interface'class;
+      Option               : in     Ada_Lib.Options.Option_Type'class
    ) return Boolean
    with Pre => Options.Initialized;
 --             not Ada_Lib.Options.Have_Options;
@@ -141,8 +142,8 @@ package Camera.Lib.Unit_Test is
    overriding
    procedure Trace_Parse (
       Options                    : in out Unit_Test_Options_Type;
-      Iterator                   : in out Ada_Lib.Command_Line_Iterator.
-                                          Abstract_Package.Abstract_Iterator_Type'class
+      Iterator             : in out Ada_Lib.Options.
+                                       Command_Line_Iterator_Interface'class
    ) with Pre => Options.Initialized and then
                  Ada_Lib.Options.Have_Options;
 

@@ -1,7 +1,7 @@
 with Ada.Exceptions;
 with Ada_Lib.Directory.Compare_Files;
 with Ada_Lib.GNOGA;
---with Ada_Lib.Options_Interface;
+--with Ada_Lib.Options;
 with Ada_Lib.Strings.Unlimited; use Ada_Lib.Strings.Unlimited;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
 with Ada_Lib.Unit_Test;

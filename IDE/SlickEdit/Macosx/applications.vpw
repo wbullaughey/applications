@@ -4,6 +4,7 @@
         <Project File="../ada_lib.vpj"/>
         <Project File="../ada_lib_aunit_testing.vpj"/>
         <Project File="../ada_lib_aunit_tests.vpj"/>
+        <Project File="../ada_lib_original.vpj"/>
         <Project File="../alias_list.vpj"/>
         <Project File="../application.vpj"/>
         <Project File="../aunit.vpj"/>
