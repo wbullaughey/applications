@@ -1,11 +1,11 @@
 with Ada_Lib.GNOGA.Unit_Test;
-with Ada_Lib.Options;
+--with Ada_Lib.Options;
 with Ada_Lib.Timer;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
 with Ada_Lib.Unit_Test;
 with AUnit.Test_Cases;
 with Base;
-with Camera.Lib.Options;
+with Camera.Lib;
 with Camera.Lib.Unit_Test;
 with Configuration.Camera.Setup; use Configuration.Camera.Setup;
 with Configuration.Camera.State;
@@ -119,22 +119,26 @@ package body Main.Unit_Test is
       Test                       : in out Test_Type) is
    ---------------------------------------------------------------
 
-      Connection_Data            : Base.Connection_Data_Type renames
-                                    Base.Connection_Data_Type (
-                                       Ada_Lib.GNOGA.Get_Connection_Data.all);
-      Options                    : Standard.Camera.Lib.Unit_Test.
-                                    Unit_Test_Options_Type'class
-                                       renames Standard.Camera.Lib.Unit_Test.
-                                          Options.all;
-      State                      : Configuration.Camera.State.State_Type renames
-                                    Connection_Data.State;
-
    begin
       Log_In (Debug or Trace_Set_Up);
-      State.Load (Options.Location, State_Path);
-      -- need to load state 1st
-      Test.Setup.Load (State, Setup_Path);
       Camera.Lib.Unit_Test.Camera_Window_Test_Type (Test).Set_Up;
+         -- allocates Connection_Data
+
+      declare
+         Connection_Data   : Base.Connection_Data_Type renames
+                              Base.Connection_Data_Type (
+                                 Ada_Lib.GNOGA.Get_Connection_Data.all);
+         Options           : Standard.Camera.Lib.Unit_Test.
+                              Unit_Test_Options_Type'class
+                                 renames Standard.Camera.Lib.Unit_Test.
+                                    Get_Options.all;
+         State             : Configuration.Camera.State.State_Type renames
+                              Connection_Data.State;
+      begin
+         State.Load (Options.Location, State_Path);
+         -- need to load state 1st
+         Test.Setup.Load (State, Setup_Path);
+      end;
       Log_Out (Debug or Trace_Set_Up);
    end Set_Up;
 
@@ -142,8 +146,10 @@ package body Main.Unit_Test is
    function Suite return AUnit.Test_Suites.Access_Test_Suite is
    ---------------------------------------------------------------
 
-      Options                    : Camera.Lib.Unit_Test.Unit_Test_Options_Type'class
-                                    renames Camera.Lib.Unit_Test.Options.all;
+      Options                    : Standard.Camera.Lib.Unit_Test.
+                                    Unit_Test_Options_Type'class
+                                       renames Standard.Camera.Lib.Unit_Test.
+                                          Get_Options.all;
       Test_Suite                 : constant AUnit.Test_Suites.Access_Test_Suite :=
                                     new AUnit.Test_Suites.Test_Suite;
       Tests                      : constant Test_Access := new Test_Type (
@@ -182,10 +188,10 @@ package body Main.Unit_Test is
    pragma Unreferenced (Test);
    ---------------------------------------------------------------
 
-      Options                 : Camera.Lib.Unit_Test.Unit_Test_Options_Type'
-                                 class renames Camera.Lib.
-                                    Unit_Test.Unit_Test_Options_Constant_Class_Access (
-                                       Ada_Lib.Options.Program_Options).all;
+      Options                    : Standard.Camera.Lib.Unit_Test.
+                                    Unit_Test_Options_Type'class
+                                       renames Standard.Camera.Lib.Unit_Test.
+                                          Get_Options.all;
       Button_Press_Event      : Button_Push_Event_Type;
 --    Local_Test              : Test_Type'class renames Test_Type'class (Test);
    begin
@@ -199,7 +205,7 @@ package body Main.Unit_Test is
          Button_Press_Event.Set_Wait (2.0);  -- leave time for web page to display
 
          Run (
-            Directory            => Camera.Lib.Options.Current_Directory,
+            Directory            => Camera.Lib.Current_Directory,
             Port                 => Options.GNOGA_Options.HTTP_Port,
             Verbose              => True,
             Wait_For_Completion  => True);

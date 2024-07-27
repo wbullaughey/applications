@@ -2,12 +2,12 @@
 --with Ada.Exceptions;
 with Ada.Text_IO;use Ada.Text_IO;
 --with Ada_Lib.Command_Line_Iterator;
-with Ada_Lib.Help;
+with Ada_Lib.Options.Help;
 --with Ada_Lib.Options.GNOGA;
 --with ADA_LIB.Strings.Unlimited;
 --with Ada_Lib.Test;
 with ADA_LIB.OS;
-with Ada_Lib.Runstring_Options;
+with Ada_Lib.Options.Runstring;
 --with ADA_LIB.Text;
 with ADA_LIB.Trace; use ADA_LIB.Trace;
 with Command_Name;
@@ -31,12 +31,12 @@ package body Camera.Lib.Options is
 -- Template_Option               : constant Character := 't';
    Trace_Option                  : constant Character := 'T';
    Options_With_Parameters       : aliased constant
-                                    Ada_Lib.Options_Interface.Options_Type :=
-                                       Ada_Lib.Options_Interface.Create_Options (
+                                    Ada_Lib.Options.Options_Type :=
+                                       Ada_Lib.Options.Create_Options (
                                           Trace_Option);
    Options_Without_Parameters    : aliased constant
-                                    Ada_Lib.Options_Interface.Options_Type :=
-                                       Ada_Lib.Options_Interface.Null_Options;
+                                    Ada_Lib.Options.Options_Type :=
+                                       Ada_Lib.Options.Null_Options;
    Protected_Options             : aliased Options_Type;
 
    -------------------------------------------------------------------------
@@ -49,12 +49,12 @@ package body Camera.Lib.Options is
    end Current_Directory;
 
    -------------------------------------------------------------------------
-   function Get_Modifyable_Options return Options_Access is
+   function Get_Modifiable_Options return Options_Access is
    -------------------------------------------------------------------------
 
    begin
       return Protected_Options'access;
-   end Get_Modifyable_Options;
+   end Get_Modifiable_Options;
 
    -------------------------------------------------------------------------
    overriding
@@ -68,11 +68,11 @@ package body Camera.Lib.Options is
       Log_In (Debug_Options or Trace_Options, "from " & From & " options address " &
          Image (Options'address) &
          " protected options address " & Image (Protected_Options'address));
-      Ada_Lib.Runstring_Options.Options.Register (
-         Ada_Lib.Runstring_Options.With_Parameters,
+      Ada_Lib.Options.Runstring.Options.Register (
+         Ada_Lib.Options.Runstring.With_Parameters,
          Options_With_Parameters);
-      Ada_Lib.Runstring_Options.Options.Register (
-         Ada_Lib.Runstring_Options.Without_Parameters,
+      Ada_Lib.Options.Runstring.Options.Register (
+         Ada_Lib.Options.Runstring.Without_Parameters,
          Options_Without_Parameters);
 
 --    Configuration.Camera.State.Global_Camera_State :=
@@ -81,12 +81,12 @@ package body Camera.Lib.Options is
       return Log_Out (
          Options.GNOGA.Initialize and then
          Options.Camera_Library.Initialize and then
-         Ada_Lib.Options.Program_Options_Type (Options).Initialize and then
+         Ada_Lib.Options.Actual.Program_Options_Type (Options).Initialize and then
          Options.Process (
             Include_Options      => True,
             Include_Non_Options  => False,
             Modifiers            => String'(
-               1 => Ada_Lib.Help.Modifier)),
+               1 => Ada_Lib.Options.Help.Modifier)),
          Debug_Options or Trace_Options);
    end Initialize;
 
@@ -94,17 +94,17 @@ package body Camera.Lib.Options is
    -- processes options it knows about and calls parent for others
    overriding
    function Process_Option (
-      Options                    : in out Options_Type;
-      Iterator                   : in out ADA_LIB.Command_Line_Iterator.Abstract_Package.Abstract_Iterator_Type'class;
-      Option                     : in     Ada_Lib.Options_Interface.
-                                             Option_Type'class
+      Options           : in out Options_Type;
+      Iterator          : in out Ada_Lib.Options.
+                                    Command_Line_Iterator_Interface'class;
+      Option            : in     Ada_Lib.Options.Option_Type'class
    ) return Boolean is
    ----------------------------------------------------------------------------
 
    begin
       Log_In (Trace_Options or Debug_Options, Option.Image);
 
-      if Ada_Lib.Options_Interface.Has_Option (Option, Options_With_Parameters,
+      if Ada_Lib.Options.Has_Option (Option, Options_With_Parameters,
             Options_Without_Parameters) then
          case Option.Option is
             when Trace_Option =>
@@ -148,7 +148,7 @@ package body Camera.Lib.Options is
          Log_Out (Trace_Options or Debug_Options, "other " & Option.Image);
          return Options.GNOGA.Process_Option (Iterator, Option) or else
             Options.Camera_Library.Process_Option (Iterator, Option) or else
-            ADA_LIB.Options.Program_Options_Type (Options).Process_Option (
+            Ada_Lib.Options.Actual.Program_Options_Type (Options).Process_Option (
                Iterator, Option);
       end if;
 
@@ -171,7 +171,7 @@ package body Camera.Lib.Options is
       case Help_Mode is
 
       when Ada_Lib.Options.Program =>
-         Ada_Lib.Help.Add_Option (Trace_Option,
+         Ada_Lib.Options.Help.Add_Option (Trace_Option,
             "trace options", Component);
 
       when Ada_Lib.Options.Traces =>
@@ -186,7 +186,7 @@ package body Camera.Lib.Options is
 
       end case;
 
-      Ada_Lib.Options.Program_Options_Type (Options).Program_Help (Help_Mode);
+      Ada_Lib.Options.Actual.Program_Options_Type (Options).Program_Help (Help_Mode);
       Options.GNOGA.Program_Help (Help_Mode);
       Options.Camera_Library.Program_Help (Help_Mode);
       Log_Out (Debug_Options or Trace_Options);
@@ -200,7 +200,7 @@ begin
 --Trace_Options := True;
 --Elaborate := True;
 
-   Ada_Lib.Options_Interface.Set_Ada_Lib_Options (Protected_Options'access);
+   Ada_Lib.Options.Set_Ada_Lib_Options (Protected_Options'access);
    Log_Here (Elaborate or Debug_Options or Trace_Options, "options " &
       Image (Protected_Options'address));
 

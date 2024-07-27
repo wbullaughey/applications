@@ -1,6 +1,6 @@
 with Ada.Exceptions;
 with Ada_Lib.GNOGA;
-with Ada_Lib.Options_Interface;
+with Ada_Lib.Options;
 with Ada_Lib.Strings;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
 with Ada_Lib.Unit_Test.Test_Cases;
@@ -14,7 +14,7 @@ package body Configuration.Camera.State.Unit_Tests is
 
    use type Ada_Lib.Strings.String_Access;
 -- use type Standard.Camera.Lib.Unit_Test.Options_Constant_Class_Test_Access;
-   use type Ada_Lib.Options_Interface.Interface_Options_Constant_Class_Access;
+   use type Ada_Lib.Options.Interface_Options_Constant_Class_Access;
 
    type Connection_Data_Type     is new Ada_Lib.GNOGA.Connection_Data_Type
                                     with null record;
@@ -45,7 +45,7 @@ package body Configuration.Camera.State.Unit_Tests is
 
    procedure Test_Load (
       Test                       : in out AUnit.Test_Cases.Test_Case'class
-   ) with Pre => Ada_Lib.Options_Interface.Read_Only_Options /= Null;
+   ) with Pre => Ada_Lib.Options.Get_Read_Only_Options /= Null;
 
    procedure Test_Values (
       Test                       : in out AUnit.Test_Cases.Test_Case'class
@@ -117,7 +117,7 @@ log_here;
       Options                    : Standard.Camera.Lib.Unit_Test.
                                     Unit_Test_Options_Type'class
                                        renames Standard.Camera.Lib.Unit_Test.
-                                          Options.all;
+                                          Get_Options.all;
       Test_Suite                 : constant AUnit.Test_Suites.Access_Test_Suite
                                     := new AUnit.Test_Suites.Test_Suite;
       Tests                      : constant Configuration_Tests_Access :=
@@ -156,7 +156,7 @@ log_here;
       Options                    : Standard.Camera.Lib.Unit_Test.
                                     Unit_Test_Options_Type'class
                                        renames Standard.Camera.Lib.Unit_Test.
-                                          Options.all;
+                                          Get_Options.all;
       State                      : Configuration.Camera.State.State_Type renames
                                     Connection_Data.State;
    begin
@@ -231,7 +231,7 @@ log_here;
       Options                    : Standard.Camera.Lib.Unit_Test.
                                     Unit_Test_Options_Type'class
                                        renames Standard.Camera.Lib.Unit_Test.
-                                          Options.all;
+                                          Get_Options.all;
       State                      : Configuration.Camera.State.State_Type
                                     renames Connection_Data.State;
    begin

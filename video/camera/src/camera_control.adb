@@ -1,12 +1,12 @@
 --with Ada.Command_Line;
 with Ada.Text_IO; use Ada.Text_IO;
 with ADA_LIB.GNOGA;
---with Ada_Lib.Options_Interface;
+--with Ada_Lib.Options;
 with ADA_LIB.OS;
 with ADA_LIB.Trace; use ADA_LIB.Trace;
 with Ada_Lib.Trace_Tasks;
+with Camera.Lib;
 with Base;
-with Camera.Lib.Options;
 with Command_Name;
 with Configuration.Camera.Setup;
 with Configuration.Camera.State;
@@ -21,12 +21,13 @@ procedure Camera_Control is
    Camera_Setup                  : Configuration.Camera.Setup.Setup_Type;
    Connection_Data               : constant Base.Connection_Data_Class_Access :=
                                     new Base.Connection_Data_Type;
-   Options                       : constant Camera.Lib.Options.Options_Access :=
-                                    Camera.Lib.Options.Get_Modifyable_Options;
+   Options                       : Camera.Lib.Options_Type;  -- options for application
+                                     Camera.Lib.Get_Modifiable_Options;
    Debug                         : Boolean renames Options.Debug;
 
 begin
    Put_Line (Command_Name);
+   Camera.Lib
    if Options.Initialize then
       Log_In (Debug);
       Connection_Data.Initialize;
@@ -47,7 +48,7 @@ begin
       Log_Here (Debug);
 
       Main.Run (
-         Directory            => Camera.Lib.Options.Current_Directory,
+         Directory            => Camera.Lib.Current_Directory,
          Port                 => Options.GNOGA.HTTP_Port,
          Verbose              => Options.Verbose,
          Wait_For_Completion  => True);

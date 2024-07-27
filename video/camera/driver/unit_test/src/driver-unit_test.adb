@@ -1,7 +1,6 @@
 ﻿with Ada.Text_IO;use Ada.Text_IO;
-with Ada_Lib.Help;
-with Ada_Lib.Options_Interface;
-with Ada_Lib.Runstring_Options;
+with Ada_Lib.Options.Help;
+with Ada_Lib.Options.Runstring;
 with Ada_Lib.Strings.Unlimited;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
 with Ada_Lib.Unit_Test.Reporter;
@@ -27,14 +26,13 @@ package body Driver.Unit_Test is
    Debug_Options                 : Boolean := False;
    Trace_Option                  : constant Character := 'T';
    Options_With_Parameters       : aliased constant
-                                    Ada_Lib.Options_Interface.Options_Type :=
-                                       Ada_Lib.Options_Interface.Create_Options (
+                                    Ada_Lib.Options.Options_Type :=
+                                       Ada_Lib.Options.Create_Options (
                                           Trace_Option);
    Options_Without_Parameters    : aliased constant
-                                    Ada_Lib.Options_Interface.Options_Type :=
-                                       Ada_Lib.Options_Interface.Null_Options;
---                                     Ada_Lib.Options_Interface.
---                                        Create_Options ("r");
+                                    Ada_Lib.Options.Options_Type :=
+                                       Ada_Lib.Options.Null_Options;
+--                                     Ada_Lib.Options.Actual.Nested_Options_Type--                                        Create_Options ("r");
    Protected_Options             : aliased Driver_Unit_Test_Options_Type;
 
    ---------------------------------------------------------------
@@ -71,14 +69,14 @@ package body Driver.Unit_Test is
    begin
       Log_In (Debug_Options or Trace_Options,
          " Initialized " & Protected_Options.Initialized'img);
-      Ada_Lib.Runstring_Options.Options.Register (
-         Ada_Lib.Runstring_Options.With_Parameters, Options_With_Parameters);
-      Ada_Lib.Runstring_Options.Options.Register (
-         Ada_Lib.Runstring_Options.Without_Parameters,
+      Ada_Lib.Options.Runstring.Options.Register (
+         Ada_Lib.Options.Runstring.With_Parameters, Options_With_Parameters);
+      Ada_Lib.Options.Runstring.Options.Register (
+         Ada_Lib.Options.Runstring.Without_Parameters,
          Options_Without_Parameters);
 
 --    Protected_Options.Unit_Test := True;
-      Ada_Lib.Options_Interface.Set_Ada_Lib_Options (Protected_Options'access);
+      Ada_Lib.Options.Set_Ada_Lib_Options (Protected_Options'access);
 
       Ada_Lib.Options.Unit_Test.Unit_Test_Options :=
          Protected_Options'unchecked_access;
@@ -94,7 +92,7 @@ package body Driver.Unit_Test is
          Protected_Options.Process (
             Include_Options      => True,
             Include_Non_Options  => False,
-            Modifiers            => Ada_Lib.Help.Modifiers),
+            Modifiers            => Ada_Lib.Options.Help.Modifiers),
          Debug_Options or Trace_Options,
          "Initialized " & Protected_Options.Initialized'img);
 
@@ -121,11 +119,10 @@ package body Driver.Unit_Test is
    ---------------------------------------------------------------
    overriding
    function Process_Option (  -- process one option
-     Options                    : in out Driver_Unit_Test_Options_Type;
-     Iterator                   : in out Ada_Lib.Command_Line_Iterator.
-                                          Abstract_Package.Abstract_Iterator_Type'class;
-      Option                     : in     Ada_Lib.Options_Interface.
-                                             Option_Type'class
+     Options            : in out Driver_Unit_Test_Options_Type;
+      Iterator          : in out Ada_Lib.Options.
+                                    Command_Line_Iterator_Interface'class;
+      Option            : in     Ada_Lib.Options.Option_Type'class
    ) return Boolean is
    ---------------------------------------------------------------
 
@@ -134,7 +131,7 @@ package body Driver.Unit_Test is
    begin
       Log_In (Debug_Options or Trace_Options, Option.Image);
 
-      if Ada_Lib.Options_Interface.Has_Option (Option, Options_With_Parameters,
+      if Ada_Lib.Options.Has_Option (Option, Options_With_Parameters,
             Options_Without_Parameters) then
          case Option.Option is
 
@@ -215,10 +212,10 @@ package body Driver.Unit_Test is
       case Help_Mode is
 
       when Ada_Lib.Options.Program =>
---       Ada_Lib.Help.Add_Option ('l', "", "list output from camera app",
+--       Ada_Lib.Options.Help.Add_Option ('l', "", "list output from camera app",
 --          Component);
---       Ada_Lib.Help.Add_Option ('r', "", "remote camera", Component);
-         Ada_Lib.Help.Add_Option ('T', "", "driver unit test trace options");
+--       Ada_Lib.Options.Help.Add_Option ('r', "", "remote camera", Component);
+         Ada_Lib.Options.Help.Add_Option ('T', "", "driver unit test trace options");
 
       when Ada_Lib.Options.Traces =>
          New_Line;

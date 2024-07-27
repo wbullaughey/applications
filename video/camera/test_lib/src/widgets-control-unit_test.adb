@@ -114,7 +114,7 @@ package body Widgets.Control.Unit_Test is
       Options                    : Standard.Camera.Lib.Unit_Test.
                                     Unit_Test_Options_Type'class
                                        renames Standard.Camera.Lib.Unit_Test.
-                                          Options.all;
+                                          Get_Options.all;
       State                      : Configuration.Camera.State.State_Type renames
                                     Connection_Data.State;
    begin
@@ -143,8 +143,10 @@ package body Widgets.Control.Unit_Test is
    function Suite return AUnit.Test_Suites.Access_Test_Suite is
    ---------------------------------------------------------------
 
-      Options                    : Camera.Lib.Unit_Test.Unit_Test_Options_Type'class
-                                    renames Camera.Lib.Unit_Test.Options.all;
+      Options                    : Standard.Camera.Lib.Unit_Test.
+                                    Unit_Test_Options_Type'class
+                                       renames Standard.Camera.Lib.Unit_Test.
+                                          Get_Options.all;
       Test_Suite                 : constant AUnit.Test_Suites.Access_Test_Suite :=
                                     new AUnit.Test_Suites.Test_Suite;
       Tests                      : constant Test_Access := new Test_Type (
@@ -179,8 +181,8 @@ package body Widgets.Control.Unit_Test is
 
    begin
       Log_In (Debug);
---    if not Ada_Lib.Options.Program_Options_Type (
---          Ada_Lib.Options.Program_Options.all).Test_Driver then
+--    if not Ada_Lib.Options.Actual.Program_Options_Type (
+--          Ada_Lib.Options.Get_Read_Only_Options.all).Test_Driver then
          Log_Here (Debug);
          declare
 --          Local_Test           : Test_Type'class renames

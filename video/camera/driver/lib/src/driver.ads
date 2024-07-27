@@ -1,6 +1,6 @@
 ﻿with Ada_Lib.Command_Line_Iterator;
 with Ada_Lib.Options;
-with Ada_Lib.Options_Interface;
+with Ada_Lib.Options;
 with Ada_Lib.Strings.Unlimited;
 with Ada_Lib.Trace;
 
@@ -37,22 +37,16 @@ package Driver is
    overriding
    function Process_Option (  -- process one option
      Options                    : in out Driver_Options_Type;
-     Iterator                   : in out Ada_Lib.Command_Line_Iterator.
-                                          Abstract_Package.Abstract_Iterator_Type'class;
-      Option                     : in     Ada_Lib.Options_Interface.
-                                             Option_Type'class
+     Iterator                   : in out Ada_Lib.Options.Command_Line_Iterator_Interface'class
    ) return Boolean
    with pre => Options.Initialized;
 
    overriding
    procedure Trace_Parse (
       Options                    : in out Driver_Options_Type;
-      Iterator                   : in out Ada_Lib.Command_Line_Iterator.
-                                       Abstract_Package.
-                                          Abstract_Iterator_Type'class);
+      Iterator                   : in out Ada_Lib.Options.Command_Line_Iterator_Interface'class);
 
-   type Program_Options_Type     is limited new Ada_Lib.Options.
-                                    Program_Options_Type with record
+   type Program_Options_Type     is limited new Ada_Lib.Options.Actual.Program_Options_Type with record
       Driver_Options             : Driver_Options_Type (False);
    end record;
 
@@ -65,19 +59,15 @@ package Driver is
    overriding
    function Process_Option (  -- process one option
      Options                    : in out Program_Options_Type;
-     Iterator                   : in out Ada_Lib.Command_Line_Iterator.
-                                          Abstract_Package.Abstract_Iterator_Type'class;
-      Option                     : in     Ada_Lib.Options_Interface.
-                                             Option_Type'class
+     Iterator                   : in out Ada_Lib.Options.Command_Line_Iterator_Interface'class
    ) return Boolean
    with pre => Options.Initialized;
 
    overriding
    procedure Trace_Parse (
       Options                    : in out Program_Options_Type;
-      Iterator                   : in out Ada_Lib.Command_Line_Iterator.
-                                       Abstract_Package.
-                                          Abstract_Iterator_Type'class);
+      Iterator          : in out Ada_Lib.Options.
+                                    Command_Line_Iterator_Interface'class);
 
    function Get_Modifiable_Options (
       From                       : in  String := Ada_Lib.Trace.Here

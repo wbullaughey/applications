@@ -1,7 +1,7 @@
 with Ada.Exceptions;
 with Ada_Lib.Directory.Compare_Files;
 with Ada_Lib.GNOGA;
---with Ada_Lib.Options_Interface;
+--with Ada_Lib.Options;
 with Ada_Lib.Strings.Unlimited; use Ada_Lib.Strings.Unlimited;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
 with Ada_Lib.Unit_Test;
@@ -116,7 +116,7 @@ package body Configuration.Camera.Setup.Unit_Tests is
       Options                    : Standard.Camera.Lib.Unit_Test.
                                     Unit_Test_Options_Type'class
                                        renames Standard.Camera.Lib.Unit_Test.
-                                          Options.all;
+                                          Get_Options.all;
       Test_Suite              : constant AUnit.Test_Suites.Access_Test_Suite :=
                                  new AUnit.Test_Suites.Test_Suite;
       Tests                   : constant Configuration_Tests_Access :=
@@ -154,8 +154,9 @@ package body Configuration.Camera.Setup.Unit_Tests is
       Local_Test                 : Configuration_Tests_Type renames
                                     Configuration_Tests_Type (Test);
       Options                    : Standard.Camera.Lib.Unit_Test.
-                                    Unit_Test_Options_Type'class renames
-                                       Standard.Camera.Lib.Unit_Test.Options.all;
+                                    Unit_Test_Options_Type'class
+                                       renames Standard.Camera.Lib.Unit_Test.
+                                          Get_Options.all;
       State                      : Configuration.Camera.State.State_Type renames
                                     Connection_Data.State;
 

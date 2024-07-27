@@ -1,3 +1,4 @@
+with Ada.Exceptions;
 --with ada.text_io;
 with Ada_Lib.Time;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
@@ -73,10 +74,14 @@ package body Camera.Lib.Base is
    ---------------------------------------------------------------
    procedure Camera_No_Found (
       Address                    : in     String;
-      Port                       : in     GNAT.Sockets.Port_Type) is
+      Port                       : in     GNAT.Sockets.Port_Type;
+      Fault                      : in     Ada.Exceptions.Exception_Occurrence) is
    ---------------------------------------------------------------
 
    begin
+      Log_Here (Debug, "exception name " & Ada.Exceptions.Exception_Name (Fault) &
+         " message " & Ada.Exceptions.Exception_Message (Fault));
+
       raise Failed with Quote ("Camera address", Address) &
          " port" & Port'img & " not found";
    end Camera_No_Found;
@@ -193,7 +198,7 @@ package body Camera.Lib.Base is
    exception
 
       when Fault: GNAT.Sockets.Host_Error | Ada_Lib.Socket_IO.Failed =>
-         Camera_No_Found (Host_Address, Port);
+         Camera_No_Found (Host_Address, Port, Fault);
 
    end Host_Open;
 
@@ -218,7 +223,7 @@ package body Camera.Lib.Base is
    exception
 
       when Fault: GNAT.Sockets.Host_Error | Ada_Lib.Socket_IO.Failed =>
-         Camera_No_Found (Address, Port);
+         Camera_No_Found (Address, Port, Fault);
 
    end IP_Open;
 
@@ -238,7 +243,7 @@ package body Camera.Lib.Base is
    exception
 
       when Fault: GNAT.Sockets.Host_Error | Ada_Lib.Socket_IO.Failed =>
-         Camera_No_Found (Address.Image, Port);
+         Camera_No_Found (Address.Image, Port, Fault);
 
    end Open;
 

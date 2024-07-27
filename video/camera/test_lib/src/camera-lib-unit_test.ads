@@ -51,8 +51,8 @@ package Camera.Lib.Unit_Test is
    overriding
    procedure Set_Up (
       Test                       : in out Camera_Test_Type
-   ) with Pre => Test.Verify_Pre_Setup,
-          Post => Test.Verify_Post_Setup;
+   ) with Pre => not Test.Verify_Set_Up,
+          Post => Test.Verify_Set_Up;
 
    procedure Set_Up_Optional_Load (
       Test                       : in out Camera_Test_Type;
@@ -75,8 +75,8 @@ package Camera.Lib.Unit_Test is
    overriding
    procedure Set_Up (
       Test                       : in out Camera_Window_Test_Type
-   ) with Pre => Test.Verify_Pre_Setup,
-          Post => Test.Verify_Post_Setup;
+   ) with Pre => not Test.Verify_Set_Up,
+          Post => Test.Verify_Set_Up;
 
    -- use for test which create the standard main window which manipulate camera
    type Camera_Window_Test_With_Camera_Type (
@@ -105,6 +105,10 @@ package Camera.Lib.Unit_Test is
    subtype Runtime_Iterator_Type is Ada_Lib.Command_Line_Iterator.
                                     Abstract_Package.Abstract_Iterator_Type;
 
+   function Get_Options (
+      From              : in     String := GNAT.Source_Info.Source_Location
+   ) return Unit_Test_Options_Constant_Class_Access;
+
    function Initialize
    return Boolean;
 
@@ -115,22 +119,18 @@ package Camera.Lib.Unit_Test is
    ) return Boolean
    with pre => Options.Verify_Preinitialize;
 
+-- replaced with Camera.Lib.Get_Options
 -- function Options (
 --    From                    : in     String := Standard.GNAT.Source_Info.
 --                                        Source_Location
--- ) return Options_Constant_Class_Access;
-
-   function Options (
-      From                    : in     String := Standard.GNAT.Source_Info.
-                                          Source_Location
-   ) return Unit_Test_Options_Constant_Class_Access;
+-- ) return Unit_Test_Options_Constant_Class_Access;
 
    overriding
    function Process_Option (  -- process one option
-     Options                    : in out Unit_Test_Options_Type;
-     Iterator                   : in out Runtime_Iterator_Type'class;
-      Option                     : in     Ada_Lib.Options_Interface.
-                                             Option_Type'class
+      Options              : in out Unit_Test_Options_Type;
+      Iterator             : in out Ada_Lib.Options.
+                                       Command_Line_Iterator_Interface'class;
+      Option               : in     Ada_Lib.Options.Option_Type'class
    ) return Boolean
    with Pre => Options.Initialized;
 --             not Ada_Lib.Options.Have_Options;
@@ -141,8 +141,8 @@ package Camera.Lib.Unit_Test is
    overriding
    procedure Trace_Parse (
       Options                    : in out Unit_Test_Options_Type;
-      Iterator                   : in out Ada_Lib.Command_Line_Iterator.
-                                          Abstract_Package.Abstract_Iterator_Type'class
+      Iterator             : in out Ada_Lib.Options.
+                                       Command_Line_Iterator_Interface'class
    ) with Pre => Options.Initialized and then
                  Ada_Lib.Options.Have_Options;
 

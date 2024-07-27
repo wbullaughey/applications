@@ -2,7 +2,7 @@ with Ada.Exceptions;
 with Ada.Unchecked_Deallocation;
 with Ada_Lib.Configuration;
 with Ada_Lib.Directory;
-with Ada_Lib.Options_Interface;
+with Ada_Lib.Options;
 --with Ada_Lib.Parser;
 with Ada_Lib.Socket_IO;
 with Ada_Lib.Strings.Unlimited; use Ada_Lib.Strings; use Ada_Lib.Strings.Unlimited;
@@ -10,7 +10,7 @@ with Ada.Text_IO; use Ada.Text_IO;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
 with AUnit.Assertions; use AUnit.Assertions;
 with Base;
-with Camera.Lib.Options;
+with Camera.Lib;
 --with Hex_IO;
 --with Video.Lib;
 
@@ -122,9 +122,9 @@ package body Configuration.Camera.State is
    ----------------------------------------------------------------
 
       State_Path                 : Ada_Lib.Strings.Unlimited.String_Type
-                                    renames Standard.Camera.Lib.Options.
+                                    renames Standard.Camera.Lib.
                                        Options_Constant_Class_Access (
-                                          Ada_Lib.Options_Interface.Read_Only_Options).
+                                          Ada_Lib.Options.Get_Read_Only_Options).
                                              Setup_Path;
 
    begin
@@ -230,7 +230,7 @@ package body Configuration.Camera.State is
 
       Config                     : Ada_Lib.Configuration.Configuration_Type;
       Current_Directory          : constant String :=
-                                    Standard.Camera.Lib.Options.Current_Directory;
+                                    Standard.Camera.Lib.Current_Directory;
       Path                       : constant String :=
                                     (if Current_Directory'length > 0 then
                                        Current_Directory & "/"

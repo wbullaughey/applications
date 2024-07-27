@@ -10,6 +10,7 @@ with Ada_Lib.Unit_Test;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
 with Ada_Lib.Unit_Test.Test_Cases;
 with GNAT.Sockets;
+--with GNAT.Source_Info;
 with Hex_IO;
 with Camera.Commands.PTZ_Optics;
 with Camera.LIB.ALPTOP;
@@ -85,7 +86,6 @@ package body Camera.Lib.Base.Test is
 -- Remote_Port                   : constant String := ":9100";
    Suite_Name                    : constant String := "Basic_Video";
 
-
    ---------------------------------------------------------------
    overriding
    function Name (
@@ -131,7 +131,7 @@ package body Camera.Lib.Base.Test is
       Options                    : Standard.Camera.Lib.Unit_Test.
                                     Unit_Test_Options_Type'class
                                        renames Standard.Camera.Lib.Unit_Test.
-                                          Options.all;
+                                          Get_Options.all;
       First_Port                 : constant GNAT.Sockets.Port_Type := 1;
       Last_Port                  : constant GNAT.Sockets.Port_Type := 9999;
       Local_Test                 : Test_Type renames Test_Type (Test);
@@ -168,9 +168,11 @@ package body Camera.Lib.Base.Test is
       type Ports_Access          is access constant Ports_Type;
 
       Options                    : Standard.Camera.Lib.Unit_Test.
-                                    Unit_Test_Options_Type'class
-                                       renames Standard.Camera.Lib.Unit_Test.
-                                          Options.all;
+                                    Unit_Test_Options_Type'class renames
+                                       Standard.Camera.Lib.Unit_Test.
+                                          Unit_Test_Options_Type'class (
+                                             Ada_Lib.Options.
+                                                Get_Read_Only_Options.all);
       Local_Test                 : Test_Type renames Test_Type (Test);
       ALPTOP_Ports                : aliased constant Ports_Type := (
                                        554, 1935
@@ -344,7 +346,7 @@ package body Camera.Lib.Base.Test is
       Options                    : Standard.Camera.Lib.Unit_Test.
                                     Unit_Test_Options_Type'class
                                        renames Standard.Camera.Lib.Unit_Test.
-                                          Options.all;
+                                          Get_Options.all;
       Test_Suite                 : constant AUnit.Test_Suites.Access_Test_Suite :=
                                     new AUnit.Test_Suites.Test_Suite;
       Test                       : constant Test_Access := new Test_Type (
@@ -387,7 +389,7 @@ package body Camera.Lib.Base.Test is
       Options                    : Standard.Camera.Lib.Unit_Test.
                                     Unit_Test_Options_Type'class
                                        renames Standard.Camera.Lib.Unit_Test.
-                                          Options.all;
+                                          Get_Options.all;
       Local_Test                 : Test_Type renames Test_Type (Test);
 
    begin
@@ -425,7 +427,7 @@ package body Camera.Lib.Base.Test is
       Options                    : Standard.Camera.Lib.Unit_Test.
                                     Unit_Test_Options_Type'class
                                        renames Standard.Camera.Lib.Unit_Test.
-                                          Options.all;
+                                          Get_Options.all;
       First_Unit                 : constant GNAT.Sockets.Inet_Addr_Comp_Type := 2;
 --    IP_Address                 : GNAT.Sockets.Inet_Addr_V4_Type :=
 --                                  (192, 168, 1, 0);
