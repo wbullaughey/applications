@@ -57,12 +57,6 @@ aunit = "*"
 aunit  = { path = "../../../aunit" }
 
 [[depends-on]]
-ada_lib_testing = "*"
-
-[[pins]]
-ada_lib_testing  = { path = "../../../ada_lib/ada_lib_testing" }
-
-[[depends-on]]
 gnoga = "*"
 
 [[pins]]

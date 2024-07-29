@@ -2,7 +2,7 @@
 --with Ada.Exceptions;
 with Ada.Text_IO;use Ada.Text_IO;
 --with Ada_Lib.Command_Line_Iterator;
-with Ada_Lib.Options.Help;
+with Ada_Lib.Help;
 --with Ada_Lib.Options.GNOGA;
 --with ADA_LIB.Strings.Unlimited;
 --with Ada_Lib.Test;
@@ -86,7 +86,7 @@ package body Camera.Lib.Options is
             Include_Options      => True,
             Include_Non_Options  => False,
             Modifiers            => String'(
-               1 => Ada_Lib.Options.Help.Modifier)),
+               1 => Ada_Lib.Help.Modifier)),
          Debug_Options or Trace_Options);
    end Initialize;
 
@@ -171,7 +171,7 @@ package body Camera.Lib.Options is
       case Help_Mode is
 
       when Ada_Lib.Options.Program =>
-         Ada_Lib.Options.Help.Add_Option (Trace_Option,
+         Ada_Lib.Help.Add_Option (Trace_Option,
             "trace options", Component);
 
       when Ada_Lib.Options.Traces =>

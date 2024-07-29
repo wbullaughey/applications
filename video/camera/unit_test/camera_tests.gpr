@@ -1,5 +1,5 @@
 with "ada_lib.gpr";
-with "ada_lib_testing.gpr";
+--with "ada_lib_testing.gpr";
 with "default_config.gpr";
 with "applications.gpr";
 with "aunit.gpr";

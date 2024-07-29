@@ -13,14 +13,12 @@ versions = "*"
 lockfiled = true
 path = "../../../ada_lib"
 [[solution.state]]
-crate = "ada_lib_testing"
 fulfilment = "linked"
 pinned = false
 transitivity = "direct"
 versions = "*"
 [solution.state.link]
 lockfiled = true
-path = "../../../ada_lib/ada_lib_testing"
 [[solution.state]]
 crate = "applications"
 fulfilment = "linked"

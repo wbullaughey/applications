@@ -2,7 +2,6 @@
 <Workspace Version="10.0" VendorName="SlickEdit">
     <Projects>
         <Project File="../ada_lib.vpj"/>
-        <Project File="../ada_lib_aunit_testing.vpj"/>
         <Project File="../ada_lib_aunit_tests.vpj"/>
         <Project File="../alias_list.vpj"/>
         <Project File="../application.vpj"/>

@@ -1,5 +1,5 @@
 with "ada_lib.gpr";
-with "ada_lib_testing.gpr";
+--with "ada_lib_testing.gpr";
 with "aunit.gpr";
 with "camera_lib.gpr";
 with "config/driver_lib_config.gpr";
