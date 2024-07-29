@@ -19,7 +19,7 @@ package Runtime_Options is
 
    type Options_Type is limited new Video.Lib.Options_Type with record
       Unit_Test                  : Ada_Lib.Options.Unit_Test.
-                                    Unit_Test_Options_Type (True);
+                                    Camera_Lib_Unit_Test_Options_Type (True);
    end record;
 
    type Options_Access           is access all Options_Type;

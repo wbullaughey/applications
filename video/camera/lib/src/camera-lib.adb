@@ -1,6 +1,6 @@
 with Ada.Exceptions;
 with Ada.Text_IO;use Ada.Text_IO;
-with Ada_Lib.Options.Help;
+with Ada_Lib.Help;
 --with Ada_Lib.Options;
 with ADA_LIB.OS;
 with Ada_Lib.Options.Runstring;
@@ -138,7 +138,7 @@ package body Camera.Lib is
       begin
          Log_Here (Debug_Options or Trace_Options);
          Iterator.Initialize (Include_Options, Include_Non_Options,
-            Modifiers   => Ada_Lib.Options.Help.Modifiers);
+            Modifiers   => Ada_Lib.Help.Modifiers);
 --       Protected_Options.Process (Iterator);
 
       exception
@@ -283,12 +283,12 @@ package body Camera.Lib is
       when Ada_Lib.Options.Program =>
          Log_Here (Debug_Options or Trace_Options, Quote ("Component", Component));
 
-         Ada_Lib.Options.Help.Add_Option ('c', "directory", "current directory", Component);
-         Ada_Lib.Options.Help.Add_Option ('l', "", "local camera", Component);
-         Ada_Lib.Options.Help.Add_Option ('r', "", "remote camera", Component);
-         Ada_Lib.Options.Help.Add_Option ('E', "", "simulate camera", Component);
-         Ada_Lib.Options.Help.Add_Option (Trace_Option, "trace options", "trace options", Component);
---       Ada_Lib.Options.Help.Add_Option ('u', "camera URL", "URL", Component);
+         Ada_Lib.Help.Add_Option ('c', "directory", "current directory", Component);
+         Ada_Lib.Help.Add_Option ('l', "", "local camera", Component);
+         Ada_Lib.Help.Add_Option ('r', "", "remote camera", Component);
+         Ada_Lib.Help.Add_Option ('E', "", "simulate camera", Component);
+         Ada_Lib.Help.Add_Option (Trace_Option, "trace options", "trace options", Component);
+--       Ada_Lib.Help.Add_Option ('u', "camera URL", "URL", Component);
          New_Line;
 
       when Ada_Lib.Options.Traces =>

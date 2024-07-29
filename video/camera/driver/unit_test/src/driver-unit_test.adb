@@ -1,5 +1,5 @@
 ﻿with Ada.Text_IO;use Ada.Text_IO;
-with Ada_Lib.Options.Help;
+with Ada_Lib.Help;
 with Ada_Lib.Options.Runstring;
 with Ada_Lib.Strings.Unlimited;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
@@ -92,7 +92,7 @@ package body Driver.Unit_Test is
          Protected_Options.Process (
             Include_Options      => True,
             Include_Non_Options  => False,
-            Modifiers            => Ada_Lib.Options.Help.Modifiers),
+            Modifiers            => Ada_Lib.Help.Modifiers),
          Debug_Options or Trace_Options,
          "Initialized " & Protected_Options.Initialized'img);
 
@@ -212,10 +212,10 @@ package body Driver.Unit_Test is
       case Help_Mode is
 
       when Ada_Lib.Options.Program =>
---       Ada_Lib.Options.Help.Add_Option ('l', "", "list output from camera app",
+--       Ada_Lib.Help.Add_Option ('l', "", "list output from camera app",
 --          Component);
---       Ada_Lib.Options.Help.Add_Option ('r', "", "remote camera", Component);
-         Ada_Lib.Options.Help.Add_Option ('T', "", "driver unit test trace options");
+--       Ada_Lib.Help.Add_Option ('r', "", "remote camera", Component);
+         Ada_Lib.Help.Add_Option ('T', "", "driver unit test trace options");
 
       when Ada_Lib.Options.Traces =>
          New_Line;

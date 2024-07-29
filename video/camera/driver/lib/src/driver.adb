@@ -2,7 +2,7 @@
 --with Ada.Directories;
 --with Ada.Strings.Fixed;
 with Ada.Text_IO;use Ada.Text_IO;
-with Ada_Lib.Options.Help;
+with Ada_Lib.Help;
 --with Ada_Lib.Options.Unit_Test;
 with Ada_Lib.OS.Run;
 with Ada_Lib.Parser;
@@ -468,19 +468,19 @@ package body Driver is
       case Help_Mode is
 
       when Ada_Lib.Options.Program =>
-         Ada_Lib.Options.Help.Add_Option (Directory_Option, "subdirectory",
+         Ada_Lib.Help.Add_Option (Directory_Option, "subdirectory",
             "subdirectory to run camera app from", Component);
-         Ada_Lib.Options.Help.Add_Option ('l', "", "list output from camera app",
+         Ada_Lib.Help.Add_Option ('l', "", "list output from camera app",
             Component);
-         Ada_Lib.Options.Help.Add_Option ('R', "routine",
+         Ada_Lib.Help.Add_Option ('R', "routine",
             "routine to run, multiple allowed", Component);
-         Ada_Lib.Options.Help.Add_Option ('r', "",
+         Ada_Lib.Help.Add_Option ('r', "",
             "remote camera", Component);
-         Ada_Lib.Options.Help.Add_Option ('t', "", "driver trace options",
+         Ada_Lib.Help.Add_Option ('t', "", "driver trace options",
             Component);
-         Ada_Lib.Options.Help.Add_Option ('u', "suite",
+         Ada_Lib.Help.Add_Option ('u', "suite",
             "suite to run, multiple allowed", Component);
-         Ada_Lib.Options.Help.Add_Option (Camera_Option, "options", "options to pass",
+         Ada_Lib.Help.Add_Option (Camera_Option, "options", "options to pass",
             Component);
 
       when Ada_Lib.Options.Traces =>

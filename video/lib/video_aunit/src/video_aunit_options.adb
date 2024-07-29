@@ -2,7 +2,7 @@
 --with Ada.Exceptions;
 with Ada.Text_IO;use Ada.Text_IO;
 --with Ada_Lib.Options;
-with Ada_Lib.Options.Help;
+with Ada_Lib.Help;
 --with Ada_Lib.Options.GNOGA;
 --with ADA_LIB.Strings.Unlimited;
 --with Ada_Lib.Test;
@@ -64,7 +64,7 @@ package body Runtime_Options is
             Include_Options      => True,
             Include_Non_Options  => True,
             Modifiers            => String'(
-               1 => Ada_Lib.Options.Help.Modifier));
+               1 => Ada_Lib.Help.Modifier));
 --    Options.Initialized := True;
 --    if not Protected_Options.Set_Options then      -- set any local pointers, calls down derivation tree
 --       Put_Line ("Set_Options did not call to root");
@@ -146,8 +146,8 @@ package body Runtime_Options is
       case Help_Mode is
 
       when Ada_Lib.Options.Program =>
-         Ada_Lib.Options.Help.Add_Option ('E', "", "simulate video",Command_Name);
-         Ada_Lib.Options.Help.Add_Option ('t', "trace options", "trace options", Command_Name);
+         Ada_Lib.Help.Add_Option ('E', "", "simulate video",Command_Name);
+         Ada_Lib.Help.Add_Option ('t', "trace options", "trace options", Command_Name);
          New_Line;
 
       when Ada_Lib.Options.Traces =>

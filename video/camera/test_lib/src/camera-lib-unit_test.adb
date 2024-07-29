@@ -1,6 +1,6 @@
 with Ada.Exceptions;
 with Ada.Text_IO;use Ada.Text_IO;
-with Ada_Lib.Options.Help;
+with Ada_Lib.Help;
 --with Ada_Lib.Options.AUnit.Ada_Lib_Tests;
 --with Ada_Lib.Options.Unit_Test;
 with Ada_Lib.Options.Runstring;
@@ -57,11 +57,11 @@ package body Camera.Lib.Unit_Test is
    ---------------------------------------------------------------
    function Get_Options (
       From              : in     String := GNAT.Source_Info.Source_Location
-   ) return Unit_Test_Options_Constant_Class_Access is
+   ) return Camera_Lib_Unit_Test_Options_Constant_Class_Access is
    ---------------------------------------------------------------
 
    begin
-      return Camera.Lib.Unit_Test.Unit_Test_Options_Constant_Class_Access (
+      return Camera.Lib.Unit_Test.Camera_Lib_Unit_Test_Options_Constant_Class_Access (
          Ada_Lib.Options.Get_Read_Only_Options (From));
    end Get_Options;
 
@@ -83,7 +83,7 @@ package body Camera.Lib.Unit_Test is
          Protected_Options.Process (
             Include_Options      => True,
             Include_Non_Options  => False,
-            Modifiers            => Ada_Lib.Options.Help.Modifiers),
+            Modifiers            => Ada_Lib.Help.Modifiers),
          Debug_Options or Trace_Options,
          "Initialized " & Protected_Options.Initialized'img &
              " mode " & Protected_Options.Unit_Test.Mode'img);
@@ -107,7 +107,7 @@ package body Camera.Lib.Unit_Test is
    begin
       Log_In_Checked (Initialize_Recursed, Debug_Options or Trace_Options,
          "from " & From);
-      Unit_Test_Options := Options'unchecked_access;
+--    Camera_Lib_Unit_Test_Options := Options'unchecked_access;
       Ada_Lib.Options.Set_Ada_Lib_Options (Protected_Options'access);
 
       Ada_Lib.Options.Runstring.Options.Register (
@@ -153,7 +153,7 @@ package body Camera.Lib.Unit_Test is
    function Options (
       From                    : in     String :=
                                           Standard.GNAT.Source_Info.Source_Location
-   ) return Unit_Test_Options_Constant_Class_Access is
+   ) return Camera_Lib_Unit_Test_Options_Constant_Class_Access is
    ----------------------------------------------------------------------------
 
    begin
@@ -219,7 +219,7 @@ package body Camera.Lib.Unit_Test is
       case Help_Mode is
 
       when Ada_Lib.Options.Program =>
-         Ada_Lib.Options.Help.Add_Option ('T', "trace options",
+         Ada_Lib.Help.Add_Option ('T', "trace options",
             "Camera Lib unit test", "Camera.Lib.Unit_Test");
          New_Line;
 

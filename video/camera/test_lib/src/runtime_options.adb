@@ -1,5 +1,5 @@
 with Ada.Text_IO;use Ada.Text_IO;
-with Ada_Lib.Options.Help;
+with Ada_Lib.Help;
 --with ADA_LIB.Options;
 with ADA_LIB.OS;
 with Ada_Lib.Options.Runstring;
@@ -62,7 +62,7 @@ package body Runtime_Options is
             Include_Options      => True,
             Include_Non_Options  => False,
             Modifiers            => String'(
-               1 => Ada_Lib.Options.Help.Modifier)),
+               1 => Ada_Lib.Help.Modifier)),
          Debug or Trace_Options);
    end Initialize;
 
@@ -145,7 +145,7 @@ package body Runtime_Options is
       case Help_Mode is
 
       when Ada_Lib.Options.Program =>
-         Ada_Lib.Options.Help.Add_Option (Trace_Option,
+         Ada_Lib.Help.Add_Option (Trace_Option,
             "trace options", Component);
 
       when Ada_Lib.Options.Traces =>

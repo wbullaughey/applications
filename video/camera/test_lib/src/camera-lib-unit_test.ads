@@ -86,28 +86,28 @@ package Camera.Lib.Unit_Test is
                                        Initialize_GNOGA) with null record;
 
    -- allocated options for unit test of camera library
-   type Unit_Test_Options_Type   is new Options_Type
-                                    with record
+   type Camera_Lib_Unit_Test_Options_Type
+         is new Ada_Lib_Unit_Test_Options_Type (False) with record
       AUnit_Options              : AUnit.Ada_Lib.Options.AUnit_Options_Type;
 --    Camera_Options             : aliased Standard.Camera.Lib.Options_Type;
       GNOGA_Options              : Ada_Lib.Options.GNOGA.GNOGA_Options_Type;
 --    GNOGA_Unit_Test_Options    : Ada_Lib.GNOGA.Unit_Test.
 --                                  GNOGA_Unit_Test_Options_Type;F
       Main_Debug                 : Boolean := False;
-      Unit_Test                  : Ada_Lib.Options.Unit_Test.
-                                    Ada_Lib_Unit_Test_Options_Type (False);
+--    Unit_Test                  : Ada_Lib.Options.Unit_Test.
+--                                  Ada_Lib_Unit_Test_Options_Type (False);
    end record;
 
-   type Unit_Test_Options_Access           is access all Camera_Lib_Unit_Test_Options_Type;
-   type Unit_Test_Options_Class_Access     is access all Camera_Lib_Unit_Test_Options_Type'class;
-   type Unit_Test_Options_Constant_Class_Access
+   type Camera_Lib_Unit_Test_Options_Access           is access all Camera_Lib_Unit_Test_Options_Type;
+   type Camera_Lib_Unit_Test_Options_Class_Access     is access all Camera_Lib_Unit_Test_Options_Type'class;
+   type Camera_Lib_Unit_Test_Options_Constant_Class_Access
                                  is access constant Camera_Lib_Unit_Test_Options_Type'class;
    subtype Runtime_Iterator_Type is Ada_Lib.Command_Line_Iterator.
                                     Abstract_Package.Abstract_Iterator_Type;
 
    function Get_Options (
       From              : in     String := GNAT.Source_Info.Source_Location
-   ) return Unit_Test_Options_Constant_Class_Access;
+   ) return Camera_Lib_Unit_Test_Options_Constant_Class_Access;
 
    function Initialize
    return Boolean;
@@ -123,7 +123,7 @@ package Camera.Lib.Unit_Test is
 -- function Options (
 --    From                    : in     String := Standard.GNAT.Source_Info.
 --                                        Source_Location
--- ) return Unit_Test_Options_Constant_Class_Access;
+-- ) return Camera_Lib_Unit_Test_Options_Constant_Class_Access;
 
    overriding
    function Process_Option (  -- process one option
@@ -161,7 +161,7 @@ package Camera.Lib.Unit_Test is
 
    Debug                         : Boolean := False;
    Debug_Options                 : Boolean := False;
-   Unit_Test_Options             : Unit_Test_Options_Constant_Class_Access := Null;
+   Unit_Test_Options             : Camera_Lib_Unit_Test_Options_Constant_Class_Access := Null;
 
 private
 

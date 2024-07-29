@@ -1,6 +1,6 @@
 --with Ada.Exceptions;
 with Ada.Text_IO;use Ada.Text_IO;
-with Ada_Lib.Options.Help;
+with Ada_Lib.Help;
 with ADA_LIB.OS;
 with Ada_Lib.Parser;
 with Ada_Lib.Options.Runstring;
@@ -150,7 +150,7 @@ package body Video.Lib is
       when Ada_Lib.Options.Program =>
          Log_Here (Options_Debug or Trace_Options, Quote ("Component", Component));
 
-         Ada_Lib.Options.Help.Add_Option (Debug_Option, "trace options",
+         Ada_Lib.Help.Add_Option (Debug_Option, "trace options",
             "trace options", Component);
          New_Line;
 
