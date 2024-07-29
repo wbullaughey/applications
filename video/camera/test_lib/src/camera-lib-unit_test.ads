@@ -86,9 +86,8 @@ package Camera.Lib.Unit_Test is
                                        Initialize_GNOGA) with null record;
 
    -- allocated options for unit test of camera library
-   type Camera_Lib_Unit_Test_Options_Type
-               is new Ada_Lib.Options.Unit_Test.Ada_Lib_Unit_Test_Options_Type
-                  with record
+   type Unit_Test_Options_Type   is new Options_Type
+                                    with record
       AUnit_Options              : AUnit.Ada_Lib.Options.AUnit_Options_Type;
 --    Camera_Options             : aliased Standard.Camera.Lib.Options_Type;
       GNOGA_Options              : Ada_Lib.Options.GNOGA.GNOGA_Options_Type;
