@@ -2,8 +2,8 @@ with Ada.Text_IO; use  Ada.Text_IO;
 --with Ada_Lib.GNOGA;
 with Ada_Lib.Strings; use Ada_Lib.Strings;
 with ADA_LIB.Trace; use ADA_LIB.Trace;
-with Base;
 with Camera.Lib.Base;
+with Camera.Lib.Connection;
 with Configuration.Camera.Setup;
    use Configuration.Camera;
    use Configuration.Camera.Setup;
@@ -107,8 +107,8 @@ package body Widgets.Configured is
       Cards                      : in out Gnoga.Gui.View.View_Base_Type'Class) is
    ----------------------------------------------------------------
 
-      Connection_Data            : Base.Connection_Data_Type renames
-                                    Base.Connection_Data_Type (
+      Connection_Data            : Camera.Lib.Connection.Connection_Data_Type renames
+                                    Camera.Lib.Connection.Connection_Data_Type (
                                        Ada_Lib.GNOGA.Get_Connection_Data.all);
       State                      : Configuration.Camera.State.State_Type renames
                                     Connection_Data.State;
@@ -249,8 +249,8 @@ package body Widgets.Configured is
          Button                  : in out Gnoga.Gui.Base.Base_Type'Class) is
       ----------------------------------------------------------------
 
-         Connection_Data         : Base.Connection_Data_Type renames
-                                    Base.Connection_Data_Type (
+         Connection_Data         : Camera.Lib.Connection.Connection_Data_Type renames
+                                    Camera.Lib.Connection.Connection_Data_Type (
                                        Ada_Lib.GNOGA.Get_Connection_Data.all);
          Value                   : constant String :=
                                     Gnoga.GUI.Element.Common.Button_Type (
@@ -284,8 +284,8 @@ package body Widgets.Configured is
          Coordinate           : in     Column_Type) is
       -------------------------------------------------------------
 
-         Connection_Data      : Base.Connection_Data_Type renames
-                                 Base.Connection_Data_Type (
+         Connection_Data      : Camera.Lib.Connection.Connection_Data_Type renames
+                                 Camera.Lib.Connection.Connection_Data_Type (
                                     Ada_Lib.GNOGA.Get_Connection_Data.all);
          State                : Configuration.Camera.State.State_Type renames
                                     Connection_Data.State;
@@ -330,8 +330,8 @@ package body Widgets.Configured is
          Table_Row               : in     Preset_Row_Index_Type) is
       ----------------------------------------------------------------
 
-         Connection_Data         : Base.Connection_Data_Type renames
-                                    Base.Connection_Data_Type (
+         Connection_Data         : Camera.Lib.Connection.Connection_Data_Type renames
+                                    Camera.Lib.Connection.Connection_Data_Type (
                                        Form.Connection_Data.all);
          Configuration_ID        : Preset_Row_Index_Type renames Table_Row;
          Name                    : constant String := Row.ID;
@@ -677,8 +677,8 @@ not_implemented;
          Coordinate           : in     Row_Type) is
       -------------------------------------------------------------
 
-         Connection_Data      : Base.Connection_Data_Type renames
-                                 Base.Connection_Data_Type (
+         Connection_Data      : Camera.Lib.Connection.Connection_Data_Type renames
+                                 Camera.Lib.Connection.Connection_Data_Type (
                                     Ada_Lib.GNOGA.Get_Connection_Data.all);
          State                : Configuration.Camera.State.State_Type renames
                                  Connection_Data.State;
@@ -693,8 +693,8 @@ not_implemented;
          Mouse_Event             : in     Gnoga.Gui.Base.Mouse_Event_Record) is
       ----------------------------------------------------------------
 
-         Connection_Data         : Base.Connection_Data_Type renames
-                                    Base.Connection_Data_Type (
+         Connection_Data         : Camera.Lib.Connection.Connection_Data_Type renames
+                                    Camera.Lib.Connection.Connection_Data_Type (
                                        Ada_Lib.GNOGA.Get_Connection_Data.all);
          Cell                    : constant Preset_Package.Cell_Class_Access :=
                                     Preset_Package.Cell_Class_Access (
@@ -729,8 +729,8 @@ not_implemented;
          Object                  : in out Gnoga.Gui.Base.Base_Type'Class) is
       ----------------------------------------------------------------
 
-         Connection_Data         : Base.Connection_Data_Type renames
-                                    Base.Connection_Data_Type (
+         Connection_Data         : Camera.Lib.Connection.Connection_Data_Type renames
+                                    Camera.Lib.Connection.Connection_Data_Type (
                                        Ada_Lib.GNOGA.Get_Connection_Data.all);
          Configured_Card         : Configured_Card_Type renames
                                     Connection_Data.Get_Configured_Card.all;
@@ -1058,8 +1058,8 @@ not_implemented;
          Preset_Cell                : in out Preset_Package.Cell_Type'class) is
       ----------------------------------------------------------------
 
-         Connection_Data            : Base.Connection_Data_Type renames
-                                       Base.Connection_Data_Type (
+         Connection_Data            : Camera.Lib.Connection.Connection_Data_Type renames
+                                       Camera.Lib.Connection.Connection_Data_Type (
                                           Ada_Lib.GNOGA.Get_Connection_Data.all);
          Raw_Value                  : constant String :=
                                        Preset_Cell.Preset_ID_Field.Value;

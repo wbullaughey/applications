@@ -13,13 +13,14 @@ with Command_Name;
 
 procedure Camera_AUnit is
 
-   Options              : aliased Camera.Lib.Unit_Test.Unit_Test_Options_Type;
+   Options              : aliased Camera.Lib.Unit_Test.
+                           Camera_Lib_Unit_Test_Options_Type;
    Debug                : Boolean renames Options.Main_Debug;
 
 begin
 debug := true;
 --Trace_Tests := True;
-   Log_In (Debug);
+   Log_In (Debug, "mode " & Options.Unit_Test.Mode'img);
    Put_Line (Command_Name);
    Ada_Lib.Options.Set_Ada_Lib_Options (
       Ada_Lib.Options.Interface_Options_Class_Access'(
@@ -27,7 +28,8 @@ debug := true;
    if Camera.Lib.Unit_Test.Initialize then
       Ada_lib.Trace_Tasks.Start ("main");
 
-      Log_Here (Debug, "start run suite");
+      Log_Here (Debug, "start run suite mode " &
+         Options.Unit_Test.Mode'img);
       Camera.Lib.Unit_Test.Run_Suite (Options);
       Log_Here (Debug, "returned from run suite");
    else

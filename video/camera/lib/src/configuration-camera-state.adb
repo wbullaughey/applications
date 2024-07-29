@@ -9,8 +9,7 @@ with Ada_Lib.Strings.Unlimited; use Ada_Lib.Strings; use Ada_Lib.Strings.Unlimit
 with Ada.Text_IO; use Ada.Text_IO;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
 with AUnit.Assertions; use AUnit.Assertions;
-with Base;
-with Camera.Lib;
+with Camera.Lib.Connection;
 --with Hex_IO;
 --with Video.Lib;
 
@@ -26,8 +25,8 @@ package body Configuration.Camera.State is
    ) return Boolean is
    ----------------------------------------------------------------
 
-      Connection_Data            : Base.Connection_Data_Type renames
-                                    Base.Connection_Data_Type (
+      Connection_Data            : Standard.Camera.Lib.Connection.Connection_Data_Type renames
+                                    Standard.Camera.Lib.Connection.Connection_Data_Type (
                                        Ada_Lib.GNOGA.Get_Connection_Data.all);
       State                      : State_Type renames Connection_Data.State;
 
@@ -52,8 +51,8 @@ package body Configuration.Camera.State is
    ) return Boolean is
    ----------------------------------------------------------------
 
-      Connection_Data            : Base.Connection_Data_Type renames
-                                    Base.Connection_Data_Type (
+      Connection_Data            : Standard.Camera.Lib.Connection.Connection_Data_Type renames
+                                    Standard.Camera.Lib.Connection.Connection_Data_Type (
                                        Ada_Lib.GNOGA.Get_Connection_Data.all);
       State                      : State_Type renames Connection_Data.State;
 
@@ -68,8 +67,8 @@ package body Configuration.Camera.State is
    ) return String is
    ----------------------------------------------------------------
 
-      Connection_Data            : Base.Connection_Data_Type renames
-                                    Base.Connection_Data_Type (
+      Connection_Data            : Standard.Camera.Lib.Connection.Connection_Data_Type renames
+                                    Standard.Camera.Lib.Connection.Connection_Data_Type (
                                        Ada_Lib.GNOGA.Get_Connection_Data.all);
       State                      : Configuration.Camera.State.State_Type renames
                                     Connection_Data.State;

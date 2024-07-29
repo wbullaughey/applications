@@ -129,7 +129,7 @@ package body Camera.Lib.Base.Test is
    ---------------------------------------------------------------
 
       Options                    : Standard.Camera.Lib.Unit_Test.
-                                    Unit_Test_Options_Type'class
+                                    Camera_Lib_Unit_Test_Options_Type'class
                                        renames Standard.Camera.Lib.Unit_Test.
                                           Get_Options.all;
       First_Port                 : constant GNAT.Sockets.Port_Type := 1;
@@ -168,9 +168,9 @@ package body Camera.Lib.Base.Test is
       type Ports_Access          is access constant Ports_Type;
 
       Options                    : Standard.Camera.Lib.Unit_Test.
-                                    Unit_Test_Options_Type'class renames
+                                    Camera_Lib_Unit_Test_Options_Type'class renames
                                        Standard.Camera.Lib.Unit_Test.
-                                          Unit_Test_Options_Type'class (
+                                          Camera_Lib_Unit_Test_Options_Type'class (
                                              Ada_Lib.Options.
                                                 Get_Read_Only_Options.all);
       Local_Test                 : Test_Type renames Test_Type (Test);
@@ -344,7 +344,7 @@ package body Camera.Lib.Base.Test is
    ---------------------------------------------------------------
 
       Options                    : Standard.Camera.Lib.Unit_Test.
-                                    Unit_Test_Options_Type'class
+                                    Camera_Lib_Unit_Test_Options_Type'class
                                        renames Standard.Camera.Lib.Unit_Test.
                                           Get_Options.all;
       Test_Suite                 : constant AUnit.Test_Suites.Access_Test_Suite :=
@@ -387,7 +387,7 @@ package body Camera.Lib.Base.Test is
    ---------------------------------------------------------------
 
       Options                    : Standard.Camera.Lib.Unit_Test.
-                                    Unit_Test_Options_Type'class
+                                    Camera_Lib_Unit_Test_Options_Type'class
                                        renames Standard.Camera.Lib.Unit_Test.
                                           Get_Options.all;
       Local_Test                 : Test_Type renames Test_Type (Test);
@@ -425,7 +425,7 @@ package body Camera.Lib.Base.Test is
    ---------------------------------------------------------------
 
       Options                    : Standard.Camera.Lib.Unit_Test.
-                                    Unit_Test_Options_Type'class
+                                    Camera_Lib_Unit_Test_Options_Type'class
                                        renames Standard.Camera.Lib.Unit_Test.
                                           Get_Options.all;
       First_Unit                 : constant GNAT.Sockets.Inet_Addr_Comp_Type := 2;

@@ -4,8 +4,9 @@ with AUnit.Assertions; use AUnit.Assertions;
 with AUnit.Test_Cases;
 --with Ada_Lib.Options.Unit_Test;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
-with Base;
+--with Camera.Lib.Base;
 with Camera.Commands;
+with Camera.Lib.Connection;
 with Camera.Lib.Unit_Test;
 with Interfaces;
 with Video.Lib;
@@ -246,8 +247,8 @@ package body Camera.Lib.Base.Command_Tests is
       Test                       : in out Test_Type) is
    ---------------------------------------------------------------
 
-      Connection_Data         : constant Standard.Base.Connection_Data_Access :=
-                                 new Standard.Base.Connection_Data_Type;
+      Connection_Data         : constant Standard.Camera.Lib.Connection.Connection_Data_Access :=
+                                 new Standard.Camera.Lib.Connection.Connection_Data_Type;
    begin
       Log_In (Debug or Trace_Set_Up);
       Ada_Lib.GNOGA.Set_Connection_Data (
@@ -271,7 +272,7 @@ package body Camera.Lib.Base.Command_Tests is
    ---------------------------------------------------------------
 
       Options                    : Standard.Camera.Lib.Unit_Test.
-                                    Unit_Test_Options_Type'class
+                                    Camera_Lib_Unit_Test_Options_Type'class
                                        renames Standard.Camera.Lib.Unit_Test.
                                           Get_Options.all;
       Brand                      : Brand_Type renames Options.Brand;
@@ -1083,7 +1084,7 @@ package body Camera.Lib.Base.Command_Tests is
    ---------------------------------------------------------------
 
       Options                    : Standard.Camera.Lib.Unit_Test.
-                                    Unit_Test_Options_Type'class
+                                    Camera_Lib_Unit_Test_Options_Type'class
                                        renames Standard.Camera.Lib.Unit_Test.
                                           Get_Options.all;
    begin

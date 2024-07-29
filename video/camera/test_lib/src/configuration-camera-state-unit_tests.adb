@@ -4,10 +4,10 @@ with Ada_Lib.Options;
 with Ada_Lib.Strings;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
 with Ada_Lib.Unit_Test.Test_Cases;
-with Base;
+--with Standard.Camera.Lib.Base;
 with AUnit.Assertions; use AUnit.Assertions;
 with AUnit.Test_Cases;
---with Camera.Lib.Unit_Test;
+with Camera.Lib.Connection;
 with Hex_IO;
 
 package body Configuration.Camera.State.Unit_Tests is
@@ -115,7 +115,7 @@ log_here;
    ---------------------------------------------------------------
 
       Options                    : Standard.Camera.Lib.Unit_Test.
-                                    Unit_Test_Options_Type'class
+                                    Camera_Lib_Unit_Test_Options_Type'class
                                        renames Standard.Camera.Lib.Unit_Test.
                                           Get_Options.all;
       Test_Suite                 : constant AUnit.Test_Suites.Access_Test_Suite
@@ -150,11 +150,11 @@ log_here;
    pragma Unreferenced (Test);
    ---------------------------------------------------------------
 
-      Connection_Data            : Base.Connection_Data_Type renames
-                                    Base.Connection_Data_Type (
+      Connection_Data            : Standard.Camera.Lib.Connection.Connection_Data_Type renames
+                                    Standard.Camera.Lib.Connection.Connection_Data_Type (
                                        Ada_Lib.GNOGA.Get_Connection_Data.all);
       Options                    : Standard.Camera.Lib.Unit_Test.
-                                    Unit_Test_Options_Type'class
+                                    Camera_Lib_Unit_Test_Options_Type'class
                                        renames Standard.Camera.Lib.Unit_Test.
                                           Get_Options.all;
       State                      : Configuration.Camera.State.State_Type renames
@@ -179,8 +179,8 @@ log_here;
    pragma Unreferenced (Test);
    ---------------------------------------------------------------
 
-      Connection_Data            : Base.Connection_Data_Type renames
-                                    Base.Connection_Data_Type (
+      Connection_Data            : Standard.Camera.Lib.Connection.Connection_Data_Type renames
+                                    Standard.Camera.Lib.Connection.Connection_Data_Type (
                                        Ada_Lib.GNOGA.Get_Connection_Data.all);
       Expected_Number_Columns    : constant := 3;
       Expected_Number_Rows       : constant := 4;
@@ -229,7 +229,7 @@ log_here;
 --    Local_Test                 : Configuration_Tests_Type renames
 --                                  Configuration_Tests_Type (Test);
       Options                    : Standard.Camera.Lib.Unit_Test.
-                                    Unit_Test_Options_Type'class
+                                    Camera_Lib_Unit_Test_Options_Type'class
                                        renames Standard.Camera.Lib.Unit_Test.
                                           Get_Options.all;
       State                      : Configuration.Camera.State.State_Type

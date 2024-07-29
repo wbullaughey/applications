@@ -4,7 +4,7 @@ with Ada_Lib.Timer;
 with Ada_Lib.Unit_Test;
 with AUnit.Assertions; use AUnit.Assertions;
 with AUnit.Test_Cases;
-with Base;
+with Camera.Lib.Connection;
 --with Configuration.Camera.State;
 with Camera.Commands;
 with Camera.Lib.Unit_Test;
@@ -57,7 +57,7 @@ package body Widgets.Adjust.Unit_Test is
 
       procedure Initialize_Event (
          Mouse_Move_Event        : in out Mouse_Move_Event_Type;
-         Connection_Data         : in     Base.Connection_Data_Access;
+         Connection_Data         : in     Camera.Lib.Connection.Connection_Data_Access;
          Description             : in     String;
          Mouse_Event             : in     Gnoga.Gui.Base.Mouse_Event_Record;
          Wait                    : in     Duration);
@@ -111,8 +111,8 @@ package body Widgets.Adjust.Unit_Test is
 --      Log_In (Debug or Trace_Set_Up);
 --      Camera.Lib.Unit_Test.Camera_Window_Test_Type (Test).Set_Up ;
 --      declare
---         Connection_Data            : Base.Connection_Data_Type renames
---                                       Base.Connection_Data_Type (
+--         Connection_Data            : Camera.Lib.Connection.Connection_Data_Type renames
+--                                       Camera.Lib.Connection.Connection_Data_Type (
 --                                          Ada_Lib.GNOGA.Get_Connection_Data.all);
 --         Options                    : Standard.Camera.Lib.Unit_Test.
 --                                       Unit_Test_Options_Type'class
@@ -177,8 +177,8 @@ package body Widgets.Adjust.Unit_Test is
 
       use Gnoga.Gui.Base;
 
-      Connection_Data   : constant Base.Connection_Data_Access :=
-                              Base.Connection_Data_Access (
+      Connection_Data   : constant Camera.Lib.Connection.Connection_Data_Access :=
+                              Camera.Lib.Connection.Connection_Data_Access (
                                  Ada_Lib.GNOGA.Get_Connection_Data);
       Camera            : Standard.Camera.Commands.Camera_Class_Access renames
                            Connection_Data.Camera;
@@ -239,7 +239,7 @@ package body Widgets.Adjust.Unit_Test is
       ---------------------------------------------------------------
       procedure Initialize_Event (
          Mouse_Move_Event         : in out Mouse_Move_Event_Type;
-         Connection_Data         : in     Base.Connection_Data_Access;
+         Connection_Data         : in     Camera.Lib.Connection.Connection_Data_Access;
          Description             : in     String;
          Mouse_Event             : in     Gnoga.Gui.Base.Mouse_Event_Record;
          Wait                    : in     Duration) is
@@ -258,8 +258,8 @@ package body Widgets.Adjust.Unit_Test is
          Event                   : in out Mouse_Move_Event_Type) is
       ---------------------------------------------------------------
 
-         Connection_Data            : Base.Connection_Data_Type renames
-                                       Base.Connection_Data_Type (
+         Connection_Data            : Camera.Lib.Connection.Connection_Data_Type renames
+                                       Camera.Lib.Connection.Connection_Data_Type (
                                           Ada_Lib.GNOGA.Get_Connection_Data.all);
          Adjust_Card                : constant Adjust_Card_Access :=
                                        Connection_Data.Main_Data.Get_Adjust_Card;

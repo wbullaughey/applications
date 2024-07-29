@@ -6,7 +6,7 @@ with ADA_LIB.OS;
 with ADA_LIB.Trace; use ADA_LIB.Trace;
 with Ada_Lib.Trace_Tasks;
 with Camera.Lib;
-with Base;
+with Camera.Lib.Base;
 with Command_Name;
 with Configuration.Camera.Setup;
 with Configuration.Camera.State;
@@ -19,8 +19,8 @@ with Main;
 procedure Camera_Control is
 
    Camera_Setup                  : Configuration.Camera.Setup.Setup_Type;
-   Connection_Data               : constant Base.Connection_Data_Class_Access :=
-                                    new Base.Connection_Data_Type;
+   Connection_Data               : constant Camera.Lib.Connection.Connection_Data_Class_Access :=
+                                    new Camera.Lib.Connection.Connection_Data_Type;
    Options                       : Camera.Lib.Options_Type;  -- options for application
                                      Camera.Lib.Get_Modifiable_Options;
    Debug                         : Boolean renames Options.Debug;

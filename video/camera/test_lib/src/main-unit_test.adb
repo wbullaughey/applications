@@ -4,8 +4,8 @@ with Ada_Lib.Timer;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
 with Ada_Lib.Unit_Test;
 with AUnit.Test_Cases;
-with Base;
-with Camera.Lib;
+--with Camera.Lib.Base;
+with Camera.Lib.Connection;
 with Camera.Lib.Unit_Test;
 with Configuration.Camera.Setup; use Configuration.Camera.Setup;
 with Configuration.Camera.State;
@@ -65,7 +65,7 @@ package body Main.Unit_Test is
    ---------------------------------------------------------------
 
       Main_Data                  : Main_Data_Type renames
-                                    Base.Connection_Data_Type (
+                                    Camera.Lib.Connection.Connection_Data_Type (
                                        Ada_Lib.GNOGA.Get_Connection_Data.all).
                                           Main_Data.all;
       View                       : View_Type renames Main_Data.View;
@@ -125,11 +125,11 @@ package body Main.Unit_Test is
          -- allocates Connection_Data
 
       declare
-         Connection_Data   : Base.Connection_Data_Type renames
-                              Base.Connection_Data_Type (
+         Connection_Data   : Camera.Lib.Connection.Connection_Data_Type renames
+                              Camera.Lib.Connection.Connection_Data_Type (
                                  Ada_Lib.GNOGA.Get_Connection_Data.all);
          Options           : Standard.Camera.Lib.Unit_Test.
-                              Unit_Test_Options_Type'class
+                              Camera_Lib_Unit_Test_Options_Type'class
                                  renames Standard.Camera.Lib.Unit_Test.
                                     Get_Options.all;
          State             : Configuration.Camera.State.State_Type renames
@@ -147,7 +147,7 @@ package body Main.Unit_Test is
    ---------------------------------------------------------------
 
       Options                    : Standard.Camera.Lib.Unit_Test.
-                                    Unit_Test_Options_Type'class
+                                    Camera_Lib_Unit_Test_Options_Type'class
                                        renames Standard.Camera.Lib.Unit_Test.
                                           Get_Options.all;
       Test_Suite                 : constant AUnit.Test_Suites.Access_Test_Suite :=
@@ -169,8 +169,8 @@ package body Main.Unit_Test is
       Test                       : in out Test_Type) is
    ---------------------------------------------------------------
 
-      Connection_Data            : Base.Connection_Data_Type renames
-                                    Base.Connection_Data_Type (
+      Connection_Data            : Camera.Lib.Connection.Connection_Data_Type renames
+                                    Camera.Lib.Connection.Connection_Data_Type (
                                        Ada_Lib.GNOGA.Get_Connection_Data.all);
       State                      : Configuration.Camera.State.State_Type renames
                                     Connection_Data.State;
@@ -189,7 +189,7 @@ package body Main.Unit_Test is
    ---------------------------------------------------------------
 
       Options                    : Standard.Camera.Lib.Unit_Test.
-                                    Unit_Test_Options_Type'class
+                                    Camera_Lib_Unit_Test_Options_Type'class
                                        renames Standard.Camera.Lib.Unit_Test.
                                           Get_Options.all;
       Button_Press_Event      : Button_Push_Event_Type;
@@ -200,7 +200,7 @@ package body Main.Unit_Test is
       if not Options.Test_Driver then
          Log_Here (Debug);
 --       Button_Press_Event.Connection_Data :=
---          Base.Connection_Data_Access (Local_Test.Connection_Data);
+--          Camera.Lib.Connection.Connection_Data_Access (Local_Test.Connection_Data);
 
          Button_Press_Event.Set_Wait (2.0);  -- leave time for web page to display
 

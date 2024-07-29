@@ -3,8 +3,9 @@
 with Ada_Lib.Parser;
 with Ada_Lib.Strings; use Ada_Lib.Strings;
 with ADA_LIB.Trace; use ADA_LIB.Trace;
-with Base;
 with Camera.Command_Queue;
+--with Camera.Lib.Base;
+with Camera.Lib.Connection;
 with Camera.Commands;
 --with Configuration.Camera.Setup;
 --with Configuration.State; use Configuration;
@@ -13,7 +14,7 @@ with Camera.Commands;
 
 package body Widgets.Adjust is
 
-   use type Base.Mouse_Click_Action_Type;
+   use type Camera.Lib.Connection.Mouse_Click_Action_Type;
 
    Column_Labels                 : aliased Column_Labels_Type := (
       new String'("Vertical Scrollbar"),
@@ -35,7 +36,7 @@ package body Widgets.Adjust is
 
    function Parse_Mouse_Action (
       ID                         : in     String
-   ) return Base.Mouse_Click_Action_Type;
+   ) return Camera.Lib.Connection.Mouse_Click_Action_Type;
 
 -- ----------------------------------------------------------------
 -- function Action_ID (
@@ -157,16 +158,16 @@ package body Widgets.Adjust is
       Mouse_Event                : in     GNOGA.GUI.Base.Mouse_Event_Record) is
    -------------------------------------------------------------------
 
-      Connection_Data         : Base.Connection_Data_Type renames
-                                 Base.Connection_Data_Type (
+      Connection_Data         : Camera.Lib.Connection.Connection_Data_Type renames
+                                 Camera.Lib.Connection.Connection_Data_Type (
                                     Object.Connection_Data.all);
-      Mouse_Action            : constant Base.Mouse_Click_Action_Type :=
+      Mouse_Action            : constant Camera.Lib.Connection.Mouse_Click_Action_Type :=
                                  Parse_Mouse_Action (Object.ID);
    begin
       Log_In (Debug, Quote ("object id", Object.ID) &
          Event_Image (Mouse_Event));
 
-      if Mouse_Action /= Base.No_Change then
+      if Mouse_Action /= Camera.Lib.Connection.No_Change then
          Connection_Data.Mouse_Action := Mouse_Action;
       end if;
       Log_Out (Debug);
@@ -178,10 +179,10 @@ package body Widgets.Adjust is
       Mouse_Event                : in     GNOGA.GUI.Base.Mouse_Event_Record) is
    -------------------------------------------------------------------
 
-      Connection_Data         : Base.Connection_Data_Type renames
-                                 Base.Connection_Data_Type (
+      Connection_Data         : Camera.Lib.Connection.Connection_Data_Type renames
+                                 Camera.Lib.Connection.Connection_Data_Type (
                                     Object.Connection_Data.all);
-      Mouse_Action            : constant Base.Mouse_Click_Action_Type :=
+      Mouse_Action            : constant Camera.Lib.Connection.Mouse_Click_Action_Type :=
                                  Parse_Mouse_Action (Object.ID);
 
 
@@ -192,7 +193,7 @@ package body Widgets.Adjust is
 
       case Mouse_Action is
 
-         when Base.Any_Scroll =>
+         when Camera.Lib.Connection.Any_Scroll =>
             Camera.Command_Queue.Relative_Command (
                Connection_Data.Camera.all,
                Camera.Commands.Relative_Type (Mouse_Event.X),
@@ -200,17 +201,17 @@ package body Widgets.Adjust is
                Connection_Data.Camera_Pan_Speed,
                Connection_Data.Camera_Tilt_Speed);
 
-         when Base.Horizontal_Scroll =>
+         when Camera.Lib.Connection.Horizontal_Scroll =>
             Camera.Command_Queue.Relative_Command (
                Connection_Data.Camera.all,
                Camera.Commands.Relative_Type (Mouse_Event.X), 0,
                Connection_Data.Camera_Pan_Speed, 0);
 
-         when Base.No_Action | Base.No_Change =>
+         when Camera.Lib.Connection.No_Action | Camera.Lib.Connection.No_Change =>
             Log_Out (Debug);
             return;
 
-         when Base.Vertical_Scroll =>
+         when Camera.Lib.Connection.Vertical_Scroll =>
             Camera.Command_Queue.Relative_Command (
                Connection_Data.Camera.all, 0,
                Camera.Commands.Relative_Type (Mouse_Event.Y), 0,
@@ -226,7 +227,7 @@ package body Widgets.Adjust is
    -------------------------------------------------------------------
    function Parse_Mouse_Action (
       ID                         : in     String
-   ) return Base.Mouse_Click_Action_Type is
+   ) return Camera.Lib.Connection.Mouse_Click_Action_Type is
    -------------------------------------------------------------------
 
       use Ada_Lib.Parser;
@@ -245,19 +246,19 @@ package body Widgets.Adjust is
                                     Quotes         => "");
          Action_Table            : constant array (Outer_Column_Index_Type,
                                     Outer_Row_Index_Type) of
-                                       Base.Mouse_Click_Action_Type := (
+                                       Camera.Lib.Connection.Mouse_Click_Action_Type := (
                                        Left_Column    => (
-                                          Top_Row     => Base.No_Action,
-                                          Center_Row  => Base.Vertical_Scroll,
-                                          Bottom_Row  => Base.No_Action),
+                                          Top_Row     => Camera.Lib.Connection.No_Action,
+                                          Center_Row  => Camera.Lib.Connection.Vertical_Scroll,
+                                          Bottom_Row  => Camera.Lib.Connection.No_Action),
                                        Center_Column  => (
-                                          Top_Row     => Base.Horizontal_Scroll,
-                                          Center_Row  => Base.Any_Scroll,
-                                          Bottom_Row  => Base.Horizontal_Scroll),
+                                          Top_Row     => Camera.Lib.Connection.Horizontal_Scroll,
+                                          Center_Row  => Camera.Lib.Connection.Any_Scroll,
+                                          Bottom_Row  => Camera.Lib.Connection.Horizontal_Scroll),
                                        Right_Column  => (
-                                          Top_Row     => Base.No_Action,
-                                          Center_Row  => Base.Vertical_Scroll,
-                                          Bottom_Row  => Base.No_Action));
+                                          Top_Row     => Camera.Lib.Connection.No_Action,
+                                          Center_Row  => Camera.Lib.Connection.Vertical_Scroll,
+                                          Bottom_Row  => Camera.Lib.Connection.No_Action));
       begin
          Iterator.Next;    -- skip prefix
 
@@ -278,7 +279,7 @@ package body Widgets.Adjust is
                         declare
 --                         Kind  : constant String :=
 --                                  Iterator.Get_Value (Do_Next => False);
-                           Result: constant Base.Mouse_Click_Action_Type :=
+                           Result: constant Camera.Lib.Connection.Mouse_Click_Action_Type :=
                                     Action_Table (Column, Row);
                         begin
                            Log_Out (Debug, Result'img);
@@ -292,7 +293,7 @@ package body Widgets.Adjust is
       end;
 
       Log_Out (Debug, "in active window");
-      return Base.No_Change;
+      return Camera.Lib.Connection.No_Change;
 
    exception
       when Fault: others =>
@@ -394,8 +395,8 @@ package body Outer_Package is
            Table_Row               : in     Outer_Row_Index_Type) is
         ----------------------------------------------------------------
 
---         Connection_Data         : Base.Connection_Data_Type renames
---                                    Base.Connection_Data_Type (
+--         Connection_Data         : Camera.Lib.Connection.Connection_Data_Type renames
+--                                    Camera.Lib.Connection.Connection_Data_Type (
 --                                       Form.Connection_Data.all);
 --         Configuration_ID        : Outer_Row_Index_Type renames Table_Row;
            Name                    : constant String := Row.ID;

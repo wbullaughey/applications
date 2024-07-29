@@ -1,7 +1,7 @@
 --with Ada_Lib.Directory;
 with Ada_Lib.GNOGA;
 with ADA_LIB.Trace; use ADA_LIB.Trace;
-with Base;
+with Camera.Lib.Connection;
 --with Camera.Lib;
 with Configuration.Camera.Setup;
 with Configuration.Camera.State;
@@ -21,8 +21,8 @@ package body Widgets.Control is
       ID                         : in     String := "") is
    ----------------------------------------------------------------
 
-      Connection_Data            : Base.Connection_Data_Type renames
-                                    Base.Connection_Data_Type (
+      Connection_Data            : Camera.Lib.Connection.Connection_Data_Type renames
+                                    Camera.Lib.Connection.Connection_Data_Type (
                                        Ada_Lib.GNOGA.Get_Connection_Data.all);
       Top_Name                   : constant String := (if ID'length = 0 then
                                        ""
@@ -127,8 +127,8 @@ not_implemented;
          Object                     : in out Gnoga.Gui.Base.Base_Type'Class;
          Mouse_Event                : in     Gnoga.Gui.Base.Mouse_Event_Record) is
       ----------------------------------------------------------------
-         Connection_Data            : Base.Connection_Data_Type renames
-                                       Base.Connection_Data_Type (
+         Connection_Data            : Camera.Lib.Connection.Connection_Data_Type renames
+                                       Camera.Lib.Connection.Connection_Data_Type (
                                           Object.Connection_Data.all);
          Main_Data                  : Main.Main_Data_Type renames
                                         Connection_Data.Main_Data.all;

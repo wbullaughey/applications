@@ -7,7 +7,7 @@ with Ada_Lib.Trace; use Ada_Lib.Trace;
 with Ada_Lib.Unit_Test;
 with AUnit.Assertions; use AUnit.Assertions;
 with AUnit.Test_Cases;
-with Base;
+with Camera.Lib.Connection;
 with Camera.Lib.Unit_Test;
 
 --with Configuration.State;
@@ -114,7 +114,7 @@ package body Configuration.Camera.Setup.Unit_Tests is
    ---------------------------------------------------------------
 
       Options                    : Standard.Camera.Lib.Unit_Test.
-                                    Unit_Test_Options_Type'class
+                                    Camera_Lib_Unit_Test_Options_Type'class
                                        renames Standard.Camera.Lib.Unit_Test.
                                           Get_Options.all;
       Test_Suite              : constant AUnit.Test_Suites.Access_Test_Suite :=
@@ -148,13 +148,13 @@ package body Configuration.Camera.Setup.Unit_Tests is
       Test                       : in out AUnit.Test_Cases.Test_Case'class) is
    ---------------------------------------------------------------
 
-      Connection_Data            : Base.Connection_Data_Type renames
-                                    Base.Connection_Data_Type (
+      Connection_Data            : Standard.Camera.Lib.Connection.Connection_Data_Type renames
+                                    Standard.Camera.Lib.Connection.Connection_Data_Type (
                                        Ada_Lib.GNOGA.Get_Connection_Data.all);
       Local_Test                 : Configuration_Tests_Type renames
                                     Configuration_Tests_Type (Test);
       Options                    : Standard.Camera.Lib.Unit_Test.
-                                    Unit_Test_Options_Type'class
+                                    Camera_Lib_Unit_Test_Options_Type'class
                                        renames Standard.Camera.Lib.Unit_Test.
                                           Get_Options.all;
       State                      : Configuration.Camera.State.State_Type renames
@@ -184,8 +184,8 @@ package body Configuration.Camera.Setup.Unit_Tests is
       Test                       : in out AUnit.Test_Cases.Test_Case'class) is
    ---------------------------------------------------------------
 
-      Connection_Data            : Base.Connection_Data_Type renames
-                                    Base.Connection_Data_Type (
+      Connection_Data            : Standard.Camera.Lib.Connection.Connection_Data_Type renames
+                                    Standard.Camera.Lib.Connection.Connection_Data_Type (
                                        Ada_Lib.GNOGA.Get_Connection_Data.all);
       Configuration_ID           : constant Configuration_ID_Type := 3;
       Expected_Setup             : constant String :=
@@ -265,8 +265,8 @@ package body Configuration.Camera.Setup.Unit_Tests is
       Test                       : in out AUnit.Test_Cases.Test_Case'class) is
    ---------------------------------------------------------------
 
-      Connection_Data            : Base.Connection_Data_Type renames
-                                    Base.Connection_Data_Type (
+      Connection_Data            : Standard.Camera.Lib.Connection.Connection_Data_Type renames
+                                    Standard.Camera.Lib.Connection.Connection_Data_Type (
                                        Ada_Lib.GNOGA.Get_Connection_Data.all);
       Expected_Number_Columns    : constant := 3;
       Expected_Number_Rows       : constant := 4;

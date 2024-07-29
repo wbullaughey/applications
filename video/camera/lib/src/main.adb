@@ -8,19 +8,18 @@ with Ada_Lib.Options;
 with Ada_Lib.OS;
 with ADA_LIB.Trace; use ADA_LIB.Trace;
 with Ask;
-with Base;
-with Camera.Commands;
-with Camera.Lib;
+with Camera.Lib.Connection;
+with Camera.Lib.Base;
+--with Camera.Lib.Connection;
 with Configuration.Camera.State;
 with GNAT.Sockets;
 with Gnoga.Application.Multi_Connect;
 with Gnoga.Types.Colors;
-with Camera.Lib.Base;
 with Camera.Commands.PTZ_Optics;
 
 package body Main is
 
--- use type Base.Connection_Data_Class_Access;
+-- use type Camera.Lib.Connection.Connection_Data_Class_Access;
 -- use type Configuration.Camera.State.State_Access;
    use type Gnoga.Types.Pointer_to_Connection_Data_Class;
 
@@ -134,8 +133,8 @@ package body Main is
       Object            : in out Gnoga.Gui.Base.Base_Type'Class) is
    ---------------------------------------------------------------
 
-      Connection_Data            : Base.Connection_Data_Type renames
-                                    Base.Connection_Data_Type (
+      Connection_Data            : Camera.Lib.Connection.Connection_Data_Type renames
+                                    Camera.Lib.Connection.Connection_Data_Type (
                                        Object.Connection_Data.all);
    begin
       Log_In (Debug);
@@ -336,8 +335,8 @@ package body Main is
    pragma Unreferenced (Connection);
    ----------------------------------------------------------------
 
-      Connection_Data            : Base.Connection_Data_Type renames
-                                    Base.Connection_Data_Type (
+      Connection_Data            : Camera.Lib.Connection.Connection_Data_Type renames
+                                    Camera.Lib.Connection.Connection_Data_Type (
                                        Ada_Lib.GNOGA.Get_Connection_Data.all);
       State                      : Configuration.Camera.State.State_Type
                                     renames Connection_Data.State;
@@ -548,8 +547,8 @@ package body Main is
                                           Camera_Class_Access) is
    ---------------------------------------------------------------
 
-      Connection_Data            : Base.Connection_Data_Type renames
-                                    Base.Connection_Data_Type (
+      Connection_Data            : Standard.Camera.Lib.Connection.Connection_Data_Type renames
+                                    Standard.Camera.Lib.Connection.Connection_Data_Type (
                                        Ada_Lib.GNOGA.Get_Connection_Data.all);
       State                      : Configuration.Camera.State.State_Type renames
                                     Connection_Data.State;
@@ -583,8 +582,8 @@ package body Main is
       Object            : in out Gnoga.Gui.Base.Base_Type'Class) is
    ---------------------------------------------------------------
 
-      Connection_Data            : Base.Connection_Data_Type renames
-                                    Base.Connection_Data_Type (
+      Connection_Data            : Camera.Lib.Connection.Connection_Data_Type renames
+                                    Camera.Lib.Connection.Connection_Data_Type (
                                        Ada_Lib.GNOGA.Get_Connection_Data.all);
       State                      : Configuration.Camera.State.State_Type renames
                                     Connection_Data.State;

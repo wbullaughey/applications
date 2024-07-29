@@ -6,7 +6,7 @@ with ADA_LIB.Trace; use ADA_LIB.Trace;
 with Ada_Lib.Unit_Test;
 with AUnit.Assertions; use AUnit.Assertions;
 with AUnit.Test_Cases;
-with Base;
+with Camera.Lib.Connection;
 with Configuration.Camera.State;
 with Camera.Lib.Unit_Test;
 with Configuration.Camera.Setup;
@@ -62,8 +62,8 @@ package body Widgets.Control.Unit_Test is
    pragma Unreferenced (Event);
    ---------------------------------------------------------------
 
-      Connection_Data            : Base.Connection_Data_Type renames
-                                    Base.Connection_Data_Type (
+      Connection_Data            : Camera.Lib.Connection.Connection_Data_Type renames
+                                    Camera.Lib.Connection.Connection_Data_Type (
                                        Ada_Lib.GNOGA.Get_Connection_Data.all);
       Control_Card               : constant Control_Card_Access :=
                                     Connection_Data.Get_Control_Card;
@@ -108,11 +108,11 @@ package body Widgets.Control.Unit_Test is
       Test                       : in out Test_Type) is
    ---------------------------------------------------------------
 
-      Connection_Data            : Base.Connection_Data_Type renames
-                                    Base.Connection_Data_Type (
+      Connection_Data            : Camera.Lib.Connection.Connection_Data_Type renames
+                                    Camera.Lib.Connection.Connection_Data_Type (
                                        Ada_Lib.GNOGA.Get_Connection_Data.all);
       Options                    : Standard.Camera.Lib.Unit_Test.
-                                    Unit_Test_Options_Type'class
+                                    Camera_Lib_Unit_Test_Options_Type'class
                                        renames Standard.Camera.Lib.Unit_Test.
                                           Get_Options.all;
       State                      : Configuration.Camera.State.State_Type renames
@@ -144,7 +144,7 @@ package body Widgets.Control.Unit_Test is
    ---------------------------------------------------------------
 
       Options                    : Standard.Camera.Lib.Unit_Test.
-                                    Unit_Test_Options_Type'class
+                                    Camera_Lib_Unit_Test_Options_Type'class
                                        renames Standard.Camera.Lib.Unit_Test.
                                           Get_Options.all;
       Test_Suite                 : constant AUnit.Test_Suites.Access_Test_Suite :=
@@ -187,8 +187,8 @@ package body Widgets.Control.Unit_Test is
          declare
 --          Local_Test           : Test_Type'class renames
 --                                 Test_Type'class (Test);
-            Connection_Data      : constant Base.Connection_Data_Access :=
-                                    Base.Connection_Data_Access (
+            Connection_Data      : constant Camera.Lib.Connection.Connection_Data_Access :=
+                                    Camera.Lib.Connection.Connection_Data_Access (
                                        Ada_Lib.GNOGA.Get_Connection_Data);
             Cards                : constant Main.Cards_Access_Type :=
                                     Connection_Data.Get_Cards;
