@@ -1,6 +1,6 @@
 <!DOCTYPE Project SYSTEM "http://www.slickedit.com/dtd/vse/10.0/vpj.dtd">
 <Project
-    WorkingDir="../../../vendors/vendor/github.com/AdaCore/gnatcoll-core/"
+    WorkingDir="../../vendor/github.com/AdaCore/gnatcoll-core/"
     Version="10.0"
     VendorName="SlickEdit"
     TemplateName="Ada - GNU Ada Compiler"
@@ -26,19 +26,17 @@
             Filters="*.*"
             GUID="{7F8DE9E4-5B02-405C-8D2D-31056438F67D}"/>
         <F
-            N="../../../vendors/vendor/github.com/AdaCore/gnatcoll-core/src/*.ad?"
-            Recurse="0"
-            Excludes=""
-            L="1"/>
+            N="../../vendor/github.com/AdaCore/gnatcoll-core/*.ad?"
+            Recurse="1"
+            Excludes="*.a;*.o;*.ali"/>
         <F
-            N="../../../vendors/vendor/github.com/AdaCore/gnatcoll-core/src/os/*.ad?"
-            Recurse="0"
-            Excludes=""
-            L="1"/>
-        <F N="../../../vendors/vendor/github.com/AdaCore/gnatcoll-core/.gitignore"/>
-        <F N="../../../vendors/vendor/github.com/AdaCore/gnatcoll-core/alire.toml"/>
-        <F N="../../../vendors/vendor/github.com/AdaCore/gnatcoll-core/build.sh"/>
-        <F N="../../../vendors/vendor/github.com/AdaCore/gnatcoll-core/gnatcoll.gpr"/>
+            N="../../vendor/github.com/AdaCore/gnatcoll-core/*.gpr"
+            Recurse="1"
+            Excludes="*.a;*.o;*.ali"/>
+        <F
+            N="../../vendor/github.com/AdaCore/gnatcoll-core/*.toml"
+            Recurse="1"
+            Excludes="*.a;*.o;*.ali"/>
     </Files>
     <Config
         Name="Debug"

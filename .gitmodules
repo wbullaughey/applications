@@ -11,3 +11,6 @@
    path = vendor/github.com/gpr
    url = git@github.com:wbullaughey/gpr
 
+[submodule "vendor/github.com/AdaCore/gnatcoll-core"]
+	path = vendor/github.com/AdaCore/gnatcoll-core
+	url = git@github.com:wbullaughey/gnatcoll.git
