@@ -228,7 +228,6 @@ package body Configuration.State is
 
       State.Loaded := True;
       Log_Out (Debug);
-
    exception
 
       when Fault: Ada_Lib.Configuration.Failed =>

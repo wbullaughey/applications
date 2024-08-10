@@ -10,6 +10,7 @@ vendor/
 *.txt
 *.stderr
 *.stdout
+*.prev
 suites
 GNAT-*
 *-save

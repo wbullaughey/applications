@@ -1,62 +1,41 @@
 <!DOCTYPE Project SYSTEM "http://www.slickedit.com/dtd/vse/10.0/vpj.dtd">
 <Project
-    WorkingDir="../../vendor/github.com/gnoga/"
+    WorkingDir="../../ada_lib/ada_lib_gnoga/"
     Version="10.0"
     VendorName="SlickEdit"
-    TemplateName="Ada - GNU Ada Compiler"
-    BuildSystem="automakefile"
-    BuildMakeFile="%rp%rn.mak"
-    BuildMakeJobs="">
+    TemplateName="Ada - GNU Ada Compiler">
     <Files>
         <Folder
             Name="Source Files"
             Filters="*.ada;*.adb;*.c;*.cpp"
-            GUID="{DBB78CA0-3143-4D0A-9C98-4A57D9A74517}"/>
+            GUID="{19C47177-1DC5-44B9-A876-6E8610C6469A}"/>
         <Folder
             Name="Header Files"
             Filters="*.h;*.ads"
-            GUID="{27C9409F-FB2A-4E28-9925-AF70B231A694}"/>
+            GUID="{7881EAA7-1D39-430B-B6F1-7777A662B6FD}"/>
         <Folder
             Name="Resource Files"
             Filters="*.def;*.res"
-            GUID="{398395F4-D62B-4ACB-B264-988101D59E01}"/>
+            GUID="{A08F505A-4EE6-47D9-AD4D-CCD2CE48CA94}"/>
         <Folder
             Name="Other Files"
             Filters="*.*"
-            GUID="{3E38D3CA-5466-4ECB-AAF1-CB1315D94A16}"/>
+            GUID="{717758C6-4D76-448A-B20C-CC91F409D601}"/>
         <F
-            N="../../vendor/github.com/gnoga/ada_lib/*.ad?"
+            N="../../ada_lib/ada_lib_gnoga/src/*.ad?"
             Recurse="0"
-            Excludes=""
+            Excludes="*.a;*.o;*.ali"
             L="1"/>
-        <F
-            N="../../vendor/github.com/gnoga/src/*.ad?"
-            Recurse="0"
-            Excludes=""
-            L="1"/>
-        <F
-            N="../../vendor/github.com/gnoga/ada_lib/*.gpr"
-            Recurse="0"
-            Excludes=""
-            L="1"/>
-        <F
-            N="../../vendor/github.com/gnoga/src/*.gpr"
-            Recurse="0"
-            Excludes=""
-            L="1"/>
-        <F N="../../vendor/github.com/gnoga/.gitignore"/>
-        <F N="../../vendor/github.com/gnoga/alire.toml"/>
-        <F N="../../vendor/github.com/gnoga/build.sh"/>
-        <F N="../../vendor/github.com/gnoga/gnoga.gpr"/>
-        <F
-            N="Gnoga.mak"
-            Type="Makefile"/>
+        <F N="../../ada_lib/ada_lib_gnoga/.gitignore"/>
+        <F N="../../ada_lib/ada_lib_gnoga/ada_lib_gnoga.gpr"/>
+        <F N="../../ada_lib/ada_lib_gnoga/alire.toml"/>
+        <F N="../../ada_lib/ada_lib_gnoga/build.sh"/>
     </Files>
     <Config
         Name="Debug"
         Type="gnuc"
         DebugCallbackName="gdb"
-        OutputFile="Gnoga"
+        OutputFile="ada_lib_gnoga"
         CompilerConfigName="Latest Version">
         <Menu>
             <Target
@@ -93,7 +72,7 @@
                 Deletable="0"
                 SaveOption="SaveWorkspaceFiles"
                 RunFromDir="%rw">
-                <Exec CmdLine='make -f "%rp%rn.mak" rebuild CFG=%b'/>
+                <Exec CmdLine=""/>
             </Target>
             <Target
                 Name="Debug"
@@ -153,7 +132,7 @@
         Name="Release"
         Type="gnuc"
         DebugCallbackName="gdb"
-        OutputFile="Gnoga"
+        OutputFile="ada_lib_gnoga"
         CompilerConfigName="Latest Version">
         <Menu>
             <Target
@@ -190,7 +169,7 @@
                 Deletable="0"
                 SaveOption="SaveWorkspaceFiles"
                 RunFromDir="%rw">
-                <Exec CmdLine='make -f "%rp%rn.mak" rebuild CFG=%b'/>
+                <Exec CmdLine=""/>
             </Target>
             <Target
                 Name="Debug"

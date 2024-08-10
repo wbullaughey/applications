@@ -12,10 +12,12 @@ pwd 2>&1 | tee -a $OUTPUT
 pushd unit_test
 pwd 2>&1 | tee -a $OUTPUT
 ./build.sh 2>&1 | tee -a $OUTPUT
-popd
-#pushd driver
-#pwd 2>&1 | tee -a $OUTPUT
-#./build.sh 2>&1 | tee -a $OUTPUT
+popd     # poped back to camera
+pushd driver
+pwd 2>&1 | tee -a $OUTPUT
+./build.sh 2>&1 | tee -a $OUTPUT
+pushd unit_test
+./build.sh 2>&1 | tee -a $OUTPUT
 
 
 

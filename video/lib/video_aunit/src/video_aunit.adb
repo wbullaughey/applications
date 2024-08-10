@@ -14,7 +14,7 @@ procedure Video_AUnit is
 
    Debug                         : Boolean := False; -- renames this causes
                                     -- preelaboration to hang
-                                    -- Video.Lib.Options.Debug;
+                                    -- Video.Lib.Video_Lib_Options.Debug;
 
 begin
    Runtime_Options.Initialize;

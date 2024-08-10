@@ -32,6 +32,7 @@
         <F N="../../video/camera/driver/camera_driver.gpr"/>
         <F N="../../video/camera/driver/GNAT-sw5vgv"/>
         <F N="../../video/camera/driver/help"/>
+        <F N="../../video/camera/unit_test/list-camera_driver.txt"/>
         <F N="../../video/camera/driver/list-driver.txt"/>
         <F N="../../video/camera/driver/run.sh"/>
         <F N="../../video/camera/driver/run_driver.sh"/>

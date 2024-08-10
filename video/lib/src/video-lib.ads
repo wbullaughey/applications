@@ -68,8 +68,8 @@ package Video.Lib is
    subtype Maximum_Response_Type
                                  is Buffer_Type (1 .. 30);
 
-   type Options_Type             is limited new Ada_Lib.Options.Actual.
-                                    Program_Options_Type with record
+   type Video_lib_Options_Type   is limited new Ada_Lib.Options.Actual.
+                                    Nested_Options_Type with record
       Address_Kind               : Configuration.Address_Kind_Type;
       If_Emulation               : Boolean := False;
       Location                   : Configuration.State.Location_Type :=
@@ -78,25 +78,25 @@ package Video.Lib is
       Port_Number                : Ada_Lib.Socket_IO.Port_Type;
    end record;
 
-   type Options_Access           is access all Options_Type;
-   type Options_Class_Access     is access all Options_Type'class;
+   type Options_Access           is access all Video_lib_Options_Type;
+   type Options_Class_Access     is access all Video_lib_Options_Type'class;
    type Options_Constant_Class_Access
-                                 is access constant Options_Type'class;
+                                 is access constant Video_lib_Options_Type'class;
 
    function Address_Kind (
-     Options                     : in     Options_Type
+     Options                     : in     Video_lib_Options_Type
    ) return Configuration.Address_Kind_Type;
 
    overriding
    function Initialize (
-     Options                     : in out Options_Type;
+     Options                     : in out Video_lib_Options_Type;
      From                        : in     String := Ada_Lib.Trace.Here
    ) return Boolean
    with pre => Options.Verify_Preinitialize;
 
    overriding
    function Process_Option (  -- process one option
-      Options              : in out Options_Type;
+      Options              : in out Video_lib_Options_Type;
       Iterator             : in out Ada_Lib.Options.
                                        Command_Line_Iterator_Interface'class;
       Option               : in     Ada_Lib.Options.Option_Type'class
@@ -106,7 +106,7 @@ package Video.Lib is
 
    overriding
    procedure Trace_Parse (
-      Options                    : in out Options_Type;
+      Options                    : in out Video_lib_Options_Type;
       Iterator             : in out Ada_Lib.Options.
                                        Command_Line_Iterator_Interface'class);
 
@@ -132,7 +132,7 @@ private
 
    overriding
    procedure Program_Help (
-      Options                    : in     Options_Type;  -- only used for dispatch
+      Options                    : in     Video_lib_Options_Type;  -- only used for dispatch
       Help_Mode                  : in     ADA_LIB.Options.Help_Mode_Type);
 
 end Video.Lib;

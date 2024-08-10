@@ -17,7 +17,7 @@ package Runtime_Options is
       Window                     : Gnoga.Gui.Base.Pointer_To_Base_Class;
    end record;
 
-   type Options_Type is limited new Video.Lib.Options_Type with record
+   type Options_Type is limited new Video.Lib.Video_Lib_Options_Type with record
       Unit_Test                  : Ada_Lib.Options.Unit_Test.
                                     Camera_Lib_Unit_Test_Options_Type (True);
    end record;
@@ -27,7 +27,7 @@ package Runtime_Options is
    type Options_Constant_Class_Access
                                  is access constant Options_Type'class;
 
-   function Get_Modifiable_Options return Options_Access;
+   function Get_Video_Unit_Test_Modifiable_Options return Options_Access;
 
    overriding
    function Initialize (

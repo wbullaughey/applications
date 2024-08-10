@@ -23,15 +23,14 @@ package body Runtime_Options is
                                     Ada_Lib.Options.Create_Options ('t');
    Options_Without_Parameters    : constant Ada_Lib.Options.Options_Type :=
                                     Ada_Lib.Options.Create_Options ('E');
-   Protected_Options             : aliased Options_Type;
 
-   -------------------------------------------------------------------------
-   function Get_Modifiable_Options return Options_Access is
-   -------------------------------------------------------------------------
-
-   begin
-      return Protected_Options'access;
-   end Get_Modifiable_Options;
+-- -------------------------------------------------------------------------
+-- function Get_Modifiable_Options return Options_Access is
+-- -------------------------------------------------------------------------
+--
+-- begin
+--    return Protected_Options'access;
+-- end Get_Modifiable_Options;
 
    -------------------------------------------------------------------------
    procedure Initialize is
@@ -59,7 +58,7 @@ package body Runtime_Options is
          Ada_Lib.Options.Runstring.Without_Parameters,
          Options_Without_Parameters);
       return Log_Out (Protected_Options.Unit_Test.Initialize and then
-         Video.Lib.Options_Type (Protected_Options).Initialize, Debug) and then
+         Video.Lib.Video_Lib_Options_Type (Protected_Options).Initialize, Debug) and then
          Protected_Options.Process (
             Include_Options      => True,
             Include_Non_Options  => True,
@@ -122,9 +121,9 @@ package body Runtime_Options is
 
          end case;
       else
-         return Log_Out (Video.Lib.Options_Type (
+         return Log_Out (Video.Lib.Video_Lib_Options_Type (
             Options).Process_Option (Iterator, Option) or else
-            Options.Unit_Test.Process_Option (Iterator, Option),
+            Options.Process_Option (Iterator, Option),
             Debug, "other option" & " Option" & Option.Image);
       end if;
 
@@ -140,8 +139,8 @@ package body Runtime_Options is
 
    begin
       Log_In (Debug, "help mode " & Help_Mode'img);
-      Video.Lib.Options_Type (Options).Program_Help (Help_Mode);
-      Options.Unit_Test.Program_Help (Help_Mode);
+      Video.Lib.Video_Lib_Options_Type (Options).Program_Help (Help_Mode);
+      Options.Program_Help (Help_Mode);
 
       case Help_Mode is
 
