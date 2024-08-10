@@ -1,7 +1,6 @@
 with Ada.Exceptions;
 with Ada_Lib.Directory.Compare_Files;
 with Ada_Lib.GNOGA;
---with Ada_Lib.Options;
 with Ada_Lib.Strings.Unlimited; use Ada_Lib.Strings.Unlimited;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
 with Ada_Lib.Unit_Test;
@@ -116,11 +115,11 @@ package body Configuration.Camera.Setup.Unit_Tests is
       Options                    : Standard.Camera.Lib.Unit_Test.
                                     Camera_Lib_Unit_Test_Options_Type'class
                                        renames Standard.Camera.Lib.Unit_Test.
-                                          Get_Options.all;
+                                          Get_Camera_Lib_Unit_Test_Modifiable_Options.all;
       Test_Suite              : constant AUnit.Test_Suites.Access_Test_Suite :=
                                  new AUnit.Test_Suites.Test_Suite;
       Tests                   : constant Configuration_Tests_Access :=
-                                 new Configuration_Tests_Type (Options.Brand);
+                                 new Configuration_Tests_Type (Options.Camera_Options.Brand);
 
    begin
       Log_In (Debug);
@@ -156,13 +155,13 @@ package body Configuration.Camera.Setup.Unit_Tests is
       Options                    : Standard.Camera.Lib.Unit_Test.
                                     Camera_Lib_Unit_Test_Options_Type'class
                                        renames Standard.Camera.Lib.Unit_Test.
-                                          Get_Options.all;
+                                          Get_Camera_Lib_Unit_Test_Modifiable_Options.all;
       State                      : Configuration.Camera.State.State_Type renames
                                     Connection_Data.State;
 
    begin
       Log_In (Debug);
-      Connection_Data.State.Load (Options.Location, Test_State);
+      Connection_Data.State.Load (Options.Camera_Options.Location, Test_State);
       Local_Test.Setup.Load (Connection_Data.State, Test_Setup);
       Local_Test.Camera_Address := State.Video_Address;
       Local_Test.Port_Number := State.Video_Port;

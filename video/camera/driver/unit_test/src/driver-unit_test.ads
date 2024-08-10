@@ -15,11 +15,11 @@ package Driver.Unit_Test is
 
    type Driver_Unit_Test_Options_Type
                                  is limited new Ada_Lib.Options.Unit_Test.
-                                    Unit_Test_Options_Type (True) with record
+                                    Ada_Lib_Unit_Test_Options_Type (True) with record
 --    Camera_Options             : Ada_Lib.Strings.Unlimited.String_Type;
       Driver_Options             : aliased Driver_Options_Type (True);
 --    Unit_Test_Options          : aliased Ada_Lib.Options.Unit_Test.
---                                     Unit_Test_Options_Type (True);
+--                                     Ada_Lib_Unit_Test_Options_Type (True);
    end record;
 
    type Driver_Unit_Test_Option_Access
@@ -29,8 +29,11 @@ package Driver.Unit_Test is
    type Driver_Unit_Test_Option_Constant_Class_Access
                                  is access constant Driver_Unit_Test_Options_Type'class;
 
-   function Initialize
-   return Boolean;
+   overriding
+   function Initialize (
+      Options                    : in out Driver_Unit_Test_Options_Type;
+      From                       : in     String := Standard.Ada_Lib.Trace.Here
+   ) return Boolean;
 
    overriding
    function Process_Option (  -- process one option
@@ -41,9 +44,13 @@ package Driver.Unit_Test is
    ) return Boolean
    with pre => Options.Initialized;
 
-   function Get_Modifiable_Options (
+   function Get_Driver_Unit_Test_Modifiable_Options (
       From                       : in  String := Ada_Lib.Trace.Here
    ) return Driver_Unit_Test_Option_Class_Access;
+
+   function Get_Driver_Unit_Test_Read_Only_Options (
+      From                       : in  String := Ada_Lib.Trace.Here
+   ) return Driver_Unit_Test_Option_Constant_Class_Access;
 
    overriding
    function Name (

@@ -37,7 +37,16 @@ package body Camera.Lib.Options is
    Options_Without_Parameters    : aliased constant
                                     Ada_Lib.Options.Options_Type :=
                                        Ada_Lib.Options.Null_Options;
-   Protected_Options             : aliased Options_Type;
+
+   -------------------------------------------------------------------------
+   function Camera_Options
+   return Camera_Options_Constant_Class_Access is
+   -------------------------------------------------------------------------
+
+   begin
+      return Camera_Options_Constant_Class_Access (
+         Ada_Lib.Options.Get_Ada_Lib_Modifiable_Options);
+   end Camera_Options;
 
    -------------------------------------------------------------------------
    function Current_Directory  -- set by runstring option 'c' else null
@@ -45,29 +54,38 @@ package body Camera.Lib.Options is
    -------------------------------------------------------------------------
 
    begin
-      return Protected_Options.Camera_Library.Directory.Coerce;
+      return Camera_Options.Camera_Library.Directory.Coerce;
    end Current_Directory;
 
    -------------------------------------------------------------------------
-   function Get_Modifiable_Options return Options_Access is
+   function Get_Modifiable_Camera_Options return Camera_Options_Class_Access is
    -------------------------------------------------------------------------
 
    begin
-      return Protected_Options'access;
-   end Get_Modifiable_Options;
+      return Camera_Options_Class_Access (Ada_Lib.Options.Get_Ada_Lib_Modifiable_Options);
+   end Get_Modifiable_Camera_Options;
+
+   -------------------------------------------------------------------------
+   function Get_Read_Only_Camera_Options
+   return Camera_Options_Constant_Class_Access is
+   -------------------------------------------------------------------------
+
+   begin
+      return Camera_Options_Constant_Class_Access (
+         Ada_Lib.Options.Get_Ada_Lib_Read_Only_Options);
+   end Get_Read_Only_Camera_Options;
 
    -------------------------------------------------------------------------
    overriding
    function Initialize (
-     Options                     : in out Options_Type;
+     Options                     : in out Camera_Options_Type;
      From                        : in     String := Ada_Lib.Trace.Here
    ) return Boolean is
    -------------------------------------------------------------------------
 
    begin
       Log_In (Debug_Options or Trace_Options, "from " & From & " options address " &
-         Image (Options'address) &
-         " protected options address " & Image (Protected_Options'address));
+         Image (Options'address));
       Ada_Lib.Options.Runstring.Options.Register (
          Ada_Lib.Options.Runstring.With_Parameters,
          Options_With_Parameters);
@@ -94,7 +112,7 @@ package body Camera.Lib.Options is
    -- processes options it knows about and calls parent for others
    overriding
    function Process_Option (
-      Options           : in out Options_Type;
+      Options           : in out Camera_Options_Type;
       Iterator          : in out Ada_Lib.Options.
                                     Command_Line_Iterator_Interface'class;
       Option            : in     Ada_Lib.Options.Option_Type'class
@@ -159,7 +177,7 @@ package body Camera.Lib.Options is
    ----------------------------------------------------------------------------
    overriding
    procedure Program_Help (
-      Options                    : in     Options_Type;  -- only used for dispatch
+      Options                    : in     Camera_Options_Type;  -- only used for dispatch
       Help_Mode                  : in     ADA_LIB.Options.Help_Mode_Type) is
    ----------------------------------------------------------------------------
 
@@ -195,14 +213,11 @@ package body Camera.Lib.Options is
 begin
 -- Debug := Debug_Options.Debug_All;
 
---Protected_Options.Debug := True;
 --Debug := True;
 --Trace_Options := True;
 --Elaborate := True;
 
-   Ada_Lib.Options.Set_Ada_Lib_Options (Protected_Options'access);
-   Log_Here (Elaborate or Debug_Options or Trace_Options, "options " &
-      Image (Protected_Options'address));
+   Log_Here (Elaborate or Debug_Options or Trace_Options);
 
 exception
    when Fault: others =>

@@ -1,7 +1,7 @@
 ﻿with Ada.Text_IO;use Ada.Text_IO;
 with Ada_Lib.Help;
 with Ada_Lib.Options.Runstring;
-with Ada_Lib.Strings.Unlimited;
+--with Ada_Lib.Strings.Unlimited;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
 with Ada_Lib.Unit_Test.Reporter;
 with AUnit.Options;
@@ -33,7 +33,6 @@ package body Driver.Unit_Test is
                                     Ada_Lib.Options.Options_Type :=
                                        Ada_Lib.Options.Null_Options;
 --                                     Ada_Lib.Options.Actual.Nested_Options_Type--                                        Create_Options ("r");
-   Protected_Options             : aliased Driver_Unit_Test_Options_Type;
 
    ---------------------------------------------------------------
    function Create_Suite return AUnit.Test_Suites.Access_Test_Suite is
@@ -51,50 +50,55 @@ package body Driver.Unit_Test is
    end Create_Suite;
 
    ----------------------------------------------------------------
-   function Get_Modifiable_Options (
+   function Get_Driver_Unit_Test_Modifiable_Options (
       From                       : in  String := Ada_Lib.Trace.Here
    ) return Driver_Unit_Test_Option_Class_Access is
    ----------------------------------------------------------------
 
    begin
       Log_Here (Debug_Options or Trace_Options, "from " & From);
-      return Protected_Options'access;
-   end Get_Modifiable_Options;
+      return Driver_Unit_Test_Option_Class_Access (
+         Ada_Lib.Options.Get_Ada_Lib_Modifiable_Options);
+   end Get_Driver_Unit_Test_Modifiable_Options;
+
+   ----------------------------------------------------------------
+   function Get_Driver_Unit_Test_Read_Only_Options (
+      From                       : in  String := Ada_Lib.Trace.Here
+   ) return Driver_Unit_Test_Option_Constant_Class_Access is
+   ----------------------------------------------------------------
+
+   begin
+      Log_Here (Debug_Options or Trace_Options, "from " & From);
+      return Driver_Unit_Test_Option_Constant_Class_Access (
+         Ada_Lib.Options.Get_Ada_Lib_Read_Only_Options);
+   end Get_Driver_Unit_Test_Read_Only_Options;
 
    ---------------------------------------------------------------
-   function Initialize
-   return Boolean is
+   overriding
+   function Initialize (
+      Options                    : in out Driver_Unit_Test_Options_Type;
+      From                       : in     String := Standard.Ada_Lib.Trace.Here
+   ) return Boolean is
    ---------------------------------------------------------------
 
    begin
-      Log_In (Debug_Options or Trace_Options,
-         " Initialized " & Protected_Options.Initialized'img);
+      Log_In (Debug_Options or Trace_Options, "from " & From);
       Ada_Lib.Options.Runstring.Options.Register (
          Ada_Lib.Options.Runstring.With_Parameters, Options_With_Parameters);
       Ada_Lib.Options.Runstring.Options.Register (
          Ada_Lib.Options.Runstring.Without_Parameters,
          Options_Without_Parameters);
 
---    Protected_Options.Unit_Test := True;
-      Ada_Lib.Options.Set_Ada_Lib_Options (Protected_Options'access);
-
-      Ada_Lib.Options.Unit_Test.Unit_Test_Options :=
-         Protected_Options'unchecked_access;
-
-      Set_Protected_Options (Protected_Options.Driver_Options'access);
-      Protected_Options.Driver_Options.Camera_Directory.Construct (
-         "../../unit_test");
-
       return Log_Out (
-         Protected_Options.Driver_Options.Initialize and then
-         Ada_Lib.Options.Unit_Test.Unit_Test_Options_Type (
-            Protected_Options).Initialize and then
-         Protected_Options.Process (
+         Options.Driver_Options.Initialize and then
+         Ada_Lib.Options.Unit_Test.Ada_Lib_Unit_Test_Options_Type (
+            Options).Initialize and then
+         Options.Process (
             Include_Options      => True,
             Include_Non_Options  => False,
             Modifiers            => Ada_Lib.Help.Modifiers),
          Debug_Options or Trace_Options,
-         "Initialized " & Protected_Options.Initialized'img);
+         "Initialized " & Options.Initialized'img);
 
    exception
 
@@ -136,10 +140,10 @@ package body Driver.Unit_Test is
          case Option.Option is
 
 --         when 'l' =>
---             Protected_Options.Driver_Options.List_Output := True;
+--             Options.Driver_Options.List_Output := True;
 
 --         when 'r' =>
---             Protected_Options.Driver_Options.Remote_Camera := True;
+--             Options.Driver_Options.Remote_Camera := True;
 
            when Trace_Option => -- 'T'
               declare
@@ -156,10 +160,10 @@ package body Driver.Unit_Test is
                           Debug := True;
                           Debug_Options := True;
                           Main.Debug := True;
-                          Protected_Options.Driver_Options.Driver_Debug := True;
+                          Options.Driver_Options.Driver_Debug := True;
 
                        when 'd' =>
-                          Protected_Options.Driver_Options.Driver_Debug := True;
+                          Options.Driver_Options.Driver_Debug := True;
 
                        when 'm' =>
                           Main.Debug := True;
@@ -185,7 +189,7 @@ package body Driver.Unit_Test is
          end case;
       else
          return Log_Out (Options.Driver_Options.Process_Option (Iterator, Option) or else
-            Ada_Lib.Options.Unit_Test.Unit_Test_Options_Type (
+            Ada_Lib.Options.Unit_Test.Ada_Lib_Unit_Test_Options_Type (
                Options).Process_Option (Iterator, Option),
             Debug_Options or Trace_Options, "other " & Option.Image);
       end if;
@@ -201,12 +205,12 @@ package body Driver.Unit_Test is
       Help_Mode                  : in     ADA_LIB.Options.Help_Mode_Type) is
    ---------------------------------------------------------------
 
-      Component                  : constant String := Command_Name;
+--    Component                  : constant String := Command_Name;
 
    begin
       Log_In (Debug_Options or Trace_Options, "help mode " & Help_Mode'img);
       Options.Driver_Options.Program_Help (Help_Mode);
-      Ada_Lib.Options.Unit_Test.Unit_Test_Options_Type (
+      Ada_Lib.Options.Unit_Test.Ada_Lib_Unit_Test_Options_Type (
          Options).Program_Help (Help_Mode);
 
       case Help_Mode is
@@ -263,6 +267,9 @@ package body Driver.Unit_Test is
       Log_In (Debug);
       declare
          AUnit_Options           : AUnit.Options.AUnit_Options;
+         Options                 : Driver_Unit_Test_Option_Constant_Class_Access :=
+                                    Driver_Unit_Test_Option_Constant_Class_Access (
+                                       Ada_Lib.Options.Get_Ada_Lib_Read_Only_Options);
          Outcome                 : AUnit.Status;
          Reporter                : Ada_Lib.Unit_Test.Reporter.Reporter_Type;
          Results                 : AUnit.Test_Results.Result;
@@ -270,11 +277,11 @@ package body Driver.Unit_Test is
                                     AUnit.Test_Suites.New_Suite;
 
       begin
-         AUnit_Options.Filter := Protected_Options.Filter'unchecked_access;
+         AUnit_Options.Filter := Options.Filter'unchecked_access;
          Test_Suite.Add_Test (Create_Suite);
 
-         Log_Here (Debug, "mode " & Protected_Options.Mode'img);
-         case Protected_Options.Mode is
+         Log_Here (Debug, "mode " & Options.Mode'img);
+         case Options.Mode is
 
             when Ada_Lib.Options.Driver_Suites |
                  Ada_Lib.Options.List_Suites |
@@ -283,14 +290,14 @@ package body Driver.Unit_Test is
                Ada_Lib.Unit_Test.Iterate_Suites (
                   Ada_Lib.Options.Unit_Test.Suite_Action'access,
                   Ada_Lib.Options.Unit_Test.Routine_Action'access,
-                  Protected_Options.Mode);
+                  Options.Mode);
 
             when Ada_Lib.Options.Run_Tests =>
                declare
                   Routine        : constant String :=
-                                    Protected_Options.Routine.Coerce;
+                                    Options.Routine.Coerce;
                   Suite          : constant String :=
-                                    Protected_Options.Suite_Name.Coerce;
+                                    Options.Suite_Name.Coerce;
                begin
                   Log_Here (Debug, Quote ("suite", Suite) &
                      Quote (" routine", Routine));
@@ -325,10 +332,12 @@ package body Driver.Unit_Test is
      pragma Unused (Test);
      ---------------------------------------------------------------
 
+         Options        : Driver_Unit_Test_Options_Type'class renames
+                           Get_Driver_Unit_Test_Modifiable_Options.all;
      begin
         Log_In (Debug);
-        Protected_Options.Routine.Construct ("");
-        Protected_Options.Routine.Construct ("");
+        Options.Routine.Construct ("");
+        Options.Routine.Construct ("");
         Queue_Tests;
         Run_Selection;
         Log_Out (Debug);
@@ -340,10 +349,12 @@ package body Driver.Unit_Test is
      pragma Unused (Test);
      ---------------------------------------------------------------
 
+         Options        : Driver_Unit_Test_Options_Type'class renames
+                           Get_Driver_Unit_Test_Modifiable_Options.all;
      begin
         Log_In (Debug);
-        Protected_Options.Suite_Name.Construct ("Main");
-        Protected_Options.Routine.Construct ("Test_Halt");
+        Options.Suite_Name.Construct ("Main");
+        Options.Routine.Construct ("Test_Halt");
         Queue_Tests;
         Run_Selection;
         Log_Out (Debug);
@@ -361,10 +372,12 @@ package body Driver.Unit_Test is
      pragma Unused (Test);
      ---------------------------------------------------------------
 
+         Options        : Driver_Unit_Test_Options_Type'class renames
+                           Get_Driver_Unit_Test_Modifiable_Options.all;
      begin
         Log_In (Debug);
-        Protected_Options.Suite_Name.Construct ("Main");
-        Protected_Options.Routine.Construct ("");
+        Options.Suite_Name.Construct ("Main");
+        Options.Routine.Construct ("");
         Queue_Tests;
         Run_Selection;
         Log_Out (Debug);

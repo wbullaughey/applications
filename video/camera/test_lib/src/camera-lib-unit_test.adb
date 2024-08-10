@@ -9,6 +9,7 @@ with Ada_Lib.Unit_Test.Reporter;
 with AUnit.Assertions; use AUnit.Assertions;
 with Camera.Lib.Base;
 with Camera.Lib.Connection;
+with Camera.Lib.Options;
 with Camera.Command_Queue;
 with Camera.Commands.Unit_Test;
 with Camera.Lib.Base.Command_Tests;
@@ -35,7 +36,6 @@ package body Camera.Lib.Unit_Test is
                                           Ada_Lib.Options.Null_Options;
    Help_Recursed                 : Boolean := False;
    Initialize_Recursed           : Boolean := False;
-   Protected_Options             : aliased Camera_Lib_Unit_Test_Options_Type;
 
 -- use type Ada_Lib.Options.Interface_Options_Constant_Class_Access;
 
@@ -55,46 +55,57 @@ package body Camera.Lib.Unit_Test is
    end Add_Test;
 
    ---------------------------------------------------------------
-   function Get_Options (
+   function Get_Camera_Lib_Unit_Test_Modifiable_Options (
+      From              : in     String := GNAT.Source_Info.Source_Location
+   ) return Camera_Lib_Unit_Test_Options_Class_Access is
+   ---------------------------------------------------------------
+
+   begin
+      return Camera.Lib.Unit_Test.Camera_Lib_Unit_Test_Options_Class_Access (
+         Ada_Lib.Options.Get_Ada_Lib_Modifiable_Options (From));
+   end Get_Camera_Lib_Unit_Test_Modifiable_Options;
+
+   ---------------------------------------------------------------
+   function Get_Camera_Lib_Unit_Test_Read_Only_Options (
       From              : in     String := GNAT.Source_Info.Source_Location
    ) return Camera_Lib_Unit_Test_Options_Constant_Class_Access is
    ---------------------------------------------------------------
 
    begin
       return Camera.Lib.Unit_Test.Camera_Lib_Unit_Test_Options_Constant_Class_Access (
-         Ada_Lib.Options.Get_Read_Only_Options (From));
-   end Get_Options;
+         Ada_Lib.Options.Get_Ada_Lib_Read_Only_Options (From));
+   end Get_Camera_Lib_Unit_Test_Read_Only_Options;
 
-   ---------------------------------------------------------------
-   function Initialize
-   return Boolean is
-   ---------------------------------------------------------------
-
-   begin
-      Log_In (Debug_Options or Trace_Options);
-      Ada_Lib.Options.Set_Ada_Lib_Options (Protected_Options'access);
-
---    Ada_Lib.Options.Unit_Test.Unit_Test_Options :=
---       Ada_Lib.Options.Unit_Test.Unit_Test_Options_Constant_Class_Access'(
---          Protected_Options'unchecked_access);
-
-      return Log_Out (
-         Protected_Options.Initialize and then
-         Protected_Options.Process (
-            Include_Options      => True,
-            Include_Non_Options  => False,
-            Modifiers            => Ada_Lib.Help.Modifiers),
-         Debug_Options or Trace_Options,
-         "Initialized " & Protected_Options.Initialized'img &
-             " mode " & Protected_Options.Unit_Test.Mode'img);
-
-   exception
-
-      when Fault: others =>
-         Trace_Exception (True, Fault);
-         raise;
-
-   end Initialize;
+--   ---------------------------------------------------------------
+--   function Initialize
+--   return Boolean is
+--   ---------------------------------------------------------------
+--
+--   begin
+--      Log_In (Debug_Options or Trace_Options);
+--      Ada_Lib.Options.Set_Ada_Lib_Options (Protected_Options'access);
+--
+----    Ada_Lib.Options.Unit_Test.Unit_Test_Options :=
+----       Ada_Lib.Options.Unit_Test.Unit_Test_Options_Constant_Class_Access'(
+----          Protected_Options'unchecked_access);
+--
+--      return Log_Out (
+--         Protected_Options.Initialize and then
+--         Protected_Options.Process (
+--            Include_Options      => True,
+--            Include_Non_Options  => False,
+--            Modifiers            => Ada_Lib.Help.Modifiers),
+--         Debug_Options or Trace_Options,
+--         "Initialized " & Protected_Options.Initialized'img &
+--             " mode " & Protected_Options.Mode'img);
+--
+--   exception
+--
+--      when Fault: others =>
+--         Trace_Exception (True, Fault);
+--         raise;
+--
+--   end Initialize;
 
    -------------------------------------------------------------------------
    overriding
@@ -108,7 +119,6 @@ package body Camera.Lib.Unit_Test is
       Log_In_Checked (Initialize_Recursed, Debug_Options or Trace_Options,
          "from " & From);
 --    Camera_Lib_Unit_Test_Options := Options'unchecked_access;
-      Ada_Lib.Options.Set_Ada_Lib_Options (Protected_Options'access);
 
       Ada_Lib.Options.Runstring.Options.Register (
          Ada_Lib.Options.Runstring.With_Parameters,
@@ -117,13 +127,14 @@ package body Camera.Lib.Unit_Test is
       Ada_Lib.Options.Runstring.Without_Parameters,
          Options_Without_Parameters);
       return Log_Out_Checked (Initialize_Recursed,
---       Options.Camera_Options.Initialize and then
-         Options.AUnit_Options.Initialize and then
+         Options.Camera_Options.Initialize and then
+--       Options.AUnit_Options.Initialize and then
 --       Options.GNOGA_Unit_Test_Options.Initialize and then
-         Options.Unit_Test.Initialize and then
+--       Options.Initialize and then
 --       Ada_Lib.Options.AUnit.Ada_Lib_Tests.Initialize and then
-         Options_Type (Options).Initialize,
-         Debug_Options or Trace_Options,  "mode " & Options.Unit_Test.Mode'img);
+         Ada_Lib.Options.Unit_Test.Ada_Lib_Unit_Test_Options_Type (
+            Options).Initialize,
+         Debug_Options or Trace_Options,  "mode " & Options.Mode'img);
    end Initialize;
 
 -- ---------------------------------------------------------------
@@ -149,17 +160,17 @@ package body Camera.Lib.Unit_Test is
 --    return Protected_Options.Camera_Options'access;
 -- end Options;
 
-   ----------------------------------------------------------------------------
-   function Options (
-      From                    : in     String :=
-                                          Standard.GNAT.Source_Info.Source_Location
-   ) return Camera_Lib_Unit_Test_Options_Constant_Class_Access is
-   ----------------------------------------------------------------------------
-
-   begin
-      Log_Here (Debug, "from " & From);
-      return Protected_Options'access;
-   end Options;
+-- ----------------------------------------------------------------------------
+-- function Options (
+--    From                    : in     String :=
+--                                        Standard.GNAT.Source_Info.Source_Location
+-- ) return Camera_Lib_Unit_Test_Options_Constant_Class_Access is
+-- ----------------------------------------------------------------------------
+--
+-- begin
+--    Log_Here (Debug, "from " & From);
+--    return Protected_Options'access;
+-- end Options;
 
    ----------------------------------------------------------------------------
    -- processes options it knows about and calls parent for others
@@ -194,9 +205,10 @@ package body Camera.Lib.Unit_Test is
             " option" & Option.Image & " handled");
       else
          return Log_Out (
-            Options.AUnit_Options.Process_Option (Iterator, Option) or else
-            Options.Unit_Test.Process_Option (Iterator, Option) or else
-            Options_Type (Options).Process_Option (Iterator, Option),
+            Options.Camera_Options.Process_Option (Iterator, Option) or else
+--          Options.Process_Option (Iterator, Option) or else
+            Ada_Lib.Options.Unit_Test.Ada_Lib_Unit_Test_Options_Type (
+               Options).Process_Option (Iterator, Option),
             Debug_Options or Trace_Options,
             "other " & Option.Image);
       end if;
@@ -213,8 +225,6 @@ package body Camera.Lib.Unit_Test is
    begin
       Log_In_Checked (Help_Recursed, Debug_Options or Trace_Options,
          "help mode " & Help_Mode'img);
-      Options.AUnit_Options.Program_Help (Help_Mode);
-      Options.Unit_Test.Program_Help (Help_Mode);
 
       case Help_Mode is
 
@@ -243,8 +253,11 @@ package body Camera.Lib.Unit_Test is
 
       end case;
 
-     Options_Type (Options).Program_Help (Help_Mode);
-     Log_Out_Checked (Help_Recursed, Debug_Options or Trace_Options);
+--    Options.AUnit_Options.Program_Help (Help_Mode);
+      Options.Camera_Options.Program_Help (Help_Mode);
+      Ada_Lib.Options.Unit_Test.Ada_Lib_Unit_Test_Options_Type (
+         Options).Program_Help (Help_Mode);
+      Log_Out_Checked (Help_Recursed, Debug_Options or Trace_Options);
 
    end Program_Help;
 
@@ -284,7 +297,7 @@ package body Camera.Lib.Unit_Test is
    ---------------------------------------------------------------
 
    begin
-      Log_In (Debug, "options class " & Tag_Name (Camera_Options'tag));
+      Log_In (Debug); --, "options class " & Tag_Name (Options'tag));
 not_implemented;
 --      if Ada_Lib.Options.Unit_Test.Camera_Lib_Unit_Test_Options_Type (Options).Mode =
 --            Ada_Lib.Options.Run_Tests then
@@ -302,7 +315,7 @@ not_implemented;
    ---------------------------------------------------------------
 
    begin
-      Log_In (Debug, "mode " & Options.Unit_Test.Mode'img);
+      Log_In (Debug, "mode " & Options.Mode'img);
       declare
          AUnit_Options           : AUnit.Options.AUnit_Options;
          Outcome                 : AUnit.Status;
@@ -312,7 +325,7 @@ not_implemented;
                                     AUnit.Test_Suites.New_Suite;
 
       begin
-         AUnit_Options.Filter := Options.Unit_Test.Filter'unchecked_access;
+         AUnit_Options.Filter := Options.Filter'unchecked_access;
 --       Test_Suite.Add_Test (Camera.Lib.Base.Test.Suite);
          Test_Suite.Add_Test (Main.Unit_Test.Suite);
          Test_Suite.Add_Test (Standard.Camera.Commands.Unit_Test.Suite);
@@ -324,7 +337,7 @@ not_implemented;
          Test_Suite.Add_Test (Widgets.Control.Unit_Test.Suite);
 
          Test_Suite.Run (AUnit_Options, Results, Outcome);
-         case Options.Unit_Test.Mode is
+         case Options.Mode is
 
             when  Ada_Lib.Options.Driver_Suites |
                   Ada_Lib.Options.List_Suites |
@@ -332,7 +345,7 @@ not_implemented;
                Ada_Lib.Unit_Test.Iterate_Suites (
                   Ada_Lib.Options.Unit_Test.Suite_Action'access,
                   Ada_Lib.Options.Unit_Test.Routine_Action'access,
-                  Options.Unit_Test.Mode);
+                  Options.Mode);
 
             when Ada_Lib.Options.Run_Tests =>
                Put_Line ("report camera test results");
@@ -407,10 +420,8 @@ not_implemented;
 
       Connection_Data            : constant Standard.Camera.Lib.Connection.Connection_Data_Access :=
                                     new Standard.Camera.Lib.Connection.Connection_Data_Type;
-      Options                    : Standard.Camera.Lib.Unit_Test.
-                                    Camera_Lib_Unit_Test_Options_Type'class
-                                       renames Standard.Camera.Lib.Unit_Test.
-                                          Options.all;
+      Options                    : Camera_Lib_Unit_Test_Options_Type'class renames
+                                       Get_Camera_Lib_Unit_Test_Read_Only_Options.all;
       State                      : Configuration.Camera.State.State_Type renames
                                     Connection_Data.State;
   begin
@@ -420,7 +431,7 @@ not_implemented;
       Ada_Lib.GNOGA.Set_Connection_Data (
          Ada_Lib.GNOGA.Connection_Data_Class_Access (Connection_Data));
 
---     if Options.If_Emulation then
+--     if Options.Camera_Options.If_Emulation then
 --        Not_Implemented;
 --      Emulator.Create;
 --      delay 0.2;     -- let emulator initialize
@@ -429,7 +440,7 @@ not_implemented;
       Ada_Lib.Unit_Test.Test_Cases.Test_Case_Type (Test).Set_Up;
 
      if Load then
-        State.Load (Options.Location, Camera_State_Path);
+        State.Load (Options.Camera_Options.Location, Camera_State_Path);
         Test.Camera_Address := State.Video_Address;
         Test.Port_Number := State.Video_Port;
 
@@ -462,10 +473,9 @@ not_implemented;
 
       Connection_Data         : constant Standard.Camera.Lib.Connection.Connection_Data_Access :=
                                  new Standard.Camera.Lib.Connection.Connection_Data_Type;
-      Options                 : Standard.Camera.Lib.Unit_Test.
-                                 Camera_Lib_Unit_Test_Options_Type'class
-                                    renames Standard.Camera.Lib.Unit_Test.
-                                       Options.all;
+      Options                 : Camera_Lib_Unit_Test_Options_Type'class
+                                    renames
+                                       Get_Camera_Lib_Unit_Test_Read_Only_Options.all;
       State                      : Configuration.Camera.State.State_Type renames
                                     Connection_Data.State;
    begin
@@ -474,13 +484,13 @@ not_implemented;
          Ada_Lib.GNOGA.Connection_Data_Class_Access (Connection_Data));
       Connection_Data.Initialize;
       State.Load (
-         Options.Location, State_Test_Path); -- need to load state 1st
+         Options.Camera_Options.Location, State_Test_Path); -- need to load state 1st
       Test.Setup.Load (State, Setup_Test_Path);
       Ada_Lib.GNOGA.Unit_Test.GNOGA_Tests_Type(Test).Set_Up;
 
          if not Test.Initialize_GNOGA then
             Main.Run (
-               Directory            => Camera.Lib.Current_Directory,
+               Directory            => Standard.Camera.Lib.Options.Current_Directory,
                Port                 => Options.GNOGA_Options.HTTP_Port,
                Verbose              => True,
                Wait_For_Completion  => False);
@@ -573,7 +583,7 @@ not_implemented;
                Debug_Options := True;
                Main.Unit_Test.Debug := True;
                Options.Main_Debug := True;
-               Options.Unit_Test.Debug := True;
+               Options.Debug := True;
                Widgets.Adjust.Unit_Test.Debug := True;
                Widgets.Control.Unit_Test.Debug := True;
                Widgets.Configured.Unit_Test.Debug := True;
@@ -628,10 +638,10 @@ begin
    if Trace_Tests then
       Debug := Trace_Tests;
    end if;
-Debug := True;
+--Debug := True;
 --Debug_Options := True;
 --Elaborate := True;
-Trace_Options := True;
+--Trace_Options := True;
 -- Include_Program := True;
    Log_Here (Debug or Trace_Options);
 -- Options := Protected_Options'access;

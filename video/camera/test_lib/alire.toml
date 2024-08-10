@@ -1,4 +1,4 @@
-name = "test_lib"
+name = "camera_test_lib"
 description = "camera unit test library"
 version = "0.1.0-dev"
 
@@ -13,10 +13,16 @@ camera_lib = "*"
 camera_lib  = { path = "../lib" }
 
 [[depends-on]]
-ada_lib = "*"
+ada_lib_gnoga = "*"
 
 [[pins]]
-ada_lib  = { path = "../../../ada_lib" }
+ada_lib_gnoga  = { path = "../../../ada_lib/ada_lib_gnoga" }
+
+[[depends-on]]
+ada_lib_tests = "*"
+
+[[pins]]
+ada_lib_tests  = { path = "../../../ada_lib/ada_lib_tests" }
 
 [[depends-on]]
 aunit = "*"

@@ -1,11 +1,11 @@
 camera aunit
 camera_aunit
+option: 'h' not defined
 
 
 
 camera_aunit command line options:
     -a <trace options>             : Ada_Lib library trace options   (Ada_Lib)
-    -A <trace options>             : AUnit library traces            (AUnit library)
     -c <directory>                 : current directory               (Camera Lib)
     -e <routine>                   : test routine.                   (test_ada_lib)
     -E                             : simulate camera                 (Camera Lib)
@@ -34,32 +34,6 @@ camera_aunit command line options:
     -@S                            : report random seed              (test_ada_lib)
     -@t                            : include task in trace           (Ada_Lib)
     -@x                            : exclude time in trace           (Ada_Lib)
-
-AUnit.Ada_Lib.Options library trace options (-A)
-      a               all
-      A               AUnit.Debug
-      l               AUnit.Ada_Lib.Debug
-      o               AUnit options
-
-Ada_Lib.Options.GNOGA library trace options (-G)
-      a               all
-      m               GNOGA.Ada_Lib
-      o               GNOGA options
-
-Ada_Lib unit test library trace options (-U)
-      a               all
-      A               all unit tests
-      g               Ada_Lib.GNOGA.Unit_Test.Debug
-      l               Ada_Lib.Unit_Test.Debug Library
-      p               test programs
-      r               Runtime_Options
-      t               Ada_Lib.Test.Debug
-      T               Ada_Lib.Trace.Debug_Trace
-
-Enable suites disabled by default (-S)
-      a               enable all
-      d               database server
-      t               text
 
 Camera Lib Unit Test trace options (T)
       a               all
@@ -99,6 +73,11 @@ Video Lib trace options (-V)
       l               library debug
       o               options debug
       s               Trace simulator
+Ada_Lib.Options.GNOGA library trace options (-G)
+      a               all
+      m               GNOGA.Ada_Lib
+      o               GNOGA options
+
 CAC ada_lib trace library options (-a)
       a               all
       b               database subscribe
@@ -106,7 +85,6 @@ CAC ada_lib trace library options (-a)
       C               Ada_Lib.Configuration Trace
       e               Event
       g               GNOGA.Debug
-      G               Ada_Lib.GNOGA.Debug
       h               Help
       i               interrupt
       I               Ada_Lib.interface
@@ -130,3 +108,18 @@ CAC ada_lib trace library options (-a)
       @e              Template Evaluate
       @E              Template Expand
       @l              Template Load
+Ada_Lib unit test library trace options (-U)
+      a               all
+      A               all unit tests
+      g               Ada_Lib.GNOGA.Unit_Test.Debug
+      l               Ada_Lib.Unit_Test.Debug Library
+      p               test programs
+      r               Runtime_Options
+      t               Ada_Lib.Test.Debug
+      T               Ada_Lib.Trace.Debug_Trace
+
+Enable suites disabled by default (-S)
+      a               enable all
+      d               database server
+      t               text
+

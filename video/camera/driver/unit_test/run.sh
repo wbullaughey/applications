@@ -1,5 +1,5 @@
 #!/bin/bash
-export BIN_DIRECTORY=../../../camera/unit_test/bin
+export BIN_DIRECTORY=bin
 export APPLICATION=./driver_unit_test
 export CURRENT_DIRECTORY=`pwd`
 export OUTPUT="$CURRENT_DIRECTORY/list-driver_unit.txt"

@@ -1,6 +1,6 @@
 with Ada.Exceptions;
 with Ada_Lib.GNOGA;
-with Ada_Lib.Options;
+--with Ada_Lib.Options;
 with Ada_Lib.Strings;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
 with Ada_Lib.Unit_Test.Test_Cases;
@@ -45,7 +45,7 @@ package body Configuration.Camera.State.Unit_Tests is
 
    procedure Test_Load (
       Test                       : in out AUnit.Test_Cases.Test_Case'class
-   ) with Pre => Ada_Lib.Options.Get_Read_Only_Options /= Null;
+   ) with Pre => Ada_Lib.Options.Get_Ada_Lib_Read_Only_Options /= Null;
 
    procedure Test_Values (
       Test                       : in out AUnit.Test_Cases.Test_Case'class
@@ -96,7 +96,6 @@ package body Configuration.Camera.State.Unit_Tests is
    ---------------------------------------------------------------
 
    begin
-log_here;
       Log_In (Debug or Trace_Set_Up);
       Ada_Lib.GNOGA.Set_Connection_Data (new Connection_Data_Type);
       Standard.Camera.Lib.Unit_Test.Camera_Test_Type (Test).Set_Up ;
@@ -117,11 +116,11 @@ log_here;
       Options                    : Standard.Camera.Lib.Unit_Test.
                                     Camera_Lib_Unit_Test_Options_Type'class
                                        renames Standard.Camera.Lib.Unit_Test.
-                                          Get_Options.all;
+                                          Get_Camera_Lib_Unit_Test_Modifiable_Options.all;
       Test_Suite                 : constant AUnit.Test_Suites.Access_Test_Suite
                                     := new AUnit.Test_Suites.Test_Suite;
       Tests                      : constant Configuration_Tests_Access :=
-                                    new Configuration_Tests_Type (Options.Brand);
+                                    new Configuration_Tests_Type (Options.Camera_Options.Brand);
 
    begin
       Log_In (Debug, Quote ("suite", Suite_Name));
@@ -156,12 +155,12 @@ log_here;
       Options                    : Standard.Camera.Lib.Unit_Test.
                                     Camera_Lib_Unit_Test_Options_Type'class
                                        renames Standard.Camera.Lib.Unit_Test.
-                                          Get_Options.all;
+                                          Get_Camera_Lib_Unit_Test_Modifiable_Options.all;
       State                      : Configuration.Camera.State.State_Type renames
                                     Connection_Data.State;
    begin
       Log_In (Debug);
-      State.Load (Options.Location, Test_State);
+      State.Load (Options.Camera_Options.Location, Test_State);
       Log_Out (Debug);
 
    exception
@@ -231,12 +230,12 @@ log_here;
       Options                    : Standard.Camera.Lib.Unit_Test.
                                     Camera_Lib_Unit_Test_Options_Type'class
                                        renames Standard.Camera.Lib.Unit_Test.
-                                          Get_Options.all;
+                                          Get_Camera_Lib_Unit_Test_Modifiable_Options.all;
       State                      : Configuration.Camera.State.State_Type
                                     renames Connection_Data.State;
    begin
-      Log_In (Debug, "location " & Options.Location'img);
-      State.Load (Options.Location, Test_State);
+      Log_In (Debug, "location " & Options.Camera_Options.Location'img);
+      State.Load (Options.Camera_Options.Location, Test_State);
       Log_Here (Debug, "set " & State.Loaded'img & " Number_Columns " &
          " address " & Image (State.Number_Columns'address) &
          " bits " & State.Number_Columns'size'img);

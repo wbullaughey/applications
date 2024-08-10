@@ -29,8 +29,8 @@ package Camera.Lib is
       Option_Prefix              : in     Character := '-';
       Skip                       : in     Natural := 0);
 
-   type Options_Type is limited new Video.Lib.Options_Type with
-                                    record
+   type Camera_lib_Options_Type is limited new Video.Lib.Video_Lib_Options_Type
+                                    with record
       Brand                      : Brand_Type := PTZ_Optics_Camera;
       Debug                      : Boolean := False;
       Directory                  : ADA_LIB.Strings.Unlimited.String_Type;
@@ -43,34 +43,38 @@ package Camera.Lib is
       Template                   : Ada_Lib.Strings.Unlimited.String_Type;
    end record;
 
-   type Options_Access           is access all Options_Type;
-   type Options_Class_Access     is access all Options_Type'class;
-   type Options_Constant_Class_Access
-                                 is access constant Options_Type'class;
+   type Camera_Lib_Options_Access
+                                 is access all Camera_lib_Options_Type;
+   type Camera_Lib_Options_Class_Access
+                                 is access all Camera_lib_Options_Type'class;
+   type Camera_Lib_Options_Constant_Class_Access
+                                 is access constant
+                                    Camera_lib_Options_Type'class;
 
    function Check_Options (
       From                       : in     String := Ada_Lib.Trace.Here
    ) return Boolean;
 
-   function Current_Directory -- set by runstring option 'c' else null
-   return String
-   with Pre => Ada_Lib.Options.Have_Options;
-
-   function Get_Modifiable_Options return Options_Class_Access
+   function Get_Modifiable_Camera_Lib_Options (
+      From                       : in  String := Ada_Lib.Trace.Here
+   ) return Camera_Lib_Options_Class_Access
    with Pre => Check_Options;
-   function Get_Options return Options_Constant_Class_Access
+
+   function Get_Read_Only_Camera_Lib_Options (
+      From                       : in  String := Ada_Lib.Trace.Here
+   ) return Camera_Lib_Options_Constant_Class_Access
    with Pre => Check_Options;
 
    overriding
    function Initialize (
-      Options               : in out Options_Type;
+      Options               : in out Camera_lib_Options_Type;
       From                        : in     String := Ada_Lib.Trace.Here
    ) return Boolean
    with pre => Options.Verify_Preinitialize;
 
    overriding
    function Process_Option (  -- process one option
-      Options              : in out Options_Type;
+      Options              : in out Camera_lib_Options_Type;
       Iterator             : in out Ada_Lib.Options.
                                        Command_Line_Iterator_Interface'class;
       Option               : in     Ada_Lib.Options.Option_Type'class
@@ -79,7 +83,7 @@ package Camera.Lib is
 
    overriding
    procedure Trace_Parse (
-      Options                    : in out Options_Type;
+      Options                    : in out Camera_lib_Options_Type;
       Iterator             : in out Ada_Lib.Options.
                                        Command_Line_Iterator_Interface'class);
 
@@ -94,15 +98,7 @@ package Camera.Lib is
       Camera_Address             : in     Address_Type;
       Port_Number                : in     Port_Type);
 
-   function Camera_Options
-   return Options_Constant_Class_Access;
-
    function Hex is new Hex_IO.Modular_Hex (Value_Type);
-
--- function Options (
---    From                       : in     String :=
---                                           Standard.GNAT.Source_Info.Source_Location
--- ) return Options_Constant_Class_Access;
 
    Debug                         : aliased Boolean := False;
    Debug_Options                 : aliased Boolean := False;
@@ -114,7 +110,8 @@ private
 
    overriding
    procedure Program_Help (
-      Options                    : in     Options_Type;  -- only used for dispatch
+      Options                    : in     Camera_lib_Options_Type;
+                                             -- only used for dispatch
       Help_Mode                  : in     ADA_LIB.Options.Help_Mode_Type);
 
 end Camera.Lib;

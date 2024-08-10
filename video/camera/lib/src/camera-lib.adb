@@ -38,16 +38,6 @@ package body Camera.Lib is
    Recursed                      : Boolean := False;
 
    -------------------------------------------------------------------------
-   function Camera_Options
-   return Options_Constant_Class_Access is
-   -------------------------------------------------------------------------
-
-   begin
-      return Options_Constant_Class_Access (
-         Ada_Lib.Options.Get_Modifiable_Options);
-   end Camera_Options;
-
-   -------------------------------------------------------------------------
    function Check_Options (
       From                       : in     String := Ada_Lib.Trace.Here
    ) return Boolean is
@@ -59,34 +49,31 @@ package body Camera.Lib is
    end Check_Options;
 
    -------------------------------------------------------------------------
-   function Current_Directory  -- set by runstring option 'c' else null
-   return String is
+   function Get_Modifiable_Camera_Lib_Options (
+      From                       : in  String := Ada_Lib.Trace.Here
+   ) return Camera_Lib_Options_Class_Access is
    -------------------------------------------------------------------------
 
    begin
-      return Camera_Options.Directory.Coerce;
-   end Current_Directory;
+      return Camera_Lib_Options_Class_Access (
+         Ada_Lib.Options.Get_Ada_Lib_Modifiable_Options (From));
+   end Get_Modifiable_Camera_Lib_Options;
 
    -------------------------------------------------------------------------
-   function Get_Modifiable_Options return Options_Class_Access is
-   -------------------------------------------------------------------------
-
-   begin
-      return Options_Class_Access (Ada_Lib.Options.Get_Modifiable_Options);
-   end Get_Modifiable_Options;
-
-   -------------------------------------------------------------------------
-   function Get_Options return Options_Constant_Class_Access is
+   function Get_Read_Only_Camera_Lib_Options (
+      From                       : in  String := Ada_Lib.Trace.Here
+   ) return Camera_Lib_Options_Constant_Class_Access is
    -------------------------------------------------------------------------
 
    begin
-      return Camera_Options;
-   end Get_Options;
+      return Camera_Lib_Options_Constant_Class_Access (
+         Ada_Lib.Options.Get_Ada_Lib_Read_Only_Options (From));
+   end Get_Read_Only_Camera_Lib_Options;
 
    -------------------------------------------------------------------------
    overriding
    function Initialize (
-      Options               : in out Options_Type;
+      Options               : in out Camera_lib_Options_Type;
       From                  : in     String := Ada_Lib.Trace.Here
    ) return Boolean is
    -------------------------------------------------------------------------
@@ -106,7 +93,7 @@ package body Camera.Lib is
          Options_Without_Parameters);
 
       return Log_Out_Checked (Recursed,
-         Video.Lib.Options_Type (Options).Initialize,
+         Video.Lib.Video_Lib_Options_Type (Options).Initialize,
          Debug_Options or Trace_Options);
    end Initialize;
 
@@ -144,12 +131,12 @@ package body Camera.Lib is
       exception
          when Fault: Ada_Lib.Options.Failed =>
             Trace_Exception (Debug_Options or Trace_Options, Fault);
-            Ada_Lib.Options.Get_Read_Only_Options.Display_Help (
+            Ada_Lib.Options.Get_Ada_Lib_Read_Only_Options.Display_Help (
                Ada.Exceptions.Exception_Message (Fault), True);
 
          when Fault: others =>
             Trace_Exception (Debug_Options or Trace_Options, Fault);
-            Ada_Lib.Options.Get_Read_Only_Options.Display_Help (Ada.Exceptions.Exception_Message (Fault), True);
+            Ada_Lib.Options.Get_Ada_Lib_Read_Only_Options.Display_Help (Ada.Exceptions.Exception_Message (Fault), True);
       end;
 
       Log_Out (Debug_Options or Trace_Options);
@@ -191,23 +178,23 @@ package body Camera.Lib is
 -- ----------------------------------------------------------------------------
 --
 -- begin
---    if Ada_Lib.Options.Get_Read_Only_Options = Null then
---       raise Failed with "Get_Read_Only_Options not set called from " & From;
+--    if Ada_Lib.Options.Get_Ada_Lib_Read_Only_Options = Null then
+--       raise Failed with "Get_Ada_Lib_Read_Only_Options not set called from " & From;
 --    end if;
 --
 --    Log_Here (Debug, "from " & From &
---       " Get_Read_Only_Options tag " & Tag_Name (
---          Ada_Lib.Options.Get_Read_Only_Options.all'tag));
+--       " Get_Ada_Lib_Read_Only_Options tag " & Tag_Name (
+--          Ada_Lib.Options.Get_Ada_Lib_Read_Only_Options.all'tag));
 --
 --    return Options_Constant_Class_Access (
---       Ada_Lib.Options.Get_Read_Only_Options);
+--       Ada_Lib.Options.Get_Ada_Lib_Read_Only_Options);
 -- end Options;
 
    ----------------------------------------------------------------------------
    -- processes options it knows about and calls parent for others
    overriding
    function Process_Option (
-      Options           : in out Options_Type;
+      Options           : in out Camera_lib_Options_Type;
       Iterator          : in out Ada_Lib.Options.
                                     Command_Line_Iterator_Interface'class;
       Option            : in     Ada_Lib.Options.Option_Type'class
@@ -255,7 +242,7 @@ package body Camera.Lib is
             Option.Image & " handled");
       else
          return Log_Out (
-            Video.Lib.Options_Type (Options).Process_Option (Iterator, Option),
+            Video.Lib.Video_Lib_Options_Type (Options).Process_Option (Iterator, Option),
                Trace_Options or Debug_Options, "other " & Option.Image);
       end if;
 
@@ -269,7 +256,7 @@ package body Camera.Lib is
    ----------------------------------------------------------------------------
    overriding
    procedure Program_Help (
-      Options                    : in     Options_Type;  -- only used for dispatch
+      Options                    : in     Camera_lib_Options_Type;  -- only used for dispatch
       Help_Mode                  : in     ADA_LIB.Options.Help_Mode_Type) is
    ----------------------------------------------------------------------------
 
@@ -313,7 +300,7 @@ package body Camera.Lib is
 
       end case;
 
-      Video.Lib.Options_Type (Options).Program_Help (Help_Mode);
+      Video.Lib.Video_Lib_Options_Type (Options).Program_Help (Help_Mode);
       Log_Out (Debug_Options or Trace_Options);
    end Program_Help;
 
@@ -332,7 +319,7 @@ package body Camera.Lib is
    ----------------------------------------------------------------------------
    overriding
    procedure Trace_Parse (
-      Options                    : in out Options_Type;
+      Options                    : in out Camera_lib_Options_Type;
       Iterator          : in out Ada_Lib.Options.
                                     Command_Line_Iterator_Interface'class) is
    ----------------------------------------------------------------------------

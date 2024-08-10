@@ -13,14 +13,23 @@ versions = "*"
 lockfiled = true
 path = "../../../ada_lib"
 [[solution.state]]
-crate = "ada_lib_testing"
+crate = "ada_lib_gnoga"
 fulfilment = "linked"
 pinned = false
 transitivity = "direct"
-versions = "*"
+versions = "~0.1.0-dev"
 [solution.state.link]
 lockfiled = true
-path = "../../../ada_lib/ada_lib_testing"
+path = "../../../ada_lib/ada_lib_gnoga"
+[[solution.state]]
+crate = "ada_lib_tests"
+fulfilment = "linked"
+pinned = false
+transitivity = "direct"
+versions = "~0.1.0-dev"
+[solution.state.link]
+lockfiled = true
+path = "../../../ada_lib/ada_lib_tests"
 [[solution.state]]
 crate = "applications"
 fulfilment = "linked"
@@ -48,6 +57,15 @@ versions = "*"
 [solution.state.link]
 lockfiled = true
 path = "../lib"
+[[solution.state]]
+crate = "camera_test_lib"
+fulfilment = "linked"
+pinned = false
+transitivity = "direct"
+versions = "*"
+[solution.state.link]
+lockfiled = true
+path = "../test_lib"
 [[solution.state]]
 crate = "driver_lib"
 fulfilment = "linked"
@@ -101,7 +119,7 @@ fulfilment = "solved"
 pinned = false
 shared = false
 transitivity = "indirect"
-versions = "*"
+versions = "^23.0.0"
 [solution.state.release]
 authors = [
 "AdaCore",
@@ -171,7 +189,7 @@ crate = "gnoga"
 fulfilment = "linked"
 pinned = false
 transitivity = "direct"
-versions = "*"
+versions = "~0.1.0-dev"
 [solution.state.link]
 lockfiled = true
 path = "../../../vendor/github.com/gnoga"
@@ -226,15 +244,6 @@ url = "https://github.com/AdaCore/gprbuild/archive/v23.0.0/gprbuild-23.0.0.zip"
 [[solution.state.release.depends-on]]
 gnat = "/=2020"
 xmlada = "~23.0.0"
-[[solution.state]]
-crate = "test_lib"
-fulfilment = "linked"
-pinned = false
-transitivity = "direct"
-versions = "*"
-[solution.state.link]
-lockfiled = true
-path = "../test_lib"
 [[solution.state]]
 crate = "video_lib"
 fulfilment = "linked"

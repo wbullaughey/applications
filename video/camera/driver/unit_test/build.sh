@@ -1,2 +1,2 @@
 source ~/.zshrc
-alr build -- -v -s -k -gnatE # --create-map-file
+alr -v build -- -j10 -s -k -gnatE

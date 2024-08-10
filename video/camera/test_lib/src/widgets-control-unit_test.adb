@@ -114,12 +114,12 @@ package body Widgets.Control.Unit_Test is
       Options                    : Standard.Camera.Lib.Unit_Test.
                                     Camera_Lib_Unit_Test_Options_Type'class
                                        renames Standard.Camera.Lib.Unit_Test.
-                                          Get_Options.all;
+                                          Get_Camera_Lib_Unit_Test_Modifiable_Options.all;
       State                      : Configuration.Camera.State.State_Type renames
                                     Connection_Data.State;
    begin
       Log_In (Debug or Trace_Set_Up);
-      State.Load (Options.Location, State_Test_Path);
+      State.Load (Options.Camera_Options.Location, State_Test_Path);
       -- need to load state 1st
       Test.Setup.Load (State, Setup_Test_Path);
       Camera.Lib.Unit_Test.Camera_Window_Test_Type (Test).Set_Up;
@@ -146,11 +146,11 @@ package body Widgets.Control.Unit_Test is
       Options                    : Standard.Camera.Lib.Unit_Test.
                                     Camera_Lib_Unit_Test_Options_Type'class
                                        renames Standard.Camera.Lib.Unit_Test.
-                                          Get_Options.all;
+                                          Get_Camera_Lib_Unit_Test_Modifiable_Options.all;
       Test_Suite                 : constant AUnit.Test_Suites.Access_Test_Suite :=
                                     new AUnit.Test_Suites.Test_Suite;
       Tests                      : constant Test_Access := new Test_Type (
-                                    Brand    => Options.Brand,
+                                    Brand    => Options.Camera_Options.Brand,
                                     Initialize_GNOGA  => True);
 
    begin
@@ -182,7 +182,7 @@ package body Widgets.Control.Unit_Test is
    begin
       Log_In (Debug);
 --    if not Ada_Lib.Options.Actual.Program_Options_Type (
---          Ada_Lib.Options.Get_Read_Only_Options.all).Test_Driver then
+--          Ada_Lib.Options.Get_Ada_Lib_Read_Only_Options.all).Test_Driver then
          Log_Here (Debug);
          declare
 --          Local_Test           : Test_Type'class renames

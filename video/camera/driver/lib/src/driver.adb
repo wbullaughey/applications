@@ -8,6 +8,7 @@ with Ada_Lib.OS.Run;
 with Ada_Lib.Parser;
 with Ada_Lib.Options.Runstring;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
+with Camera.Lib.Options;
 with Command_Name;
 
 package body Driver is
@@ -60,20 +61,19 @@ package body Driver is
    Parameters                    : constant Parameters_Type := (
                                     False    => (
                                        With_Parameters      =>
-                                          Ada_Lib.Options.Actual.Create_Options (Camera_Option &
+                                          Ada_Lib.Options.Create_Options (Camera_Option &
                                                 Directory_Option & "Rstu"),
                                        Without_Parameters   =>
-                                          Ada_Lib.Options.Actual.Create_Options ("lr")
+                                          Ada_Lib.Options.Create_Options ("lr")
                                     ),
                                     True    => (
                                        With_Parameters      =>
-                                          Ada_Lib.Options.Actual.Create_Options (Camera_Option &
+                                          Ada_Lib.Options.Create_Options (Camera_Option &
                                                 Directory_Option & "Rtu"),
                                        Without_Parameters   =>
-                                          Ada_Lib.Options.Actual.Create_Options ("l")
+                                          Ada_Lib.Options.Create_Options ("l")
                                     )
                                  );
-   Protected_Options             : Driver_Options_Class_Access := Null;
    Queue                         : Queue_Type;
 
    ----------------------------------------------------------------
@@ -97,7 +97,7 @@ package body Driver is
 --    use Ada.Strings.Fixed;
 
       Current_Directory          : constant String :=
-                                    Protected_Options.Camera_Directory.Coerce;
+                                    Camera.Lib.Options.Current_Directory;
       Camera_Program             : constant String :=
                                     Current_Directory & "/bin/camera_aunit";
       Scratch_File               : Ada_Lib.OS.File_Descriptor;
@@ -186,7 +186,7 @@ package body Driver is
    end Execute;
 
    ----------------------------------------------------------------
-   function Get_Modifiable_Options (
+   function Get_Driver_Modifiable_Options (
       From                       : in  String := Ada_Lib.Trace.Here
    ) return Driver_Options_Class_Access is
    ----------------------------------------------------------------
@@ -194,11 +194,23 @@ package body Driver is
    begin
       Log_Here (Debug_Options or Trace_Options, "from " & From);
       return Driver_Options_Class_Access (
-         Ada_Lib.Options.Get_Modifiable_Options);
-   end Get_Modifiable_Options;
+         Ada_Lib.Options.Get_Ada_Lib_Modifiable_Options);
+   end Get_Driver_Modifiable_Options;
 
    ---------------------------------------------------------------
+   function Get_Driver_Read_Only_Options (
+      From                       : in  String := Ada_Lib.Trace.Here
+   )
+   return Driver_Options_Constant_Class_Access is
+   ---------------------------------------------------------------
 
+   begin
+      Log_Here (Debug_Options or Trace_Options, "from " & From);
+      return Driver_Options_Constant_Class_Access (
+         Ada_Lib.Options.Get_Ada_Lib_Modifiable_Options);
+   end Get_Driver_Read_Only_Options;
+
+   ---------------------------------------------------------------
    procedure Get_Tests is
    ---------------------------------------------------------------
 
@@ -226,7 +238,6 @@ package body Driver is
             Selected_Parameters.Without_Parameters.all) &
          " Initialized " & Options.Initialized'img &
          " from " & From);
-      Protected_Options := Options'unchecked_access;
       Ada_Lib.Options.Runstring.Options.Register (
          Ada_Lib.Options.Runstring.With_Parameters,
             Selected_Parameters.With_Parameters.all);
@@ -262,14 +273,16 @@ package body Driver is
 
       use Ada_Lib.Parser;
 
-      Parser                     : Iterator_Type := Initialize (
-                                    Seperators  => ": ",
-                                    Value       => Line);
+      Options        : Driver_Options_Type'class renames
+                           Get_Driver_Read_Only_Options.all;
+      Parser         : Iterator_Type := Initialize (
+                        Seperators  => ": ",
+                        Value       => Line);
    begin
-      Log_In (Debug, (if Protected_Options.List_Output then "listing"
+      Log_In (Debug, (if Options.List_Output then "listing"
                       else Quote ("line", Line)));
 
-      if Protected_Options.List_Output then
+      if Options.List_Output then
          Put_Line ("Camera:" & Line);
       end if;
 
@@ -317,8 +330,8 @@ package body Driver is
    ---------------------------------------------------------------
    overriding
    function Process_Option (  -- process one option
-     Options                    : in out Driver_Options_Type;
-     Iterator                   : in out Ada_Lib.Options.Command_Line_Iterator_Interface'class;
+      Options                    : in out Driver_Options_Type;
+      Iterator                   : in out Ada_Lib.Options.Command_Line_Iterator_Interface'class;
       Option                     : in     Ada_Lib.Options.Option_Type'class
    ) return Boolean is
    ---------------------------------------------------------------
@@ -365,13 +378,13 @@ package body Driver is
 
                              when 'a' =>
                                 Debug_Options := True;
-                                Protected_Options.Main_Debug := True;
+                                Options.Main_Debug := True;
 
                              when 'o' =>
                                 Debug_Options := True;
 
                              when 'p' =>    -- program trace
-                                Protected_Options.Main_Debug := True;
+                                Options.Main_Debug := True;
 
                              when 't' =>
                                 Debug := True;
@@ -396,12 +409,12 @@ package body Driver is
                         Log_Here (Debug_Options or Trace_Options,
                            Quote (" Argument", Argument));
 
-                        Protected_Options.Camera_Options :=
-                           Protected_Options.Camera_Options & Argument (
+                        Options.Camera_Options :=
+                           Options.Camera_Options & Argument (
                               Argument'first + 2 .. Argument'last);
 
                         Log_Here (Debug_Options or Trace_Options, Quote ("options",
-                           Protected_Options.Camera_Options));
+                           Options.Camera_Options));
                      end;
 
                  when others =>
@@ -536,20 +549,22 @@ package body Driver is
    procedure Queue_Tests is
    ----------------------------------------------------------------------------
 
+      Options        : Driver_Options_Type'class renames
+                        Get_Driver_Read_Only_Options.all;
    begin
-      Log_In (Debug, "testing " & Protected_Options.Testing'img &
-         " Protected_Options tag " & Tag_Name (Protected_Options.all'tag));
+      Log_In (Debug, "testing " & Options.Testing'img &
+         " Options tag " & Tag_Name (Options'tag));
 
---    Quote ("suite", Protected_Options.Suite) & Quote (" routine",
---       Protected_Options.Routine));
+--    Quote ("suite", Options.Suite) & Quote (" routine",
+--       Options.Routine));
 
-      if Protected_Options.Routine.Length = 0 then -- need list of suites and routines
+      if Options.Routine.Length = 0 then -- need list of suites and routines
          Get_Tests;
       else
-         if Protected_Options.Suite.Length = 0 then
+         if Options.Suite.Length = 0 then
             raise Failed with "no suite";
          else
-            Push (Protected_Options.Suite.Coerce, Protected_Options.Routine.Coerce);
+            Push (Options.Suite.Coerce, Options.Routine.Coerce);
          end if;
       end if;
       Log_Out (Debug);
@@ -559,9 +574,11 @@ package body Driver is
    procedure Run_Selection is
    ----------------------------------------------------------------------------
 
+      Options        : Driver_Options_Type'class renames
+                        Get_Driver_Read_Only_Options.all;
    begin
-      Log_In (Debug, Quote ("suite", Protected_Options.Suite) &
-         Quote (" Camera_Options", Protected_Options.Camera_Options));
+      Log_In (Debug, Quote ("suite", Options.Suite) &
+         Quote (" Camera_Options", Options.Camera_Options));
 
       for Element of Queue loop
          Log_Here (Debug, Quote ("suite", Element.Suite) &
@@ -569,37 +586,28 @@ package body Driver is
 --       if Element.Suite.Length = 0 or else  -- test all suites
 --             Suite = Element.Suite then
             declare
-               Options           : constant String :=
-                                    "-c " & Protected_Options.
+               Camera_Options    : constant String :=
+                                    "-c " & Options.
                                              Camera_Directory.Coerce &
-                                    (if Protected_Options.Remote_Camera then
+                                    (if Options.Remote_Camera then
                                        " -r "
                                     else
                                        "") &
                                     " -s " & Element.Suite.Coerce &
                                     " -e " & Element.Routine.Coerce &
-                                    " " & Protected_Options.Camera_Options.Coerce;
+                                    " " & Options.Camera_Options.Coerce;
             begin
-               Log_Here (Debug, Quote ("run string", Options));
+               Log_Here (Debug, Quote ("run string", Camera_Options));
 
                Put_Line (Quote ("run suite", Element.Suite) &
                   Quote (" routine", Element.Routine) & " " & Here);
 
-               Execute (Options, Process_Line'access);
+               Execute (Camera_Options, Process_Line'access);
             end;
 --       end if;
       end loop;
       Log_Out (Debug);
    end Run_Selection;
-
-   ----------------------------------------------------------------------------
-   procedure Set_Protected_Options (
-      Options                    : in Driver_Options_Class_Access) is
-   ----------------------------------------------------------------------------
-
-   begin
-      Protected_Options := Options;
-   end Set_Protected_Options;
 
    ----------------------------------------------------------------------------
    overriding

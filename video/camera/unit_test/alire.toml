@@ -9,12 +9,6 @@ maintainers-logins = ["wbullaughey"]
 executables = ["camera_aunit"]
 
 [[depends-on]]
-camera_lib = "*"
-
-[[pins]]
-camera_lib  = { path = "../lib" }
-
-[[depends-on]]
 camera_lib_unit_test = "*"
 
 [[pins]]
@@ -33,28 +27,16 @@ video_lib_unit_test = "*"
 video_lib_unit_test  = { path = "../../lib/unit_test" }
 
 [[depends-on]]
-test_lib = "*"
+camera_test_lib = "*"
 
 [[pins]]
-test_lib  = { path = "../test_lib" }
-
-[[depends-on]]
-ada_lib = "*"
+camera_test_lib  = { path = "../test_lib" }
 
 [[depends-on]]
 gpr = "*"
 
 [[pins]]
 gpr  = { path =  "../../../vendor/github.com/gpr" }
-
-[[pins]]
-ada_lib  = { path = "../../../ada_lib" }
-
-[[depends-on]]
-aunit = "*"
-
-[[pins]]
-aunit  = { path = "../../../aunit" }
 
 [[depends-on]]
 gnoga = "*"
@@ -69,4 +51,5 @@ applications = "*"
 applications  = { path = "../../.." }
 
 
-
+[[depends-on]]
+gnatcoll = "*"

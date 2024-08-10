@@ -1,9 +1,9 @@
 with Ada_Lib.Unit_Test.Test_Cases;
 with Ada_Lib.GNOGA.Unit_Test; -- .Base;
-with Ada_Lib.Options.GNOGA;
+--with Ada_Lib.Options.GNOGA;
 with Ada_Lib.Options.Unit_Test;
 with Ada_Lib.Trace;
-with AUnit.Ada_Lib.Options;
+--with AUnit.Ada_Lib.Options;
 with AUnit.Options;
 with AUnit.Simple_Test_Cases;
 with AUnit.Test_Results;
@@ -87,10 +87,11 @@ package Camera.Lib.Unit_Test is
 
    -- allocated options for unit test of camera library
    type Camera_Lib_Unit_Test_Options_Type
-         is new Ada_Lib_Unit_Test_Options_Type (False) with record
-      AUnit_Options              : AUnit.Ada_Lib.Options.AUnit_Options_Type;
---    Camera_Options             : aliased Standard.Camera.Lib.Options_Type;
-      GNOGA_Options              : Ada_Lib.Options.GNOGA.GNOGA_Options_Type;
+         is new Ada_Lib.Options.Unit_Test.Ada_Lib_Unit_Test_Options_Type (
+            False) with record
+--    AUnit_Options              : AUnit.Ada_Lib.Options.AUnit_Options_Type;
+      Camera_Options             : aliased Standard.Camera.Lib.Camera_Lib_Options_Type;
+--    GNOGA_Options              : Ada_Lib.Options.GNOGA.GNOGA_Options_Type;
 --    GNOGA_Unit_Test_Options    : Ada_Lib.GNOGA.Unit_Test.
 --                                  GNOGA_Unit_Test_Options_Type;F
       Main_Debug                 : Boolean := False;
@@ -105,12 +106,16 @@ package Camera.Lib.Unit_Test is
    subtype Runtime_Iterator_Type is Ada_Lib.Command_Line_Iterator.
                                     Abstract_Package.Abstract_Iterator_Type;
 
-   function Get_Options (
+   function Get_Camera_Lib_Unit_Test_Modifiable_Options (
+      From              : in     String := GNAT.Source_Info.Source_Location
+   ) return Camera_Lib_Unit_Test_Options_Class_Access;
+
+   function Get_Camera_Lib_Unit_Test_Read_Only_Options (
       From              : in     String := GNAT.Source_Info.Source_Location
    ) return Camera_Lib_Unit_Test_Options_Constant_Class_Access;
 
-   function Initialize
-   return Boolean;
+-- function Initialize
+-- return Boolean;
 
    overriding
    function Initialize (

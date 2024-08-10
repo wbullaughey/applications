@@ -1,4 +1,5 @@
 with Ada_Lib.GNOGA;
+with Ada_Lib.Options;
 with ADA_LIB.Strings.Unlimited;
 with Ada_Lib.Trace;
 with Configuration.State;
@@ -44,7 +45,8 @@ package Configuration.Camera.State is
       From                       : in     String := Ada_Lib.Trace.Here);
 
    function File_Path
-   return String;
+   return String
+   with Pre => Ada_Lib.Options.Have_Options;
 
 -- function Global_State_Is_Set
 -- return Boolean;

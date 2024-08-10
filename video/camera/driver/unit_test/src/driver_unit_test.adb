@@ -1,7 +1,7 @@
 with Ada.Text_IO; use Ada.Text_IO;
---with Ada_Lib.Options;
+with Ada_Lib.Options;
 with Ada_Lib.OS;
-with Ada_lib.Timer;
+--with Ada_lib.Timer;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
 with Ada_Lib.Trace_Tasks;
 with Command_Name;
@@ -9,9 +9,15 @@ with Driver.Unit_Test;
 
 procedure Driver_Unit_Test is
 
+   Options              : aliased Driver.Unit_Test.Driver_Unit_Test_Options_Type;
+   Debug                : Boolean renames Options.Driver_Options.Main_Debug;
 
 begin
-   if not Driver.Unit_Test.Initialize then
+   Ada_Lib.Options.Set_Ada_Lib_Options (Options'unchecked_access);
+
+   Options.Driver_Options.Camera_Directory.Construct ("../../unit_test");
+
+   if not Options.Initialize then
       Put_Line ("Options Initialization failed");
       Ada_Lib.OS.Immediate_Halt (Ada_Lib.OS.No_Error);
    end if;
@@ -29,8 +35,10 @@ begin
 
    end;
 
-   Ada_lib.Timer.Stop;
-   Log_Here (Debug, "timer stopped, stop trace tasks");
+-- Log_Here (Debug, (if  Ada_lib.Timer.Cancel then
+--       "timer stopped"
+--    else
+--       "could not stop timer"));
 
    Ada_lib.Trace_Tasks.Stop;
    if not Ada_Lib.Trace_Tasks.All_Stopped then

@@ -27,7 +27,7 @@ video_lib = "*"
 video_lib  = { path = "../../../lib" }
 
 [[depends-on]]
-test_lib = "*"
+camera_test_lib = "*"
 
 [[depends-on]]
 video_lib_unit_test = "*"
@@ -36,7 +36,7 @@ video_lib_unit_test = "*"
 video_lib_unit_test  = { path = "../../../lib/unit_test" }
 
 [[pins]]
-test_lib  = { path = "../../test_lib" }
+camera_test_lib  = { path = "../../test_lib" }
 
 [[depends-on]]
 ada_lib = "*"

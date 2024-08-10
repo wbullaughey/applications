@@ -131,7 +131,7 @@ package body Camera.Lib.Base.Test is
       Options                    : Standard.Camera.Lib.Unit_Test.
                                     Camera_Lib_Unit_Test_Options_Type'class
                                        renames Standard.Camera.Lib.Unit_Test.
-                                          Get_Options.all;
+                                          Get_Camera_Lib_Unit_Test_Read_Only_Options.all;
       First_Port                 : constant GNAT.Sockets.Port_Type := 1;
       Last_Port                  : constant GNAT.Sockets.Port_Type := 9999;
       Local_Test                 : Test_Type renames Test_Type (Test);
@@ -140,7 +140,7 @@ package body Camera.Lib.Base.Test is
       Put_Line ("test port scan");
       for Port in First_Port .. Last_Port loop
          begin
-            Local_Test.Camera.Open (Options.Camera_Address.all, Port);
+            Local_Test.Camera.Open (Options.Camera_Options.Camera_Address.all, Port);
             Put_Line ("opened port" & Port'img);
 
          exception
@@ -172,7 +172,7 @@ package body Camera.Lib.Base.Test is
                                        Standard.Camera.Lib.Unit_Test.
                                           Camera_Lib_Unit_Test_Options_Type'class (
                                              Ada_Lib.Options.
-                                                Get_Read_Only_Options.all);
+                                                Get_Ada_Lib_Read_Only_Options.all);
       Local_Test                 : Test_Type renames Test_Type (Test);
       ALPTOP_Ports                : aliased constant Ports_Type := (
                                        554, 1935
@@ -188,7 +188,7 @@ package body Camera.Lib.Base.Test is
       Log_In (Debug);
       Put_Line ("read write");
 
-      case Options.Brand is
+      case Options.Camera_Options.Brand is
 
          when ALPTOP_Camera =>
             Ports := ALPTOP_Ports'access;
@@ -275,8 +275,8 @@ package body Camera.Lib.Base.Test is
          begin
             Log_Here (Debug, "Port" & Ports.all (Port)'img);
             Local_Test.Camera.URL_Open (
-               Options.Camera_Address.URL_Address.Coerce,
-               Options.Port_Number);
+               Options.Camera_Options.Camera_Address.URL_Address.Coerce,
+               Options.Camera_Options.Port_Number);
             Test_Port (Ports.all (PTZ_Optics_Port));
             Local_Test.Camera.Close;
 
@@ -346,16 +346,16 @@ package body Camera.Lib.Base.Test is
       Options                    : Standard.Camera.Lib.Unit_Test.
                                     Camera_Lib_Unit_Test_Options_Type'class
                                        renames Standard.Camera.Lib.Unit_Test.
-                                          Get_Options.all;
+                                          Get_Camera_Lib_Unit_Test_Read_Only_Options.all;
       Test_Suite                 : constant AUnit.Test_Suites.Access_Test_Suite :=
                                     new AUnit.Test_Suites.Test_Suite;
       Test                       : constant Test_Access := new Test_Type (
-                                    Options.Brand);
+                                    Options.Camera_Options.Brand);
 
    begin
-      Log_In (Debug, "brand " & Options.Brand'img);
+      Log_In (Debug, "brand " & Options.Camera_Options.Brand'img);
       Test_Suite.Add_Test (Test);
-      case Options.Brand is
+      case Options.Camera_Options.Brand is
 
          when ALPTOP_Camera =>
             Test.Camera := Test.ALPTOP'access;
@@ -389,12 +389,12 @@ package body Camera.Lib.Base.Test is
       Options                    : Standard.Camera.Lib.Unit_Test.
                                     Camera_Lib_Unit_Test_Options_Type'class
                                        renames Standard.Camera.Lib.Unit_Test.
-                                          Get_Options.all;
+                                          Get_Camera_Lib_Unit_Test_Read_Only_Options.all;
       Local_Test                 : Test_Type renames Test_Type (Test);
 
    begin
       Put_Line ("test open");
-      Local_Test.Camera.Open (Options.Camera_Address.all, 80);
+      Local_Test.Camera.Open (Options.Camera_Options.Camera_Address.all, 80);
 
    exception
       when Fault: others =>
@@ -427,7 +427,7 @@ package body Camera.Lib.Base.Test is
       Options                    : Standard.Camera.Lib.Unit_Test.
                                     Camera_Lib_Unit_Test_Options_Type'class
                                        renames Standard.Camera.Lib.Unit_Test.
-                                          Get_Options.all;
+                                          Get_Camera_Lib_Unit_Test_Read_Only_Options.all;
       First_Unit                 : constant GNAT.Sockets.Inet_Addr_Comp_Type := 2;
 --    IP_Address                 : GNAT.Sockets.Inet_Addr_V4_Type :=
 --                                  (192, 168, 1, 0);
@@ -439,7 +439,7 @@ package body Camera.Lib.Base.Test is
       for Unit in First_Unit .. Last_Unit loop
 --       IP_Address (4) := Unit;
          begin
-            Local_Test.Camera.Open (Options.Camera_Address.all, 80);     -- use default HTTP port
+            Local_Test.Camera.Open (Options.Camera_Options.Camera_Address.all, 80);     -- use default HTTP port
             Put_Line ("opened unit" & Unit'img);
 
          exception

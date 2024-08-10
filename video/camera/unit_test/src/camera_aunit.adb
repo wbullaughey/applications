@@ -1,5 +1,6 @@
 with Ada.Exceptions;
 with Ada.Text_IO; use Ada.Text_IO;
+with Ada_Lib.Help;
 with Ada_Lib.Options;
 with Ada_Lib.OS;
 --with Ada_lib.Timer;
@@ -18,18 +19,22 @@ procedure Camera_AUnit is
    Debug                : Boolean renames Options.Main_Debug;
 
 begin
-debug := true;
+--Debug := true;
 --Trace_Tests := True;
-   Log_In (Debug, "mode " & Options.Unit_Test.Mode'img);
+   Log_In (Debug, "mode " & Options.Mode'img);
    Put_Line (Command_Name);
    Ada_Lib.Options.Set_Ada_Lib_Options (
       Ada_Lib.Options.Interface_Options_Class_Access'(
          Options'unchecked_access));
-   if Camera.Lib.Unit_Test.Initialize then
+   if    Options.Initialize and then
+         Options.Process (
+            Include_Options      => True,
+            Include_Non_Options  => False,
+            Modifiers            => Ada_Lib.Help.Modifiers) then
       Ada_lib.Trace_Tasks.Start ("main");
 
       Log_Here (Debug, "start run suite mode " &
-         Options.Unit_Test.Mode'img);
+         Options.Mode'img);
       Camera.Lib.Unit_Test.Run_Suite (Options);
       Log_Here (Debug, "returned from run suite");
    else
@@ -53,7 +58,7 @@ debug := true;
 exception
 
    when Fault: Camera.Lib.Unit_Test.Failed =>
-      Ada_Lib.Options.Get_Read_Only_Options.Display_Help (Ada.Exceptions.Exception_Message (
+      Ada_Lib.Options.Get_Ada_Lib_Read_Only_Options.Display_Help (Ada.Exceptions.Exception_Message (
          Fault), True);
 
    when Fault: others =>

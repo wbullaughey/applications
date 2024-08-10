@@ -8,8 +8,15 @@ maintainers-logins = ["wbullaughey"]
 
 [[depends-on]]
 ada_lib = "*"
+
 [[pins]]
 ada_lib  = { path = "../../../ada_lib" }
+
+[[depends-on]]
+ada_lib_gnoga = "*"
+
+[[pins]]
+ada_lib_gnoga  = { path = "../../../ada_lib/ada_lib_gnoga" }
 
 [[depends-on]]
 gnoga = "*"

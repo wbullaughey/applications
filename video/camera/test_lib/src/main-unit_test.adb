@@ -6,6 +6,7 @@ with Ada_Lib.Unit_Test;
 with AUnit.Test_Cases;
 --with Camera.Lib.Base;
 with Camera.Lib.Connection;
+with Camera.Lib.Options;
 with Camera.Lib.Unit_Test;
 with Configuration.Camera.Setup; use Configuration.Camera.Setup;
 with Configuration.Camera.State;
@@ -131,11 +132,11 @@ package body Main.Unit_Test is
          Options           : Standard.Camera.Lib.Unit_Test.
                               Camera_Lib_Unit_Test_Options_Type'class
                                  renames Standard.Camera.Lib.Unit_Test.
-                                    Get_Options.all;
+                                    Get_Camera_Lib_Unit_Test_Modifiable_Options.all;
          State             : Configuration.Camera.State.State_Type renames
                               Connection_Data.State;
       begin
-         State.Load (Options.Location, State_Path);
+         State.Load (Options.Camera_Options.Location, State_Path);
          -- need to load state 1st
          Test.Setup.Load (State, Setup_Path);
       end;
@@ -149,11 +150,11 @@ package body Main.Unit_Test is
       Options                    : Standard.Camera.Lib.Unit_Test.
                                     Camera_Lib_Unit_Test_Options_Type'class
                                        renames Standard.Camera.Lib.Unit_Test.
-                                          Get_Options.all;
+                                          Get_Camera_Lib_Unit_Test_Modifiable_Options.all;
       Test_Suite                 : constant AUnit.Test_Suites.Access_Test_Suite :=
                                     new AUnit.Test_Suites.Test_Suite;
       Tests                      : constant Test_Access := new Test_Type (
-                                    Options.Brand);
+                                    Options.Camera_Options.Brand);
 
    begin
       Log_In (Debug);
@@ -191,7 +192,7 @@ package body Main.Unit_Test is
       Options                    : Standard.Camera.Lib.Unit_Test.
                                     Camera_Lib_Unit_Test_Options_Type'class
                                        renames Standard.Camera.Lib.Unit_Test.
-                                          Get_Options.all;
+                                          Get_Camera_Lib_Unit_Test_Modifiable_Options.all;
       Button_Press_Event      : Button_Push_Event_Type;
 --    Local_Test              : Test_Type'class renames Test_Type'class (Test);
    begin
@@ -205,7 +206,7 @@ package body Main.Unit_Test is
          Button_Press_Event.Set_Wait (2.0);  -- leave time for web page to display
 
          Run (
-            Directory            => Camera.Lib.Current_Directory,
+            Directory            => Standard.Camera.Lib.Options.Current_Directory,
             Port                 => Options.GNOGA_Options.HTTP_Port,
             Verbose              => True,
             Wait_For_Completion  => True);
