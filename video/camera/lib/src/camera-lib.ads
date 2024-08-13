@@ -29,6 +29,7 @@ package Camera.Lib is
       Option_Prefix              : in     Character := '-';
       Skip                       : in     Natural := 0);
 
+   -- options common to all camera library routines
    type Camera_lib_Options_Type is limited new Video.Lib.Video_Lib_Options_Type
                                     with record
       Brand                      : Brand_Type := PTZ_Optics_Camera;
@@ -54,6 +55,10 @@ package Camera.Lib is
    function Check_Options (
       From                       : in     String := Ada_Lib.Trace.Here
    ) return Boolean;
+
+   function Current_Directory -- set by runstring option 'c' else null
+   return String
+   with Pre => Camera.Lib.Check_Options;
 
    function Get_Modifiable_Camera_Lib_Options (
       From                       : in  String := Ada_Lib.Trace.Here

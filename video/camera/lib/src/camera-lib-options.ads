@@ -12,8 +12,6 @@ package Camera.Lib.Options is
 
    Failed                        : Exception;
 
-   use type Ada_Lib.Options.Interface_Options_Constant_Class_Access;
-
    subtype Runtime_Iterator_Type is Ada_Lib.Command_Line_Iterator.
                                     Abstract_Package.Abstract_Iterator_Type;
 
@@ -22,6 +20,7 @@ package Camera.Lib.Options is
       Window                     : Gnoga.Gui.Base.Pointer_To_Base_Class;
    end record;
 
+   -- options for camera_control application
    type Camera_Options_Type      is limited new Ada_Lib.Options.Actual.
                                     Program_Options_Type with record
       Camera_Library             : aliased Camera.Lib.Camera_Lib_Options_Type;
@@ -37,19 +36,6 @@ package Camera.Lib.Options is
                                  is access all Camera_Options_Type'class;
    type Camera_Options_Constant_Class_Access
                                  is access constant Camera_Options_Type'class;
-
-   function Current_Directory -- set by runstring option 'c' else null
-   return String
-   with Pre => Ada_Lib.Options.Get_Ada_Lib_Read_Only_Options /= Null;
-
-   function Get_Modifiable_Camera_Options
-   return Camera_Options_Class_Access
-   with Pre => Check_Options;
-
-   function Get_Read_Only_Camera_Options
-   return Camera_Options_Constant_Class_Access
-   with Pre => Check_Options;
-
 
    overriding
    function Initialize (

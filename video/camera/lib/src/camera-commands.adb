@@ -237,6 +237,12 @@ package body Camera.Commands is
       );
 
       Log_Out (Debug);
+
+   exception
+      when Fault : others =>
+         Trace_Exception (Fault, Here);
+         raise;
+
    end Position_Relative;
 
    ---------------------------------------------------------------

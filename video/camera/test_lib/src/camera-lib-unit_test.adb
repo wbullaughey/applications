@@ -9,7 +9,7 @@ with Ada_Lib.Unit_Test.Reporter;
 with AUnit.Assertions; use AUnit.Assertions;
 with Camera.Lib.Base;
 with Camera.Lib.Connection;
-with Camera.Lib.Options;
+--with Camera.Lib.Options;
 with Camera.Command_Queue;
 with Camera.Commands.Unit_Test;
 with Camera.Lib.Base.Command_Tests;
@@ -26,6 +26,11 @@ package body Camera.Lib.Unit_Test is
 
    use type Ada_Lib.Options.Mode_Type;
 
+   Camera_Lib_Unit_Test_Options  : Camera_Lib_Unit_Test_Options_Class_Access :=
+                                    Null;
+   Camera_State_Path             : constant String := "camera_state_path.cfg";
+   Help_Recursed                 : Boolean := False;
+   Initialize_Recursed           : Boolean := False;
    Trace_Option                  : constant Character := 'T';
    Options_With_Parameters       : aliased constant
                                     Standard.Ada_Lib.Options.Options_Type :=
@@ -34,12 +39,6 @@ package body Camera.Lib.Unit_Test is
    Options_Without_Parameters       : aliased constant
                                     Standard.Ada_Lib.Options.Options_Type :=
                                           Ada_Lib.Options.Null_Options;
-   Help_Recursed                 : Boolean := False;
-   Initialize_Recursed           : Boolean := False;
-
--- use type Ada_Lib.Options.Interface_Options_Constant_Class_Access;
-
-   Camera_State_Path             : constant String := "camera_state_path.cfg";
    Setup_Test_Path               : constant String := "configured_window_setup.cfg";
    State_Test_Path               : constant String := "configured_window_state.cfg";
 
@@ -61,8 +60,8 @@ package body Camera.Lib.Unit_Test is
    ---------------------------------------------------------------
 
    begin
-      return Camera.Lib.Unit_Test.Camera_Lib_Unit_Test_Options_Class_Access (
-         Ada_Lib.Options.Get_Ada_Lib_Modifiable_Options (From));
+      Log_Here (Debug, "from " & From);
+      return Camera_Lib_Unit_Test_Options;
    end Get_Camera_Lib_Unit_Test_Modifiable_Options;
 
    ---------------------------------------------------------------
@@ -72,40 +71,10 @@ package body Camera.Lib.Unit_Test is
    ---------------------------------------------------------------
 
    begin
-      return Camera.Lib.Unit_Test.Camera_Lib_Unit_Test_Options_Constant_Class_Access (
-         Ada_Lib.Options.Get_Ada_Lib_Read_Only_Options (From));
+      Log_Here (Debug, "from " & From);
+      return Camera_Lib_Unit_Test_Options_Constant_Class_Access (
+         Camera_Lib_Unit_Test_Options);
    end Get_Camera_Lib_Unit_Test_Read_Only_Options;
-
---   ---------------------------------------------------------------
---   function Initialize
---   return Boolean is
---   ---------------------------------------------------------------
---
---   begin
---      Log_In (Debug_Options or Trace_Options);
---      Ada_Lib.Options.Set_Ada_Lib_Options (Protected_Options'access);
---
-----    Ada_Lib.Options.Unit_Test.Unit_Test_Options :=
-----       Ada_Lib.Options.Unit_Test.Unit_Test_Options_Constant_Class_Access'(
-----          Protected_Options'unchecked_access);
---
---      return Log_Out (
---         Protected_Options.Initialize and then
---         Protected_Options.Process (
---            Include_Options      => True,
---            Include_Non_Options  => False,
---            Modifiers            => Ada_Lib.Help.Modifiers),
---         Debug_Options or Trace_Options,
---         "Initialized " & Protected_Options.Initialized'img &
---             " mode " & Protected_Options.Mode'img);
---
---   exception
---
---      when Fault: others =>
---         Trace_Exception (True, Fault);
---         raise;
---
---   end Initialize;
 
    -------------------------------------------------------------------------
    overriding
@@ -118,7 +87,7 @@ package body Camera.Lib.Unit_Test is
    begin
       Log_In_Checked (Initialize_Recursed, Debug_Options or Trace_Options,
          "from " & From);
---    Camera_Lib_Unit_Test_Options := Options'unchecked_access;
+      Camera_Lib_Unit_Test_Options := Options'unchecked_access;
 
       Ada_Lib.Options.Runstring.Options.Register (
          Ada_Lib.Options.Runstring.With_Parameters,
@@ -473,9 +442,6 @@ not_implemented;
 
       Connection_Data         : constant Standard.Camera.Lib.Connection.Connection_Data_Access :=
                                  new Standard.Camera.Lib.Connection.Connection_Data_Type;
-      Options                 : Camera_Lib_Unit_Test_Options_Type'class
-                                    renames
-                                       Get_Camera_Lib_Unit_Test_Read_Only_Options.all;
       State                      : Configuration.Camera.State.State_Type renames
                                     Connection_Data.State;
    begin
@@ -483,15 +449,17 @@ not_implemented;
       Ada_Lib.GNOGA.Set_Connection_Data (
          Ada_Lib.GNOGA.Connection_Data_Class_Access (Connection_Data));
       Connection_Data.Initialize;
-      State.Load (
-         Options.Camera_Options.Location, State_Test_Path); -- need to load state 1st
+      State.Load (Camera_Lib_Unit_Test_Options.Camera_Options.Location,
+         State_Test_Path); -- need to load state 1st
       Test.Setup.Load (State, Setup_Test_Path);
       Ada_Lib.GNOGA.Unit_Test.GNOGA_Tests_Type(Test).Set_Up;
 
          if not Test.Initialize_GNOGA then
             Main.Run (
-               Directory            => Standard.Camera.Lib.Options.Current_Directory,
-               Port                 => Options.GNOGA_Options.HTTP_Port,
+               Directory            => Camera_Lib_Unit_Test_Options.
+                                          Camera_Options.Directory.Coerce,
+               Port                 => Camera_Lib_Unit_Test_Options.
+                                          GNOGA_Options.HTTP_Port,
                Verbose              => True,
                Wait_For_Completion  => False);
          end if;
@@ -504,34 +472,6 @@ not_implemented;
          Assert (False, "exception message " & Ada.Exceptions.Exception_Message (Fault));
 
    end Set_Up;
-
--- ------------------------------------------------------------
--- procedure Suite_Action (
---    Suite                      : in     String;
---    First                      : in out Boolean;
---    Mode                       : in     Ada_Lib.Options.Mode_Type) is
--- ------------------------------------------------------------
---
--- begin
---    Log_In (Debug, Quote ("Suite", Suite) & " first " & First'img &
---       " Mode " & Mode'img);
---
---    case Mode is
---
---       when Ada_Lib.Options.List_Suites |
---            Ada_Lib.Options.Run_Tests =>
---          null;
---
---       when Ada_Lib.Options.Print_Suites =>
---          if First then
---             Put_Line ("test suites: ");
---             First := False;
---          end if;
---          Put_Line ("   " & Suite);
---
---    end case;
---    Log_Out (Debug);
--- end Suite_Action;
 
    ---------------------------------------------------------------
    overriding
@@ -565,7 +505,6 @@ not_implemented;
    ----------------------------------------------------------------------------
 
       Parameter                  : constant String := Iterator.Get_Parameter;
---    Widget_Trace               : Boolean := False;
 
    begin
       Log (Debug_Options or Trace_Options, Here, " process parameter  " & Quote (Parameter));

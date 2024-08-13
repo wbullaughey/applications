@@ -8,6 +8,7 @@ with Ada_Lib.Unit_Test.Test_Cases;
 with AUnit.Assertions; use AUnit.Assertions;
 with AUnit.Test_Cases;
 with Camera.Lib.Connection;
+with Camera.Lib.Unit_Test;
 with Hex_IO;
 
 package body Configuration.Camera.State.Unit_Tests is

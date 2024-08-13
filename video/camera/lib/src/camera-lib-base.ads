@@ -41,7 +41,8 @@ package Camera.Lib.Base is
       Power,
       Zoom_Direct,
       Zoom_Full,
-      Zoom_Inquire
+      Zoom_Inquire,
+      No_Command
    );
 
    type Option_Type (
@@ -190,14 +191,16 @@ package Camera.Lib.Base is
       Command                    : in     Buffer_Type;
       Options                    : in     Options_Type);
 
+   Debug                         : Boolean := False;
    Power_On_Preset               : constant := 0;
    Null_Option                   : constant Options_Type;
 
 private
 
    type Base_Camera_Type         is abstract new General_Camera_Type with record
+      Last_Command               : Commands_Type := No_Command;
       Socket                     : Ada_Lib.Socket_IO.Client.Client_Socket_Type;
---    Stream                     : Ada_Lib.Socket_IO.Stream_IO.Stream_Type;
+      Waiting_For_Response       : Boolean := False;
    end record;
 
    Null_Option                   : constant Options_Type (1 .. 0) :=

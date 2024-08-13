@@ -26,7 +26,7 @@ crate = "ada_lib_tests"
 fulfilment = "linked"
 pinned = false
 transitivity = "direct"
-versions = "~0.1.0-dev"
+versions = "*"
 [solution.state.link]
 lockfiled = true
 path = "../../../ada_lib/ada_lib_tests"

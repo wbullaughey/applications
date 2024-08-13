@@ -32,6 +32,27 @@ package body Camera.Command_Queue is
 
    end Process_Queue_Task;
 
+   Queue_Failed                  : Boolean := False;
+   Task_Running                  : Boolean := False;
+
+   ----------------------------------------------------------------
+   function Has_Queue_Failed
+   return Boolean is
+   ----------------------------------------------------------------
+
+   begin
+      return Queue_Failed;
+   end Has_Queue_Failed;
+
+   ----------------------------------------------------------------
+   function Is_Queue_Running
+   return Boolean is
+   ----------------------------------------------------------------
+
+   begin
+      return Task_Running;
+   end Is_Queue_Running;
+
    ----------------------------------------------------------------
    procedure Stop_Task is
    ----------------------------------------------------------------
@@ -68,6 +89,7 @@ package body Camera.Command_Queue is
    begin
       Log_In (Debug, "started");
       Ada_Lib.Trace_Tasks.Start ("timer task", Here);
+      Task_Running := True;
       loop
          select
             accept Command (
@@ -76,18 +98,25 @@ package body Camera.Command_Queue is
 
                Log_In (Debug, "command " & Parameters.Command'img);
 
-               case Parameters.Command is
+               begin
+                  case Parameters.Command is
 
-                  when Standard.Camera.Lib.Base.Position_Relative =>
-                     Camera.Position_Relative (Parameters.Pan,
-                        Parameters.Tilt, Parameters.Pan_Speed,
-                        Parameters.Tilt_Speed);
+                     when Standard.Camera.Lib.Base.Position_Relative =>
+                        Camera.Position_Relative (Parameters.Pan,
+                           Parameters.Tilt, Parameters.Pan_Speed,
+                           Parameters.Tilt_Speed);
 
-                  when others =>
-                     raise Failed with "command " & Parameters.Command'img &
-                        " not implemented";
+                     when others =>
+                        raise Failed with "command " & Parameters.Command'img &
+                           " not implemented";
 
-               end case;
+                  end case;
+
+               exception
+                  when Fault : others =>
+                     Trace_Exception (Fault, Here);
+                     Queue_Failed := True;
+               end;
                Log_Out (Debug);
             end Command;
          or
@@ -96,6 +125,7 @@ package body Camera.Command_Queue is
                exit;
          end select;
       end loop;
+      Task_Running := False;
       Ada_Lib.Trace_Tasks.Stop;
       Log_Out (Debug, "task terminate");
 

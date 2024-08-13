@@ -211,9 +211,15 @@ package body Widgets.Adjust.Unit_Test is
             Meta           => False),
          Wait           => 0.25);
 
+log_here;
       Camera.Set_Absolute (
          Pan      => 0,
          Tilt     => 0);
+log_here;
+      Camera.Get_Absolute (Pan, Tilt);
+      Log_Here (Debug, "pan " & Pan'img & " tilt " & Tilt'img);
+      Assert (Pan = 0, "pan to 0 failed, offset " & Pan'img);
+      Assert (Tilt = 0, "tilt to 0 failed, tilt " & Tilt'img);
 
       Adjust_Card.Fire_On_Mouse_Click (Event.Mouse_Event);
       delay 0.5;     -- wait for button to be pushed

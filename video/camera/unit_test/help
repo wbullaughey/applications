@@ -45,7 +45,7 @@ Camera Lib Unit Test trace options (T)
       m               main unit test trace
       o               unit_test options
       p               program trace
-      q               camera queue
+      q               cameqra queue
       s               Configuration.Camera.State unit_test options
       S               Configuration.Camera.Setup unit_test options
       t               unit_test trace
@@ -53,6 +53,7 @@ Camera Lib Unit Test trace options (T)
 
 Camera Lib trace options (-t)
       a               all
+      b               camera lib base
       c               camera configuration
       C               camera commands
       g               Widgets.Generic_Table
@@ -108,6 +109,8 @@ CAC ada_lib trace library options (-a)
       @e              Template Evaluate
       @E              Template Expand
       @l              Template Load
+      @o              Trace_Options
+      @s              Strings
 Ada_Lib unit test library trace options (-U)
       a               all
       A               all unit tests

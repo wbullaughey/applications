@@ -7,7 +7,7 @@ export PARAMETERS=("$@")
 echo PARAMETERS: $PARAMETERS
 echo OUPUT=$OUTPUT
 echo camera driver 2>&1 | tee $OUTPUT
-export TRACE=0
+export TRACE=1
 
 trace() {
    if (( $TRACE > 0 )) then
@@ -30,6 +30,7 @@ parameters() {
          "-")
            trace option: $PARAMETER | tee -a $OUTPUT
            export OPTIONS="$OPTIONS $PARAMETER"
+           trace OPTIONS $OPTIONS
            remove_1
            ;;
 

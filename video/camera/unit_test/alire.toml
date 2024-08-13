@@ -9,6 +9,12 @@ maintainers-logins = ["wbullaughey"]
 executables = ["camera_aunit"]
 
 [[depends-on]]
+ada_lib_tests = "*"
+
+[[pins]]
+ada_lib_tests  = { path = "../../../ada_lib/ada_lib_tests" }
+
+[[depends-on]]
 camera_lib_unit_test = "*"
 
 [[pins]]
@@ -50,6 +56,5 @@ applications = "*"
 [[pins]]
 applications  = { path = "../../.." }
 
-
 [[depends-on]]
-gnatcoll = "*"
+gnatcoll = "^23.0.0"

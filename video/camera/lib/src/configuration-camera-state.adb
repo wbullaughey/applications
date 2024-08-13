@@ -9,7 +9,7 @@ with Ada_Lib.Strings.Unlimited; use Ada_Lib.Strings; use Ada_Lib.Strings.Unlimit
 with Ada.Text_IO; use Ada.Text_IO;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
 with Camera.Lib.Connection;
-with Camera.Lib.Options;
+--with Camera.Lib.Options;
 --with Hex_IO;
 --with Video.Lib;
 
@@ -120,9 +120,9 @@ package body Configuration.Camera.State is
    return String is
    ----------------------------------------------------------------
 
-      Camera_Options : Standard.Camera.Lib.Options.Camera_Options_Type'class
-                        renames Standard.Camera.Lib.Options.
-                           Get_Read_Only_Camera_Options.all;
+      Camera_Options : Standard.Camera.Lib.Camera_Lib_Options_Type'class
+                        renames Standard.Camera.Lib.
+                           Get_Read_Only_Camera_Lib_Options.all;
    begin
       return (if Camera_Options.State_Path.Length > 0 then
          Camera_Options.State_Path.Coerce
@@ -226,7 +226,7 @@ package body Configuration.Camera.State is
 
       Config                     : Ada_Lib.Configuration.Configuration_Type;
       Current_Directory          : constant String :=
-                                    Standard.Camera.Lib.Options.Current_Directory;
+                                    Standard.Camera.Lib.Current_Directory;
       Path                       : constant String :=
                                     (if Current_Directory'length > 0 then
                                        Current_Directory & "/"

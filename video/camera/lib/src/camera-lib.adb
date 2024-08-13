@@ -1,19 +1,17 @@
 with Ada.Exceptions;
 with Ada.Text_IO;use Ada.Text_IO;
 with Ada_Lib.Help;
---with Ada_Lib.Options;
 with ADA_LIB.OS;
 with Ada_Lib.Options.Runstring;
 with Ada_Lib.Socket_IO;
 with Ada_Lib.Strings;
 with ADA_LIB.Trace; use Ada_Lib.Trace;
 with Camera.Commands;
---with Configuration.Camera.State;
+with Camera.Lib.Base;
 with Configuration.Camera;
 with Configuration.State;
 with Emulator;
 with Main;
---with Camera.Commands.PTZ_Optics;
 with Widgets.Adjust;
 with Widgets.Control;
 with Widgets.Configured;
@@ -26,6 +24,8 @@ package body Camera.Lib is
    use type Configuration.State.Location_Type;
 -- use type Ada_Lib.Options.Interface_Options_Constant_Class_Access;
 
+   Camera_Lib_Options            : Camera_Lib_Options_Class_Access :=
+                                    Null;
    Trace_Option                  : constant Character := 't';
    Options_With_Parameters       : aliased constant
                                     Ada_Lib.Options.Options_Type :=
@@ -44,9 +44,18 @@ package body Camera.Lib is
    -------------------------------------------------------------------------
 
    begin
-      return Log_Here (Ada_Lib.Options.Have_Options, Debug_Options or Trace_Options,
-         "from " & From);
+      return Log_Here (Camera_Lib_Options /= Null,
+         Debug_Options or Trace_Options, "from " & From);
    end Check_Options;
+
+   -------------------------------------------------------------------------
+   function Current_Directory  -- set by runstring option 'c' else null
+   return String is
+   -------------------------------------------------------------------------
+
+   begin
+      return Camera_Lib_Options.Directory.Coerce;
+   end Current_Directory;
 
    -------------------------------------------------------------------------
    function Get_Modifiable_Camera_Lib_Options (
@@ -55,8 +64,8 @@ package body Camera.Lib is
    -------------------------------------------------------------------------
 
    begin
-      return Camera_Lib_Options_Class_Access (
-         Ada_Lib.Options.Get_Ada_Lib_Modifiable_Options (From));
+      Log_Here (Debug, "from " & From);
+      return Camera_Lib_Options;
    end Get_Modifiable_Camera_Lib_Options;
 
    -------------------------------------------------------------------------
@@ -66,8 +75,8 @@ package body Camera.Lib is
    -------------------------------------------------------------------------
 
    begin
-      return Camera_Lib_Options_Constant_Class_Access (
-         Ada_Lib.Options.Get_Ada_Lib_Read_Only_Options (From));
+      Log_Here (Debug, "from " & From);
+      return Camera_Lib_Options_Constant_Class_Access (Camera_Lib_Options);
    end Get_Read_Only_Camera_Lib_Options;
 
    -------------------------------------------------------------------------
@@ -85,6 +94,7 @@ package body Camera.Lib is
          " Without Parameters " & Ada_Lib.Options.Image (
             Options_Without_Parameters, False) & " from " & From);
 
+      Camera_lib_Options := Options'unchecked_access;
       Ada_Lib.Options.Runstring.Options.Register (
          Ada_Lib.Options.Runstring.With_Parameters,
          Options_With_Parameters);
@@ -283,6 +293,7 @@ package body Camera.Lib is
 
          Put_Line (Component & " trace options (-" & Trace_Option & ")");
          Put_Line ("      a               all");
+         Put_Line ("      b               camera lib base");
          Put_Line ("      c               camera configuration");
          Put_Line ("      C               camera commands");
          Put_Line ("      g               Widgets.Generic_Table");
@@ -303,18 +314,6 @@ package body Camera.Lib is
       Video.Lib.Video_Lib_Options_Type (Options).Program_Help (Help_Mode);
       Log_Out (Debug_Options or Trace_Options);
    end Program_Help;
-
--- ----------------------------------------------------------------------------
--- procedure Set_Options (
---    Options                    : in     Options_Class_Access;
---    From                       : in     String := Ada_Lib.Trace.Here) is
--- ----------------------------------------------------------------------------
---
--- begin
---    Log_Here (Debug_Options or Trace_Options, "from " & From);
---    Ada_Lib.Options.Set_Ada_Lib_Options (
---       Ada_Lib.Options.Interface_Options_Class_Access (Options));
--- end Set_Options;
 
    ----------------------------------------------------------------------------
    overriding
@@ -342,6 +341,7 @@ package body Camera.Lib is
 
                   when 'a' =>
                      Camera.Commands.Debug := True;
+                     Camera.Lib.Base.Debug := True;
                      Configuration.Camera.Debug := True;
                      Configuration.State.Debug := True;
                      Debug_Options := True;
@@ -353,6 +353,9 @@ package body Camera.Lib is
                      Widgets.Control.Debug := True;
                      Widgets.Configured.Debug := True;
                      Widgets.Generic_Table.Debug := True;
+
+                  when 'b' =>
+                     Camera.Lib.Base.Debug := True;
 
                   when 'c' =>
                      Configuration.Camera.Debug := True;

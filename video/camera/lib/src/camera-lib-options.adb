@@ -38,42 +38,6 @@ package body Camera.Lib.Options is
                                     Ada_Lib.Options.Options_Type :=
                                        Ada_Lib.Options.Null_Options;
 
-   -------------------------------------------------------------------------
-   function Camera_Options
-   return Camera_Options_Constant_Class_Access is
-   -------------------------------------------------------------------------
-
-   begin
-      return Camera_Options_Constant_Class_Access (
-         Ada_Lib.Options.Get_Ada_Lib_Modifiable_Options);
-   end Camera_Options;
-
-   -------------------------------------------------------------------------
-   function Current_Directory  -- set by runstring option 'c' else null
-   return String is
-   -------------------------------------------------------------------------
-
-   begin
-      return Camera_Options.Camera_Library.Directory.Coerce;
-   end Current_Directory;
-
-   -------------------------------------------------------------------------
-   function Get_Modifiable_Camera_Options return Camera_Options_Class_Access is
-   -------------------------------------------------------------------------
-
-   begin
-      return Camera_Options_Class_Access (Ada_Lib.Options.Get_Ada_Lib_Modifiable_Options);
-   end Get_Modifiable_Camera_Options;
-
-   -------------------------------------------------------------------------
-   function Get_Read_Only_Camera_Options
-   return Camera_Options_Constant_Class_Access is
-   -------------------------------------------------------------------------
-
-   begin
-      return Camera_Options_Constant_Class_Access (
-         Ada_Lib.Options.Get_Ada_Lib_Read_Only_Options);
-   end Get_Read_Only_Camera_Options;
 
    -------------------------------------------------------------------------
    overriding

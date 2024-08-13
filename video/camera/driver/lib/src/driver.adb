@@ -8,7 +8,7 @@ with Ada_Lib.OS.Run;
 with Ada_Lib.Parser;
 with Ada_Lib.Options.Runstring;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
-with Camera.Lib.Options;
+--with Camera.Lib;
 with Command_Name;
 
 package body Driver is
@@ -76,6 +76,7 @@ package body Driver is
                                  );
    Queue                         : Queue_Type;
 
+
    ----------------------------------------------------------------
    function Compare_Entry (
       Left, Right                : in     Element_Type
@@ -93,13 +94,11 @@ package body Driver is
          Line                    : in     String)) is
    ---------------------------------------------------------------
 
---    use Ada.Text_IO;
---    use Ada.Strings.Fixed;
-
-      Current_Directory          : constant String :=
-                                    Camera.Lib.Options.Current_Directory;
+      Options                    : Driver_Options_Type'class renames
+                                    Get_Driver_Read_Only_Options.all;
       Camera_Program             : constant String :=
-                                    Current_Directory & "/bin/camera_aunit";
+                                    Options.Camera_Directory.Coerce &
+                                    "/bin/camera_aunit";
       Scratch_File               : Ada_Lib.OS.File_Descriptor;
       Scratch_Name               : Ada_Lib.OS.Temporary_File_Name;
 
@@ -117,8 +116,7 @@ package body Driver is
       ------------------------------------------------------
 
    begin
-      Log_In (Debug, Quote (" Current_Directory", Current_Directory) &
-         Quote (" Camera_Program", Camera_Program) &
+      Log_In (Debug, Quote (" Camera_Program", Camera_Program) &
          Quote (" Parameters", Parameters));
 
       if Process_Line = Null then
@@ -148,7 +146,6 @@ package body Driver is
 
             declare
                Output_File             : File_Type;
-   --          Process_Output          : Boolean := True;
 
             begin
                Open (Output_File, In_File, Scratch_Name);
@@ -162,9 +159,6 @@ package body Driver is
                      Log_Here (Debug, Quote ("line", Line));
 
                      Process_Line (Line);
-   --                if Index (Line, "exception trace") > 0 then
-   --                   exit;
-   --                end if;
                   end;
                end loop;
                Close (Output_File);
@@ -193,8 +187,9 @@ package body Driver is
 
    begin
       Log_Here (Debug_Options or Trace_Options, "from " & From);
-      return Driver_Options_Class_Access (
-         Ada_Lib.Options.Get_Ada_Lib_Modifiable_Options);
+      return Program_Options_Class_Access (
+         Ada_Lib.Options.Get_Ada_Lib_Modifiable_Options).
+            Driver_Options'unchecked_access;
    end Get_Driver_Modifiable_Options;
 
    ---------------------------------------------------------------
@@ -206,16 +201,22 @@ package body Driver is
 
    begin
       Log_Here (Debug_Options or Trace_Options, "from " & From);
-      return Driver_Options_Constant_Class_Access (
-         Ada_Lib.Options.Get_Ada_Lib_Modifiable_Options);
+      return Program_Options_Constant_Class_Access (
+         Ada_Lib.Options.Get_Ada_Lib_Read_Only_Options).
+            Driver_Options'unchecked_access;
    end Get_Driver_Read_Only_Options;
 
    ---------------------------------------------------------------
    procedure Get_Tests is
    ---------------------------------------------------------------
 
+      Options        : Driver_Options_Type'class renames
+                           Get_Driver_Read_Only_Options.all;
    begin
       Log_In (Debug);
+      if Options.List_Output then
+         Put_Line ("tests");
+      end if;
       Execute ("-@d", Process_Line'access);
       Log_Out (Debug);
    end Get_Tests;
@@ -261,7 +262,8 @@ package body Driver is
 
    begin
       Log_In (Debug_Options or Trace_Options, "from " & From);
-      return Log_Out (Options.Driver_Options.Initialize and then
+      return Log_Out (
+         Options.Driver_Options.Initialize and then
          Ada_Lib.Options.Actual.Program_Options_Type (Options).Initialize,
          Debug_Options or Trace_Options);
    end Initialize;
@@ -433,8 +435,10 @@ package body Driver is
          return Log_Out (True, Debug_Options or Trace_Options, Option.Image &
             " handled");
       else
-         return Log_Out (Ada_Lib.Options.Actual.Nested_Options_Type (
-            Options).Process_Option (Iterator, Option), Debug or Trace_Options,
+         return Log_Out (
+            Ada_Lib.Options.Actual.Nested_Options_Type (
+               Options).Process_Option (Iterator, Option),
+            Debug or Trace_Options,
             "not handled");
       end if;
 
@@ -555,9 +559,6 @@ package body Driver is
       Log_In (Debug, "testing " & Options.Testing'img &
          " Options tag " & Tag_Name (Options'tag));
 
---    Quote ("suite", Options.Suite) & Quote (" routine",
---       Options.Routine));
-
       if Options.Routine.Length = 0 then -- need list of suites and routines
          Get_Tests;
       else
@@ -634,9 +635,10 @@ package body Driver is
    end Trace_Parse;
 
 begin
+--Debug := True;
 --Debug_Options := True;
 --Trace_Options := True;
    Include_Program := True;
    Include_Task := True;
-   Log_Here (Debug_Options or Trace_Options or Elaborate);
+   Log_Here (Debug or else Debug_Options or else Trace_Options or else Elaborate);
 end Driver;

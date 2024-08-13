@@ -3,11 +3,10 @@ with Ada.Text_IO; use Ada.Text_IO;
 with Ada.Unchecked_Deallocation;
 --with Ada_Lib.Address;
 with Ada_Lib.Configuration;
-with Ada_Lib.Options;
 with Ada_Lib.Parser;
 with ADA_LIB.Strings.Unlimited; use Ada_Lib.Strings; use Ada_Lib.Strings.Unlimited;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
-with Camera.Lib.Options;
+with Camera.Lib;
 
 package body Configuration.Camera.Setup is
 
@@ -96,11 +95,11 @@ package body Configuration.Camera.Setup is
    return String is
    ----------------------------------------------------------------
 
-      Camera_Options : Standard.Camera.Lib.Options.Camera_Options_Type'class renames
-                        Standard.Camera.Lib.Options.Get_Read_Only_Camera_Options.all;
+      Options  : Standard.Camera.Lib.Camera_Lib_Options_Type'class renames
+                  Standard.Camera.Lib.Get_Read_Only_Camera_Lib_Options.all;
    begin
-      return (if Camera_Options.Setup_Path.Length > 0 then
-         Camera_Options.Setup_Path.Coerce
+      return (if Options.Setup_Path.Length > 0 then
+         Options.Setup_Path.Coerce
       else
          Default_Setup);
    end File_Path;
@@ -236,12 +235,9 @@ package body Configuration.Camera.Setup is
       Name                       : in     String) is
    ----------------------------------------------------------------
 
-begin
-log_here;
-declare
       Config                     : Ada_Lib.Configuration.Configuration_Type;
       Current_Directory          : constant String :=
-                                    Standard.Camera.Lib.Options.Current_Directory;
+                                    Standard.Camera.Lib.Current_Directory;
       Path                       : constant String :=
                                     (if Current_Directory'length > 0 then
                                        Current_Directory & "/"
@@ -378,7 +374,6 @@ declare
          Log_Exception (Debug);
          raise;
 
-end;
    end Load;
 
    ----------------------------------------------------------------
@@ -499,7 +494,7 @@ end;
       Configurations             : Configurations_Access renames
                                     Setup.Configurations;
       Current_Directory          : constant String :=
-                                    Standard.Camera.Lib.Options.Current_Directory;
+                                    Standard.Camera.Lib.Current_Directory;
       Presets                    : Presets_Access renames
                                     Setup.Presets;
    begin

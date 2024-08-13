@@ -51,7 +51,7 @@ begin
       Log_Here (Debug);
 
       Main.Run (
-         Directory            => Camera.Lib.Options.Current_Directory,
+         Directory            => Camera.Lib.Current_Directory,
          Port                 => Options.GNOGA.HTTP_Port,
          Verbose              => Options.Verbose,
          Wait_For_Completion  => True);

@@ -6,7 +6,7 @@ with Ada_Lib.Unit_Test;
 with AUnit.Test_Cases;
 --with Camera.Lib.Base;
 with Camera.Lib.Connection;
-with Camera.Lib.Options;
+--with Camera.Lib.Options;
 with Camera.Lib.Unit_Test;
 with Configuration.Camera.Setup; use Configuration.Camera.Setup;
 with Configuration.Camera.State;
@@ -206,7 +206,7 @@ package body Main.Unit_Test is
          Button_Press_Event.Set_Wait (2.0);  -- leave time for web page to display
 
          Run (
-            Directory            => Standard.Camera.Lib.Options.Current_Directory,
+            Directory            => Options.Camera_Options.Directory.Coerce,
             Port                 => Options.GNOGA_Options.HTTP_Port,
             Verbose              => True,
             Wait_For_Completion  => True);

@@ -47,6 +47,8 @@ CAC ada_lib trace library options (-a)
       @e              Template Evaluate
       @E              Template Expand
       @l              Template Load
+      @o              Trace_Options
+      @s              Strings
 
 driver trace options (-t)
       a               all

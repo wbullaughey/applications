@@ -34,7 +34,6 @@ begin
       Put_Line (Command_Name);
       Driver.Queue_Tests;
       Driver.Run_Selection;
---    Ada_lib.Timer.Stop;
       Log_Here (Debug, "timer stopped, stop trace tasks");
 
       Ada_lib.Trace_Tasks.Stop;

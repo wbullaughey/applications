@@ -3,6 +3,7 @@ with Ada.Exceptions;
 with Ada_Lib.Time;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
 --with Camera.Lib.Connection;
+with Camera.Command_Queue;
 with Hex_IO;
 with Video.Lib;
 
@@ -281,12 +282,28 @@ package body Camera.Lib.Base is
                                        Get_Timeout (Command);
    begin
       Log_In (Debug, "command " & Command'img &
+         " testing " & Ada_Lib.Unit_Testing'img &
+         " queue failed " & Standard.Camera.Command_Queue.Has_Queue_Failed'img &
          " timeout " & Timeout'img);
+      if    Ada_Lib.Unit_Testing and then
+            Standard.Camera.Command_Queue.Has_Queue_Failed then
+         raise Failed with "command queue failed";
+      end if;
+
+      if Camera.Waiting_For_Response then
+         raise Failed with "outstanding request " & Camera.Last_Command'img;
+      end if;
+
       Base_Camera_Type'class (Camera).Send_Command (Command, Options,
          Get_Ack, Has_Response, Response_Length);
       Log_Here (Debug, "get ack " & Get_Ack'img &
          " return package " & Has_Response'img &
          " response length" & Response_Length'img);
+
+      if Get_Ack or else Has_Response then
+         Camera.Waiting_For_Response := True;
+         Camera.Last_Command := Command;
+      end if;
 
       Camera.Get_Response (Get_Ack, Has_Response, Response,
          Response_Length, Timeout);  -- get response
@@ -295,6 +312,9 @@ package body Camera.Lib.Base is
          Dump ("package response", Response (
             Response'first .. Response_Length));
       end if;
+
+      Camera.Waiting_For_Response := False;
+      Camera.Last_Command := No_Command;
 
       Log_Out (Debug);
 

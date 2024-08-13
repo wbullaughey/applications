@@ -31,6 +31,8 @@
         <F N="../../.gitmodules"/>
         <F N="../../alire.toml"/>
         <F N="../../applications.gpr"/>
+        <F N="../../build_all.sh"/>
+        <F N="../../build_all.txt"/>
         <F N="../../configuration.gpr"/>
         <F N="../../default_config.gpr"/>
     </Files>
