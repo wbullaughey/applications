@@ -18,7 +18,6 @@ package Video.Lib is
    subtype Address_Type          is  Ada_Lib.Socket_IO.Address_Type;
    subtype Address_Constant_Access
                                  is  Ada_Lib.Socket_IO.Address_Constant_Access;
-   subtype Buffer_Type           is Ada_Lib.Socket_IO.Buffer_Type;
    type Camera_Type              is abstract tagged limited null record;
    type Camera_Class_Access      is access all Camera_Type'class;
    type Camera_Preset_Optional_Type
@@ -61,12 +60,30 @@ package Video.Lib is
       Value                      : in     Data_Type
    ) return String;
 
+   subtype Buffer_Type           is Ada_Lib.Socket_IO.Buffer_Type;
    subtype Index_Type            is Ada_Lib.Socket_IO.Index_Type;
-   subtype Response_Type         is Ada_Lib.Socket_IO.Buffer_Type;
+   subtype Command_Type          is Buffer_Type;
+   subtype Response_Type         is Buffer_Type;
 
-   subtype Maximum_Command_Type is Buffer_Type (1 .. 20);
-   subtype Maximum_Response_Type
-                                 is Buffer_Type (1 .. 30);
+   subtype Maximum_Command_Type  is Command_Type (1 .. 20);
+   subtype Maximum_Response_Type is Response_Type (1 .. 30);
+   type Status_Type              is (Fault, Success, Timeout);
+
+
+   type Response_Buffer_Type     is tagged record
+      Buffer                     : Maximum_Response_Type;
+      Length                     : Index_Type;
+   end record;
+
+   function Callback (
+      Response                  : in out Response_Buffer_Type
+   ) return Status_Type;
+
+   procedure Dump (
+      Response                   : in     Response_Buffer_Type;
+      Description                : in     String := "";
+      Length                     : in     Natural := 0;
+      From                       : in     String := Ada_Lib.Trace.Here);
 
    type Video_lib_Options_Type   is limited new Ada_Lib.Options.Actual.
                                     Nested_Options_Type with record
@@ -114,9 +131,9 @@ package Video.Lib is
    type Value_Type               is mod 2**32;
 
    procedure Dump (
-      Description                : in     String;
+      Description                : in     String := "";
       Buffer                     : in     Buffer_Type;
-      Length                     : in     Natural;
+      Length                     : in     Natural := 0;
       From                       : in     String := Ada_Lib.Trace.Here);
 
    function Hex is new Hex_IO.Modular_Hex (Data_Type);

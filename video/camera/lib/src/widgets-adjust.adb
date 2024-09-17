@@ -6,15 +6,25 @@ with ADA_LIB.Trace; use ADA_LIB.Trace;
 with Camera.Command_Queue;
 --with Camera.Lib.Base;
 with Camera.Lib.Connection;
-with Camera.Commands;
+--with Camera.Commands;
 --with Configuration.Camera.Setup;
 --with Configuration.State; use Configuration;
 --with Main;
 --with Camera.Lib.Base;
+--with Camera.Command_Queue;
 
 package body Widgets.Adjust is
 
    use type Camera.Lib.Connection.Mouse_Click_Action_Type;
+
+   type Response_Buffer_Type     is new Camera.Response_Buffer_Type with null record;
+
+   type Response_Buffer_Access   is access Response_Buffer_Type;
+
+   overriding
+   function Callback (
+      Response                  : in out Response_Buffer_Type
+   ) return Camera.Status_Type;
 
    Column_Labels                 : aliased Column_Labels_Type := (
       new String'("Vertical Scrollbar"),
@@ -47,6 +57,19 @@ package body Widgets.Adjust is
 -- begin
 --    return Widget_Name & "-" & Action'img;
 -- end Action_ID;
+
+   ----------------------------------------------------------------
+   overriding
+   function Callback (
+      Response                  : in out Response_Buffer_Type
+   ) return Camera.Status_Type is
+   ----------------------------------------------------------------
+
+   begin
+      Log_In (Debug);
+      Log_Out (Debug);
+      return Camera.Fault;
+   end Callback;
 
    ----------------------------------------------------------------
    procedure Create (
@@ -179,6 +202,8 @@ package body Widgets.Adjust is
       Mouse_Event                : in     GNOGA.GUI.Base.Mouse_Event_Record) is
    -------------------------------------------------------------------
 
+      Response_Buffer         : Response_Buffer_Access := new
+                                 Response_Buffer_Type;
       Connection_Data         : Camera.Lib.Connection.Connection_Data_Type renames
                                  Camera.Lib.Connection.Connection_Data_Type (
                                     Object.Connection_Data.all);
@@ -191,33 +216,35 @@ package body Widgets.Adjust is
          " action " & Mouse_Action'img &
          Event_Image (Mouse_Event));
 
-      case Mouse_Action is
-
-         when Camera.Lib.Connection.Any_Scroll =>
-            Camera.Command_Queue.Relative_Command (
-               Connection_Data.Camera.all,
-               Camera.Commands.Relative_Type (Mouse_Event.X),
-               Camera.Commands.Relative_Type (Mouse_Event.Y),
-               Connection_Data.Camera_Pan_Speed,
-               Connection_Data.Camera_Tilt_Speed);
-
-         when Camera.Lib.Connection.Horizontal_Scroll =>
-            Camera.Command_Queue.Relative_Command (
-               Connection_Data.Camera.all,
-               Camera.Commands.Relative_Type (Mouse_Event.X), 0,
-               Connection_Data.Camera_Pan_Speed, 0);
-
-         when Camera.Lib.Connection.No_Action | Camera.Lib.Connection.No_Change =>
-            Log_Out (Debug);
-            return;
-
-         when Camera.Lib.Connection.Vertical_Scroll =>
-            Camera.Command_Queue.Relative_Command (
-               Connection_Data.Camera.all, 0,
-               Camera.Commands.Relative_Type (Mouse_Event.Y), 0,
-               Connection_Data.Camera_Tilt_Speed);
-
-      end case;
+--    case Mouse_Action is
+--
+--       when Camera.Lib.Connection.Any_Scroll =>
+--          Connection_Data.Camera.Asynchronous (
+--             Camera.Position_Relative,
+--          Camera.Command_Queue.Relative_Command (
+--             Connection_Data.Camera.all,
+--             Camera.Commands.Relative_Type (Mouse_Event.X),
+--             Camera.Commands.Relative_Type (Mouse_Event.Y),
+--             Connection_Data.Camera_Pan_Speed,
+--             Connection_Data.Camera_Tilt_Speed);
+--
+--       when Camera.Lib.Connection.Horizontal_Scroll =>
+--          Camera.Command_Queue.Relative_Command (
+--             Connection_Data.Camera.all,
+--             Camera.Commands.Relative_Type (Mouse_Event.X), 0,
+--             Connection_Data.Camera_Pan_Speed, 0);
+--
+--       when Camera.Lib.Connection.No_Action | Camera.Lib.Connection.No_Change =>
+--          Log_Out (Debug);
+--          return;
+--
+--       when Camera.Lib.Connection.Vertical_Scroll =>
+--          Camera.Command_Queue.Relative_Command (
+--             Connection_Data.Camera.all, 0,
+--             Camera.Commands.Relative_Type (Mouse_Event.Y), 0,
+--             Connection_Data.Camera_Tilt_Speed);
+--
+--    end case;
 
 --    Connection_Data.Camera.Set_Absolute (Connection_Data.Camera_Pan,
 --       Connection_Data.Camera_Tilt);

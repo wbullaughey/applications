@@ -1,6 +1,5 @@
 camera aunit
 camera_aunit
-option: 'h' not defined
 
 
 
@@ -45,7 +44,7 @@ Camera Lib Unit Test trace options (T)
       m               main unit test trace
       o               unit_test options
       p               program trace
-      q               cameqra queue
+      q               camera queue
       s               Configuration.Camera.State unit_test options
       S               Configuration.Camera.Setup unit_test options
       t               unit_test trace
@@ -76,6 +75,7 @@ Video Lib trace options (-V)
       s               Trace simulator
 Ada_Lib.Options.GNOGA library trace options (-G)
       a               all
+      g               Ada_Lib.GNOGA
       m               GNOGA.Ada_Lib
       o               GNOGA options
 
@@ -85,7 +85,6 @@ CAC ada_lib trace library options (-a)
       c               Ada_Lib.Command_Line Trace
       C               Ada_Lib.Configuration Trace
       e               Event
-      g               GNOGA.Debug
       h               Help
       i               interrupt
       I               Ada_Lib.interface

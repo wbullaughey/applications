@@ -2,7 +2,7 @@ with Ada.Text_IO; use  Ada.Text_IO;
 --with Ada_Lib.GNOGA;
 with Ada_Lib.Strings; use Ada_Lib.Strings;
 with ADA_LIB.Trace; use ADA_LIB.Trace;
-with Camera.Lib.Base;
+--with Camera.Lib.Base;
 with Camera.Lib.Connection;
 with Configuration.Camera.Setup;
    use Configuration.Camera;
@@ -266,15 +266,7 @@ package body Widgets.Configured is
             " Configuration_ID" & Configuration_ID'img &
             " button tag " & Tag_Name (Button'tag));
 
-         Connection_Data.Camera.Process_Command (
-            Camera.Lib.Base.Memory_Set,
-            Options     => (
-               1 => (
-                  Data           => Camera.Data_Type (Preset_ID),
-                  Start          => 6,
-                  Variable_Width => False
-               )
-            ));
+         Connection_Data.Camera.Set_Preset (Preset_ID);
          Log_Out (Debug);
       end Button_Click_Handler;
 

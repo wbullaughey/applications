@@ -41,16 +41,43 @@ package body Video.Lib is
    end Address_Kind;
 
    ---------------------------------------------------------------
+   function Callback (
+      Response                  : in out Response_Buffer_Type
+   ) return Status_Type is
+   pragma Unreferenced (Response);
+   ---------------------------------------------------------------
+
+   begin
+      Not_Implemented;
+      return Fault;
+   end Callback;
+
+   ---------------------------------------------------------------
    procedure Dump (
-      Description                : in     String;
-      Buffer                     : in     Buffer_Type;
-      Length                     : in     Natural;
+      Response                   : in     Response_Buffer_Type;
+      Description                : in     String := "";
+      Length                     : in     Natural := 0;
       From                       : in     String := Ada_Lib.Trace.Here) is
    ---------------------------------------------------------------
 
    begin
-      Ada_Lib.Socket_IO.Stream_IO.Dump (Description,
-         Buffer (Buffer'first .. Buffer'first + Index_Type (Length) - 1), From);
+      Dump (Description, Response.Buffer, Length, From);
+   end Dump;
+
+   ---------------------------------------------------------------
+   procedure Dump (
+      Description                : in     String := "";
+      Buffer                     : in     Buffer_Type;
+      Length                     : in     Natural := 0;
+      From                       : in     String := Ada_Lib.Trace.Here) is
+   ---------------------------------------------------------------
+
+   begin
+      Ada_Lib.Socket_IO.Stream_IO.Dump (Description, (if Length = 0 then
+            Buffer
+         else
+            Buffer (Buffer'first ..
+               Buffer'first + Index_Type (Length) - 1)), From);
    end Dump;
 
    ---------------------------------------------------------------

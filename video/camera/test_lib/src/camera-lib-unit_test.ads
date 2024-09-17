@@ -8,9 +8,10 @@ with AUnit.Options;
 with AUnit.Simple_Test_Cases;
 with AUnit.Test_Results;
 with AUnit.Test_Suites;
-with Camera.Commands;
+--with Camera.Commands;
 with Camera.LIB.ALPTOP;
-with Camera.Commands.PTZ_Optics;
+with Camera.LIB.Base;
+with Camera.Lib.PTZ_Optics;
 with Configuration.Camera.Setup;
 with Configuration.State;
 with GNAT.Source_Info;
@@ -25,8 +26,7 @@ package Camera.Lib.Unit_Test is
       Brand                      :Standard.Camera.Lib.Brand_Type) is abstract new
                                     Ada_Lib.Unit_Test.Test_Cases.
                                        Test_Case_Type with record
-      Camera                     : Standard.Camera.Commands.
-                                    Camera_Class_Access := Null;
+      Camera                     : Base.Base_Camera_Class_Access := Null;
       Camera_Address             : Address_Constant_Access := Null;
       Port_Number                : Port_Type;
       Location                   : Configuration.State.Location_Type;
@@ -39,7 +39,7 @@ package Camera.Lib.Unit_Test is
             Null;
 
          when Standard.Camera.LIB.PTZ_Optics_Camera =>
-            PTZ_Optics           : aliased Standard.Camera.Commands.
+            PTZ_Optics           : aliased Standard.Camera.Lib.
                                     PTZ_Optics.PTZ_Optics_Type;
 
       end case;

@@ -1,11 +1,13 @@
+with Ada.Streams;
 with Ada_Lib.GNOGA;
+--with Ada_Lib.Time;
 with Ada_Lib.Unit_Test;
 with AUnit.Assertions; use AUnit.Assertions;
 with AUnit.Test_Cases;
 --with Ada_Lib.Options.Unit_Test;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
 --with Camera.Lib.Base;
-with Camera.Commands;
+--with Camera.Commands;
 with Camera.Lib.Connection;
 with Camera.Lib.Unit_Test;
 with Interfaces;
@@ -13,8 +15,10 @@ with Video.Lib;
 
 package body Camera.Lib.Base.Command_Tests is
 
+   use type Ada.Streams.Stream_Element;
+-- use type Ada_Lib.Time.Time_Type;
    use type Interfaces.Integer_16;
--- use type Value_Type;
+   use type Interfaces.Unsigned_16;
 
    type Test_Type (
       Brand                      : Brand_Type) is new Camera.Lib.Unit_Test.
@@ -42,8 +46,8 @@ package body Camera.Lib.Base.Command_Tests is
 -- procedure Test_Manual_Focus (
 --    Test                       : in out AUnit.Test_Cases.Test_Case'class);
 
-   procedure Test_Position_Absolute (
-      Test                       : in out AUnit.Test_Cases.Test_Case'class);
+-- procedure Test_Position_Absolute (
+--    Test                       : in out AUnit.Test_Cases.Test_Case'class);
 
    procedure Test_Position_Down_Left (
       Test                       : in out AUnit.Test_Cases.Test_Case'class);
@@ -102,6 +106,53 @@ package body Camera.Lib.Base.Command_Tests is
    Suite_Name                    : constant String := "Video_Commands";
 
    ---------------------------------------------------------------
+   procedure Get_Absolute (
+      Camera                     : in out Base_Camera_Type'class;
+      Pan                        :    out Absolute_Type;
+      Tilt                       :    out Absolute_Type) is
+   ---------------------------------------------------------------
+
+      Accumulator                : Interfaces.Unsigned_16;
+      Conversion                 : Absolute_Type;
+      for Conversion'address use Accumulator'address;
+      Response_Buffer            : Maximum_Response_Type;
+      Response_Length            : Index_Type;
+
+   begin
+      Log_In (Debug);
+      Camera.Process_Command (Position_Request,
+         Options           => Null_Options,
+         Response          => Response_Buffer,
+         Response_Length   => Response_Length);
+
+--    if Debug then
+--       Response.Dump;
+--    end if;
+
+      Accumulator := 0;
+      for I in Index_Type'(3) .. 6 loop
+         Log_Here (Debug, I'img & ": " &
+            Ada_lib.Socket_IO.Hex (Response_Buffer (I)));
+         Accumulator := Accumulator * 16#10# +
+            Interfaces.Unsigned_16 (Response_Buffer (I) and 16#F#);
+      end loop;
+      Log_Here (Debug, Hex_IO.Hex (Accumulator) &
+         " conversion" & Conversion'img);
+      Pan := Conversion;
+
+      Accumulator := 0;
+      for I in Index_Type'(7) .. 10 loop
+         Log_Here (Debug, I'img & ": " &
+            Ada_lib.Socket_IO.Hex (Response_Buffer (I)));
+         Accumulator := Accumulator * 16#10# +
+            Interfaces.Unsigned_16 (Response_Buffer (I) and 16#F#);
+      end loop;
+      Log_Here (Debug, Hex_IO.Hex (Accumulator) &
+         " conversion" & Conversion'img);
+      Tilt := Conversion;
+   end Get_Absolute;
+
+   ---------------------------------------------------------------
    overriding
    function Name (
       Test                       : in     Test_Type) return AUnit.Message_String is
@@ -111,6 +162,53 @@ package body Camera.Lib.Base.Command_Tests is
    begin
       return AUnit.Format (Suite_Name);
    end Name;
+
+   ---------------------------------------------------------------
+   procedure Position_Relative (
+      Camera                     : in out Base_Camera_Type'class;
+      Pan                        : in     Relative_Type;
+      Tilt                       : in     Relative_Type;
+      Pan_Speed                  : in     Property_Type := 1;
+      Tilt_Speed                 : in     Property_Type := 1) is
+   ---------------------------------------------------------------
+
+   begin
+      Log_In (Debug, "pan" & Pan'img & " tilt" & Tilt'img);
+      Camera.Process_Command (Position_Relative,
+         Options     => (
+            (
+               Data           => Pan_Speed,
+               Start          => 5,
+               Variable_Width => False
+            ),
+            (
+               Data           => Tilt_Speed,
+               Start          => 6,
+               Variable_Width => False
+            ),
+            (
+               Start          => 7,
+               Variable_Width => True,
+               Value          => Convert (Pan),
+               Width          => 4
+            ),
+            (
+               Start          => 11,
+               Variable_Width => True,
+               Value          => Convert (Tilt),
+               Width          => 4
+            )
+         )
+      );
+
+      Log_Out (Debug);
+
+   exception
+      when Fault : others =>
+         Trace_Exception (Fault, Here);
+         raise;
+
+   end Position_Relative;
 
    ---------------------------------------------------------------
    overriding
@@ -129,9 +227,9 @@ package body Camera.Lib.Base.Command_Tests is
 --       Routine        => Test_Manual_Focus'access,
 --       Routine_Name   => AUnit.Format ("Test_Manual_Focus")));
 --
-      Test.Add_Routine (AUnit.Test_Cases.Routine_Spec'(
-         Routine        => Test_Position_Absolute'access,
-         Routine_Name   => AUnit.Format ("Test_Position_Absolute")));
+--    Test.Add_Routine (AUnit.Test_Cases.Routine_Spec'(
+--       Routine        => Test_Position_Absolute'access,
+--       Routine_Name   => AUnit.Format ("Test_Position_Absolute")));
 
       Test.Add_Routine (AUnit.Test_Cases.Routine_Spec'(
          Routine        => Test_Position_Down_Left'access,
@@ -206,14 +304,14 @@ package body Camera.Lib.Base.Command_Tests is
 
 -- ---------------------------------------------------------------
 -- procedure Send_Absolute_Position (
---    Camera                     : in out Base.Base_Camera_Type'class;
+--    Camera                     : in out Base_Camera_Type'class;
 --    Pan                        : in     Value_Type;
 --    Tilt                       : in     Value_Type) is
 -- ---------------------------------------------------------------
 --
 -- begin
 --    Log_In (Debug, "Pan " & Pan'img & " tilt " & Tilt'img);
---    Camera.Process_Command (Base.Position_Absolute,
+--    Camera.Process_Command (Position_Absolute,
 --       Options     => (
 --             (
 --                Data           => 1,    -- pan slow speed
@@ -242,28 +340,121 @@ package body Camera.Lib.Base.Command_Tests is
 -- end Send_Absolute_Position;
 
    ---------------------------------------------------------------
-   overriding
-   procedure Set_Up (
-      Test                       : in out Test_Type) is
+   procedure Set_Absolute (
+      Camera                     : in out Base_Camera_Type'class;
+      Pan                        : in     Absolute_Type;
+      Tilt                       : in     Absolute_Type;
+      Pan_Speed                  : in      Property_Type := 1;
+      Tilt_Speed                 : in      Property_Type := 1) is
    ---------------------------------------------------------------
 
-      Connection_Data         : constant Standard.Camera.Lib.Connection.Connection_Data_Access :=
-                                 new Standard.Camera.Lib.Connection.Connection_Data_Type;
+   begin
+      Log_In (Debug, "pan" & Pan'img & " tilt" & Tilt'img);
+      Camera.Process_Command (Position_Absolute,
+         Options     => (
+            (
+               Data           => Pan_Speed,
+               Start          => 5,
+               Variable_Width => False
+            ),
+            (
+               Data           => Tilt_Speed,
+               Start          => 6,
+               Variable_Width => False
+            ),
+            (
+               Start          => 7,
+               Variable_Width => True,
+               Value          => Convert (Pan),
+               Width          => 4
+            ),
+            (
+               Start          => 11,
+               Variable_Width => True,
+               Value          => Convert (Tilt),
+               Width          => 4
+            )
+         )
+      );
+
+      Log_Out (Debug);
+   end Set_Absolute;
+
+   ---------------------------------------------------------------
+   procedure Set_Power (
+      Camera                     : in out Base_Camera_Type'class;
+      On                         : in     Boolean) is
+   ---------------------------------------------------------------
+
+      Data                       : constant array (Boolean) of Data_Type  := (
+                                    False => 3,
+                                    True  => 2);
+   begin
+      Log_In (Debug, "on " & On'img);
+      Camera.Process_Command (Power,
+         Options     => ( 1 =>
+               (
+                  Data           => Data (On),
+                  Start          => 5,
+                  Variable_Width => False
+               )
+            ));
+
+      Log_Out (Debug);
+   end Set_Power;
+
+   ---------------------------------------------------------------
+   procedure Set_Preset (
+      Camera                     : in out Base_Camera_Type'class;
+      Preset_ID                  : in     Configuration.Camera.Preset_ID_Type;
+      Wait_Until_Finished        : in     Boolean := True) is
+   ---------------------------------------------------------------
+
+   begin
+      Log_In (Debug, "preset id" & Preset_ID'img);
+      Camera.Process_Command (Memory_Recall,
+         Options     => ( 1 =>
+               (
+                  Data           => Data_Type (Preset_ID),
+                  Start          => 6,
+                  Variable_Width => False
+               )
+            ));
+
+      if Wait_Until_Finished then
+         declare
+            Pan                  : Absolute_Type;
+            Tilt                 : Absolute_Type;
+         begin
+            Get_Absolute (Camera, Pan, Tilt);
+            Log_Here (Debug, "pan " & Pan'img & " tilt " & Tilt'img);
+         end;
+      end if;
+      Log_Out (Debug);
+   end Set_Preset;
+
+   ---------------------------------------------------------------
+   overriding
+   procedure Set_Up (
+      Test              : in out Test_Type) is
+   ---------------------------------------------------------------
+
+--    Connection_Data   : constant Connection.Connection_Data_Access :=
+--                         Connection.Connection_Data_Access (
+--                            Ada_Lib.GNOGA.Get_Connection_Data);
    begin
       Log_In (Debug or Trace_Set_Up);
-      Ada_Lib.GNOGA.Set_Connection_Data (
-         Ada_Lib.GNOGA.Connection_Data_Class_Access (Connection_Data));
-      Connection_Data.Initialize;
+--    Connection_Data.Initialize;
       Camera.Lib.Unit_Test.Camera_Test_Type (Test).Set_Up;
 
       begin
-         Test.Camera.Set_Power (True);
+         Set_Power (Test.Camera.all, True);
       exception
          when Fault: others =>
             Trace_Message_Exception (True, Fault,
                "ignore exception in Set_Up for Set_Power");
       end;
-      Test.Camera.Set_Preset (Test.Camera.Get_Default_Preset);
+      Set_Preset (Test.Camera.all, Test.Camera.Get_Default_Preset);
       Log_Out (Debug or Trace_Set_Up);
    end Set_Up;
 
@@ -322,25 +513,25 @@ package body Camera.Lib.Base.Command_Tests is
 --    Log_Out (Debug);
 -- end Test_Manual_Focus;
 
-   ---------------------------------------------------------------
-   procedure Test_Position_Absolute (
-      Test                       : in out AUnit.Test_Cases.Test_Case'class) is
-   ---------------------------------------------------------------
-
-      Local_Test                 : Test_Type renames Test_Type (Test);
-
-   begin
-      Log_In (Debug);
-      Pause (Local_Test.Manual,
-         "set preset 0 watch for slow scan down for 10 seconds");
-
---    Send_Absolute_Position (Local_Test.Camera.all, 16#123#, 16#321#);
-      Local_Test.Camera.Set_Absolute (16#123#, 16#321#);
-      Assert (Ask_Pause (Local_Test.Manual,
-            "verify that the image shifted"),
-         "manual set failed");
-      Log_Out (Debug);
-   end Test_Position_Absolute;
+--   ---------------------------------------------------------------
+--   procedure Test_Position_Absolute (
+--      Test                       : in out AUnit.Test_Cases.Test_Case'class) is
+--   ---------------------------------------------------------------
+--
+--      Local_Test                 : Test_Type renames Test_Type (Test);
+--
+--   begin
+--      Log_In (Debug);
+--      Pause (Local_Test.Manual,
+--         "set preset 0 watch for slow scan down for 10 seconds");
+--
+----    Send_Absolute_Position (Local_Test.Camera.all, 16#123#, 16#321#);
+--      Local_Test.Camera.Set_Absolute (16#123#, 16#321#);
+--      Assert (Ask_Pause (Local_Test.Manual,
+--            "verify that the image shifted"),
+--         "manual set failed");
+--      Log_Out (Debug);
+--   end Test_Position_Absolute;
 
    ---------------------------------------------------------------
    procedure Test_Position_Down_Left (
@@ -354,7 +545,7 @@ package body Camera.Lib.Base.Command_Tests is
       Pause (Local_Test.Manual,
          "set preset 0 watch for slow scan down left for 10 seconds");
 
-      Local_Test.Camera.Process_Command (Base.Position_Down_Left,
+      Local_Test.Camera.Process_Command (Position_Down_Left,
          Options     => (
                (
                   Data           => 1,    -- pan slow speed
@@ -372,13 +563,13 @@ package body Camera.Lib.Base.Command_Tests is
       Wait (2.0);
       Log_Here (Debug, "send stop");
 
-      Local_Test.Camera.Process_Command (Base.Position_Stop,
-         Options     => Base.Null_Option);
+      Local_Test.Camera.Process_Command (Position_Stop,
+         Options     => Null_Options);
 
       Assert (Ask_Pause (Local_Test.Manual,
             "verify that the image shifted down left slowly, watch for fast scan for 5 seconds"),
          "manual set failed");
-      Local_Test.Camera.Process_Command (Base.Position_Down_Left,
+      Local_Test.Camera.Process_Command (Position_Down_Left,
          Options     => (
                (
                   Data           => 16#18#,    -- pan high speed
@@ -394,8 +585,8 @@ package body Camera.Lib.Base.Command_Tests is
 
       Wait (2.0);
 
-      Local_Test.Camera.Process_Command (Base.Position_Stop,
-         Options     => Base.Null_Option);
+      Local_Test.Camera.Process_Command (Position_Stop,
+         Options     => Null_Options);
 
       Assert (Ask_Pause (Local_Test.Manual,
             "verify that the image shifted down left fast"),
@@ -414,7 +605,7 @@ package body Camera.Lib.Base.Command_Tests is
       Log_In (Debug);
       Pause (Local_Test.Manual, "set preset 0");
 
-      Local_Test.Camera.Process_Command (Base.Position_Down_Right,
+      Local_Test.Camera.Process_Command (Position_Down_Right,
          Options     => (
                (
                   Data           => 1,    -- pan slow speed
@@ -429,8 +620,8 @@ package body Camera.Lib.Base.Command_Tests is
             ));
       Wait (2.0);
 
-      Local_Test.Camera.Process_Command (Base.Position_Stop,
-         Options     => Base.Null_Option);
+      Local_Test.Camera.Process_Command (Position_Stop,
+         Options     => Null_Options);
 
       Assert (Ask_Pause (Local_Test.Manual,
             "verify that the image shifted down right"),
@@ -450,7 +641,7 @@ package body Camera.Lib.Base.Command_Tests is
       Pause (Local_Test.Manual,
          "set preset 0 watch for slow scan down for 10 seconds");
 
-      Local_Test.Camera.Process_Command (Base.Position_Down,
+      Local_Test.Camera.Process_Command (Position_Down,
          Options     => (
                (
                   Data           => 1,    -- pan slow speed
@@ -466,7 +657,7 @@ package body Camera.Lib.Base.Command_Tests is
 
       Wait (2.0);
 
-      Local_Test.Camera.Process_Command (Base.Position_Stop,
+      Local_Test.Camera.Process_Command (Position_Stop,
          Options     => (
                (
                   Data           => 1,    -- pan slow speed
@@ -483,7 +674,7 @@ package body Camera.Lib.Base.Command_Tests is
       Assert (Ask_Pause (Local_Test.Manual,
             "verify that the image shifted down slowly, watch for fast scan for 5 seconds"),
          "manual set failed");
-      Local_Test.Camera.Process_Command (Base.Position_Down,
+      Local_Test.Camera.Process_Command (Position_Down,
          Options     => (
                (
                   Data           => 1,    -- pan slow speed
@@ -499,7 +690,7 @@ package body Camera.Lib.Base.Command_Tests is
 
       Wait (1.5);
 
-      Local_Test.Camera.Process_Command (Base.Position_Stop,
+      Local_Test.Camera.Process_Command (Position_Stop,
          Options     => (
                (
                   Data           => 1,    -- pan slow speed
@@ -532,7 +723,7 @@ package body Camera.Lib.Base.Command_Tests is
       Pause (Local_Test.Manual,
          "set preset 0 watch for slow scan left for 10 seconds");
 
-      Local_Test.Camera.Process_Command (Base.Position_Left,
+      Local_Test.Camera.Process_Command (Position_Left,
          Options     => (
                (
                   Data           => 1,    -- pan slow speed
@@ -547,7 +738,7 @@ package body Camera.Lib.Base.Command_Tests is
             ));
       Wait (2.0);
 
-      Local_Test.Camera.Process_Command (Base.Position_Stop,
+      Local_Test.Camera.Process_Command (Position_Stop,
          Options     => (
                (
                   Data           => 1,    -- pan slow speed
@@ -564,7 +755,7 @@ package body Camera.Lib.Base.Command_Tests is
       Assert (Ask_Pause (Local_Test.Manual,
             "verify that the image shifted left slowly, watch for fast scan for 5 seconds"),
          "manual set failed");
-      Local_Test.Camera.Process_Command (Base.Position_Left,
+      Local_Test.Camera.Process_Command (Position_Left,
          Options     => (
                (
                   Data           => 16#0C#,    -- pan slow speed
@@ -579,7 +770,7 @@ package body Camera.Lib.Base.Command_Tests is
             ));
       Wait (1.5);
 
-      Local_Test.Camera.Process_Command (Base.Position_Stop,
+      Local_Test.Camera.Process_Command (Position_Stop,
          Options     => (
                (
                   Data           => 1,    -- pan slow speed
@@ -604,34 +795,34 @@ package body Camera.Lib.Base.Command_Tests is
       Test                       : in out AUnit.Test_Cases.Test_Case'class) is
    ---------------------------------------------------------------
 
-      Initial_Pan                : Camera.Commands.Absolute_Type;
-      Initial_Tilt               : Camera.Commands.Absolute_Type;
+      Initial_Pan                : Absolute_Type;
+      Initial_Tilt               : Absolute_Type;
       Local_Test                 : Test_Type renames Test_Type (Test);
-      Pan                        : Camera.Commands.Absolute_Type;
-      Tilt                       : Camera.Commands.Absolute_Type;
+      Pan                        : Absolute_Type;
+      Tilt                       : Absolute_Type;
 
    begin
       Log_In (Debug);
       Pause (Local_Test.Manual, "camera should be at preset 0");
-      Local_Test.Camera.Get_Absolute (Initial_Pan, Initial_Tilt);
+      Get_Absolute (Local_Test.Camera.all, Initial_Pan, Initial_Tilt);
       Log_Here (Debug, "initial pan" & Initial_Pan'img & " inital tilt" & Initial_Tilt'img);
       for Count in Video.Lib.Relative_Type'(1) .. 10 loop
          declare
-            Expected_Pan         : constant Camera.Commands.Absolute_Type :=
+            Expected_Pan         : constant Absolute_Type :=
                                     Initial_Pan +
-                                    Camera.Commands.Absolute_Type (Count);
-            Expected_Tilt        : constant Camera.Commands.Absolute_Type :=
+                                    Absolute_Type (Count);
+            Expected_Tilt        : constant Absolute_Type :=
                                     Initial_Tilt +
-                                    Camera.Commands.Absolute_Type (Count * 2);
+                                    Absolute_Type (Count * 2);
 
          begin
             Log_Here (Debug, "Count" & Count'img &
                "initial pan" & Initial_Pan'img &
                " initial Tilt" & Initial_Tilt'img);
-            Local_Test.Camera.Position_Relative (
+            Position_Relative (Local_Test.Camera.all,
                Pan   => Count,
                Tilt  => Count * 2);
-            Local_Test.Camera.Get_Absolute (Pan, Tilt);
+            Get_Absolute (Local_Test.Camera.all, Pan, Tilt);
             Log_Here (Debug, "pan" & Pan'img & " tilt" & Tilt'img &
                " expected pan" & Expected_Pan'img &
                " expected tilt" & Expected_Tilt'img);
@@ -666,17 +857,17 @@ package body Camera.Lib.Base.Command_Tests is
    ---------------------------------------------------------------
 
       Local_Test                 : Test_Type renames Test_Type (Test);
-      Pan                        : Camera.Commands.Absolute_Type := 0;
+      Pan                        : Absolute_Type := 0;
 --    Response_Buffer            : Maximum_Response_Type;
-      Set_Pan                    : constant Camera.Commands.Absolute_Type := 16#123#;
-      Set_Tilt                   : constant Camera.Commands.Absolute_Type := 16#0bc#;
-      Tilt                       : Camera.Commands.Absolute_Type := 0;
+      Set_Pan                    : constant Absolute_Type := 16#123#;
+      Set_Tilt                   : constant Absolute_Type := 16#0bc#;
+      Tilt                       : Absolute_Type := 0;
 --    Timeout                    : constant Ada_Lib.Time.Time_Type :=
 --                                  Ada_Lib.Time.Now + 60.0;
    begin
       Log_In (Debug, "set pan " & Set_Pan'img & " set tilt " & Set_Tilt'img);
-      Local_Test.Camera.Set_Absolute (Set_Pan, Set_Tilt);
-      Local_Test.Camera.Get_Absolute (Pan, Tilt);
+      Set_Absolute (Local_Test.Camera.all, Set_Pan, Set_Tilt);
+      Get_Absolute (Local_Test.Camera.all, Pan, Tilt);
 
       Assert (Pan = Set_Pan, "invalid pan " & Pan'img &
          " expected " & Set_Pan'img);
@@ -697,7 +888,7 @@ package body Camera.Lib.Base.Command_Tests is
       Pause (Local_Test.Manual,
          "set preset 0 watch for slow scan right for 10 seconds");
 
-      Local_Test.Camera.Process_Command (Base.Position_Right,
+      Local_Test.Camera.Process_Command (Position_Right,
          Options     => (
                (
                   Data           => 1,    -- pan slow speed
@@ -712,7 +903,7 @@ package body Camera.Lib.Base.Command_Tests is
             ));
       Wait (2.0);
 
-      Local_Test.Camera.Process_Command (Base.Position_Stop,
+      Local_Test.Camera.Process_Command (Position_Stop,
          Options     => (
                (
                   Data           => 1,    -- pan slow speed
@@ -729,7 +920,7 @@ package body Camera.Lib.Base.Command_Tests is
       Assert (Ask_Pause (Local_Test.Manual,
             "verify that the image shifted right slowly, watch for fast scan for 5 seconds"),
          "manual set failed");
-      Local_Test.Camera.Process_Command (Base.Position_Right,
+      Local_Test.Camera.Process_Command (Position_Right,
          Options     => (
                (
                   Data           => 1,    -- pan slow speed
@@ -744,7 +935,7 @@ package body Camera.Lib.Base.Command_Tests is
             ));
       Wait (1.5);
 
-      Local_Test.Camera.Process_Command (Base.Position_Stop,
+      Local_Test.Camera.Process_Command (Position_Stop,
          Options     => (
                (
                   Data           => 1,    -- pan slow speed
@@ -773,7 +964,7 @@ package body Camera.Lib.Base.Command_Tests is
 
    begin
       Log_In (Debug);
-      Local_Test.Camera.Process_Command (Base.Position_Stop,
+      Local_Test.Camera.Process_Command (Position_Stop,
          Options     => (
                (
                   Data           => 1,    -- pan slow speed
@@ -801,7 +992,7 @@ package body Camera.Lib.Base.Command_Tests is
       Pause (Local_Test.Manual,
          "set preset 0 watch for slow scan up for 10 seconds");
 
-      Local_Test.Camera.Process_Command (Base.Position_Up,
+      Local_Test.Camera.Process_Command (Position_Up,
          Options     => (
                (
                   Data           => 1,    -- pan slow speed
@@ -817,7 +1008,7 @@ package body Camera.Lib.Base.Command_Tests is
 
       Wait (2.0);
 
-      Local_Test.Camera.Process_Command (Base.Position_Stop,
+      Local_Test.Camera.Process_Command (Position_Stop,
          Options     => (
                (
                   Data           => 1,    -- pan slow speed
@@ -834,7 +1025,7 @@ package body Camera.Lib.Base.Command_Tests is
       Assert (Ask_Pause (Local_Test.Manual,
             "verify that the image shifted up slowly, watch for fast scan for 5 seconds"),
          "manual set failed");
-      Local_Test.Camera.Process_Command (Base.Position_Up,
+      Local_Test.Camera.Process_Command (Position_Up,
          Options     => (
                (
                   Data           => 16#0C#,    -- pan high speed
@@ -849,7 +1040,7 @@ package body Camera.Lib.Base.Command_Tests is
             ));
       Wait (1.5);
 
-      Local_Test.Camera.Process_Command (Base.Position_Stop,
+      Local_Test.Camera.Process_Command (Position_Stop,
          Options     => (
                (
                   Data           => 1,    -- pan slow speed
@@ -880,7 +1071,7 @@ package body Camera.Lib.Base.Command_Tests is
       Log_In (Debug);
       Pause (Local_Test.Manual, "set preset 0");
 
-      Local_Test.Camera.Process_Command (Base.Position_Up_Left,
+      Local_Test.Camera.Process_Command (Position_Up_Left,
          Options     => (
                (
                   Data           => 1,    -- pan slow speed
@@ -896,7 +1087,7 @@ package body Camera.Lib.Base.Command_Tests is
 
       Wait (1.5);
 
-      Local_Test.Camera.Process_Command (Base.Position_Stop,
+      Local_Test.Camera.Process_Command (Position_Stop,
          Options     => (
                (
                   Data           => 1,    -- pan slow speed
@@ -927,7 +1118,7 @@ package body Camera.Lib.Base.Command_Tests is
       Log_In (Debug);
       Pause (Local_Test.Manual, "set preset 0");
 
-      Local_Test.Camera.Process_Command (Base.Position_Up_Right,
+      Local_Test.Camera.Process_Command (Position_Up_Right,
          Options     => (
                (
                   Data           => 1,    -- pan slow speed
@@ -942,7 +1133,7 @@ package body Camera.Lib.Base.Command_Tests is
             ));
       Wait (1.5);
 
-      Local_Test.Camera.Process_Command (Base.Position_Stop,
+      Local_Test.Camera.Process_Command (Position_Stop,
          Options     => (
                (
                   Data           => 1,    -- pan slow speed
@@ -972,7 +1163,7 @@ package body Camera.Lib.Base.Command_Tests is
    begin
       Log_In (Debug);
       for On in Boolean'range loop
-         Local_Test.Camera.Set_Power (On);
+         Set_Power (Local_Test.Camera.all, On);
       end loop;
       Log_Out (Debug);
    end Test_Power;
@@ -987,15 +1178,7 @@ package body Camera.Lib.Base.Command_Tests is
    begin
       Log_In (Debug);
       Pause (Local_Test.Manual, "set preset 3");
-      Local_Test.Camera.Set_Preset (3);
---    Local_Test.Camera.Process_Command (Base.Memory_Recall,
---       Options     => (
---             1 => (
---                Data           => 3,   -- preset 3
---                Start          => 6,
---                Variable_Width => False
---             )
---          ));
+      Set_Preset (Local_Test.Camera.all, 3);
 
       Assert (Ask_Pause (Local_Test.Manual,
             "verify that the preset is 3"),
@@ -1021,7 +1204,7 @@ package body Camera.Lib.Base.Command_Tests is
       Log_In (Debug);
       Pause (Local_Test.Manual, "possition camera away from preset");
 
-      Local_Test.Camera.Process_Command (Base.Memory_Set,
+      Local_Test.Camera.Process_Command (Memory_Set,
          Options     => ( 1 =>
                (
                   Data           => Test_Preset,
@@ -1030,7 +1213,7 @@ package body Camera.Lib.Base.Command_Tests is
                )
             ));
 
-      Local_Test.Camera.Process_Command (Base.Memory_Recall,
+      Local_Test.Camera.Process_Command (Memory_Recall,
          Options     => ( 1 =>
                (
                   Data           => 0,   -- preset 0

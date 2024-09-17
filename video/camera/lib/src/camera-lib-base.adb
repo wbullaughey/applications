@@ -63,7 +63,7 @@ package body Camera.Lib.Base is
    ----------------------------------------------------------------------------
    procedure Apply_Parameters (
       Buffer                     : in out Maximum_Command_Type;
-      Command                    : in     Buffer_Type;
+      Command                    : in     Response_Type;
       Options                    : in     Options_Type) is
    ----------------------------------------------------------------------------
 
@@ -258,11 +258,12 @@ package body Camera.Lib.Base is
    ---------------------------------------------------------------
 
       Response                   : Maximum_Response_Type;
+      Response_Length            : Index_Type;
 
    begin
       Log_In (Debug, "command " & Command'img);
       Base_Camera_Type'class (Camera).Process_Command (Command, Options,
-         Response); -- default with no value returned
+         Response, Response_Length); -- default with no value returned
       Log_Out (Debug);
    end Process_Command;
 
@@ -271,11 +272,11 @@ package body Camera.Lib.Base is
       Camera                     : in out Base_Camera_Type;
       Command                    : in     Commands_Type;
       Options                    : in     Options_Type;
-      Response                   :    out Maximum_Response_Type) is
+      Response                   :    out Maximum_Response_Type;
+      Response_Length            :    out Index_Type) is
    ---------------------------------------------------------------
 
       Get_Ack                    : Boolean;
-      Response_Length            : Index_Type;
       Has_Response               : Boolean;
       Timeout                    : constant Duration :=
                                     Base_Camera_Type'class (Camera).

@@ -19,7 +19,7 @@ with Command_Name;
 --with Gnoga.Gui.Window;
 --with Main;
 --with Video.Lib;
---with Camera.Commands.PTZ_Optics;
+--with Camera.Lib.PTZ_Optics;
 --with Widgets.Control;
 --with Widgets.Configured;
 --with Widgets.Video;

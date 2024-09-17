@@ -171,6 +171,7 @@
             <F N="../../build_all.txt"/>
             <F N="../../ada_lib/ada_lib_tests/file_copy_source"/>
             <F N="../../ada_lib/ada_lib_tests/help"/>
+            <F N="../../ada_lib/ada_lib_tests/list-ada_lib-all.txt"/>
             <F N="../../ada_lib/ada_lib_tests/list-ada_lib.txt"/>
             <F N="../../ada_lib/ada_lib_tests/notes.txt"/>
             <F N="../../ada_lib/ada_lib_tests/suites"/>

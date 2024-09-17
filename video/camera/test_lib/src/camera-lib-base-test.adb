@@ -12,7 +12,7 @@ with Ada_Lib.Unit_Test.Test_Cases;
 with GNAT.Sockets;
 --with GNAT.Source_Info;
 with Hex_IO;
-with Camera.Commands.PTZ_Optics;
+with Camera.Lib.PTZ_Optics;
 with Camera.LIB.ALPTOP;
 with Camera.Lib.Unit_Test;
 
@@ -33,7 +33,7 @@ package body Camera.Lib.Base.Test is
             Null;
 
          when PTZ_Optics_Camera =>
-            PTZ_Optics           : aliased Standard.Camera.Commands.PTZ_Optics.PTZ_Optics_Type;
+            PTZ_Optics           : aliased Standard.Camera.Lib.PTZ_Optics.PTZ_Optics_Type;
 
       end case;
    end record;

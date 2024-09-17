@@ -20,49 +20,6 @@ package Camera.Lib.Base is
 
    use type GNAT.Sockets.Port_Type;
 
-   type Commands_Type is (
-      Auto_Focus,
-      Manual_Focus,
-      Position_Absolute,
-      Position_Down_Left,
-      Position_Down_Right,
-      Position_Down,
-      Position_Left,
-      Position_Relative,
-      Position_Request,
-      Position_Right,
-      Position_Stop,
-      Position_Up,
-      Position_Up_Left,
-      Position_Up_Right,
-      Memory_Recall,
-      Memory_Set,
-      Memory_Reset,
-      Power,
-      Zoom_Direct,
-      Zoom_Full,
-      Zoom_Inquire,
-      No_Command
-   );
-
-   type Option_Type (
-      Variable_Width             : Boolean := False) is record
-      Start                      : Index_Type;
-
-      case Variable_Width is
-
-         when False =>
-            Data                 : Data_Type;
-
-         when True =>
-            Value                : Value_Type;
-            Width                : Index_Type;
-
-      end case;
-   end record;
-
-   type Options_Type             is array (Index_Type range  <>) of Option_Type;
-
    type Command_Type             is record
       Length                     : Index_Type;
       Command                    : Maximum_Command_Type;
@@ -77,13 +34,9 @@ package Camera.Lib.Base is
 
    procedure Acked (
       Camera                     : in     Base_Camera_Type;
-      Response                   : in     Buffer_Type;
+      Response                   : in     Response_Type;
       Value                      :    out Natural;
       Next_Buffer_Index          :    out Index_Type) is abstract;
-
--- procedure Cell_Preset (
---    Camera                     : in out Base_Camera_Type;
---    Preset                     : in     Camera_Preset_Type) is abstract;
 
    overriding
    procedure Close (
@@ -91,7 +44,7 @@ package Camera.Lib.Base is
 
    procedure Completed (
       Camera                     : in     Base_Camera_Type;
-      Buffer                     : in     Buffer_Type;
+      Buffer                     : in     Response_Type;
       Start                      : in     Index_Type;
       Completion_Value           :    out Natural;
       Next_Byte                  :    out Index_Type) is abstract;
@@ -111,6 +64,11 @@ package Camera.Lib.Base is
       Response                   :    out Response_Type;
       Response_Length            : in     Index_Type;
       Response_Timeout           : in     Duration);
+
+-- procedure Get_Absolute (
+--    Camera                     : in out Base_Camera_Type;
+--    Pan                        :    out Absolute_Type;
+--    Tilt                       :    out Absolute_Type) is abstract;
 
    function Get_Timeout (
       Camera                     : in     Base_Camera_Type;
@@ -136,21 +94,6 @@ package Camera.Lib.Base is
       Address                    : in     Ada_Lib.Socket_IO.Address_Type;
       Port                       : in     Ada_Lib.Socket_IO.Port_Type);
 
-   procedure Send_Command (
-      Camera                     : in out Base_Camera_Type;
-      Command                    : in     Commands_Type;
-      Get_Ack                    :    out Boolean;
-      Has_Response               :    out Boolean;
-      Response_Length            :    out Index_Type) is abstract;
-
-   procedure Send_Command (
-      Camera                     : in out Base_Camera_Type;
-      Command                    : in     Commands_Type;
-      Options                    : in     Options_Type;
-      Get_Ack                    :    out Boolean;
-      Has_Response               :    out Boolean;
-      Response_Length            :    out Index_Type) is abstract;
-
    procedure Process_Command (
       Camera                     : in out Base_Camera_Type;
       Command                    : in     Commands_Type;
@@ -160,13 +103,46 @@ package Camera.Lib.Base is
       Camera                     : in out Base_Camera_Type;
       Command                    : in     Commands_Type;
       Options                    : in     Options_Type;
-      Response                   :    out Maximum_Response_Type);
+      Response                   :    out Maximum_Response_Type;
+      Response_Length            :    out Index_Type);
 
    procedure Process_Response (
       Camera                     : in     Base_Camera_Type;
-      Response                   : in     Buffer_Type;
+      Response                   : in     Response_Type;
       Value                      :    out Data_Type;
       Next_Buffer_Start          :    out Index_Type) is abstract;
+
+   procedure Send_Command (
+      Camera                     : in out Base_Camera_Type;
+      Command                    : in     Commands_Type;
+      Get_Ack                    :    out Boolean;
+      Has_Response               :    out Boolean;
+      Response_Length            :    out Index_Type) is abstract;
+
+   procedure Send_Command (
+      Camera                     : in out Base_Camera_Type;
+      Command                    : in     Commands_Type;
+      Options                    : in     Options_Type;
+      Get_Ack                    :    out Boolean;
+      Has_Response               :    out Boolean;
+      Response_Length            :    out Index_Type) is abstract;
+
+-- procedure Set_Absolute (
+--    Camera                     : in out Base_Camera_Type;
+--    Pan                        : in     Absolute_Type;
+--    Tilt                       : in     Absolute_Type;
+--    Pan_Speed                  : in     Property_Type := 1;
+--    Tilt_Speed                 : in     Property_Type := 1) is abstract;
+--
+-- procedure Set_Power (
+--    Camera                     : in out Base_Camera_Type;
+--    On                         : in     Boolean) is abstract;
+
+-- -- sets camera to a preset
+-- procedure Set_Preset (
+--    Camera                     : in out Base_Camera_Type;
+--    Preset_ID                  : in     Configuration.Camera.Preset_ID_Type;
+--    Wait_Until_Finished        : in     Boolean := True) is abstract;
 
    overriding
    procedure URL_Open (
@@ -188,12 +164,11 @@ package Camera.Lib.Base is
 
    procedure Apply_Parameters (
       Buffer                     : in out Maximum_Command_Type;
-      Command                    : in     Buffer_Type;
+      Command                    : in     Response_Type;
       Options                    : in     Options_Type);
 
    Debug                         : Boolean := False;
    Power_On_Preset               : constant := 0;
-   Null_Option                   : constant Options_Type;
 
 private
 
@@ -202,12 +177,6 @@ private
       Socket                     : Ada_Lib.Socket_IO.Client.Client_Socket_Type;
       Waiting_For_Response       : Boolean := False;
    end record;
-
-   Null_Option                   : constant Options_Type (1 .. 0) :=
-                                    ( others => (
-                                       Data              => 0,
-                                       Start             => 0,
-                                       Variable_Width    => False));
 
 end Camera.Lib.Base;
 

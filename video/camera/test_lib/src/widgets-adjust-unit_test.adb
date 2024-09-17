@@ -180,15 +180,15 @@ package body Widgets.Adjust.Unit_Test is
       Connection_Data   : constant Camera.Lib.Connection.Connection_Data_Access :=
                               Camera.Lib.Connection.Connection_Data_Access (
                                  Ada_Lib.GNOGA.Get_Connection_Data);
-      Camera            : Standard.Camera.Commands.Camera_Class_Access renames
+      Camera            : Standard.Camera.Commands.Camera_Type renames
                            Connection_Data.Camera;
       Event             : Move_Package.Mouse_Move_Event_Type;
 
       Adjust_Card       : constant Adjust_Card_Access :=
                            Connection_Data.Get_Adjust_Card;
-      Pan               : Standard.Camera.Commands.Absolute_Type;
+      Pan               : Standard.Camera.Absolute_Type;
       Pan_Offset        : constant := 100;
-      Tilt              : Standard.Camera.Commands.Absolute_Type;
+      Tilt              : Standard.Camera.Absolute_Type;
       Tilt_Offset       : constant := 200;
 
    begin
@@ -211,11 +211,9 @@ package body Widgets.Adjust.Unit_Test is
             Meta           => False),
          Wait           => 0.25);
 
-log_here;
       Camera.Set_Absolute (
          Pan      => 0,
          Tilt     => 0);
-log_here;
       Camera.Get_Absolute (Pan, Tilt);
       Log_Here (Debug, "pan " & Pan'img & " tilt " & Tilt'img);
       Assert (Pan = 0, "pan to 0 failed, offset " & Pan'img);

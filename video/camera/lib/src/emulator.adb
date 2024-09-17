@@ -164,7 +164,7 @@ hex_io.dump_8 (command'address, command'size, 32);
                         when 16#12# =>           -- pan tilt position
                            declare
                               Length      : constant := 11;
-                              Options     : constant Camera.Lib.Base.Options_Type := (
+                              Options     : constant Camera.Options_Type := (
                                  (
                                     Data           => 16#90#,
                                     Start          => 1,
@@ -194,7 +194,8 @@ hex_io.dump_8 (command'address, command'size, 32);
                            Begin
                               Log_Here (Debug, "pan til pos inq");
                               Request_Socket.Write (Ack);
-                              Camera.Lib.Base.Apply_Parameters (Response, Options);
+--                            Camera.Lib.Base.Apply_Parameters (Response,
+--                               Camera.Options_Type'(others => Null_Options));
                               if Debug then
                                  Hex_IO.Dump_8 (Response'address, Length * 8, 32);
                               end if;

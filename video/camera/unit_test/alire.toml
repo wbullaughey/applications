@@ -39,12 +39,6 @@ camera_test_lib = "*"
 camera_test_lib  = { path = "../test_lib" }
 
 [[depends-on]]
-gpr = "*"
-
-[[pins]]
-gpr  = { path =  "../../../vendor/github.com/gpr" }
-
-[[depends-on]]
 gnoga = "*"
 
 [[pins]]

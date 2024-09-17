@@ -1,8 +1,8 @@
 --with AUnit.Test_Suites;
 with Configuration.Camera;
-with Camera.Lib.Base;
-with Interfaces;
-with Video.Lib;
+with Camera.Command_Queue;
+--with Interfaces;
+--with Video.Lib;
 
 package Camera.Commands is
 
@@ -11,12 +11,8 @@ package Camera.Commands is
 -- use type Data_Type;
 -- use type Value_Type;
 
-   subtype Absolute_Type         is Interfaces.Integer_16;
-   subtype Property_Type         is Data_Type range 0 .. 255; -- 2**8;
-   subtype Relative_Type         is Video.Lib.Relative_Type range -2**15 .. 2**15;
-
-   type Camera_Type              is abstract new Standard.Camera.Lib.Base.Base_Camera_Type with
-                                    null record;
+   type Camera_Type              is new Command_Queue.
+                                    Queued_Camera_Type with null record;
 
    type Camera_Class_Access      is access all Camera_Type'class;
 

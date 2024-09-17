@@ -7,12 +7,10 @@ with Ada_Lib.Options.Runstring;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
 with Ada_Lib.Unit_Test.Reporter;
 with AUnit.Assertions; use AUnit.Assertions;
-with Camera.Lib.Base;
-with Camera.Lib.Connection;
---with Camera.Lib.Options;
 with Camera.Command_Queue;
 with Camera.Commands.Unit_Test;
 with Camera.Lib.Base.Command_Tests;
+with Camera.Lib.Connection;
 with Configuration.Camera.Setup.Unit_Tests;
 with Configuration.Camera.State.Unit_Tests;
 with Gnoga.Application.Multi_Connect;
@@ -379,24 +377,27 @@ not_implemented;
 
   begin
      Test.Set_Up_Optional_Load (True);
+     Ada_Lib.Unit_Test.Test_Cases.Test_Case_Type (Test).Set_Up;
+
   end Set_Up;
 
    ---------------------------------------------------------------
    procedure Set_Up_Optional_Load (
-      Test                       : in out Camera_Test_Type;
-      Load                       : in     Boolean) is
+      Test              : in out Camera_Test_Type;
+      Load              : in     Boolean) is
    ---------------------------------------------------------------
 
-      Connection_Data            : constant Standard.Camera.Lib.Connection.Connection_Data_Access :=
-                                    new Standard.Camera.Lib.Connection.Connection_Data_Type;
-      Options                    : Camera_Lib_Unit_Test_Options_Type'class renames
-                                       Get_Camera_Lib_Unit_Test_Read_Only_Options.all;
-      State                      : Configuration.Camera.State.State_Type renames
-                                    Connection_Data.State;
+      Connection_Data   : constant Connection.Connection_Data_Access :=
+                              new Camera.Lib.Connection.Connection_Data_Type;
+      Options           : Camera_Lib_Unit_Test_Options_Type'class renames
+                              Get_Camera_Lib_Unit_Test_Read_Only_Options.all;
+      State             : Configuration.Camera.State.State_Type renames
+                           Connection_Data.State;
   begin
       Log_In (Debug or Trace_Set_Up, "load " & Load'img &
          " brand " & Test.Brand'img &
          " location " & Test.Location'img);
+
       Ada_Lib.GNOGA.Set_Connection_Data (
          Ada_Lib.GNOGA.Connection_Data_Class_Access (Connection_Data));
 
@@ -405,8 +406,6 @@ not_implemented;
 --      Emulator.Create;
 --      delay 0.2;     -- let emulator initialize
 --     end if;
-
-      Ada_Lib.Unit_Test.Test_Cases.Test_Case_Type (Test).Set_Up;
 
      if Load then
         State.Load (Options.Camera_Options.Location, Camera_State_Path);
@@ -437,17 +436,16 @@ not_implemented;
    ---------------------------------------------------------------
    overriding
    procedure Set_Up (
-      Test                    : in out Camera_Window_Test_Type) is
+      Test              : in out Camera_Window_Test_Type) is
    ---------------------------------------------------------------
 
-      Connection_Data         : constant Standard.Camera.Lib.Connection.Connection_Data_Access :=
-                                 new Standard.Camera.Lib.Connection.Connection_Data_Type;
+      Connection_Data   : constant Connection.Connection_Data_Access :=
+                           Connection.Connection_Data_Access (
+                              Ada_Lib.GNOGA.Get_Connection_Data);
       State                      : Configuration.Camera.State.State_Type renames
                                     Connection_Data.State;
    begin
       Log_In (Debug or Trace_Set_Up);
-      Ada_Lib.GNOGA.Set_Connection_Data (
-         Ada_Lib.GNOGA.Connection_Data_Class_Access (Connection_Data));
       Connection_Data.Initialize;
       State.Load (Camera_Lib_Unit_Test_Options.Camera_Options.Location,
          State_Test_Path); -- need to load state 1st
@@ -492,6 +490,7 @@ not_implemented;
       Gnoga.Application.Multi_Connect.End_Application;
       delay 0.2;
 
+      Ada_Lib.GNOGA.Clear_Connection_Data;
       Ada_Lib.Unit_Test.Test_Cases.Test_Case_Type (Test).Tear_Down;
       Log_Out (Debug);
    end Tear_Down;

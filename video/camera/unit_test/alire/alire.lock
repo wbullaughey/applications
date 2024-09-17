@@ -194,15 +194,6 @@ versions = "*"
 lockfiled = true
 path = "../../../vendor/github.com/gnoga"
 [[solution.state]]
-crate = "gpr"
-fulfilment = "linked"
-pinned = false
-transitivity = "direct"
-versions = "*"
-[solution.state.link]
-lockfiled = true
-path = "../../../vendor/github.com/gpr"
-[[solution.state]]
 crate = "libgpr"
 fulfilment = "solved"
 pinned = false

@@ -1,22 +1,22 @@
 --with Ada.Exceptions;
 --with Ada_Lib.GNOGA;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
-with Ada_Lib.Unit_Test;
+with Ada_Lib.Unit_Test.Test_Cases;
 with AUnit.Assertions; use AUnit.Assertions;
 with AUnit.Test_Cases;
 --with Base;
-with Camera.Commands.PTZ_Optics;
-with Camera.Lib.Unit_Test;
+with Camera.Lib.PTZ_Optics;
+--with Camera.Lib.Unit_Test;
 with Interfaces;
 
 package body Camera.Commands.Unit_Test is
 
    use type Interfaces.Integer_16;
 
-   type Test_Type                is new Standard.Camera.Lib.Unit_Test.
-                                    Camera_Test_Type (
-                                       Brand => Camera.Lib.PTZ_Optics_Camera)
-                                          with null record;
+   type Test_Type    is new Ada_Lib.Unit_Test.Test_Cases.
+                        Test_Case_Type with record
+      Camera         : Camera_Class_Access := Null;
+   end record;
 
    type Test_Access is access Test_Type;
 
@@ -56,15 +56,15 @@ package body Camera.Commands.Unit_Test is
       Test                       : in out AUnit.Test_Cases.Test_Case'class);
 
    Suite_Name                    : constant String := "Commands";
-   Test_Preset                   : constant := Camera.Commands.PTZ_Optics.
+   Test_Preset                   : constant := Camera.Lib.PTZ_Optics.
                                     Last_Preset;
 
    ---------------------------------------------------------------
    procedure Check_Coordinates (
-      Got_Pan                    : in     Camera.Commands.Absolute_Type;
-      Expected_Pan               : in     Camera.Commands.Absolute_Type;
-      Got_Tilt                   : in     Camera.Commands.Absolute_Type;
-      Expected_Tilt              : in     Camera.Commands.Absolute_Type) is
+      Got_Pan                    : in     Absolute_Type;
+      Expected_Pan               : in     Absolute_Type;
+      Got_Tilt                   : in     Absolute_Type;
+      Expected_Tilt              : in     Absolute_Type) is
    ---------------------------------------------------------------
 
    begin
@@ -194,7 +194,7 @@ package body Camera.Commands.Unit_Test is
    ----------------------------------------------------------------
 
       Local_Test                 : Test_Type'class renames Test_Type'class (Test);
-      Zoom                       : Camera.Commands.Absolute_Type;
+      Zoom                       : Absolute_Type;
 
    begin
       Log_In (Debug);
@@ -209,11 +209,11 @@ package body Camera.Commands.Unit_Test is
    ----------------------------------------------------------------
 
       Local_Test                 : Test_Type'class renames Test_Type'class (Test);
-      Final_Pan         : Camera.Commands.Absolute_Type;
-      Final_Tilt        : Camera.Commands.Absolute_Type;
+      Final_Pan         : Absolute_Type;
+      Final_Tilt        : Absolute_Type;
       Pan_Offset        : constant := 100;
-      Test_Pan           : Camera.Commands.Absolute_Type;
-      Test_Tilt           : Camera.Commands.Absolute_Type;
+      Test_Pan           : Absolute_Type;
+      Test_Tilt           : Absolute_Type;
       Tilt_Offset        : constant := -100;
 
    begin
@@ -243,12 +243,12 @@ package body Camera.Commands.Unit_Test is
    ----------------------------------------------------------------
 
       Local_Test                 : Test_Type'class renames Test_Type'class (Test);
-      Final_Pan         : Camera.Commands.Absolute_Type;
-      Final_Tilt        : Camera.Commands.Absolute_Type;
-      Pan_Set           : Camera.Commands.Absolute_Type;
-      Test_Pan           : Camera.Commands.Absolute_Type;
-      Test_Tilt           : Camera.Commands.Absolute_Type;
-      Tilt_Set          : Camera.Commands.Absolute_Type;
+      Final_Pan         : Absolute_Type;
+      Final_Tilt        : Absolute_Type;
+      Pan_Set           : Absolute_Type;
+      Test_Pan           : Absolute_Type;
+      Test_Tilt           : Absolute_Type;
+      Tilt_Set          : Absolute_Type;
 
    begin
       Log_In (Debug);
@@ -279,12 +279,12 @@ package body Camera.Commands.Unit_Test is
    ----------------------------------------------------------------
 
       Local_Test                 : Test_Type'class renames Test_Type'class (Test);
-      Test_Pan                      : Camera.Commands.Absolute_Type;
-      Pan                        : Camera.Commands.Absolute_Type;
-      Pan_Set                    : Camera.Commands.Absolute_Type;
-      Tilt                       : Camera.Commands.Absolute_Type;
-      Test_Tilt                     : Camera.Commands.Absolute_Type;
-      Tilt_Set                   : Camera.Commands.Absolute_Type;
+      Test_Pan                      : Absolute_Type;
+      Pan                        : Absolute_Type;
+      Pan_Set                    : Absolute_Type;
+      Tilt                       : Absolute_Type;
+      Test_Tilt                     : Absolute_Type;
+      Tilt_Set                   : Absolute_Type;
 
    begin
       Log_In (Debug);

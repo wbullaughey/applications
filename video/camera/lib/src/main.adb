@@ -8,6 +8,9 @@ with Ada_Lib.Options;
 with Ada_Lib.OS;
 with ADA_LIB.Trace; use ADA_LIB.Trace;
 with Ask;
+with Camera.Commands;
+with Camera.Lib.PTZ_Optics;
+--with Camera.Command_Queue;
 with Camera.Lib.Connection;
 with Camera.Lib.Base;
 --with Camera.Lib.Connection;
@@ -15,7 +18,7 @@ with Configuration.Camera.State;
 with GNAT.Sockets;
 with Gnoga.Application.Multi_Connect;
 with Gnoga.Types.Colors;
-with Camera.Commands.PTZ_Optics;
+--with Camera.Lib.PTZ_Optics;
 
 package body Main is
 
@@ -43,8 +46,7 @@ package body Main is
 -- procedure On_Exit (
 --    Object                     : in out Gnoga.Gui.Base.Base_Type'Class);
 
-   procedure Open_Camera (
-      Camera                     :  out Standard.Camera.Commands.Camera_Class_Access);
+   procedure Open_Camera;
 
 -- --  Setup another path in to the application for submitting results
 -- --  /result, see On_Connect_Handler in body of this procedure.
@@ -363,7 +365,7 @@ package body Main is
 
       begin
          if not Started then
-            Open_Camera (Connection_Data.Camera);
+            Open_Camera;
          end if;
 
 --       if Started then
@@ -542,29 +544,39 @@ package body Main is
 -- end On_Result_Connect;
 
    ---------------------------------------------------------------
-   procedure Open_Camera (
-      Camera                     :  out Standard.Camera.Commands.
-                                          Camera_Class_Access) is
+   procedure Open_Camera is
    ---------------------------------------------------------------
 
-      Connection_Data            : Standard.Camera.Lib.Connection.Connection_Data_Type renames
-                                    Standard.Camera.Lib.Connection.Connection_Data_Type (
-                                       Ada_Lib.GNOGA.Get_Connection_Data.all);
-      State                      : Configuration.Camera.State.State_Type renames
-                                    Connection_Data.State;
-      Port_Number                : constant Ada_Lib.Socket_IO.Port_Type :=
-                                    State.Get_Host_Port;
-      Camera_Address             : constant Ada_Lib.Socket_IO.Address_Type :=
-                                       State.Get_Host_Address;
+      Connection_Data   : Standard.Camera.Lib.Connection.Connection_Data_Type
+                           renames Standard.Camera.Lib.Connection.
+                              Connection_Data_Type (
+                                 Ada_Lib.GNOGA.Get_Connection_Data.all);
+      State             : Configuration.Camera.State.State_Type renames
+                           Connection_Data.State;
+      Options           : Standard.Camera.Lib.
+                           Camera_lib_Options_Type'class
+                              renames Standard.Camera.Lib.
+                                 Get_Read_Only_Camera_Lib_Options.all;
+      Port_Number       : constant Ada_Lib.Socket_IO.Port_Type :=
+                           State.Get_Host_Port;
+      Camera_Address    : constant Ada_Lib.Socket_IO.Address_Type :=
+                              State.Get_Host_Address;
    begin
       Log_In (Debug,
          Quote (" Camera_URL", Camera_Address.Image) &
          " port" & Port_Number'img);
 
-      Camera := Standard.Camera.Commands.Camera_Class_Access'(
-         new Standard.Camera.Commands.PTZ_Optics.PTZ_Optics_Type);
+      case Options.Brand is
 
-      Camera.Open (Camera_Address, Port_Number);
+         when Standard.Camera.Lib.PTZ_Optics_Camera =>
+            Connection_Data.Camera.Open (new Standard.Camera.Lib.PTZ_Optics.
+               PTZ_Optics_Type, Camera_Address, Port_Number);
+
+         when others =>
+            raise Failed with Options.Brand'img &
+               " not supported";
+      end case;
+
       Log_Out (Debug);
 
    exception

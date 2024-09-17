@@ -1,6 +1,7 @@
 with Ada_Lib.Event;
 with Ada_Lib.GNOGA;
 --with Ada_Lib.Socket_IO.Client;
+--with Camera.Command_Queue;
 with Camera.Commands;
 with Configuration.Camera.State;
 --with GNAT.Sockets;
@@ -25,13 +26,12 @@ package Camera.Lib.Connection is
 
    type Connection_Data_Type     is new Ada_Lib.GNOGA.Connection_Data_Type with
                                     record
-      Camera                     : Standard.Camera.Commands.Camera_Class_Access :=
-                                    Null;
-      Camera_Pan                 : Standard.Camera.Commands.Absolute_Type;
-      Camera_Pan_Speed           : Standard.Camera.Commands.Property_Type;
-      Camera_Tilt                : Standard.Camera.Commands.Absolute_Type;
-      Camera_Tilt_Speed          : Standard.Camera.Commands.Property_Type;
-      Camera_Zoom                : Standard.Camera.Commands.Property_Type;
+      Camera                     : Standard.Camera.Commands.Camera_Type;
+      Camera_Pan                 : Absolute_Type;
+      Camera_Pan_Speed           : Property_Type;
+      Camera_Tilt                : Absolute_Type;
+      Camera_Tilt_Speed          : Property_Type;
+      Camera_Zoom                : Property_Type;
       Main_Data                  : access Main.Main_Data_Type;
       Message_Box_Dialog         : Gnoga.Gui.Plugin.jQueryUI.Widget.
                                     Dialog_Access := Null;

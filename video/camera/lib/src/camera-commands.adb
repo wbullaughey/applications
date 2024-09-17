@@ -1,8 +1,9 @@
 with Ada.Streams;
 with Ada_Lib.Time;
 with ADA_LIB.Trace; use ADA_LIB.Trace;
-with Camera.Lib;
+--with Camera.Lib;
 with Hex_IO;
+with Interfaces;
 
 package body Camera.Commands is
 
@@ -61,24 +62,35 @@ package body Camera.Commands is
             Accumulator          : Interfaces.Unsigned_16;
             Conversion           : Absolute_Type;
             for Conversion'address use Accumulator'address;
-            Response_Buffer      : Maximum_Response_Type;
+            Response             : Response_Buffer_Type;
             Timeout              : constant Ada_Lib.Time.Time_Type :=
                                     Ada_Lib.Time.Now + 60.0;
          begin
-            Camera.Process_Command (Standard.Camera.Lib.Base.Position_Request,
-               Options           => Standard.Camera.Lib.Base.Null_Option,
-               Response          => Response_Buffer);
+            case Camera.Synchronous (
+                  Command           => Position_Request,
+                  Options           => Null_Options) is
+
+               when Fault =>
+                  Log_Here ("Synchronous return fault");
+
+               when Success =>
+                  Log_Here (Debug, "Synchronous return Success");
+
+               when Standard.Camera.Timeout =>
+                  Log_Here ("Synchronous return Timeout");
+
+            end case;
 
             if Debug then
-               Ada_Lib.Socket_IO.Stream_IO.Dump ("response", Response_Buffer (1 .. 11));
+               Response.Dump ("get absolute");
             end if;
 
             Accumulator := 0;
             for I in Index_Type'(3) .. 6 loop
                Log_Here (Debug, I'img & ": " &
-                  Ada_lib.Socket_IO.Hex (Response_Buffer (I)));
+                  Ada_lib.Socket_IO.Hex (Response.Buffer (I)));
                Accumulator := Accumulator * 16#10# +
-                  Interfaces.Unsigned_16 (Response_Buffer (I) and 16#F#);
+                  Interfaces.Unsigned_16 (Response.Buffer (I) and 16#F#);
             end loop;
             Log_Here (Debug, Hex_IO.Hex (Accumulator) &
                " conversion" & Conversion'img);
@@ -87,9 +99,9 @@ package body Camera.Commands is
             Accumulator := 0;
             for I in Index_Type'(7) .. 10 loop
                Log_Here (Debug, I'img & ": " &
-                  Ada_lib.Socket_IO.Hex (Response_Buffer (I)));
+                  Ada_lib.Socket_IO.Hex (Response.Buffer (I)));
                Accumulator := Accumulator * 16#10# +
-                  Interfaces.Unsigned_16 (Response_Buffer (I) and 16#F#);
+                  Interfaces.Unsigned_16 (Response.Buffer (I) and 16#F#);
             end loop;
             Log_Here (Debug, Hex_IO.Hex (Accumulator) &
                " conversion" & Conversion'img);
@@ -146,24 +158,35 @@ package body Camera.Commands is
             Accumulator          : Interfaces.Unsigned_16;
             Conversion           : Absolute_Type;
             for Conversion'address use Accumulator'address;
-            Response_Buffer      : Maximum_Response_Type;
+            Response             : Response_Buffer_Type;
             Timeout              : constant Ada_Lib.Time.Time_Type :=
                                     Ada_Lib.Time.Now + 60.0;
          begin
-            Camera.Process_Command (Standard.Camera.Lib.Base.Zoom_Inquire,
-               Options           => Standard.Camera.Lib.Base.Null_Option,
-               Response          => Response_Buffer);
+            case Camera.Synchronous (
+               Command           => Zoom_Inquire,
+               Options           => Null_Options) is
+
+               when Fault =>
+                  Log_Here ("Synchronous return fault");
+
+               when Success =>
+                  Log_Here (Debug, "Synchronous return Success");
+
+               when Standard.Camera.Timeout =>
+                  Log_Here ("Synchronous return Timeout");
+
+            end case;
 
             if Debug then
-               Ada_Lib.Socket_IO.Stream_IO.Dump ("response", Response_Buffer (1 .. 11));
+               Response.Dump ("zoom");
             end if;
 
             Accumulator := 0;
             for I in Index_Type'(3) .. 6 loop
                Log_Here (Debug, I'img & ": " &
-                  Ada_lib.Socket_IO.Hex (Response_Buffer (I)));
+                  Ada_lib.Socket_IO.Hex (Response.Buffer (I)));
                Accumulator := Accumulator * 16#10# +
-                  Interfaces.Unsigned_16 (Response_Buffer (I) and 16#F#);
+                  Interfaces.Unsigned_16 (Response.Buffer (I) and 16#F#);
             end loop;
             Log_Here (Debug, Hex_IO.Hex (Accumulator) &
                " conversion" & Conversion'img);
@@ -209,7 +232,7 @@ package body Camera.Commands is
 
    begin
       Log_In (Debug, "pan" & Pan'img & " tilt" & Tilt'img);
-      Camera.Process_Command (Standard.Camera.Lib.Base.Position_Relative,
+      case Camera.Synchronous (Position_Relative,
          Options     => (
             (
                Data           => Pan_Speed,
@@ -234,7 +257,18 @@ package body Camera.Commands is
                Width          => 4
             )
          )
-      );
+      ) is
+
+         when Fault =>
+            Log_Here ("Synchronous return fault");
+
+         when Success =>
+            Log_Here (Debug, "Synchronous return Success");
+
+         when Standard.Camera.Timeout =>
+            Log_Here ("Synchronous return Timeout");
+
+      end case;
 
       Log_Out (Debug);
 
@@ -256,7 +290,7 @@ package body Camera.Commands is
 
    begin
       Log_In (Debug, "pan" & Pan'img & " tilt" & Tilt'img);
-      Camera.Process_Command (Standard.Camera.Lib.Base.Position_Absolute,
+      case Camera.Synchronous (Position_Absolute,
          Options     => (
             (
                Data           => Pan_Speed,
@@ -281,7 +315,18 @@ package body Camera.Commands is
                Width          => 4
             )
          )
-      );
+      ) is
+
+         when Fault =>
+            Log_Here ("Synchronous return fault");
+
+         when Success =>
+            Log_Here (Debug, "Synchronous return Success");
+
+         when Standard.Camera.Timeout =>
+            Log_Here ("Synchronous return Timeout");
+
+      end case;
 
       Log_Out (Debug);
    end Set_Absolute;
@@ -297,14 +342,25 @@ package body Camera.Commands is
                                     True  => 2);
    begin
       Log_In (Debug, "on " & On'img);
-      Camera.Process_Command (Standard.Camera.Lib.Base.Power,
+      case Camera.Synchronous (Power,
          Options     => ( 1 =>
                (
                   Data           => Data (On),
                   Start          => 5,
                   Variable_Width => False
                )
-            ));
+            )) is
+
+         when Fault =>
+            Log_Here ("Synchronous return fault");
+
+         when Success =>
+            Log_Here (Debug, "Synchronous return Success");
+
+         when Standard.Camera.Timeout =>
+            Log_Here ("Synchronous return Timeout");
+
+      end case;
 
       Log_Out (Debug);
    end Set_Power;
@@ -318,14 +374,25 @@ package body Camera.Commands is
 
    begin
       Log_In (Debug, "preset id" & Preset_ID'img);
-      Camera.Process_Command (Standard.Camera.Lib.Base.Memory_Recall,
+      case Camera.Synchronous (Memory_Recall,
          Options     => ( 1 =>
                (
                   Data           => Data_Type (Preset_ID),
                   Start          => 6,
                   Variable_Width => False
                )
-            ));
+            )) is
+
+         when Fault =>
+            Log_Here ("Synchronous return fault");
+
+         when Success =>
+            Log_Here (Debug, "Synchronous return Success");
+
+         when Standard.Camera.Timeout =>
+            Log_Here ("Synchronous return Timeout");
+
+      end case;
 
       if Wait_Until_Finished then
          declare
