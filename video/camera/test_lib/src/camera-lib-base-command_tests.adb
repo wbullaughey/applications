@@ -1,5 +1,5 @@
-with Ada.Streams;
-with Ada_Lib.GNOGA;
+--with Ada.Streams;
+--with Ada_Lib.GNOGA;
 --with Ada_Lib.Time;
 with Ada_Lib.Unit_Test;
 with AUnit.Assertions; use AUnit.Assertions;
@@ -8,21 +8,24 @@ with AUnit.Test_Cases;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
 --with Camera.Lib.Base;
 --with Camera.Commands;
-with Camera.Lib.Connection;
+--with Camera.Lib.Connection;
 with Camera.Lib.Unit_Test;
 with Interfaces;
 with Video.Lib;
 
 package body Camera.Lib.Base.Command_Tests is
 
-   use type Ada.Streams.Stream_Element;
+-- use type Ada.Streams.Stream_Element;
 -- use type Ada_Lib.Time.Time_Type;
    use type Interfaces.Integer_16;
-   use type Interfaces.Unsigned_16;
+-- use type Interfaces.Unsigned_16;
 
    type Test_Type (
-      Brand                      : Brand_Type) is new Camera.Lib.Unit_Test.
-                                    Camera_Test_Type (Brand) with record
+      Brand                      : Brand_Type;
+      Description                : Ada_Lib.Strings.String_Constant_Access
+                                    ) is new Camera.Lib.Unit_Test.
+                                       Camera_Test_Type (Brand, Description
+                                          ) with record
       Manual                     : Boolean := False;
    end record;
 
@@ -105,52 +108,52 @@ package body Camera.Lib.Base.Command_Tests is
 
    Suite_Name                    : constant String := "Video_Commands";
 
-   ---------------------------------------------------------------
-   procedure Get_Absolute (
-      Camera                     : in out Base_Camera_Type'class;
-      Pan                        :    out Absolute_Type;
-      Tilt                       :    out Absolute_Type) is
-   ---------------------------------------------------------------
-
-      Accumulator                : Interfaces.Unsigned_16;
-      Conversion                 : Absolute_Type;
-      for Conversion'address use Accumulator'address;
-      Response_Buffer            : Maximum_Response_Type;
-      Response_Length            : Index_Type;
-
-   begin
-      Log_In (Debug);
-      Camera.Process_Command (Position_Request,
-         Options           => Null_Options,
-         Response          => Response_Buffer,
-         Response_Length   => Response_Length);
-
---    if Debug then
---       Response.Dump;
---    end if;
-
-      Accumulator := 0;
-      for I in Index_Type'(3) .. 6 loop
-         Log_Here (Debug, I'img & ": " &
-            Ada_lib.Socket_IO.Hex (Response_Buffer (I)));
-         Accumulator := Accumulator * 16#10# +
-            Interfaces.Unsigned_16 (Response_Buffer (I) and 16#F#);
-      end loop;
-      Log_Here (Debug, Hex_IO.Hex (Accumulator) &
-         " conversion" & Conversion'img);
-      Pan := Conversion;
-
-      Accumulator := 0;
-      for I in Index_Type'(7) .. 10 loop
-         Log_Here (Debug, I'img & ": " &
-            Ada_lib.Socket_IO.Hex (Response_Buffer (I)));
-         Accumulator := Accumulator * 16#10# +
-            Interfaces.Unsigned_16 (Response_Buffer (I) and 16#F#);
-      end loop;
-      Log_Here (Debug, Hex_IO.Hex (Accumulator) &
-         " conversion" & Conversion'img);
-      Tilt := Conversion;
-   end Get_Absolute;
+--   ---------------------------------------------------------------
+--   procedure Get_Absolute (
+--      Camera                     : in out Base_Camera_Type'class;
+--      Pan                        :    out Absolute_Type;
+--      Tilt                       :    out Absolute_Type) is
+--   ---------------------------------------------------------------
+--
+--      Accumulator                : Interfaces.Unsigned_16;
+--      Conversion                 : Absolute_Type;
+--      for Conversion'address use Accumulator'address;
+--      Response_Buffer            : Maximum_Response_Type;
+--      Response_Length            : Index_Type;
+--
+--   begin
+--      Log_In (Debug);
+--      Camera.Process_Command (Position_Request,
+--         Options           => Null_Options,
+--         Response          => Response_Buffer,
+--         Response_Length   => Response_Length);
+--
+----    if Debug then
+----       Response.Dump;
+----    end if;
+--
+--      Accumulator := 0;
+--      for I in Index_Type'(3) .. 6 loop
+--         Log_Here (Debug, I'img & ": " &
+--            Ada_lib.Socket_IO.Hex (Response_Buffer (I)));
+--         Accumulator := Accumulator * 16#10# +
+--            Interfaces.Unsigned_16 (Response_Buffer (I) and 16#F#);
+--      end loop;
+--      Log_Here (Debug, Hex_IO.Hex (Accumulator) &
+--         " conversion" & Conversion'img);
+--      Pan := Conversion;
+--
+--      Accumulator := 0;
+--      for I in Index_Type'(7) .. 10 loop
+--         Log_Here (Debug, I'img & ": " &
+--            Ada_lib.Socket_IO.Hex (Response_Buffer (I)));
+--         Accumulator := Accumulator * 16#10# +
+--            Interfaces.Unsigned_16 (Response_Buffer (I) and 16#F#);
+--      end loop;
+--      Log_Here (Debug, Hex_IO.Hex (Accumulator) &
+--         " conversion" & Conversion'img);
+--      Tilt := Conversion;
+--   end Get_Absolute;
 
    ---------------------------------------------------------------
    overriding
@@ -163,52 +166,52 @@ package body Camera.Lib.Base.Command_Tests is
       return AUnit.Format (Suite_Name);
    end Name;
 
-   ---------------------------------------------------------------
-   procedure Position_Relative (
-      Camera                     : in out Base_Camera_Type'class;
-      Pan                        : in     Relative_Type;
-      Tilt                       : in     Relative_Type;
-      Pan_Speed                  : in     Property_Type := 1;
-      Tilt_Speed                 : in     Property_Type := 1) is
-   ---------------------------------------------------------------
-
-   begin
-      Log_In (Debug, "pan" & Pan'img & " tilt" & Tilt'img);
-      Camera.Process_Command (Position_Relative,
-         Options     => (
-            (
-               Data           => Pan_Speed,
-               Start          => 5,
-               Variable_Width => False
-            ),
-            (
-               Data           => Tilt_Speed,
-               Start          => 6,
-               Variable_Width => False
-            ),
-            (
-               Start          => 7,
-               Variable_Width => True,
-               Value          => Convert (Pan),
-               Width          => 4
-            ),
-            (
-               Start          => 11,
-               Variable_Width => True,
-               Value          => Convert (Tilt),
-               Width          => 4
-            )
-         )
-      );
-
-      Log_Out (Debug);
-
-   exception
-      when Fault : others =>
-         Trace_Exception (Fault, Here);
-         raise;
-
-   end Position_Relative;
+-- ---------------------------------------------------------------
+-- procedure Position_Relative (
+--    Camera                     : in out Base_Camera_Type'class;
+--    Pan                        : in     Relative_Type;
+--    Tilt                       : in     Relative_Type;
+--    Pan_Speed                  : in     Property_Type := 1;
+--    Tilt_Speed                 : in     Property_Type := 1) is
+-- ---------------------------------------------------------------
+--
+-- begin
+--    Log_In (Debug, "pan" & Pan'img & " tilt" & Tilt'img);
+--    Camera.Process_Command (Position_Relative,
+--       Options     => (
+--          (
+--             Data           => Pan_Speed,
+--             Start          => 5,
+--             Variable_Width => False
+--          ),
+--          (
+--             Data           => Tilt_Speed,
+--             Start          => 6,
+--             Variable_Width => False
+--          ),
+--          (
+--             Start          => 7,
+--             Variable_Width => True,
+--             Value          => Convert (Pan),
+--             Width          => 4
+--          ),
+--          (
+--             Start          => 11,
+--             Variable_Width => True,
+--             Value          => Convert (Tilt),
+--             Width          => 4
+--          )
+--       )
+--    );
+--
+--    Log_Out (Debug);
+--
+-- exception
+--    when Fault : others =>
+--       Trace_Exception (Fault, Here);
+--       raise;
+--
+-- end Position_Relative;
 
    ---------------------------------------------------------------
    overriding
@@ -339,46 +342,46 @@ package body Camera.Lib.Base.Command_Tests is
 --    Log_Out (Debug);
 -- end Send_Absolute_Position;
 
-   ---------------------------------------------------------------
-   procedure Set_Absolute (
-      Camera                     : in out Base_Camera_Type'class;
-      Pan                        : in     Absolute_Type;
-      Tilt                       : in     Absolute_Type;
-      Pan_Speed                  : in      Property_Type := 1;
-      Tilt_Speed                 : in      Property_Type := 1) is
-   ---------------------------------------------------------------
-
-   begin
-      Log_In (Debug, "pan" & Pan'img & " tilt" & Tilt'img);
-      Camera.Process_Command (Position_Absolute,
-         Options     => (
-            (
-               Data           => Pan_Speed,
-               Start          => 5,
-               Variable_Width => False
-            ),
-            (
-               Data           => Tilt_Speed,
-               Start          => 6,
-               Variable_Width => False
-            ),
-            (
-               Start          => 7,
-               Variable_Width => True,
-               Value          => Convert (Pan),
-               Width          => 4
-            ),
-            (
-               Start          => 11,
-               Variable_Width => True,
-               Value          => Convert (Tilt),
-               Width          => 4
-            )
-         )
-      );
-
-      Log_Out (Debug);
-   end Set_Absolute;
+-- ---------------------------------------------------------------
+-- procedure Set_Absolute (
+--    Camera                     : in out Base_Camera_Type'class;
+--    Pan                        : in     Absolute_Type;
+--    Tilt                       : in     Absolute_Type;
+--    Pan_Speed                  : in      Property_Type := 1;
+--    Tilt_Speed                 : in      Property_Type := 1) is
+-- ---------------------------------------------------------------
+--
+-- begin
+--    Log_In (Debug, "pan" & Pan'img & " tilt" & Tilt'img);
+--    Camera.Process_Command (Position_Absolute,
+--       Options     => (
+--          (
+--             Data           => Pan_Speed,
+--             Start          => 5,
+--             Variable_Width => False
+--          ),
+--          (
+--             Data           => Tilt_Speed,
+--             Start          => 6,
+--             Variable_Width => False
+--          ),
+--          (
+--             Start          => 7,
+--             Variable_Width => True,
+--             Value          => Convert (Pan),
+--             Width          => 4
+--          ),
+--          (
+--             Start          => 11,
+--             Variable_Width => True,
+--             Value          => Convert (Tilt),
+--             Width          => 4
+--          )
+--       )
+--    );
+--
+--    Log_Out (Debug);
+-- end Set_Absolute;
 
    ---------------------------------------------------------------
    procedure Set_Power (
@@ -403,35 +406,35 @@ package body Camera.Lib.Base.Command_Tests is
       Log_Out (Debug);
    end Set_Power;
 
-   ---------------------------------------------------------------
-   procedure Set_Preset (
-      Camera                     : in out Base_Camera_Type'class;
-      Preset_ID                  : in     Configuration.Camera.Preset_ID_Type;
-      Wait_Until_Finished        : in     Boolean := True) is
-   ---------------------------------------------------------------
-
-   begin
-      Log_In (Debug, "preset id" & Preset_ID'img);
-      Camera.Process_Command (Memory_Recall,
-         Options     => ( 1 =>
-               (
-                  Data           => Data_Type (Preset_ID),
-                  Start          => 6,
-                  Variable_Width => False
-               )
-            ));
-
-      if Wait_Until_Finished then
-         declare
-            Pan                  : Absolute_Type;
-            Tilt                 : Absolute_Type;
-         begin
-            Get_Absolute (Camera, Pan, Tilt);
-            Log_Here (Debug, "pan " & Pan'img & " tilt " & Tilt'img);
-         end;
-      end if;
-      Log_Out (Debug);
-   end Set_Preset;
+-- ---------------------------------------------------------------
+-- procedure Set_Preset (
+--    Camera                     : in out Base_Camera_Type'class;
+--    Preset_ID                  : in     Configuration.Camera.Preset_ID_Type;
+--    Wait_Until_Finished        : in     Boolean := True) is
+-- ---------------------------------------------------------------
+--
+-- begin
+--    Log_In (Debug, "preset id" & Preset_ID'img);
+--    Camera.Process_Command (Memory_Recall,
+--       Options     => ( 1 =>
+--             (
+--                Data           => Data_Type (Preset_ID),
+--                Start          => 6,
+--                Variable_Width => False
+--             )
+--          ));
+--
+--    if Wait_Until_Finished then
+--       declare
+--          Pan                  : Absolute_Type;
+--          Tilt                 : Absolute_Type;
+--       begin
+--          Get_Absolute (Camera, Pan, Tilt);
+--          Log_Here (Debug, "pan " & Pan'img & " tilt " & Tilt'img);
+--       end;
+--    end if;
+--    Log_Out (Debug);
+-- end Set_Preset;
 
    ---------------------------------------------------------------
    overriding
@@ -454,7 +457,7 @@ package body Camera.Lib.Base.Command_Tests is
             Trace_Message_Exception (True, Fault,
                "ignore exception in Set_Up for Set_Power");
       end;
-      Set_Preset (Test.Camera.all, Test.Camera.Get_Default_Preset);
+      Test.Camera.Set_Preset (Test.Camera.Get_Default_Preset);
       Log_Out (Debug or Trace_Set_Up);
    end Set_Up;
 
@@ -469,24 +472,14 @@ package body Camera.Lib.Base.Command_Tests is
       Brand                      : Brand_Type renames Options.Camera_Options.Brand;
       Test_Suite                 : constant AUnit.Test_Suites.Access_Test_Suite :=
                                     new AUnit.Test_Suites.Test_Suite;
-      Test                       : constant Test_Access := new Test_Type (Brand);
+      Test                       : constant Test_Access := new Test_Type (Brand,
+                                    new String'("camera"));
 
    begin
       Log_In (Debug, "brand " & Brand'img);
       Ada_Lib.Unit_Test.Suite (Suite_Name);
       Test_Suite.Add_Test (Test);
-      case Brand is
-
-         when ALPTOP_Camera =>
-            Test.Camera := Test.ALPTOP'access;
-
-         when No_Camera =>
-            raise Failed with "no camera brand selected";
-
-         when PTZ_Optics_Camera =>
-            Test.Camera := Test.PTZ_Optics'access;
-
-      end case;
+      Test.Set_Camera;
       Log_Out (Debug);
       return Test_Suite;
    end Suite;
@@ -819,10 +812,10 @@ package body Camera.Lib.Base.Command_Tests is
             Log_Here (Debug, "Count" & Count'img &
                "initial pan" & Initial_Pan'img &
                " initial Tilt" & Initial_Tilt'img);
-            Position_Relative (Local_Test.Camera.all,
+            Local_Test.Camera.Position_Relative (
                Pan   => Count,
                Tilt  => Count * 2);
-            Get_Absolute (Local_Test.Camera.all, Pan, Tilt);
+            Local_Test.Camera.Get_Absolute (Pan, Tilt);
             Log_Here (Debug, "pan" & Pan'img & " tilt" & Tilt'img &
                " expected pan" & Expected_Pan'img &
                " expected tilt" & Expected_Tilt'img);
@@ -866,8 +859,8 @@ package body Camera.Lib.Base.Command_Tests is
 --                                  Ada_Lib.Time.Now + 60.0;
    begin
       Log_In (Debug, "set pan " & Set_Pan'img & " set tilt " & Set_Tilt'img);
-      Set_Absolute (Local_Test.Camera.all, Set_Pan, Set_Tilt);
-      Get_Absolute (Local_Test.Camera.all, Pan, Tilt);
+      Local_Test.Camera.Set_Absolute (Set_Pan, Set_Tilt);
+      Local_Test.Camera.Get_Absolute (Pan, Tilt);
 
       Assert (Pan = Set_Pan, "invalid pan " & Pan'img &
          " expected " & Set_Pan'img);
@@ -1178,7 +1171,7 @@ package body Camera.Lib.Base.Command_Tests is
    begin
       Log_In (Debug);
       Pause (Local_Test.Manual, "set preset 3");
-      Set_Preset (Local_Test.Camera.all, 3);
+      Local_Test.Camera.Set_Preset (3);
 
       Assert (Ask_Pause (Local_Test.Manual,
             "verify that the preset is 3"),

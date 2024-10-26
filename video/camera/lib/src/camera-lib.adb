@@ -26,15 +26,16 @@ package body Camera.Lib is
 
    Camera_Lib_Options            : Camera_Lib_Options_Class_Access :=
                                     Null;
-   Trace_Option                  : constant Character := 't';
+   Trace_Option                  : constant Character := 'C';
    Options_With_Parameters       : aliased constant
                                     Ada_Lib.Options.Options_Type :=
                                        Ada_Lib.Options.Create_Options (
-                                          "cp" & Trace_Option);
+                                          "d" & Trace_Option,
+                                          Ada_Lib.Options.Unmodified);
    Options_Without_Parameters    : aliased constant
                                     Ada_Lib.Options.Options_Type :=
                                        Ada_Lib.Options.Create_Options (
-                                          "Elr");
+                                          "Elr",  Ada_Lib.Options.Unmodified);
    Recursed                      : Boolean := False;
 
    -------------------------------------------------------------------------
@@ -218,7 +219,7 @@ package body Camera.Lib is
             Options_Without_Parameters) then
          case Option.Option is
 
-            when 'c' =>
+            when Directory_Option =>
                Options.Directory.Construct (Iterator.Get_Parameter);
 
             when 'l' =>
@@ -280,7 +281,7 @@ package body Camera.Lib is
       when Ada_Lib.Options.Program =>
          Log_Here (Debug_Options or Trace_Options, Quote ("Component", Component));
 
-         Ada_Lib.Help.Add_Option ('c', "directory", "current directory", Component);
+         Ada_Lib.Help.Add_Option (Directory_Option, "directory", "current directory", Component);
          Ada_Lib.Help.Add_Option ('l', "", "local camera", Component);
          Ada_Lib.Help.Add_Option ('r', "", "remote camera", Component);
          Ada_Lib.Help.Add_Option ('E', "", "simulate camera", Component);
@@ -294,7 +295,7 @@ package body Camera.Lib is
          Put_Line (Component & " trace options (-" & Trace_Option & ")");
          Put_Line ("      a               all");
          Put_Line ("      b               camera lib base");
-         Put_Line ("      c               camera configuration");
+         Put_Line ("      c               configuration.camera ");
          Put_Line ("      C               camera commands");
          Put_Line ("      g               Widgets.Generic_Table");
          Put_Line ("      l               camera Library");

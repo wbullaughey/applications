@@ -115,8 +115,8 @@ package body Camera.Command_Queue is
       Maximum_Options   : Maximum_Options_Type := (others => Null_Option);
 
    begin
-      Log_In (Debug, "command " & Command'img);
-      Maximum_Options (Maximum_Options'first .. Options'last) := Options;
+      Log_In (Debug, "command " & Command'img & " length" & Options'length'img);
+      Maximum_Options (Maximum_Options'first .. Options'length) := Options;
       Process_Queue_Task.Push_Command (
          Parameters_Type'(
             Callback       => Null,
@@ -124,7 +124,14 @@ package body Camera.Command_Queue is
             Command_Code   => Command,
             Options        => Maximum_Options));
       Log_Out (Debug);
-      return Fault;
+      return Success;
+
+   exception
+
+      when Error: others =>
+         Trace_Exception (Debug, Error);
+         return Fault;
+
    end Synchronous;
 
    ----------------------------------------------------------------
@@ -167,7 +174,7 @@ package body Camera.Command_Queue is
 
    begin
       Log_In (Debug, "command " & Command'img);
-      Maximum_Options (Maximum_Options'first .. Options'last) := Options;
+      Maximum_Options (Maximum_Options'first .. Options'length) := Options;
       Process_Queue_Task.Push_Command (
          Parameters_Type'(
             Base_Camera    => Camera.Base_Camera,
@@ -176,8 +183,16 @@ package body Camera.Command_Queue is
             Options        => Maximum_Options));
       Completion_Event.Wait_For_Event;
       Log_Out (Debug);
-      return Fault;
+      return Success;
+
+   exception
+
+      when Error: others =>
+         Trace_Exception (Debug, Error);
+         return Fault;
+
    end Synchronous;
+   ----------------------------------------------------------------
 
    package Queue_Package is new Ada.Containers.Doubly_Linked_Lists (
       Element_Type      => Parameters_Type);
@@ -196,10 +211,11 @@ package body Camera.Command_Queue is
             when not Queue.Is_Empty =>
                accept Pop_Command do
                   declare
-                     Parameter   : Parameters_Type := Queue.First_Element;
+                     Parameter   : constant Parameters_Type := Queue.First_Element;
                      Response    : Response_Buffer_Type;
 
                   begin
+                     Log_Here (Debug, "pop " & Parameter.Command_Code'img);
                      Parameter.Base_Camera.Process_Command (
                         Parameter.Command_Code, Parameter.Options,
                         Response.Buffer, Response.Length);
@@ -225,6 +241,7 @@ package body Camera.Command_Queue is
             accept Push_Command (
                Parameter   : Parameters_Type) do
 
+               Log_Here (Debug, "push " & Parameter.Command_Code'img);
                Queue.Append (Parameter);
             end Push_Command;
          or

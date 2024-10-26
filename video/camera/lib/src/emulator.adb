@@ -312,8 +312,12 @@ hex_io.dump_8 (command'address, command'size, 32);
    -------------------------------------------------------------------------
    task body Emulator_Task_Type is
 
-      Server_Socket              : Ada_Lib.Socket_IO.Server.Server_Socket_Type (Port);
-      Request_Socket             : Ada_Lib.Socket_IO.Server.Accepted_Socket_Type;
+      Request_Description        : aliased constant String := "request";
+      Server_Description         : aliased constant String := "server";
+      Server_Socket              : Ada_Lib.Socket_IO.Server.Server_Socket_Type (
+                                    Server_Description'unchecked_access, Port);
+      Request_Socket             : Ada_Lib.Socket_IO.Server.Accepted_Socket_Type (
+                                    Request_Description'unchecked_access);
       Stop                       : Boolean := False;
 
    begin

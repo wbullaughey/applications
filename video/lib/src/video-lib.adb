@@ -19,7 +19,8 @@ package body Video.Lib is
    Options_With_Parameters       : aliased constant
                                     Ada_Lib.Options.Options_Type :=
                                           Ada_Lib.Options.Create_Options (
-                                             Debug_Option);
+                                             Debug_Option,
+                                             Ada_Lib.Options.Unmodified);
    Options_Without_Parameters    : aliased constant
                                     Ada_Lib.Options.Options_Type :=
                                           Ada_Lib.Options.Null_Options;

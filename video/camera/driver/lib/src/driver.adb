@@ -8,7 +8,7 @@ with Ada_Lib.OS.Run;
 with Ada_Lib.Parser;
 with Ada_Lib.Options.Runstring;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
---with Camera.Lib;
+with Camera.Lib;
 with Command_Name;
 
 package body Driver is
@@ -62,16 +62,20 @@ package body Driver is
                                     False    => (
                                        With_Parameters      =>
                                           Ada_Lib.Options.Create_Options (Camera_Option &
-                                                Directory_Option & "Rstu"),
+                                                Directory_Option & "Rstu",
+                                             Ada_Lib.Options.Unmodified),
                                        Without_Parameters   =>
-                                          Ada_Lib.Options.Create_Options ("lr")
+                                          Ada_Lib.Options.Create_Options ("lr",
+                                             Ada_Lib.Options.Unmodified)
                                     ),
                                     True    => (
                                        With_Parameters      =>
                                           Ada_Lib.Options.Create_Options (Camera_Option &
-                                                Directory_Option & "Rtu"),
+                                                Directory_Option & "Rtu",
+                                             Ada_Lib.Options.Unmodified),
                                        Without_Parameters   =>
-                                          Ada_Lib.Options.Create_Options ("l")
+                                          Ada_Lib.Options.Create_Options ("l",
+                                             Ada_Lib.Options.Unmodified)
                                     )
                                  );
    Queue                         : Queue_Type;
@@ -588,7 +592,7 @@ package body Driver is
 --             Suite = Element.Suite then
             declare
                Camera_Options    : constant String :=
-                                    "-c " & Options.
+                                    "-" & Camera.Lib.Directory_Option & " " & Options.
                                              Camera_Directory.Coerce &
                                     (if Options.Remote_Camera then
                                        " -r "

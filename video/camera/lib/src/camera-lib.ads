@@ -107,6 +107,7 @@ package Camera.Lib is
 
    Debug                         : aliased Boolean := False;
    Debug_Options                 : aliased Boolean := False;
+   Directory_Option              : constant Character := 'd';
    Number_Configurations         : constant String := "configurations";
    Number_Grid_Columns           : constant String := "grid_columns";
    Number_Grid_Rows              : constant String := "grid_rows";

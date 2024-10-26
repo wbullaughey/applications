@@ -119,7 +119,7 @@ parameters  # process leading options
 trace final OPTIONS $OPTIONS
 export COMMAND="../driver/bin/camera_driver $OPTIONS $VERBOSE"
 echo comand: $COMMAND 2>&1 | tee -a $OUTPUT
-rm "GNAT-*"
+rm GNAT-*
 eval $COMMAND 2>&1 | tee -a $OUTPUT
 
 

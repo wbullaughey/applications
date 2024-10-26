@@ -569,8 +569,9 @@ package body Main is
       case Options.Brand is
 
          when Standard.Camera.Lib.PTZ_Optics_Camera =>
-            Connection_Data.Camera.Open (new Standard.Camera.Lib.PTZ_Optics.
-               PTZ_Optics_Type, Camera_Address, Port_Number);
+            Connection_Data.Camera_Commands.Open (new Standard.Camera.Lib.PTZ_Optics.
+               PTZ_Optics_Type (new String'("camera")),
+                  Camera_Address, Port_Number);
 
          when others =>
             raise Failed with Options.Brand'img &

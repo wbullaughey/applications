@@ -1,6 +1,6 @@
 with Ada_Lib.Socket_IO;
 --with ADA_LIB.Trace; use ADA_LIB.Trace;
-with Camera.Lib.Base;
+--with Camera.Lib.Base;
 --with Camera.Commands; use Camera.Commands;
 
 package Camera.Command_Queue is

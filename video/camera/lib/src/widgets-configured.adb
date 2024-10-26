@@ -266,7 +266,7 @@ package body Widgets.Configured is
             " Configuration_ID" & Configuration_ID'img &
             " button tag " & Tag_Name (Button'tag));
 
-         Connection_Data.Camera.Set_Preset (Preset_ID);
+         Connection_Data.Camera_Commands.Set_Preset (Preset_ID);
          Log_Out (Debug);
       end Button_Click_Handler;
 
@@ -694,7 +694,7 @@ not_implemented;
       begin
          Log_In (Debug);
          if Mouse_Event.Left_Button then
-            Connection_Data.Camera.Set_Preset (Cell.Preset_ID);
+            Connection_Data.Camera_Commands.Set_Preset (Cell.Preset_ID);
          end if;
          Log_Out (Debug);
       end Select_Handler;

@@ -136,13 +136,16 @@
         <Folder
             Name="Source Files"
             Filters="*.c;*.C;*.cc;*.cpp;*.cp;*.cxx;*.c++;*.prg;*.pas;*.dpr;*.asm;*.s;*.bas;*.java;*.cs;*.sc;*.scala;*.e;*.cob;*.html;*.rc;*.tcl;*.py;*.pl;*.d;*.m;*.mm;*.go;*.groovy;*.gsh"
-            GUID="{4FA67914-E68A-4E07-ACCA-7ADA86721E73}"/>
+            GUID="{4FA67914-E68A-4E07-ACCA-7ADA86721E73}">
+            <F N="../../../../../../Sites/index.html"/>
+        </Folder>
         <Folder
             Name="Header Files"
             Filters="*.h;*.H;*.hh;*.hpp;*.hxx;*.h++;*.inc;*.sh;*.cpy;*.if"
             GUID="{2925DF5B-3B71-415B-9F7E-6AAA44AC9CCD}">
             <F N="../../ada_lib/ada_lib_tests/build.sh"/>
             <F N="../../build_all.sh"/>
+            <F N="../../ada_lib/ada_lib_tests/loop.sh"/>
         </Folder>
         <Folder
             Name="Resource Files"

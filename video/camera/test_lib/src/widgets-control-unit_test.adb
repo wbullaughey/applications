@@ -230,6 +230,7 @@ begin
    if Trace_Tests then
       Debug := Trace_Tests;
    end if;
+--Debug := True;
 
 end Widgets.Control.Unit_Test;
 

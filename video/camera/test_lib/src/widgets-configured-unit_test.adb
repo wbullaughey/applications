@@ -698,7 +698,7 @@ package body Widgets.Configured.Unit_Test is
 --   ---------------------------------------------------------------
 --
 --      Options                    : Standard.Camera.Lib.Unit_Test.
---                                    Ada_Lib_Unit_Test_Options_Type'class
+--                                    Unit_Test_Options_Type'class
 --                                       renames Standard.Camera.Lib.Unit_Test.
 --                                          Options.all;
 --      Connection_Data            : Camera.Lib.Connection.Connection_Data_Type renames
@@ -711,7 +711,7 @@ package body Widgets.Configured.Unit_Test is
 ----    Ada_Lib.GNOGA.Set_Connection_Data ( -- moved to parent
 ----       Ada_Lib.GNOGA.Connection_Data_Class_Access (Connection_Data));
 ----    State.Load (
-----       Options.Camera_Options.Location, State_Test_Path); -- need to load state 1st
+----       Options.Location, State_Test_Path); -- need to load state 1st
 ----    Test.Setup.Load (State, Setup_Test_Path);
 --      Camera.Lib.Unit_Test.Camera_Window_Test_Type (Test).Set_Up;
 ----    Button_Push_Event.Reset_Event;
@@ -1042,7 +1042,7 @@ package body Widgets.Configured.Unit_Test is
                                    Configured_Card_Type (Current_Card.all);
    begin
       Log_In (Debug);
-         Connection_Data.Camera.Set_Preset (Camera.Lib.Base.Power_On_Preset);
+         Connection_Data.Camera_Commands.Set_Preset (Camera.Lib.Base.Power_On_Preset);
          declare
             Cell                 : constant Preset_Package.Cell_Class_Access :=
                                      Preset_Package.Cell_Class_Access (

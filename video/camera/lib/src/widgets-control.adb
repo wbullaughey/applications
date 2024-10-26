@@ -139,7 +139,7 @@ not_implemented;
          Log_In (Debug, "preset" & Cell.Preset'img &
             " message " & Mouse_Event.Message'img & " ID " & Object.ID);
 
-         Connection_Data.Camera.Set_Preset (Cell.Preset);
+         Connection_Data.Camera_Commands.Set_Preset (Cell.Preset);
 
          Log_Out (Debug);
       exception

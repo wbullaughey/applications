@@ -1,10 +1,12 @@
---with Ada.Streams;
+with Ada.Streams;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
 --with Camera.Lib.Base;
 with Hex_IO;
 
 package body Camera.LIB.ALPTOP is
 
+   use type Ada.Streams.Stream_Element;
+   use type Interfaces.Unsigned_16;
    use type Video.Lib.Index_Type;
 
    Timeout                       : constant Duration := 0.5;
@@ -47,6 +49,54 @@ package body Camera.LIB.ALPTOP is
 
    ----------------------------------------------------------------------------
    overriding
+   procedure Get_Absolute (
+      Camera                     : in out ALPTOP_Type;
+      Pan                        :    out Absolute_Type;
+      Tilt                       :    out Absolute_Type) is
+   ----------------------------------------------------------------------------
+
+      Accumulator                : Interfaces.Unsigned_16;
+      Conversion                 : Absolute_Type;
+      for Conversion'address use Accumulator'address;
+      Response_Buffer            : Maximum_Response_Type;
+      Response_Length            : Index_Type;
+
+   begin
+      Log_In (Debug);
+      Camera.Process_Command (Position_Request,
+         Options           => Null_Options,
+         Response          => Response_Buffer,
+         Response_Length   => Response_Length);
+
+--    if Debug then
+--       Response.Dump;
+--    end if;
+
+      Accumulator := 0;
+      for I in Index_Type'(3) .. 6 loop
+         Log_Here (Debug, I'img & ": " &
+            Ada_lib.Socket_IO.Hex (Response_Buffer (I)));
+         Accumulator := Accumulator * 16#10# +
+            Interfaces.Unsigned_16 (Response_Buffer (I) and 16#F#);
+      end loop;
+      Log_Here (Debug, Hex_IO.Hex (Accumulator) &
+         " conversion" & Conversion'img);
+      Pan := Conversion;
+
+      Accumulator := 0;
+      for I in Index_Type'(7) .. 10 loop
+         Log_Here (Debug, I'img & ": " &
+            Ada_lib.Socket_IO.Hex (Response_Buffer (I)));
+         Accumulator := Accumulator * 16#10# +
+            Interfaces.Unsigned_16 (Response_Buffer (I) and 16#F#);
+      end loop;
+      Log_Here (Debug, Hex_IO.Hex (Accumulator) &
+         " conversion" & Conversion'img);
+      Tilt := Conversion;
+   end Get_Absolute;
+
+   ----------------------------------------------------------------------------
+   overriding
    function Get_Ack_Length (
       Camera                     : in     ALPTOP_Type
    ) return Index_Type is
@@ -80,6 +130,32 @@ package body Camera.LIB.ALPTOP is
       Not_Implemented;
       return 0.0;
    end Get_Timeout;
+
+   ---------------------------------------------------------------
+   overriding
+   procedure Get_Zoom (
+      Camera                     : in out ALPTOP_Type;
+      Zoom                       :    out Absolute_Type) is
+      pragma Unreferenced (Camera, Zoom);
+   ---------------------------------------------------------------
+
+   begin
+      Not_Implemented;
+   end Get_Zoom;
+
+   ---------------------------------------------------------------
+   overriding
+   procedure Position_Relative (
+      Camera                     : in out ALPTOP_Type;
+      Pan                        : in      Relative_Type;
+      Tilt                       : in      Relative_Type;
+      Pan_Speed                  : in      Property_Type := 1;
+      Tilt_Speed                 : in      Property_Type := 1) is
+   ---------------------------------------------------------------
+
+   begin
+      Not_Implemented;
+   end Position_Relative;
 
    ----------------------------------------------------------------------------
    overriding
@@ -146,4 +222,33 @@ package body Camera.LIB.ALPTOP is
       Log_Out (Debug);
    end Send_Command;
 
+   ---------------------------------------------------------------
+   overriding
+   procedure Set_Absolute (
+      Camera                     : in out ALPTOP_Type;
+      Pan                        : in     Absolute_Type;
+      Tilt                       : in     Absolute_Type;
+      Pan_Speed                  : in     Property_Type := 1;
+      Tilt_Speed                 : in     Property_Type := 1) is
+   ---------------------------------------------------------------
+
+   begin
+      Not_Implemented;
+   end Set_Absolute;
+
+   ---------------------------------------------------------------
+   overriding
+   procedure Set_Preset (
+      Camera                     : in out ALPTOP_Type;
+      Preset_ID                  : in     Configuration.Camera.Preset_ID_Type;
+      Wait_Until_Finished        : in     Boolean := True) is
+   ---------------------------------------------------------------
+
+   begin
+      Not_Implemented;
+   end Set_Preset;
+
+begin
+   -- Debug := True;
+   Log_Here (Debug or Trace_Options or Elaborate);
 end Camera.LIB.ALPTOP;

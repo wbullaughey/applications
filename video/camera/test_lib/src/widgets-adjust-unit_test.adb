@@ -180,8 +180,8 @@ package body Widgets.Adjust.Unit_Test is
       Connection_Data   : constant Camera.Lib.Connection.Connection_Data_Access :=
                               Camera.Lib.Connection.Connection_Data_Access (
                                  Ada_Lib.GNOGA.Get_Connection_Data);
-      Camera            : Standard.Camera.Commands.Camera_Type renames
-                           Connection_Data.Camera;
+      Camera            : Standard.Camera.Commands.Camera_Queue_Type renames
+                           Connection_Data.Camera_Commands;
       Event             : Move_Package.Mouse_Move_Event_Type;
 
       Adjust_Card       : constant Adjust_Card_Access :=
@@ -285,6 +285,7 @@ begin
    if Trace_Tests then
       Debug := Trace_Tests;
    end if;
+--Debug := True;
 
 end Widgets.Adjust.Unit_Test;
 

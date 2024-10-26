@@ -21,19 +21,23 @@ package body Camera.Lib.Base.Test is
    use type Index_Type;
 
    type Test_Type (
-      Brand                      : Brand_Type) is new Ada_Lib.Unit_Test.
+      Brand                      : Brand_Type;
+      Description                : Ada_Lib.Strings.String_Constant_Access
+                                    ) is new Ada_Lib.Unit_Test.
                                     Test_Cases.Test_Case_Type with record
 
       Camera                     : Base.Base_Camera_Class_Access := Null;
       case Brand is
          when ALPTOP_Camera =>
-            ALPTOP                : aliased Standard.Camera.LIB.ALPTOP.ALPTOP_Type;
+            ALPTOP                : aliased Standard.Camera.LIB.ALPTOP.
+                                    ALPTOP_Type (Description);
 
          when No_Camera=>
             Null;
 
          when PTZ_Optics_Camera =>
-            PTZ_Optics           : aliased Standard.Camera.Lib.PTZ_Optics.PTZ_Optics_Type;
+            PTZ_Optics           : aliased Standard.Camera.Lib.
+                                    PTZ_Optics.PTZ_Optics_Type (Description);
 
       end case;
    end record;
@@ -343,6 +347,8 @@ package body Camera.Lib.Base.Test is
    function Suite return AUnit.Test_Suites.Access_Test_Suite is
    ---------------------------------------------------------------
 
+      Description                : aliased constant String :=
+                                    "camera";
       Options                    : Standard.Camera.Lib.Unit_Test.
                                     Camera_Lib_Unit_Test_Options_Type'class
                                        renames Standard.Camera.Lib.Unit_Test.
@@ -350,7 +356,8 @@ package body Camera.Lib.Base.Test is
       Test_Suite                 : constant AUnit.Test_Suites.Access_Test_Suite :=
                                     new AUnit.Test_Suites.Test_Suite;
       Test                       : constant Test_Access := new Test_Type (
-                                    Options.Camera_Options.Brand);
+                                    Options.Camera_Options.Brand,
+                                    Description'unchecked_access);
 
    begin
       Log_In (Debug, "brand " & Options.Camera_Options.Brand'img);

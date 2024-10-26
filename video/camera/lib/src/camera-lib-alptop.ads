@@ -3,7 +3,9 @@ with Configuration.Camera;
 
 package Camera.LIB.ALPTOP is
 
-   type ALPTOP_Type is new Lib.Base.Base_Camera_Type with null record;
+   type ALPTOP_Type is new Camera.Commands.Camera_Queue_Type with null record;
+
+private
 
    overriding
    procedure Acked (
@@ -26,6 +28,12 @@ package Camera.LIB.ALPTOP is
       Next_Byte                  :    out Index_Type);
 
    overriding
+   procedure Get_Absolute (
+      Camera                     : in out ALPTOP_Type;
+      Pan                        :    out Absolute_Type;
+      Tilt                       :    out Absolute_Type);
+
+   overriding
    function Get_Ack_Length (
       Camera                     : in     ALPTOP_Type
    ) return Index_Type;
@@ -40,6 +48,19 @@ package Camera.LIB.ALPTOP is
       Camera                     : in     ALPTOP_Type;
       Command                    : in     Commands_Type
    ) return Duration;
+
+   overriding
+   procedure Get_Zoom (
+      Camera                     : in out ALPTOP_Type;
+      Zoom                       :    out Absolute_Type);
+
+   overriding
+   procedure Position_Relative (
+      Camera                     : in out ALPTOP_Type;
+      Pan                        : in      Relative_Type;
+      Tilt                       : in      Relative_Type;
+      Pan_Speed                  : in      Property_Type := 1;
+      Tilt_Speed                 : in      Property_Type := 1);
 
    overriding
    procedure Process_Response (
@@ -64,5 +85,20 @@ package Camera.LIB.ALPTOP is
       Get_Ack                    :    out Boolean;
       Has_Response               :    out Boolean;
       Response_Length            :    out Index_Type);
+
+   overriding
+   procedure Set_Absolute (
+      Camera                     : in out ALPTOP_Type;
+      Pan                        : in     Absolute_Type;
+      Tilt                       : in     Absolute_Type;
+      Pan_Speed                  : in     Property_Type := 1;
+      Tilt_Speed                 : in     Property_Type := 1);
+
+   -- sets camera to a preset
+   overriding
+   procedure Set_Preset (
+      Camera                     : in out ALPTOP_Type;
+      Preset_ID                  : in     Configuration.Camera.Preset_ID_Type;
+      Wait_Until_Finished        : in     Boolean := True);
 
 end Camera.LIB.ALPTOP;

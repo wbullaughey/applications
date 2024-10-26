@@ -33,7 +33,8 @@ package body Camera.Lib.Unit_Test is
    Options_With_Parameters       : aliased constant
                                     Standard.Ada_Lib.Options.Options_Type :=
                                           Ada_Lib.Options.Create_Options (
-                                             Trace_Option & "R");
+                                             Trace_Option & "R",
+                                             Ada_Lib.Options.Unmodified);
    Options_Without_Parameters       : aliased constant
                                     Standard.Ada_Lib.Options.Options_Type :=
                                           Ada_Lib.Options.Null_Options;
@@ -58,7 +59,11 @@ package body Camera.Lib.Unit_Test is
    ---------------------------------------------------------------
 
    begin
-      Log_Here (Debug, "from " & From);
+      Log_Here (Debug, "Camera_Lib_Unit_Test_Options " &
+         (if Camera_Lib_Unit_Test_Options = Null then
+            "null "
+         else
+            "not null ") & From);
       return Camera_Lib_Unit_Test_Options;
    end Get_Camera_Lib_Unit_Test_Modifiable_Options;
 
@@ -95,10 +100,9 @@ package body Camera.Lib.Unit_Test is
          Options_Without_Parameters);
       return Log_Out_Checked (Initialize_Recursed,
          Options.Camera_Options.Initialize and then
---       Options.AUnit_Options.Initialize and then
 --       Options.GNOGA_Unit_Test_Options.Initialize and then
 --       Options.Initialize and then
---       Ada_Lib.Options.AUnit.Ada_Lib_Tests.Initialize and then
+         Options.AUnit_Options.Initialize and then
          Ada_Lib.Options.Unit_Test.Ada_Lib_Unit_Test_Options_Type (
             Options).Initialize,
          Debug_Options or Trace_Options,  "mode " & Options.Mode'img);
@@ -172,6 +176,7 @@ package body Camera.Lib.Unit_Test is
             " option" & Option.Image & " handled");
       else
          return Log_Out (
+            Options.AUnit_Options.Process_Option (Iterator, Option) or else
             Options.Camera_Options.Process_Option (Iterator, Option) or else
 --          Options.Process_Option (Iterator, Option) or else
             Ada_Lib.Options.Unit_Test.Ada_Lib_Unit_Test_Options_Type (
@@ -220,7 +225,7 @@ package body Camera.Lib.Unit_Test is
 
       end case;
 
---    Options.AUnit_Options.Program_Help (Help_Mode);
+      Options.AUnit_Options.Program_Help (Help_Mode);
       Options.Camera_Options.Program_Help (Help_Mode);
       Ada_Lib.Options.Unit_Test.Ada_Lib_Unit_Test_Options_Type (
          Options).Program_Help (Help_Mode);
@@ -370,14 +375,42 @@ not_implemented;
 -- end Run_Suite;
 
 ---------------------------------------------------------------
+   procedure Set_Camera (
+      Test           : in out Camera_Test_Type) is
+---------------------------------------------------------------
+
+      Options        : Standard.Camera.Lib.Unit_Test.
+                        Camera_Lib_Unit_Test_Options_Type'class
+                           renames Standard.Camera.Lib.Unit_Test.
+                              Get_Camera_Lib_Unit_Test_Read_Only_Options.all;
+      Brand          : Brand_Type renames Options.Camera_Options.Brand;
+
+begin
+   case Brand is
+
+      when ALPTOP_Camera =>
+         Test.Camera := Test.ALPTOP'unchecked_access;
+
+      when No_Camera =>
+         raise Failed with "no camera brand selected";
+
+      when PTZ_Optics_Camera =>
+         Test.Camera := Test.PTZ_Optics'unchecked_access;
+
+   end case;
+end Set_Camera;
+
+---------------------------------------------------------------
   overriding
   procedure Set_Up (
       Test                       : in out Camera_Test_Type) is
 ---------------------------------------------------------------
 
   begin
-     Test.Set_Up_Optional_Load (True);
-     Ada_Lib.Unit_Test.Test_Cases.Test_Case_Type (Test).Set_Up;
+      Log_In (Debug or Trace_Set_Up);
+      Test.Set_Up_Optional_Load (True);
+      Ada_Lib.Unit_Test.Test_Cases.Test_Case_Type (Test).Set_Up;
+      Log_Out (Debug or Trace_Set_Up);
 
   end Set_Up;
 
@@ -440,12 +473,13 @@ not_implemented;
    ---------------------------------------------------------------
 
       Connection_Data   : constant Connection.Connection_Data_Access :=
-                           Connection.Connection_Data_Access (
-                              Ada_Lib.GNOGA.Get_Connection_Data);
+                           new Connection.Connection_Data_Type;
       State                      : Configuration.Camera.State.State_Type renames
                                     Connection_Data.State;
    begin
       Log_In (Debug or Trace_Set_Up);
+      Ada_Lib.GNOGA.Set_Connection_Data (
+         Ada_Lib.GNOGA.Connection_Data_Class_Access (Connection_Data));
       Connection_Data.Initialize;
       State.Load (Camera_Lib_Unit_Test_Options.Camera_Options.Location,
          State_Test_Path); -- need to load state 1st
@@ -580,6 +614,7 @@ begin
 --Debug_Options := True;
 --Elaborate := True;
 --Trace_Options := True;
+--Trace_Set_Up := True;
 -- Include_Program := True;
    Log_Here (Debug or Trace_Options);
 -- Options := Protected_Options'access;

@@ -239,7 +239,8 @@ package body Camera.Lib.Base is
    ---------------------------------------------------------------
 
    begin
-      Log_In (Debug, "Address " & Address.Image & " port" & Port'img);
+      Log_In (Debug, "Address " & Address.Image & " port" & Port'img &
+         " tag " & Tag_Name (Base_Camera_Type'class (Camera)'tag));
       Camera.Socket.Connect (Address, Port);
       Log_Out (Debug);
 
@@ -325,6 +326,18 @@ package body Camera.Lib.Base is
          raise;
 
    end Process_Command;
+
+   ---------------------------------------------------------------
+   function Synchronous (
+      Camera                     : in out Base_Camera_Type;
+      Command                    : in     Commands_Type;
+      Options                    : in     Options_Type
+   ) return Status_Type is
+   ---------------------------------------------------------------
+
+   begin
+      return Camera.Queue (Command, Options);
+   end Synchronous;
 
    ---------------------------------------------------------------
    overriding

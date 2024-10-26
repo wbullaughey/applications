@@ -3,7 +3,7 @@
 with Ada_Lib.Parser;
 with Ada_Lib.Strings; use Ada_Lib.Strings;
 with ADA_LIB.Trace; use ADA_LIB.Trace;
-with Camera.Command_Queue;
+--with Camera.Command_Queue;
 --with Camera.Lib.Base;
 with Camera.Lib.Connection;
 --with Camera.Commands;

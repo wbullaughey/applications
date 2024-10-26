@@ -8,7 +8,7 @@ with AUnit.Test_Cases;
 with Camera.Lib.Connection;
 --with Camera.Lib.Options;
 with Camera.Lib.Unit_Test;
-with Configuration.Camera.Setup; use Configuration.Camera.Setup;
+--with Configuration.Camera.Setup; use Configuration.Camera.Setup;
 with Configuration.Camera.State;
 
 package body Main.Unit_Test is
@@ -30,11 +30,11 @@ package body Main.Unit_Test is
    procedure Register_Tests (
       Test                       : in out Test_Type);
 
-   overriding
-   procedure Set_Up (
-      Test                       : in out Test_Type
-   ) with Pre => not Test.Verify_Set_Up,
-          Post => Test.Verify_Set_Up;
+-- overriding
+-- procedure Set_Up (
+--    Test                       : in out Test_Type
+-- ) with Pre => not Test.Verify_Set_Up,
+--        Post => Test.Verify_Set_Up;
 
    overriding
    procedure Tear_Down (
@@ -53,8 +53,8 @@ package body Main.Unit_Test is
    procedure Callback (
       Event                      : in out Button_Push_Event_Type);
 
-   Setup_Path                    : constant String := "main_test_setup.cfg";
-   State_Path                    : constant String := "main_test_state.cfg";
+-- Setup_Path                    : constant String := "main_test_setup.cfg";
+-- State_Path                    : constant String := "main_test_state.cfg";
    Suite_Name                    : constant String := "Main";
 
 
@@ -76,7 +76,7 @@ package body Main.Unit_Test is
       Exit_Button                : Gnoga.Gui.Element.Common.Button_Type renames
                                     Navigation.Exit_Button;
    begin
-      Log_In (Debug);
+      Log_In (Debug, "exit button id" & Exit_Button.Unique_ID'img);
       Pause_On_Flag ("before exit button", Here, Debug);
       Exit_Button.Fire_On_Click;
       Log_Out (Debug);
@@ -114,34 +114,35 @@ package body Main.Unit_Test is
 
    end Register_Tests;
 
-   ---------------------------------------------------------------
-   overriding
-   procedure Set_Up (
-      Test                       : in out Test_Type) is
-   ---------------------------------------------------------------
-
-   begin
-      Log_In (Debug or Trace_Set_Up);
-      Camera.Lib.Unit_Test.Camera_Window_Test_Type (Test).Set_Up;
-         -- allocates Connection_Data
-
-      declare
-         Connection_Data   : Camera.Lib.Connection.Connection_Data_Type renames
-                              Camera.Lib.Connection.Connection_Data_Type (
-                                 Ada_Lib.GNOGA.Get_Connection_Data.all);
-         Options           : Standard.Camera.Lib.Unit_Test.
-                              Camera_Lib_Unit_Test_Options_Type'class
-                                 renames Standard.Camera.Lib.Unit_Test.
-                                    Get_Camera_Lib_Unit_Test_Modifiable_Options.all;
-         State             : Configuration.Camera.State.State_Type renames
-                              Connection_Data.State;
-      begin
-         State.Load (Options.Camera_Options.Location, State_Path);
-         -- need to load state 1st
-         Test.Setup.Load (State, Setup_Path);
-      end;
-      Log_Out (Debug or Trace_Set_Up);
-   end Set_Up;
+--   ---------------------------------------------------------------
+--   overriding
+--   procedure Set_Up (
+--      Test                       : in out Test_Type) is
+--   ---------------------------------------------------------------
+--
+--   begin
+--      Log_In (Debug or Trace_Set_Up);
+--      Camera.Lib.Unit_Test.Camera_Window_Test_Type (Test).Set_Up;
+--         -- allocates Connection_Data
+--
+--      declare
+--         Connection_Data   : Camera.Lib.Connection.Connection_Data_Type renames
+--                              Camera.Lib.Connection.Connection_Data_Type (
+--                                 Ada_Lib.GNOGA.Get_Connection_Data.all);
+--         Options           : Standard.Camera.Lib.Unit_Test.
+--                              Camera_Lib_Unit_Test_Options_Type'class
+--                                 renames Standard.Camera.Lib.Unit_Test.
+--                                    Get_Camera_Lib_Unit_Test_Modifiable_Options.all;
+--         State             : Configuration.Camera.State.State_Type renames
+--                              Connection_Data.State;
+--      begin
+--log_here;
+--         State.Load (Options.Camera_Options.Location, State_Path);
+--         -- need to load state 1st
+--         Test.Setup.Load (State, Setup_Path);
+--      end;
+--      Log_Out (Debug or Trace_Set_Up);
+--   end Set_Up;
 
    ---------------------------------------------------------------
    function Suite return AUnit.Test_Suites.Access_Test_Suite is
@@ -203,7 +204,7 @@ package body Main.Unit_Test is
 --       Button_Press_Event.Connection_Data :=
 --          Camera.Lib.Connection.Connection_Data_Access (Local_Test.Connection_Data);
 
-         Button_Press_Event.Set_Wait (2.0);  -- leave time for web page to display
+         Button_Press_Event.Initialize (0.75, "exit button push", False, False);
 
          Run (
             Directory            => Options.Camera_Options.Directory.Coerce,
@@ -224,5 +225,5 @@ begin
       Debug := Trace_Tests;
    end if;
 --Debug := True;
-   Log_Here (Elaborate or Trace_Options);
+   Log_Here (Debug or Elaborate or Trace_Options);
 end Main.Unit_Test;

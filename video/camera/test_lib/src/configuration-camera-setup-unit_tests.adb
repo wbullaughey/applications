@@ -119,7 +119,9 @@ package body Configuration.Camera.Setup.Unit_Tests is
       Test_Suite              : constant AUnit.Test_Suites.Access_Test_Suite :=
                                  new AUnit.Test_Suites.Test_Suite;
       Tests                   : constant Configuration_Tests_Access :=
-                                 new Configuration_Tests_Type (Options.Camera_Options.Brand);
+                                 new Configuration_Tests_Type (
+                                    Options.Camera_Options.Brand,
+                                    new String'("camera"));
 
    begin
       Log_In (Debug);
@@ -481,5 +483,6 @@ begin
    if Trace_Tests then
       Debug := Trace_Tests;
    end if;
+--Debug := Trace_Tests;
 
 end Configuration.Camera.Setup.Unit_Tests;

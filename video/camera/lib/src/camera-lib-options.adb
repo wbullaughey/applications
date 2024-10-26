@@ -33,7 +33,8 @@ package body Camera.Lib.Options is
    Options_With_Parameters       : aliased constant
                                     Ada_Lib.Options.Options_Type :=
                                        Ada_Lib.Options.Create_Options (
-                                          Trace_Option);
+                                          Trace_Option,
+                                          Ada_Lib.Options.Unmodified);
    Options_Without_Parameters    : aliased constant
                                     Ada_Lib.Options.Options_Type :=
                                        Ada_Lib.Options.Null_Options;

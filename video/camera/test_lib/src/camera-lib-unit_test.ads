@@ -1,9 +1,10 @@
 with Ada_Lib.Unit_Test.Test_Cases;
 with Ada_Lib.GNOGA.Unit_Test; -- .Base;
 --with Ada_Lib.Options.GNOGA;
+--with Ada_Lib.Options.AUnit_Lib;
 with Ada_Lib.Options.Unit_Test;
 with Ada_Lib.Trace;
---with AUnit.Ada_Lib.Options;
+with AUnit.Ada_Lib.Options;
 with AUnit.Options;
 with AUnit.Simple_Test_Cases;
 with AUnit.Test_Results;
@@ -23,9 +24,10 @@ package Camera.Lib.Unit_Test is
 
    -- use for tests with camera but no web pages
    type Camera_Test_Type (
-      Brand                      :Standard.Camera.Lib.Brand_Type) is abstract new
-                                    Ada_Lib.Unit_Test.Test_Cases.
-                                       Test_Case_Type with record
+      Brand                      : Standard.Camera.Lib.Brand_Type;
+      Description                : Ada_Lib.Strings.String_Constant_Access
+                                    ) is abstract new Ada_Lib.Unit_Test.
+                                       Test_Cases.Test_Case_Type with record
       Camera                     : Base.Base_Camera_Class_Access := Null;
       Camera_Address             : Address_Constant_Access := Null;
       Port_Number                : Port_Type;
@@ -33,14 +35,15 @@ package Camera.Lib.Unit_Test is
       Setup                      : Configuration.Camera.Setup.Setup_Type;
       case Brand is
          when Standard.Camera.Lib.ALPTOP_Camera =>
-            ALPTOP                : aliased Standard.Camera.LIB.ALPTOP.ALPTOP_Type;
+            ALPTOP                : aliased Standard.Camera.LIB.ALPTOP.
+                                    ALPTOP_Type (Description);
 
          when Standard.Camera.Lib.No_Camera=>
             Null;
 
          when Standard.Camera.LIB.PTZ_Optics_Camera =>
             PTZ_Optics           : aliased Standard.Camera.Lib.
-                                    PTZ_Optics.PTZ_Optics_Type;
+                                    PTZ_Optics.PTZ_Optics_Type (Description);
 
       end case;
    end record;
@@ -48,6 +51,10 @@ package Camera.Lib.Unit_Test is
    type Camera_Test_Access       is access Camera_Test_Type;
    type Camera_Test_Constant_Access
                                  is access constant Camera_Test_Type;
+
+   procedure Set_Camera (
+      Test                       : in out Camera_Test_Type);
+
    overriding
    procedure Set_Up (
       Test                       : in out Camera_Test_Type
@@ -89,7 +96,7 @@ package Camera.Lib.Unit_Test is
    type Camera_Lib_Unit_Test_Options_Type
          is new Ada_Lib.Options.Unit_Test.Ada_Lib_Unit_Test_Options_Type (
             False) with record
---    AUnit_Options              : AUnit.Ada_Lib.Options.AUnit_Options_Type;
+      AUnit_Options              : AUnit.Ada_Lib.Options.AUnit_Options_Type;
       Camera_Options             : aliased Standard.Camera.Lib.Camera_Lib_Options_Type;
 --    GNOGA_Options              : Ada_Lib.Options.GNOGA.GNOGA_Options_Type;
 --    GNOGA_Unit_Test_Options    : Ada_Lib.GNOGA.Unit_Test.

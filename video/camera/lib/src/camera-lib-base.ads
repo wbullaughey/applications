@@ -1,6 +1,7 @@
 --with Ada_Lib.Event;
 --with Ada_Lib.GNOGA;
 with Ada_Lib.Socket_IO.Client;
+with Camera.Command_Queue;
 with Configuration.Camera; -- .State;
 with GNAT.Sockets;
 --with Gnoga.Gui.Element.Common;
@@ -29,14 +30,16 @@ package Camera.Lib.Base is
       Response_Length            : Index_Type;
    end record;
 
-   type Base_Camera_Type         is abstract new General_Camera_Type with private;
+   type Base_Camera_Type (
+      Description                : Ada_Lib.Strings.String_Constant_Access
+                                    ) is abstract new General_Camera_Type with private;
    type Base_Camera_Class_Access is access all Base_Camera_Type'class;
 
-   procedure Acked (
-      Camera                     : in     Base_Camera_Type;
-      Response                   : in     Response_Type;
-      Value                      :    out Natural;
-      Next_Buffer_Index          :    out Index_Type) is abstract;
+-- procedure Acked (
+--    Camera                     : in     Base_Camera_Type;
+--    Response                   : in     Response_Type;
+--    Value                      :    out Natural;
+--    Next_Buffer_Index          :    out Index_Type) is abstract;
 
    overriding
    procedure Close (
@@ -53,6 +56,11 @@ package Camera.Lib.Base is
       Camera                     : in     Base_Camera_Type
    ) return Index_Type is abstract;
 
+-- procedure Get_Absolute (
+--    Camera                     : in out Base_Camera_Type;
+--    Pan                        :    out Absolute_Type;
+--    Tilt                       :    out Absolute_Type) is abstract;
+
    function Get_Default_Preset (
       Camera                     : in     Base_Camera_Type
    ) return Configuration.Camera.Preset_ID_Type is abstract;
@@ -65,15 +73,14 @@ package Camera.Lib.Base is
       Response_Length            : in     Index_Type;
       Response_Timeout           : in     Duration);
 
--- procedure Get_Absolute (
---    Camera                     : in out Base_Camera_Type;
---    Pan                        :    out Absolute_Type;
---    Tilt                       :    out Absolute_Type) is abstract;
-
    function Get_Timeout (
       Camera                     : in     Base_Camera_Type;
       Command                    : in     Commands_Type
    ) return Duration is abstract;
+
+-- procedure Get_Zoom (
+--    Camera                     : in out Base_Camera_Type;
+--    Zoom                       :    out Absolute_Type) is abstract;
 
    overriding
    procedure Host_Open (
@@ -93,6 +100,13 @@ package Camera.Lib.Base is
       Camera                     :    out Base_Camera_Type;
       Address                    : in     Ada_Lib.Socket_IO.Address_Type;
       Port                       : in     Ada_Lib.Socket_IO.Port_Type);
+
+-- procedure Position_Relative (
+--    Camera                     : in out Base_Camera_Type;
+--    Pan                        : in      Relative_Type;
+--    Tilt                       : in      Relative_Type;
+--    Pan_Speed                  : in      Property_Type := 1;
+--    Tilt_Speed                 : in      Property_Type := 1) is abstract;
 
    procedure Process_Command (
       Camera                     : in out Base_Camera_Type;
@@ -138,7 +152,7 @@ package Camera.Lib.Base is
 --    Camera                     : in out Base_Camera_Type;
 --    On                         : in     Boolean) is abstract;
 
--- -- sets camera to a preset
+   -- sets camera to a preset
 -- procedure Set_Preset (
 --    Camera                     : in out Base_Camera_Type;
 --    Preset_ID                  : in     Configuration.Camera.Preset_ID_Type;
@@ -172,9 +186,13 @@ package Camera.Lib.Base is
 
 private
 
-   type Base_Camera_Type         is abstract new General_Camera_Type with record
+   type Base_Camera_Type (
+      Description                : Ada_Lib.Strings.String_Constant_Access
+                                    ) is abstract new General_Camera_Type with
+                                       record
       Last_Command               : Commands_Type := No_Command;
-      Socket                     : Ada_Lib.Socket_IO.Client.Client_Socket_Type;
+      Socket                     : Ada_Lib.Socket_IO.Client.Client_Socket_Type (
+                                       Description);
       Waiting_For_Response       : Boolean := False;
    end record;
 

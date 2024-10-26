@@ -1,22 +1,26 @@
 --with Ada.Exceptions;
 --with Ada_Lib.GNOGA;
+with ADA_LIB.Strings;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
-with Ada_Lib.Unit_Test.Test_Cases;
+with Ada_Lib.Unit_Test;
 with AUnit.Assertions; use AUnit.Assertions;
 with AUnit.Test_Cases;
 --with Base;
+with Camera.Lib.Base;
 with Camera.Lib.PTZ_Optics;
---with Camera.Lib.Unit_Test;
+with Camera.Lib.Unit_Test;
 with Interfaces;
 
 package body Camera.Commands.Unit_Test is
 
    use type Interfaces.Integer_16;
+   use type Camera.Lib.Base.Base_Camera_Class_Access;
 
-   type Test_Type    is new Ada_Lib.Unit_Test.Test_Cases.
-                        Test_Case_Type with record
-      Camera         : Camera_Class_Access := Null;
-   end record;
+   type Test_Type (
+      Brand          : Camera.Lib.Brand_Type;
+      Description    : Ada_Lib.Strings.String_Constant_Access
+                  ) is new Camera.Lib.Unit_Test.
+                     Camera_Test_Type (Brand, Description) with null record;
 
    type Test_Access is access Test_Type;
 
@@ -40,20 +44,29 @@ package body Camera.Commands.Unit_Test is
 -- procedure Test_Get_Absolute (
 --    Test                       : in out AUnit.Test_Cases.Test_Case'class);
 
+   function Have_Camera (
+      Test  : in     AUnit.Test_Cases.Test_Case'class
+   ) return Boolean;
+
    procedure Test_Get_Zoom (
-      Test                       : in out AUnit.Test_Cases.Test_Case'class);
+      Test                       : in out AUnit.Test_Cases.Test_Case'class
+   ) with Pre => Have_Camera (Test);
 
    procedure Test_Position_Relative (
-      Test                       : in out AUnit.Test_Cases.Test_Case'class);
+      Test                       : in out AUnit.Test_Cases.Test_Case'class
+   ) with Pre => Have_Camera (Test);
 
    procedure Test_Set_Absolute (
-      Test                       : in out AUnit.Test_Cases.Test_Case'class);
+      Test                       : in out AUnit.Test_Cases.Test_Case'class
+   ) with Pre => Have_Camera (Test);
 
    procedure Test_Set_Preset (
-      Test                       : in out AUnit.Test_Cases.Test_Case'class);
+      Test                       : in out AUnit.Test_Cases.Test_Case'class
+   ) with Pre => Have_Camera (Test);
 
    procedure Test_Set_Zoom (
-      Test                       : in out AUnit.Test_Cases.Test_Case'class);
+      Test                       : in out AUnit.Test_Cases.Test_Case'class
+   ) with Pre => Have_Camera (Test);
 
    Suite_Name                    : constant String := "Commands";
    Test_Preset                   : constant := Camera.Lib.PTZ_Optics.
@@ -73,6 +86,19 @@ package body Camera.Commands.Unit_Test is
       Assert (Got_Tilt = Expected_Tilt, "got wrong tilt" & Got_Tilt'img &
          " expected tilt" & Expected_Tilt'img);
    end Check_Coordinates;
+
+   ---------------------------------------------------------------
+   function Have_Camera (
+      Test  : in     AUnit.Test_Cases.Test_Case'class
+   ) return Boolean is
+   ---------------------------------------------------------------
+
+      Local_Test                 : Test_Type'class renames Test_Type'class (Test);
+
+   begin
+      return Local_Test.Camera /= Null;
+   end Have_Camera;
+   ---------------------------------------------------------------
 
    ---------------------------------------------------------------
    overriding
@@ -127,11 +153,30 @@ package body Camera.Commands.Unit_Test is
 -- ---------------------------------------------------------------
 -- overriding
 -- procedure Set_Up (
---    Test                       : in out Test_Type) is
+--    Test              : in out Test_Type) is
 -- ---------------------------------------------------------------
+--
+--    Options           : Standard.Camera.Lib.Unit_Test.
+--                         Camera_Lib_Unit_Test_Options_Type'class
+--                            renames Standard.Camera.Lib.Unit_Test.
+--                               Get_Camera_Lib_Unit_Test_Read_Only_Options.all;
+--    Brand             : Standard.Camera.Lib.Brand_Type renames
+--                         Options.Camera_Options.Brand;
 --
 -- begin
 --    Log_In (Debug or Trace_Set_Up);
+--    case Brand is
+--
+--       when Standard.Camera.Lib.ALPTOP_Camera =>
+--          Test.Camera := Test.ALPTOP'access;
+--
+--       when Standard.Camera.Lib.No_Camera =>
+--          raise Failed with "no camera brand selected";
+--
+--       when Standard.Camera.Lib.PTZ_Optics_Camera =>
+--          Test.Camera := Test.PTZ_Optics'access;
+--
+--    end case;
 --    Log_Out (Debug or Trace_Set_Up);
 --
 -- exception
@@ -145,14 +190,22 @@ package body Camera.Commands.Unit_Test is
    function Suite return AUnit.Test_Suites.Access_Test_Suite is
    ---------------------------------------------------------------
 
+      Options                    : Standard.Camera.Lib.Unit_Test.
+                                    Camera_Lib_Unit_Test_Options_Type'class
+                                       renames Standard.Camera.Lib.Unit_Test.
+                                          Get_Camera_Lib_Unit_Test_Read_Only_Options.all;
+      Brand                      : Standard.Camera.Lib.Brand_Type renames
+                                    Options.Camera_Options.Brand;
       Test_Suite                 : constant AUnit.Test_Suites.Access_Test_Suite :=
                                     new AUnit.Test_Suites.Test_Suite;
-      Test                       : constant Test_Access := new Test_Type;
+      Test                       : constant Test_Access := new Test_Type (Brand,
+                                    new String'("camera command"));
 
    begin
       Log_In (Debug);
       Ada_Lib.Unit_Test.Suite (Suite_Name);  -- used for listing suites
       Test_Suite.Add_Test (Test);
+      Test.Set_Camera;
       Log_Out (Debug);
       return Test_Suite;
    end Suite;
@@ -201,6 +254,13 @@ package body Camera.Commands.Unit_Test is
       Local_Test.Camera.Get_Zoom (Zoom);
       Log_Here (Debug, "zoom" & Zoom'img);
       Log_Out (Debug);
+
+   exception
+
+      when Error: others =>
+         Log_Exception (Debug, Error);
+         Ada_Lib.Unit_Test.Exception_Assert (Error);
+
    end Test_Get_Zoom;
 
    ----------------------------------------------------------------
@@ -235,6 +295,13 @@ package body Camera.Commands.Unit_Test is
       Local_Test.Camera.Get_Absolute (Final_Pan, Final_Tilt);
       Check_Coordinates (Final_Pan, Test_Pan, Final_Tilt, Test_Tilt);
       Log_Out (Debug);
+
+   exception
+
+      when Error: others =>
+         Log_Exception (Debug, Error);
+         Ada_Lib.Unit_Test.Exception_Assert (Error);
+
    end Test_Position_Relative;
 
    ----------------------------------------------------------------
@@ -271,6 +338,13 @@ package body Camera.Commands.Unit_Test is
       Local_Test.Camera.Get_Absolute (Final_Pan, Final_Tilt);
       Check_Coordinates (Final_Pan, Test_Pan, Final_Tilt, Test_Tilt);
       Log_Out (Debug);
+
+   exception
+
+      when Error: others =>
+         Log_Exception (Debug, Error);
+         Ada_Lib.Unit_Test.Exception_Assert (Error);
+
    end Test_Set_Absolute;
 
    ----------------------------------------------------------------
@@ -301,6 +375,13 @@ package body Camera.Commands.Unit_Test is
       Local_Test.Camera.Get_Absolute (Pan, Tilt);
       Check_Coordinates (Pan, Pan_Set, Tilt, Tilt_Set);
       Log_Out (Debug);
+
+   exception
+
+      when Error: others =>
+         Log_Exception (Debug, Error);
+         Ada_Lib.Unit_Test.Exception_Assert (Error);
+
    end Test_Set_Preset;
 
    ----------------------------------------------------------------
@@ -315,6 +396,13 @@ package body Camera.Commands.Unit_Test is
       Log_In (Debug);
       Assert (False, "not implemented");
       Log_Out (Debug);
+
+   exception
+
+      when Error: others =>
+         Log_Exception (Debug, Error);
+         Ada_Lib.Unit_Test.Exception_Assert (Error);
+
    end Test_Set_Zoom;
 
 begin
