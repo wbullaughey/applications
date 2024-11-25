@@ -1,6 +1,6 @@
 with Ada.Streams;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
---with Camera.Lib.Base;
+with Camera.Lib.Base;
 with Hex_IO;
 
 package body Camera.LIB.ALPTOP is
@@ -119,6 +119,18 @@ package body Camera.LIB.ALPTOP is
 
    ----------------------------------------------------------------------------
    overriding
+   procedure Get_Power (
+      Camera                     : in out ALPTOP_Type;
+      Power                      :    out Boolean) is
+   pragma Unreferenced (Camera, Power);
+   ----------------------------------------------------------------------------
+
+   begin
+      Not_Implemented;
+   end Get_Power;
+
+   ----------------------------------------------------------------------------
+   overriding
    function Get_Timeout (
       Camera                     : in     ALPTOP_Type;
       Command                    : in     Commands_Type
@@ -151,6 +163,7 @@ package body Camera.LIB.ALPTOP is
       Tilt                       : in      Relative_Type;
       Pan_Speed                  : in      Property_Type := 1;
       Tilt_Speed                 : in      Property_Type := 1) is
+   pragma Unreferenced (Camera, Pan, Tilt, Pan_Speed, Tilt_Speed);
    ---------------------------------------------------------------
 
    begin
@@ -230,6 +243,7 @@ package body Camera.LIB.ALPTOP is
       Tilt                       : in     Absolute_Type;
       Pan_Speed                  : in     Property_Type := 1;
       Tilt_Speed                 : in     Property_Type := 1) is
+   pragma Unreferenced (Camera, Pan, Tilt, Pan_Speed, Tilt_Speed);
    ---------------------------------------------------------------
 
    begin
@@ -238,10 +252,23 @@ package body Camera.LIB.ALPTOP is
 
    ---------------------------------------------------------------
    overriding
+   procedure Set_Power (
+      Camera                     : in out ALPTOP_Type;
+      On                         : in     Boolean) is
+   pragma Unreferenced (Camera, On);
+   ---------------------------------------------------------------
+
+   begin
+not_implemented;
+   end Set_Power;
+
+   ---------------------------------------------------------------
+   overriding
    procedure Set_Preset (
       Camera                     : in out ALPTOP_Type;
       Preset_ID                  : in     Configuration.Camera.Preset_ID_Type;
       Wait_Until_Finished        : in     Boolean := True) is
+   pragma Unreferenced (Camera, Preset_ID, Wait_Until_Finished);
    ---------------------------------------------------------------
 
    begin

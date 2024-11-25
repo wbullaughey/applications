@@ -180,8 +180,8 @@ package body Widgets.Adjust.Unit_Test is
       Connection_Data   : constant Camera.Lib.Connection.Connection_Data_Access :=
                               Camera.Lib.Connection.Connection_Data_Access (
                                  Ada_Lib.GNOGA.Get_Connection_Data);
-      Camera            : Standard.Camera.Commands.Camera_Queue_Type renames
-                           Connection_Data.Camera_Commands;
+      Camera_Queue      : Standard.Camera.Commands.Camera_Queue_Class_Access renames
+                           Connection_Data.Camera_Queue;
       Event             : Move_Package.Mouse_Move_Event_Type;
 
       Adjust_Card       : constant Adjust_Card_Access :=
@@ -211,17 +211,17 @@ package body Widgets.Adjust.Unit_Test is
             Meta           => False),
          Wait           => 0.25);
 
-      Camera.Set_Absolute (
+      Camera_Queue.Set_Absolute (
          Pan      => 0,
          Tilt     => 0);
-      Camera.Get_Absolute (Pan, Tilt);
+      Camera_Queue.Get_Absolute (Pan, Tilt);
       Log_Here (Debug, "pan " & Pan'img & " tilt " & Tilt'img);
       Assert (Pan = 0, "pan to 0 failed, offset " & Pan'img);
       Assert (Tilt = 0, "tilt to 0 failed, tilt " & Tilt'img);
 
       Adjust_Card.Fire_On_Mouse_Click (Event.Mouse_Event);
       delay 0.5;     -- wait for button to be pushed
-      Camera.Get_Absolute (Pan, Tilt);
+      Camera_Queue.Get_Absolute (Pan, Tilt);
       Assert (Pan = Pan_Offset, "wrong pan" & Pan'img &
          " expected" & Pan_Offset'img);
       Assert (Tilt = Tilt_Offset, "wrong tilt" & Tilt'img &

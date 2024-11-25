@@ -167,8 +167,8 @@ package body Configuration.Camera.Setup.Unit_Tests is
       Local_Test.Setup.Load (Connection_Data.State, Test_Setup);
       Local_Test.Camera_Address := State.Video_Address;
       Local_Test.Port_Number := State.Video_Port;
-      Local_Test.Camera := Local_Test.PTZ_Optics'unchecked_access;
-      Local_Test.Camera.Open (State.Video_Address.all, Local_Test.Port_Number);
+      Local_Test.Camera_Queue := Local_Test.PTZ_Optics'unchecked_access;
+      Local_Test.Camera_Queue.Open (State.Video_Address.all, Local_Test.Port_Number);
       Log_Out (Debug);
 
    exception

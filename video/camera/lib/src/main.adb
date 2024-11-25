@@ -8,8 +8,8 @@ with Ada_Lib.Options;
 with Ada_Lib.OS;
 with ADA_LIB.Trace; use ADA_LIB.Trace;
 with Ask;
-with Camera.Commands;
-with Camera.Lib.PTZ_Optics;
+--with Camera.Commands;
+--with Camera.Lib.PTZ_Optics;
 --with Camera.Command_Queue;
 with Camera.Lib.Connection;
 with Camera.Lib.Base;
@@ -569,9 +569,7 @@ package body Main is
       case Options.Brand is
 
          when Standard.Camera.Lib.PTZ_Optics_Camera =>
-            Connection_Data.Camera_Commands.Open (new Standard.Camera.Lib.PTZ_Optics.
-               PTZ_Optics_Type (new String'("camera")),
-                  Camera_Address, Port_Number);
+            Connection_Data.Camera_Queue.Open (Camera_Address, Port_Number);
 
          when others =>
             raise Failed with Options.Brand'img &

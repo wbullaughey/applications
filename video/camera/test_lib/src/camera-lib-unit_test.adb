@@ -10,6 +10,7 @@ with AUnit.Assertions; use AUnit.Assertions;
 with Camera.Command_Queue;
 with Camera.Commands.Unit_Test;
 with Camera.Lib.Base.Command_Tests;
+with Camera.Lib.Base.Test;
 with Camera.Lib.Connection;
 with Configuration.Camera.Setup.Unit_Tests;
 with Configuration.Camera.State.Unit_Tests;
@@ -217,10 +218,10 @@ package body Camera.Lib.Unit_Test is
          Put_Line ("      m               main unit test trace");
          Put_Line ("      o               unit_test options");
          Put_Line ("      p               program trace");
-         Put_Line ("      q               camera queue");
          Put_Line ("      s               Configuration.Camera.State unit_test options");
          Put_Line ("      S               Configuration.Camera.Setup unit_test options");
          Put_Line ("      t               unit_test trace");
+         Put_Line ("      u               camera commands unit test");
          New_Line;
 
       end case;
@@ -283,32 +284,45 @@ not_implemented;
 
    ---------------------------------------------------------------
    procedure Run_Suite (
-     Options                    : in   Camera_Lib_Unit_Test_Options_Type) is
+     Options            : in   Camera_Lib_Unit_Test_Options_Type) is
    ---------------------------------------------------------------
 
    begin
       Log_In (Debug, "mode " & Options.Mode'img);
       declare
-         AUnit_Options           : AUnit.Options.AUnit_Options;
-         Outcome                 : AUnit.Status;
-         Reporter                : Ada_Lib.Unit_Test.Reporter.Reporter_Type;
-         Results                 : AUnit.Test_Results.Result;
-         Test_Suite              : constant AUnit.Test_Suites.Access_Test_Suite :=
-                                    AUnit.Test_Suites.New_Suite;
+         AUnit_Options  : AUnit.Options.AUnit_Options;
+         Outcome        : AUnit.Status;
+         Reporter       : Ada_Lib.Unit_Test.Reporter.Reporter_Type;
+         Results        : AUnit.Test_Results.Result;
+         Test_Suite     : constant AUnit.Test_Suites.Access_Test_Suite :=
+                           AUnit.Test_Suites.New_Suite;
 
       begin
+log_here;
          AUnit_Options.Filter := Options.Filter'unchecked_access;
---       Test_Suite.Add_Test (Camera.Lib.Base.Test.Suite);
+log_here;
+         Test_Suite.Add_Test (Camera.Lib.Base.Test.Suite);
+log_here;
          Test_Suite.Add_Test (Main.Unit_Test.Suite);
+log_here;
          Test_Suite.Add_Test (Standard.Camera.Commands.Unit_Test.Suite);
+log_here;
          Test_Suite.Add_Test (Standard.Camera.Lib.Base.Command_Tests.Suite);
-         Test_Suite.Add_Test (Standard.Configuration.Camera.Setup.Unit_Tests.Suite);
-         Test_Suite.Add_Test (Standard.Configuration.Camera.State.Unit_Tests.Suite);
+log_here;
+         Test_Suite.Add_Test (
+            Standard.Configuration.Camera.Setup.Unit_Tests.Suite);
+log_here;
+         Test_Suite.Add_Test (
+            Standard.Configuration.Camera.State.Unit_Tests.Suite);
+log_here;
          Test_Suite.Add_Test (Widgets.Adjust.Unit_Test.Suite);
+log_here;
          Test_Suite.Add_Test (Widgets.Configured.Unit_Test.Suite);
+log_here;
          Test_Suite.Add_Test (Widgets.Control.Unit_Test.Suite);
-
+log_here;
          Test_Suite.Run (AUnit_Options, Results, Outcome);
+log_here;
          case Options.Mode is
 
             when  Ada_Lib.Options.Driver_Suites |
@@ -385,17 +399,18 @@ not_implemented;
                               Get_Camera_Lib_Unit_Test_Read_Only_Options.all;
       Brand          : Brand_Type renames Options.Camera_Options.Brand;
 
-begin
+   begin
+log_here;
    case Brand is
 
       when ALPTOP_Camera =>
-         Test.Camera := Test.ALPTOP'unchecked_access;
+         Test.Camera_Queue := Test.ALPTOP'unchecked_access;
 
       when No_Camera =>
          raise Failed with "no camera brand selected";
 
       when PTZ_Optics_Camera =>
-         Test.Camera := Test.PTZ_Optics'unchecked_access;
+         Test.Camera_Queue := Test.PTZ_Optics'unchecked_access;
 
    end case;
 end Set_Camera;
@@ -409,7 +424,6 @@ end Set_Camera;
   begin
       Log_In (Debug or Trace_Set_Up);
       Test.Set_Up_Optional_Load (True);
-      Ada_Lib.Unit_Test.Test_Cases.Test_Case_Type (Test).Set_Up;
       Log_Out (Debug or Trace_Set_Up);
 
   end Set_Up;
@@ -451,14 +465,15 @@ end Set_Camera;
                not_implemented;
 
            when Standard.Camera.LIB.PTZ_Optics_Camera =>
-               Test.Camera := Test.PTZ_Optics'unchecked_access;
-               Test.Camera.Open (State.Video_Address.all, Test.Port_Number);
+               Test.Camera_Queue := Test.PTZ_Optics'unchecked_access;
+               Test.Camera_Queue.Open (State.Video_Address.all, Test.Port_Number);
 
            when Standard.Camera.Lib.No_Camera =>
               raise Failed with "no camera set";
 
         end case;
      end if;
+     Ada_Lib.Unit_Test.Test_Cases.Test_Case_Type (Test).Set_Up;
      Log_Out (Debug or Trace_Set_Up);
 
   exception
@@ -518,7 +533,7 @@ end Set_Camera;
                                     Connection_Data.State;
    begin
       Log_In (Debug);
-      Test.Camera.Close;
+      Test.Camera_Queue.Close;
       State.Unload;
 
       Gnoga.Application.Multi_Connect.End_Application;
@@ -584,9 +599,6 @@ end Set_Camera;
             when 'p' =>    -- program trace
                Options.Main_Debug := True;
 
-            when 'q' =>    -- camera queue
-               Camera.Command_Queue.Debug := True;
-
             when 's' =>
                Standard.Configuration.Camera.State.Unit_Tests.Debug := True;
 
@@ -598,6 +610,9 @@ end Set_Camera;
 
 --          when 'w' =>
 --             Widget_Trace := True;
+
+            when 'u' =>
+               Camera.Commands.Unit_Test.Debug := True;
 
             when others =>
                Options.Bad_Option (Quote ("unexpected Camera_Library test trace option",

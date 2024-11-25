@@ -1042,7 +1042,7 @@ package body Widgets.Configured.Unit_Test is
                                    Configured_Card_Type (Current_Card.all);
    begin
       Log_In (Debug);
-         Connection_Data.Camera_Commands.Set_Preset (Camera.Lib.Base.Power_On_Preset);
+         Connection_Data.Camera_Queue.Set_Preset (Camera.Lib.Base.Power_On_Preset);
          declare
             Cell                 : constant Preset_Package.Cell_Class_Access :=
                                      Preset_Package.Cell_Class_Access (

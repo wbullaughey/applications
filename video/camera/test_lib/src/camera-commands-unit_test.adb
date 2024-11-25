@@ -6,7 +6,7 @@ with Ada_Lib.Unit_Test;
 with AUnit.Assertions; use AUnit.Assertions;
 with AUnit.Test_Cases;
 --with Base;
-with Camera.Lib.Base;
+--with Camera.Lib.Base;
 with Camera.Lib.PTZ_Optics;
 with Camera.Lib.Unit_Test;
 with Interfaces;
@@ -14,7 +14,7 @@ with Interfaces;
 package body Camera.Commands.Unit_Test is
 
    use type Interfaces.Integer_16;
-   use type Camera.Lib.Base.Base_Camera_Class_Access;
+-- use type Camera.Lib.Base.Base_Camera_Class_Access;
 
    type Test_Type (
       Brand          : Camera.Lib.Brand_Type;
@@ -96,7 +96,7 @@ package body Camera.Commands.Unit_Test is
       Local_Test                 : Test_Type'class renames Test_Type'class (Test);
 
    begin
-      return Local_Test.Camera /= Null;
+      return Local_Test.Camera_Queue /= Null;
    end Have_Camera;
    ---------------------------------------------------------------
 
@@ -251,7 +251,7 @@ package body Camera.Commands.Unit_Test is
 
    begin
       Log_In (Debug);
-      Local_Test.Camera.Get_Zoom (Zoom);
+      Local_Test.Camera_Queue.Get_Zoom (Zoom);
       Log_Here (Debug, "zoom" & Zoom'img);
       Log_Out (Debug);
 
@@ -279,20 +279,20 @@ package body Camera.Commands.Unit_Test is
    begin
       Log_In (Debug);
       -- use Test_Preset as reference
-      Local_Test.Camera.Set_Preset (Test_Preset);
+      Local_Test.Camera_Queue.Set_Preset (Test_Preset);
       -- get coordinats of test preset
-      Local_Test.Camera.Get_Absolute (Test_Pan, Test_Tilt);
+      Local_Test.Camera_Queue.Get_Absolute_Iterate (Test_Pan, Test_Tilt);
       -- set relative
-      Local_Test.Camera.Position_Relative (Pan_Offset, Tilt_Offset);
+      Local_Test.Camera_Queue.Position_Relative (Pan_Offset, Tilt_Offset);
       -- get coordinates of new location
-      Local_Test.Camera.Get_Absolute (Final_Pan, Final_Tilt);
+      Local_Test.Camera_Queue.Get_Absolute_Iterate (Final_Pan, Final_Tilt);
       -- verify it got coordinates that were set
       Check_Coordinates (Final_Pan, Test_Pan + Pan_Offset,
          Final_Tilt, Test_Tilt + Tilt_Offset);
       -- set it back to reference
-      Local_Test.Camera.Set_Preset (Test_Preset);
+      Local_Test.Camera_Queue.Set_Preset (Test_Preset);
       -- git its coordinats
-      Local_Test.Camera.Get_Absolute (Final_Pan, Final_Tilt);
+      Local_Test.Camera_Queue.Get_Absolute_Iterate (Final_Pan, Final_Tilt);
       Check_Coordinates (Final_Pan, Test_Pan, Final_Tilt, Test_Tilt);
       Log_Out (Debug);
 
@@ -320,22 +320,22 @@ package body Camera.Commands.Unit_Test is
    begin
       Log_In (Debug);
       -- use Test_Preset as reference
-      Local_Test.Camera.Set_Preset (Test_Preset);
+      Local_Test.Camera_Queue.Set_Preset (Test_Preset);
       -- get coordinats of test preset
-      Local_Test.Camera.Get_Absolute (Test_Pan, Test_Tilt);
+      Local_Test.Camera_Queue.Get_Absolute_Iterate (Test_Pan, Test_Tilt);
       -- calculate offset from reference
       Pan_Set := Test_Pan + 100;
       Tilt_Set := Test_Tilt - 100;
       -- set to that offset
-      Local_Test.Camera.Set_Absolute (Pan_Set, Tilt_Set);
+      Local_Test.Camera_Queue.Set_Absolute (Pan_Set, Tilt_Set);
       -- get coordinates of new location
-      Local_Test.Camera.Get_Absolute (Final_Pan, Final_Tilt);
+      Local_Test.Camera_Queue.Get_Absolute_Iterate (Final_Pan, Final_Tilt);
       -- verify it got coordinates that were set
       Check_Coordinates (Final_Pan, Pan_Set, Final_Tilt, Tilt_Set);
       -- set it back to reference
-      Local_Test.Camera.Set_Preset (Test_Preset);
+      Local_Test.Camera_Queue.Set_Preset (Test_Preset);
       -- git its coordinats
-      Local_Test.Camera.Get_Absolute (Final_Pan, Final_Tilt);
+      Local_Test.Camera_Queue.Get_Absolute_Iterate (Final_Pan, Final_Tilt);
       Check_Coordinates (Final_Pan, Test_Pan, Final_Tilt, Test_Tilt);
       Log_Out (Debug);
 
@@ -363,16 +363,16 @@ package body Camera.Commands.Unit_Test is
    begin
       Log_In (Debug);
       -- use test preset as reference
-      Local_Test.Camera.Set_Preset (Test_Preset);
+      Local_Test.Camera_Queue.Set_Preset (Test_Preset);
       -- get coordinats of test preset
-      Local_Test.Camera.Get_Absolute (Test_Pan, Test_Tilt);
+      Local_Test.Camera_Queue.Get_Absolute_Iterate (Test_Pan, Test_Tilt);
       -- calculate some points relative to test preset
       Pan_Set := Test_Pan + 100;
       Tilt_Set := Test_Tilt - 100;
       -- set camera to those offsets
-      Local_Test.Camera.Set_Absolute (Pan_Set, Tilt_Set);
+      Local_Test.Camera_Queue.Set_Absolute (Pan_Set, Tilt_Set);
       -- check it was set to that point
-      Local_Test.Camera.Get_Absolute (Pan, Tilt);
+      Local_Test.Camera_Queue.Get_Absolute_Iterate (Pan, Tilt);
       Check_Coordinates (Pan, Pan_Set, Tilt, Tilt_Set);
       Log_Out (Debug);
 

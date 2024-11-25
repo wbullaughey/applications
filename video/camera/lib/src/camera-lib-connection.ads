@@ -26,7 +26,7 @@ package Camera.Lib.Connection is
 
    type Connection_Data_Type     is new Ada_Lib.GNOGA.Connection_Data_Type with
                                     record
-      Camera_Commands            : Standard.Camera.Commands.Camera_Queue_Type;
+      Camera_Queue               : Standard.Camera.Commands.Camera_Queue_Class_Access;
       Camera_Pan                 : Absolute_Type;
       Camera_Pan_Speed           : Property_Type;
       Camera_Tilt                : Absolute_Type;

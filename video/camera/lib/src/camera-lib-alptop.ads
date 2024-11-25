@@ -1,4 +1,5 @@
-with Camera.Lib.Base;
+with Camera.Commands;
+--with Camera.Lib.Base;
 with Configuration.Camera;
 
 package Camera.LIB.ALPTOP is
@@ -42,6 +43,11 @@ private
    function Get_Default_Preset (
       Camera                     : in     ALPTOP_Type
    ) return Configuration.Camera.Preset_ID_Type;
+
+   overriding
+   procedure Get_Power (
+      Camera                     : in out ALPTOP_Type;
+      Power                      :    out Boolean);
 
    overriding
    function Get_Timeout (
@@ -93,6 +99,11 @@ private
       Tilt                       : in     Absolute_Type;
       Pan_Speed                  : in     Property_Type := 1;
       Tilt_Speed                 : in     Property_Type := 1);
+
+   overriding
+   procedure Set_Power (
+      Camera                     : in out ALPTOP_Type;
+      On                         : in     Boolean);
 
    -- sets camera to a preset
    overriding

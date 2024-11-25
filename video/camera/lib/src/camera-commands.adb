@@ -1,7 +1,8 @@
 with Ada.Streams;
 with Ada_Lib.Time;
 with ADA_LIB.Trace; use ADA_LIB.Trace;
---with Camera.Lib;
+--with Camera_Queue.Lib;
+--with Camera.Lib.Base;
 with Hex_IO;
 with Interfaces;
 
@@ -9,25 +10,26 @@ package body Camera.Commands is
 
    use type Ada.Streams.Stream_Element;
    use type Ada_Lib.Time.Time_Type;
+   use type Index_Type;
    use type Interfaces.Integer_16;
    use type Interfaces.Unsigned_16;
 -- use type Value_Type;
 
-   ---------------------------------------------------------------
-   function Convert (
-      Relative                   : in     Relative_Type
-   ) return Value_Type is
-   ---------------------------------------------------------------
-
-      Conversion                 : Interfaces.Unsigned_16;
-      for Conversion'address use Relative'address;
-      Result                     : constant Value_Type :=
-                                    Value_Type (Conversion);
-
-   begin
-      Log_Here (Debug, "Relative" & Relative'img & " result" & Result'img);
-      return Result;
-   end Convert;
+-- ---------------------------------------------------------------
+-- function Convert (
+--    Relative                   : in     Relative_Type
+-- ) return Value_Type is
+-- ---------------------------------------------------------------
+--
+--    Conversion                 : Interfaces.Unsigned_16;
+--    for Conversion'address use Relative'address;
+--    Result                     : constant Value_Type :=
+--                                  Value_Type (Conversion);
+--
+-- begin
+--    Log_Here (Debug, "Relative" & Relative'img & " result" & Result'img);
+--    return Result;
+-- end Convert;
 
    ---------------------------------------------------------------
    function Convert (
@@ -46,8 +48,8 @@ package body Camera.Commands is
    end Convert;
 
    ---------------------------------------------------------------
-   procedure Get_Absolute (
-      Camera                     : in out Camera_Queue_Type;
+   procedure Get_Absolute_Iterate (
+      Camera_Queue               : in out Camera_Queue_Type;
       Pan                        :    out Absolute_Type;
       Tilt                       :    out Absolute_Type) is
    ---------------------------------------------------------------
@@ -66,18 +68,24 @@ package body Camera.Commands is
             Timeout              : constant Ada_Lib.Time.Time_Type :=
                                     Ada_Lib.Time.Now + 60.0;
          begin
-            case Camera.Synchronous (
+            case Camera_Queue.Synchronous (
                   Command           => Position_Request,
                   Options           => Null_Options) is
 
                when Fault =>
                   Log_Here ("Synchronous return fault");
+                  raise Failed with "Synchronous return fault";
+
+               when Not_Set =>
+                  Log_Here ("Synchronous return not set");
+                  raise Failed with "Synchronous return not set";
 
                when Success =>
                   Log_Here (Debug, "Synchronous return Success");
 
                when Standard.Camera.Timeout =>
                   Log_Here ("Synchronous return Timeout");
+                  raise Failed with "Synchronous return timed out";
 
             end case;
 
@@ -141,11 +149,95 @@ package body Camera.Commands is
             Last_Tilt := Tilt;
          end;
       end loop;
-   end Get_Absolute;
+   end Get_Absolute_Iterate;
+
+   ---------------------------------------------------------------
+   procedure Get_Response (
+      Camera_Queue               : in out Camera_Queue_Type;
+      Expect_Ack                 : in     Boolean;
+      Expect_Response            : in     Boolean;
+      Response                   :    out Response_Type;
+      Response_Length            : in     Index_Type;
+      Response_Timeout           : in     Duration) is
+   ---------------------------------------------------------------
+
+      Ack_Length                 : constant Index_Type :=
+                                    Camera_Queue_Type'class (
+                                       Camera_Queue).Get_Ack_Length;
+      Got_Ack                    : Boolean := False;
+      Length                     : Index_Type := Response_Length;
+      Timeout                    : constant Ada_Lib.Time.Time_Type :=
+                                    Ada_Lib.Time.Now + Response_Timeout;
+   begin
+      Log_In (Debug, "Expect_Ack " & Expect_Ack'img &
+         " ack length" & Ack_Length'img &
+         " Expect_Response " & Expect_Response'img &
+         " Response_Length" & Response_Length'img &
+         " Response_Timeout " & Response_Timeout'img &
+         " timeout " & Ada_Lib.Time.Image (Timeout));
+      Camera_Queue.Read (Response (Response'first .. Ack_Length), Response_Timeout);
+      if Debug then
+         Video.Lib.Dump ("response", Response (Response'first .. Ack_Length),
+            Natural (Ack_Length));
+      end if;
+
+      if Response (Ack_Length) = 16#FF# then -- end of Ack
+         Log_Here (Debug, "got ack");
+         Got_Ack := True;
+      elsif Expect_Ack then
+         Log_Exception (Debug, "missing Ack");
+         raise Failed with "missing Ack";
+      else                       -- did not get an ack
+         Length := Length - Ack_Length;
+      end if;
+
+      if Expect_Response then
+         declare
+            End_Read          : constant Index_Type := Response_Length +
+                                 (if Got_Ack then
+                                    Ack_Length
+                                 else
+                                    0);
+         begin
+            Log_Here (Debug, " End_Read" & End_Read'img);
+
+            Camera_Queue.Read (Response (Ack_Length + 1 .. End_Read),
+               Response_Timeout);
+            if Debug then
+               Video.Lib.Dump ("response", Response ((if Got_Ack then
+                     Ack_Length + 1
+                  else
+                     Response'first)
+                   .. End_Read),
+                  Natural (Response_Length));
+            end if;
+
+            if Response (End_Read) /= 16#FF# then
+               Log_Exception (Debug, "missing FF at end of response");
+               raise FAiled with "missing FF at end of response";
+            end if;
+
+            if Got_Ack then     -- move response up to head
+               declare
+                  Put         : Index_Type := Response'first;
+               begin
+                  for Index in Ack_Length + 1 .. End_Read loop
+                     Response (Put) := Response (Index);
+                     Put := Put + 1;
+                  end loop;
+               end;
+            end if;
+            if Debug then
+               Video.Lib.Dump ("response", Response, Natural (Response_Length));
+            end if;
+         end;
+      end if;
+      Log_Out (Debug);
+   end Get_Response;
 
 -- ---------------------------------------------------------------
 -- procedure Get_Zoom (
---    Camera                     : in out Camera_Queue_Type;
+--    Camera_Queue               : in out Camera_Queue_Type;
 --    Zoom                       :    out Absolute_Type) is
 -- ---------------------------------------------------------------
 --
@@ -162,7 +254,7 @@ package body Camera.Commands is
 --          Timeout              : constant Ada_Lib.Time.Time_Type :=
 --                                  Ada_Lib.Time.Now + 60.0;
 --       begin
---          case Camera.Synchronous (
+--          case Camera_Queue.Synchronous (
 --             Command           => Zoom_Inquire,
 --             Options           => Null_Options) is
 --
@@ -172,7 +264,7 @@ package body Camera.Commands is
 --             when Success =>
 --                Log_Here (Debug, "Synchronous return Success");
 --
---             when Standard.Camera.Timeout =>
+--             when Standard.Camera_Queue.Timeout =>
 --                Log_Here ("Synchronous return Timeout");
 --
 --          end case;
@@ -223,7 +315,7 @@ package body Camera.Commands is
 
 -- ---------------------------------------------------------------
 -- procedure Position_Relative (
---    Camera                     : in out Camera_Queue_Type;
+--    Camera_Queue               : in out Camera_Queue_Type;
 --    Pan                        : in      Relative_Type;
 --    Tilt                       : in      Relative_Type;
 --    Pan_Speed                  : in      Property_Type := 1;
@@ -232,7 +324,7 @@ package body Camera.Commands is
 --
 -- begin
 --    Log_In (Debug, "pan" & Pan'img & " tilt" & Tilt'img);
---    case Camera.Synchronous (Position_Relative,
+--    case Camera_Queue.Synchronous (Position_Relative,
 --       Options     => (
 --          (
 --             Data           => Pan_Speed,
@@ -265,7 +357,7 @@ package body Camera.Commands is
 --       when Success =>
 --          Log_Here (Debug, "Synchronous return Success");
 --
---       when Standard.Camera.Timeout =>
+--       when Standard.Camera_Queue.Timeout =>
 --          Log_Here ("Synchronous return Timeout");
 --
 --    end case;
@@ -280,8 +372,120 @@ package body Camera.Commands is
 -- end Position_Relative;
 
    ---------------------------------------------------------------
+   overriding
+   procedure Process_Command (
+      Camera_Queue               : in out Camera_Queue_Type;
+      Command                    : in     Commands_Type;
+      Options                    : in     Options_Type) is
+   ---------------------------------------------------------------
+
+      Get_Ack                    : Boolean;
+      Has_Response               : Boolean;
+--    Response                   : Maximum_Response_Type;
+      Response_Length            : Index_Type;
+
+   begin
+      Log_In (Debug, "command " & Command'img);
+      Camera_Queue_Type'class (Camera_Queue).Send_Command (Command, Options,
+         Get_Ack, Has_Response, Response_Length);
+      if Get_Ack or else Has_Response then
+         raise Failed with "unexpected Ack " & Get_Ack'img &
+            " or Has_Response " & Has_Response'img;
+      end if;
+      Log_Out (Debug);
+   end Process_Command;
+
+   ---------------------------------------------------------------
+   overriding
+   procedure Process_Command (
+      Camera_Queue               : in out Camera_Queue_Type;
+      Command                    : in     Commands_Type;
+      Options                    : in     Options_Type;
+      Response                   :    out Maximum_Response_Type;
+      Response_Length            :    out Index_Type) is
+   ---------------------------------------------------------------
+
+      Get_Ack                    : Boolean;
+      Has_Response               : Boolean;
+      Timeout                    : constant Duration :=
+                                    Camera_Queue_Type'class (Camera_Queue).
+                                       Get_Timeout (Command);
+   begin
+      Log_In (Debug, "command " & Command'img &
+         " testing " & Ada_Lib.Unit_Testing'img &
+         " queue failed " & Standard.Camera.Command_Queue.Has_Queue_Failed'img &
+         " timeout " & Timeout'img);
+      if    Ada_Lib.Unit_Testing and then
+            Standard.Camera.Command_Queue.Has_Queue_Failed then
+         raise Failed with "command queue failed";
+      end if;
+
+      if Camera_Queue.Waiting_For_Response then
+         raise Failed with "outstanding request " & Camera_Queue.Last_Command'img;
+      end if;
+
+      Camera_Queue_Type'class (Camera_Queue).Send_Command (Command, Options,
+         Get_Ack, Has_Response, Response_Length);
+      Log_Here (Debug, "get ack " & Get_Ack'img &
+         " return package " & Has_Response'img &
+         " response length" & Response_Length'img);
+
+      if Get_Ack or else Has_Response then
+         Camera_Queue.Waiting_For_Response := True;
+         Camera_Queue.Last_Command := Command;
+      end if;
+
+      Camera_Queue.Get_Response (Get_Ack, Has_Response, Response,
+         Response_Length, Timeout);  -- get response
+
+      if Debug and then Has_Response then
+         Dump ("package response", Response (
+            Response'first .. Response_Length));
+      end if;
+
+      Camera_Queue.Waiting_For_Response := False;
+      Camera_Queue.Last_Command := No_Command;
+
+      Log_Out (Debug);
+
+   exception
+      when Fault : others =>
+         Trace_Exception (Fault, Here);
+         raise;
+
+   end Process_Command;
+
+   ---------------------------------------------------------------
+   procedure Read (
+      Camera_Queue               : in out Camera_Queue_Type;
+      Data                       :    out Data_Type;
+      Timeout                    : in     Duration := Video.Lib.No_Timeout) is
+   ---------------------------------------------------------------
+
+      Buffer                     : Buffer_Type (1 .. 1);
+
+   begin
+      Camera.Command_Queue.Queued_Camera_Type (Camera_Queue).Read (
+         Buffer, Timeout);
+      Data:= Buffer (Buffer'first);
+   end Read;
+
+   ---------------------------------------------------------------
+   overriding
+   procedure Read (
+      Camera_Queue               : in out Camera_Queue_Type;
+      Data                       :    out Buffer_Type;
+      Timeout                    : in     Duration := Video.Lib.No_Timeout) is
+   ---------------------------------------------------------------
+
+   begin
+      Camera.Command_Queue.Queued_Camera_Type (Camera_Queue).Read (
+         Data, Timeout);
+   end Read;
+
+   ---------------------------------------------------------------
    procedure Set_Absolute (
-      Camera                     : in out Camera_Queue_Type;
+      Camera_Queue               : in out Camera_Queue_Type;
       Pan                        : in     Absolute_Type;
       Tilt                       : in     Absolute_Type;
       Pan_Speed                  : in      Property_Type := 1;
@@ -290,7 +494,7 @@ package body Camera.Commands is
 
    begin
       Log_In (Debug, "pan" & Pan'img & " tilt" & Tilt'img);
-      case Camera.Synchronous (Position_Absolute,
+      case Camera_Queue.Synchronous (Position_Absolute,
          Options     => (
             (
                Data           => Pan_Speed,
@@ -321,6 +525,10 @@ package body Camera.Commands is
             Log_Here ("Synchronous return fault");
             raise Failed with "Synchronous command returnd fault";
 
+         when Not_Set =>
+            Log_Here ("Synchronous return not set");
+            raise Failed with "Synchronous command returnd not set";
+
          when Success =>
             Log_Here (Debug, "Synchronous return Success");
 
@@ -335,7 +543,7 @@ package body Camera.Commands is
 
    ---------------------------------------------------------------
    procedure Set_Power (
-      Camera                     : in out Camera_Queue_Type;
+      Camera_Queue               : in out Camera_Queue_Type;
       On                         : in     Boolean) is
    ---------------------------------------------------------------
 
@@ -344,7 +552,7 @@ package body Camera.Commands is
                                     True  => 2);
    begin
       Log_In (Debug, "on " & On'img);
-      case Camera.Synchronous (Power,
+      case Camera_Queue.Synchronous (Power,
          Options     => ( 1 =>
                (
                   Data           => Data (On),
@@ -355,6 +563,10 @@ package body Camera.Commands is
 
          when Fault =>
             Log_Here ("Synchronous return fault");
+
+         when Not_Set =>
+            Log_Here ("Synchronous return not set");
+            raise Failed with "Synchronous command returnd not set";
 
          when Success =>
             Log_Here (Debug, "Synchronous return Success");
@@ -369,14 +581,14 @@ package body Camera.Commands is
 
    ---------------------------------------------------------------
    procedure Set_Preset (
-      Camera                     : in out Camera_Queue_Type;
+      Camera_Queue               : in out Camera_Queue_Type;
       Preset_ID                  : in     Configuration.Camera.Preset_ID_Type;
       Wait_Until_Finished        : in     Boolean := True) is
    ---------------------------------------------------------------
 
    begin
       Log_In (Debug, "preset id" & Preset_ID'img);
-      case Camera.Synchronous (Memory_Recall,
+      case Camera_Queue.Synchronous (Memory_Recall,
          Options     => ( 1 =>
                (
                   Data           => Data_Type (Preset_ID),
@@ -387,6 +599,10 @@ package body Camera.Commands is
 
          when Fault =>
             Log_Here ("Synchronous return fault");
+
+         when Not_Set =>
+            Log_Here ("Synchronous return not set");
+            raise Failed with "Synchronous command returnd not set";
 
          when Success =>
             Log_Here (Debug, "Synchronous return Success");
@@ -401,12 +617,40 @@ package body Camera.Commands is
             Pan                  : Absolute_Type;
             Tilt                 : Absolute_Type;
          begin
-            Camera.Get_Absolute (Pan, Tilt);
+            Camera_Queue_Type'class (Camera_Queue).Get_Absolute (Pan, Tilt);
             Log_Here (Debug, "pan " & Pan'img & " tilt " & Tilt'img);
          end;
       end if;
       Log_Out (Debug);
    end Set_Preset;
+
+   ---------------------------------------------------------------
+   procedure Write (
+      Camera_Queue               : in out Camera_Queue_Type;
+      Data                       : in     Data_Type) is
+   ---------------------------------------------------------------
+
+      Buffer                     : constant Buffer_Type (1 .. 1) := (
+                                    1 => Data
+                                 );
+   begin
+log_here;
+      Camera.Command_Queue.Queued_Camera_Type (Camera_Queue).Write (Buffer);
+log_here;
+   end Write;
+
+   ---------------------------------------------------------------
+   overriding
+   procedure Write (
+      Camera_Queue               : in out Camera_Queue_Type;
+      Data                       : in     Buffer_Type) is
+   ---------------------------------------------------------------
+
+   begin
+log_here;
+      Camera.Command_Queue.Queued_Camera_Type (Camera_Queue).Write (Data);
+log_here;
+   end Write;
 
 begin
 --Debug := True;

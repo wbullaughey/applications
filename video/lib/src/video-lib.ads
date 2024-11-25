@@ -2,7 +2,7 @@
 --with ADA_LIB.Command_Line_Iterator;
 with Ada_Lib.Options.Actual;
 with Ada_Lib.Trace;
-with Ada_Lib.Socket_IO; -- .Stream_IO;
+with Ada_Lib.Socket_IO.Stream_IO;
 with Ada_Lib.Strings.Unlimited;
 with Configuration.State;
 with GNAT.Sockets;
@@ -67,13 +67,15 @@ package Video.Lib is
 
    subtype Maximum_Command_Type  is Command_Type (1 .. 20);
    subtype Maximum_Response_Type is Response_Type (1 .. 30);
-   type Status_Type              is (Fault, Success, Timeout);
+   type Status_Type              is (Fault, Not_Set, Success, Timeout);
 
 
    type Response_Buffer_Type     is tagged record
       Buffer                     : Maximum_Response_Type;
       Length                     : Index_Type;
    end record;
+
+   type Response_Buffer_Access   is access all Response_Buffer_Type;
 
    function Callback (
       Response                  : in out Response_Buffer_Type
@@ -141,6 +143,8 @@ package Video.Lib is
 
    Debug                         : Boolean := False;
 -- Global_Video_Lib_Options      : Options_Constant_Class_Access := Null;
+   No_Timeout                    : Duration renames
+                                    Ada_Lib.Socket_IO.Stream_IO.No_Timeout;
 
 private
 

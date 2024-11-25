@@ -39,6 +39,7 @@ package Camera is
       Memory_Set,
       Memory_Reset,
       Power,
+      Power_Request,
       Zoom_Direct,
       Zoom_Full,
       Zoom_Inquire,
@@ -57,6 +58,7 @@ package Camera is
    subtype Port_Type             is Video.Lib.Port_Type;
    subtype Status_Type           is Video.Lib.Status_Type;
    Fault                         : Status_Type renames Video.Lib.Fault;
+   Not_Set                       : Status_Type renames Video.Lib.Not_Set;
    Success                       : Status_Type renames Video.Lib.Success;
    Timeout                       : Status_Type renames Video.Lib.Timeout;
    subtype Value_Type            is Video.Lib.Value_Type;
@@ -110,7 +112,6 @@ package Camera is
 
    Debug                         : Boolean := False;
    IP                            : Address_Kind_Type := Ada_Lib.Socket_IO.IP;
-   NOT_SET                       : Address_Kind_Type := Ada_Lib.Socket_IO.NOT_SET;
    Null_Option                   : constant Option_Type;
    Null_Options                  : constant Options_Type;
    URL                           : Address_Kind_Type := Ada_Lib.Socket_IO.URL;

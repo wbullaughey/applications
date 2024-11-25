@@ -1,8 +1,8 @@
 --with Ada_Lib.Event;
 --with Ada_Lib.GNOGA;
 with Ada_Lib.Socket_IO.Client;
-with Camera.Command_Queue;
-with Configuration.Camera; -- .State;
+--with Camera.Command_Queue;
+--with Configuration.Camera; -- .State;
 with GNAT.Sockets;
 --with Gnoga.Gui.Element.Common;
 --with Gnoga.Gui.Plugin.jQueryUI.Widget;
@@ -32,7 +32,7 @@ package Camera.Lib.Base is
 
    type Base_Camera_Type (
       Description                : Ada_Lib.Strings.String_Constant_Access
-                                    ) is abstract new General_Camera_Type with private;
+                                    ) is limited new General_Camera_Type with private;
    type Base_Camera_Class_Access is access all Base_Camera_Type'class;
 
 -- procedure Acked (
@@ -45,38 +45,30 @@ package Camera.Lib.Base is
    procedure Close (
       Camera                     : in out Base_Camera_Type);
 
-   procedure Completed (
-      Camera                     : in     Base_Camera_Type;
-      Buffer                     : in     Response_Type;
-      Start                      : in     Index_Type;
-      Completion_Value           :    out Natural;
-      Next_Byte                  :    out Index_Type) is abstract;
+-- procedure Completed (
+--    Camera                     : in     Base_Camera_Type;
+--    Buffer                     : in     Response_Type;
+--    Start                      : in     Index_Type;
+--    Completion_Value           :    out Natural;
+--    Next_Byte                  :    out Index_Type) is abstract;
 
-   function Get_Ack_Length (
-      Camera                     : in     Base_Camera_Type
-   ) return Index_Type is abstract;
+-- function Get_Ack_Length (
+--    Camera                     : in     Base_Camera_Type
+-- ) return Index_Type is abstract;
 
 -- procedure Get_Absolute (
 --    Camera                     : in out Base_Camera_Type;
 --    Pan                        :    out Absolute_Type;
 --    Tilt                       :    out Absolute_Type) is abstract;
 
-   function Get_Default_Preset (
-      Camera                     : in     Base_Camera_Type
-   ) return Configuration.Camera.Preset_ID_Type is abstract;
+-- function Get_Default_Preset (
+--    Camera                     : in     Base_Camera_Type
+-- ) return Configuration.Camera.Preset_ID_Type is abstract;
 
-   procedure Get_Response (
-      Camera                     : in out Base_Camera_Type;
-      Expect_Ack                 : in     Boolean;
-      Expect_Response            : in     Boolean;
-      Response                   :    out Response_Type;
-      Response_Length            : in     Index_Type;
-      Response_Timeout           : in     Duration);
-
-   function Get_Timeout (
-      Camera                     : in     Base_Camera_Type;
-      Command                    : in     Commands_Type
-   ) return Duration is abstract;
+-- function Get_Timeout (
+--    Camera                     : in     Base_Camera_Type;
+--    Command                    : in     Commands_Type
+-- ) return Duration is abstract;
 
 -- procedure Get_Zoom (
 --    Camera                     : in out Base_Camera_Type;
@@ -108,38 +100,53 @@ package Camera.Lib.Base is
 --    Pan_Speed                  : in      Property_Type := 1;
 --    Tilt_Speed                 : in      Property_Type := 1) is abstract;
 
-   procedure Process_Command (
-      Camera                     : in out Base_Camera_Type;
-      Command                    : in     Commands_Type;
-      Options                    : in     Options_Type);
+-- procedure Process_Command (
+--    Camera                     : in out Base_Camera_Type;
+--    Command                    : in     Commands_Type;
+--    Options                    : in     Options_Type);
+--
+-- procedure Process_Command (
+--    Camera                     : in out Base_Camera_Type;
+--    Command                    : in     Commands_Type;
+--    Options                    : in     Options_Type;
+--    Response                   :    out Maximum_Response_Type;
+--    Response_Length            :    out Index_Type);
 
-   procedure Process_Command (
-      Camera                     : in out Base_Camera_Type;
-      Command                    : in     Commands_Type;
-      Options                    : in     Options_Type;
-      Response                   :    out Maximum_Response_Type;
-      Response_Length            :    out Index_Type);
+-- procedure Process_Response (
+--    Camera                     : in     Base_Camera_Type;
+--    Response                   : in     Response_Type;
+--    Value                      :    out Data_Type;
+--    Next_Buffer_Start          :    out Index_Type) is abstract;
 
-   procedure Process_Response (
-      Camera                     : in     Base_Camera_Type;
-      Response                   : in     Response_Type;
-      Value                      :    out Data_Type;
-      Next_Buffer_Start          :    out Index_Type) is abstract;
+-- procedure Send_Command (
+--    Camera                     : in out Base_Camera_Type;
+--    Command                    : in     Commands_Type;
+--    Get_Ack                    :    out Boolean;
+--    Has_Response               :    out Boolean;
+--    Response_Length            :    out Index_Type) is abstract;
 
-   procedure Send_Command (
-      Camera                     : in out Base_Camera_Type;
-      Command                    : in     Commands_Type;
-      Get_Ack                    :    out Boolean;
-      Has_Response               :    out Boolean;
-      Response_Length            :    out Index_Type) is abstract;
+-- procedure Read (
+--    Camera                     :    out Base_Camera_Type;
+--    Data                       :    out Data_Type;
+--    Timeout                    : in     Duration := Video.Lib.No_Timeout);
 
-   procedure Send_Command (
+   procedure Read (
       Camera                     : in out Base_Camera_Type;
-      Command                    : in     Commands_Type;
-      Options                    : in     Options_Type;
-      Get_Ack                    :    out Boolean;
-      Has_Response               :    out Boolean;
-      Response_Length            :    out Index_Type) is abstract;
+      Data                       :    out Buffer_Type;
+      Timeout                    : in     Duration := Video.Lib.No_Timeout);
+
+   procedure Reopen (
+      Camera                     : in out Base_Camera_Type;
+      Address                    : in     Ada_Lib.Socket_IO.Address_Type;
+      Port                       : in     Ada_Lib.Socket_IO.Port_Type);
+
+-- procedure Send_Command (
+--    Camera                     : in out Base_Camera_Type;
+--    Command                    : in     Commands_Type;
+--    Options                    : in     Options_Type;
+--    Get_Ack                    :    out Boolean;
+--    Has_Response               :    out Boolean;
+--    Response_Length            :    out Index_Type) is abstract;
 
 -- procedure Set_Absolute (
 --    Camera                     : in out Base_Camera_Type;
@@ -164,12 +171,12 @@ package Camera.Lib.Base is
       URL                        : in     String;
       Port                       : in     Ada_Lib.Socket_IO.Port_Type);
 
-   procedure Write (
-      Camera                     :    out Base_Camera_Type;
-      Data                       : in     Data_Type);
+-- procedure Write (
+--    Camera                     :    out Base_Camera_Type;
+--    Data                       : in     Data_Type);
 
    procedure Write (
-      Camera                     :    out Base_Camera_Type;
+      Camera                     : in out Base_Camera_Type;
       Data                       : in     Buffer_Type);
 
    procedure Apply_Parameters (
@@ -188,12 +195,12 @@ private
 
    type Base_Camera_Type (
       Description                : Ada_Lib.Strings.String_Constant_Access
-                                    ) is abstract new General_Camera_Type with
+                                    ) is limited new General_Camera_Type with
                                        record
       Last_Command               : Commands_Type := No_Command;
       Socket                     : Ada_Lib.Socket_IO.Client.Client_Socket_Type (
                                        Description);
-      Waiting_For_Response       : Boolean := False;
+--    Waiting_For_Response       : Boolean := False;
    end record;
 
 end Camera.Lib.Base;

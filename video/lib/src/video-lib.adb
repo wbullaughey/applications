@@ -4,7 +4,7 @@ with Ada_Lib.Help;
 with ADA_LIB.OS;
 with Ada_Lib.Parser;
 with Ada_Lib.Options.Runstring;
-with Ada_Lib.Socket_IO.Stream_IO;
+--with Ada_Lib.Socket_IO.Stream_IO;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
 --with Configuration.State;
 with Debug_Options;

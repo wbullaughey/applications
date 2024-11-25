@@ -2,6 +2,10 @@ camera aunit
 Command bin/camera_aunit  -@l
 camera_aunit
 Adjust_Card Test_Mouse_Move
+Basic_Video Port_Scan
+Basic_Video Test_Open
+Basic_Video Test_Reopen
+Basic_Video URL_Scan
 Commands Test_Get_Zoom
 Commands Test_Position_Relative
 Commands Test_Set_Absolute
@@ -20,12 +24,12 @@ Configured Test_Update_Valid_Preset
 Configured Test_Update_Valid_Row
 Control Test_Create_Control
 Main Test_Halt
+Raw_Video_Commands Test_Power
 Setup Test_Load
 Setup Test_Update
 Setup Test_Values
 State Test_Load
 State Test_Values
-Video_Commands Test_Position_Absolute
 Video_Commands Test_Position_Down
 Video_Commands Test_Position_Down_Left
 Video_Commands Test_Position_Down_Right
@@ -37,7 +41,6 @@ Video_Commands Test_Position_Stop
 Video_Commands Test_Position_Up
 Video_Commands Test_Position_Up_Left
 Video_Commands Test_Position_Up_Right
-Video_Commands Test_Power
 Video_Commands Test_Recall_Memory
 Video_Commands Test_Recall_Set
 

@@ -1,7 +1,4 @@
 camera aunit
-camera_aunit
-
-
 
 camera_aunit command line options:
     -a <trace options>             : Ada_Lib library trace options   (Ada_Lib)
@@ -47,10 +44,10 @@ Camera Lib Unit Test trace options (T)
       m               main unit test trace
       o               unit_test options
       p               program trace
-      q               camera queue
       s               Configuration.Camera.State unit_test options
       S               Configuration.Camera.Setup unit_test options
       t               unit_test trace
+      u               camera commands unit test
 
 AUnit.Ada_Lib.Options library trace options (-A)
       a               all
@@ -68,6 +65,7 @@ Camera Lib trace options (-C)
       l               camera Library
       L               camera library options
       m               Main Window
+      q               Command Queue
       s               Trace simulator
       S               configuration state
       T               Windows.Top

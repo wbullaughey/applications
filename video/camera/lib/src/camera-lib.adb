@@ -6,6 +6,7 @@ with Ada_Lib.Options.Runstring;
 with Ada_Lib.Socket_IO;
 with Ada_Lib.Strings;
 with ADA_LIB.Trace; use Ada_Lib.Trace;
+with Camera.Command_Queue;
 with Camera.Commands;
 with Camera.Lib.Base;
 with Configuration.Camera;
@@ -301,6 +302,7 @@ package body Camera.Lib is
          Put_Line ("      l               camera Library");
          Put_Line ("      L               camera library options");
          Put_Line ("      m               Main Window");
+         Put_Line ("      q               Command Queue");
          Put_Line ("      s               Trace simulator");
          Put_Line ("      S               configuration state");
          Put_Line ("      T               Windows.Top");
@@ -375,6 +377,9 @@ package body Camera.Lib is
 
                   when 'm' =>
                      Main.Debug := True;
+
+                  when 'q' =>    -- camera queue
+                     Camera.Command_Queue.Debug := True;
 
                   when 's' =>
                      Emulator.Debug := True;

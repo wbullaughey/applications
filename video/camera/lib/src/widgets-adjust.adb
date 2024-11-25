@@ -19,7 +19,7 @@ package body Widgets.Adjust is
 
    type Response_Buffer_Type     is new Camera.Response_Buffer_Type with null record;
 
-   type Response_Buffer_Access   is access Response_Buffer_Type;
+-- type Response_Buffer_Access   is access all Response_Buffer_Type;
 
    overriding
    function Callback (
@@ -63,6 +63,7 @@ package body Widgets.Adjust is
    function Callback (
       Response                  : in out Response_Buffer_Type
    ) return Camera.Status_Type is
+   pragma Unreferenced (Response);
    ----------------------------------------------------------------
 
    begin
@@ -202,11 +203,11 @@ package body Widgets.Adjust is
       Mouse_Event                : in     GNOGA.GUI.Base.Mouse_Event_Record) is
    -------------------------------------------------------------------
 
-      Response_Buffer         : Response_Buffer_Access := new
-                                 Response_Buffer_Type;
-      Connection_Data         : Camera.Lib.Connection.Connection_Data_Type renames
-                                 Camera.Lib.Connection.Connection_Data_Type (
-                                    Object.Connection_Data.all);
+--    Response_Buffer         : Response_Buffer_Access := new
+--                               Response_Buffer_Type;
+--    Connection_Data         : Camera.Lib.Connection.Connection_Data_Type renames
+--                               Camera.Lib.Connection.Connection_Data_Type (
+--                                  Object.Connection_Data.all);
       Mouse_Action            : constant Camera.Lib.Connection.Mouse_Click_Action_Type :=
                                  Parse_Mouse_Action (Object.ID);
 
