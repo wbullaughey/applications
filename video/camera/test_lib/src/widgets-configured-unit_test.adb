@@ -55,7 +55,7 @@ package body Widgets.Configured.Unit_Test is
       Test                       : in out Test_Type
    ) with post => Verify_Torn_Down (Test);
 
-   procedure Test_Select_Preset (
+   procedure Test_Memory_Set (
       Test                       : in out AUnit.Test_Cases.Test_Case'class);
 
    procedure Test_Update_Invalid_Preset (
@@ -648,8 +648,8 @@ package body Widgets.Configured.Unit_Test is
          Routine_Name   => AUnit.Format ("Test_Cancel_Configured")));
 
       Test.Add_Routine (AUnit.Test_Cases.Routine_Spec'(
-         Routine        => Test_Select_Preset'access,
-         Routine_Name   => AUnit.Format ("Test_Select_Preset")));
+         Routine        => Test_Memory_Set'access,
+         Routine_Name   => AUnit.Format ("Test_Memory_Set")));
 
       Test.Add_Routine (AUnit.Test_Cases.Routine_Spec'(
          Routine        => Test_Update_Label'access,
@@ -1017,7 +1017,7 @@ package body Widgets.Configured.Unit_Test is
    end Test_Create_Configured;
 
    ----------------------------------------------------------------
-   procedure Test_Select_Preset (
+   procedure Test_Memory_Set (
       Test                       : in out AUnit.Test_Cases.Test_Case'class) is
    pragma Unreferenced (Test);
    ----------------------------------------------------------------
@@ -1071,7 +1071,7 @@ package body Widgets.Configured.Unit_Test is
          end;
 
       Log_Out (Debug);
-   end Test_Select_Preset;
+   end Test_Memory_Set;
 
    ----------------------------------------------------------------
    procedure Test_Update_Invalid_Preset (

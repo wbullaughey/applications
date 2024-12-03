@@ -20,12 +20,9 @@ package body Configuration.Camera.State.Unit_Tests is
    type Connection_Data_Type     is new Ada_Lib.GNOGA.Connection_Data_Type
                                     with null record;
    type Configuration_Tests_Type (
-      Brand                      : Standard.Camera.Lib.Brand_Type;
-      Description                : Ada_Lib.Strings.String_Constant_Access
-                                    ) is new
+      Brand                      : Standard.Camera.Lib.Brand_Type) is new
                                     Standard.Camera.Lib.Unit_Test.
-                                    Camera_Test_Type (Brand, Description
-                                       ) with null record;
+                                    Camera_Test_Type (Brand) with null record;
 
    type Configuration_Tests_Access is access Configuration_Tests_Type;
 
@@ -117,7 +114,6 @@ package body Configuration.Camera.State.Unit_Tests is
    return AUnit.Test_Suites.Access_Test_Suite is
    ---------------------------------------------------------------
 
-      Description                : aliased constant String := "camera";
       Options                    : Standard.Camera.Lib.Unit_Test.
                                     Camera_Lib_Unit_Test_Options_Type'class
                                        renames Standard.Camera.Lib.Unit_Test.
@@ -126,8 +122,7 @@ package body Configuration.Camera.State.Unit_Tests is
                                     := new AUnit.Test_Suites.Test_Suite;
       Tests                      : constant Configuration_Tests_Access :=
                                     new Configuration_Tests_Type (Options.
-                                       Camera_Options.Brand,
-                                       Description'unchecked_access);
+                                       Camera_Options.Brand);
 
    begin
       Log_In (Debug, Quote ("suite", Suite_Name));

@@ -21,11 +21,10 @@ package body Camera.Lib.Base.Command_Tests is
 -- use type Interfaces.Unsigned_16;
 
    type Raw_Test_Type (
-      Brand                      : Brand_Type;
-      Description                : Ada_Lib.Strings.String_Constant_Access
-                                    ) is new Camera.Lib.Unit_Test.
-                                       Camera_Test_Type (Brand, Description
-                                          ) with null record;
+      Brand : Brand_Type) is new Camera.Lib.Unit_Test.Camera_Test_Type (
+         Brand) with record
+      Manual                     : Boolean := False;
+   end record;
 
    type Raw_Test_Access          is access Raw_Test_Type;
 
@@ -37,14 +36,12 @@ package body Camera.Lib.Base.Command_Tests is
    procedure Register_Tests (
       Test                       : in out Raw_Test_Type);
 
+   overriding
+   procedure Set_Up (
+      Test                       : in out Raw_Test_Type);
+
    type Test_Type (
-      Brand                      : Brand_Type;
-      Description                : Ada_Lib.Strings.String_Constant_Access
-                                    ) is new Camera.Lib.Unit_Test.
-                                       Camera_Test_Type (Brand, Description
-                                          ) with record
-      Manual                     : Boolean := False;
-   end record;
+      Brand    : Brand_Type) is new Raw_Test_Type (Brand) with null record;
 
    type Test_Access              is access Test_Type;
 
@@ -55,10 +52,6 @@ package body Camera.Lib.Base.Command_Tests is
    overriding
    procedure Register_Tests (
       Test                       : in out Test_Type);
-
--- overriding
--- procedure Set_Up (
---    Test                       : in out Raw_Test_Type);
 
    overriding
    procedure Set_Up (
@@ -109,10 +102,13 @@ package body Camera.Lib.Base.Command_Tests is
    procedure Test_Power (
       Test                       : in out AUnit.Test_Cases.Test_Case'class);
 
-   procedure Test_Recall_Memory (
+   procedure Test_Recall_Memory (      -- tests Memory_Recall
       Test                       : in out AUnit.Test_Cases.Test_Case'class);
 
-   procedure Test_Recall_Set (
+   procedure Test_Reset_Memory (       -- tests Memory_Reset
+      Test                       : in out AUnit.Test_Cases.Test_Case'class);
+
+   procedure Test_Set_Memory (         -- tests Memory_Set - sets camera to preset
       Test                       : in out AUnit.Test_Cases.Test_Case'class);
 
 -- procedure Test_Recall_Speed (
@@ -259,6 +255,18 @@ package body Camera.Lib.Base.Command_Tests is
          Routine        => Test_Power'access,
          Routine_Name   => AUnit.Format ("Test_Power")));
 
+      Test.Add_Routine (AUnit.Test_Cases.Routine_Spec'(
+         Routine        => Test_Recall_Memory'access,
+         Routine_Name   => AUnit.Format ("Test_Recall_Memory")));
+
+      Test.Add_Routine (AUnit.Test_Cases.Routine_Spec'(
+         Routine        => Test_Reset_Memory'access,
+         Routine_Name   => AUnit.Format ("Test_Reset_Memory")));
+
+      Test.Add_Routine (AUnit.Test_Cases.Routine_Spec'(
+         Routine        => Test_Set_Memory'access,
+         Routine_Name   => AUnit.Format ("Test_Set_Memory")));
+
       Log_Out (Debug);
    end Register_Tests;
 
@@ -326,14 +334,6 @@ package body Camera.Lib.Base.Command_Tests is
       Test.Add_Routine (AUnit.Test_Cases.Routine_Spec'(
          Routine        => Test_Position_Up_Right'access,
          Routine_Name   => AUnit.Format ("Test_Position_Up_Right")));
-
-      Test.Add_Routine (AUnit.Test_Cases.Routine_Spec'(
-         Routine        => Test_Recall_Memory'access,
-         Routine_Name   => AUnit.Format ("Test_Recall_Memory")));
-
-      Test.Add_Routine (AUnit.Test_Cases.Routine_Spec'(
-         Routine        => Test_Recall_Set'access,
-         Routine_Name   => AUnit.Format ("Test_Recall_Set")));
 
 --    Test.Add_Routine (AUnit.Test_Cases.Routine_Spec'(
 --       Routine        => Test_Recall_Speed'access,
@@ -481,52 +481,47 @@ package body Camera.Lib.Base.Command_Tests is
 --    Log_Out (Debug);
 -- end Set_Preset;
 
---   ---------------------------------------------------------------
---   overriding
---   procedure Set_Up (
---      Test              : in out Raw_Test_Type) is
---   ---------------------------------------------------------------
---
-----    Connection_Data   : constant Connection.Connection_Data_Access :=
-----                         Connection.Connection_Data_Access (
-----                            Ada_Lib.GNOGA.Get_Connection_Data);
---   begin
---      Log_In (Debug or Trace_Set_Up);
-----    Connection_Data.Initialize;
---      Camera.Lib.Unit_Test.Camera_Test_Type (Test).Set_Up;
---
---      begin
---         Test.Camera_Queue.Set_Power (True);
---      exception
---         when Fault: others =>
---            Trace_Message_Exception (True, Fault,
---               "ignore exception in Set_Up for Set_Power");
---      end;
---      Test.Camera_Queue.Set_Preset (Test.Camera_Queue.Get_Default_Preset);
---      Log_Out (Debug or Trace_Set_Up);
---   end Set_Up;
---
+   ---------------------------------------------------------------
+   overriding
+   procedure Set_Up (
+      Test              : in out Raw_Test_Type) is
+   ---------------------------------------------------------------
+
+      Options        : Standard.Camera.Lib.Unit_Test.
+                        Camera_Lib_Unit_Test_Options_Type'class
+                           renames Standard.Camera.Lib.Unit_Test.
+                              Get_Camera_Lib_Unit_Test_Read_Only_Options.all;
+   begin
+      Log_In (Debug or Trace_Set_Up);
+      Camera.Lib.Unit_Test.Camera_Test_Type (Test).Set_Up;
+      Test.Manual := Options.Manual;
+      Log_Out (Debug or Trace_Set_Up);
+   end Set_Up;
+
    ---------------------------------------------------------------
    overriding
    procedure Set_Up (
       Test              : in out Test_Type) is
    ---------------------------------------------------------------
 
---    Connection_Data   : constant Connection.Connection_Data_Access :=
---                         Connection.Connection_Data_Access (
---                            Ada_Lib.GNOGA.Get_Connection_Data);
+      Power_On          : Boolean;
+
    begin
       Log_In (Debug or Trace_Set_Up);
 --    Connection_Data.Initialize;
-      Camera.Lib.Unit_Test.Camera_Test_Type (Test).Set_Up;
+      Raw_Test_Type (Test).Set_Up;
 
-      begin
-         Test.Camera_Queue.Set_Power (True);
-      exception
-         when Fault: others =>
-            Trace_Message_Exception (True, Fault,
-               "ignore exception in Set_Up for Set_Power");
-      end;
+      Test.Camera_Queue.Get_Power (Power_On);
+      Log_Here (Debug, "Power_On " & Power_On'img);
+      if not Power_On then
+         begin
+            Test.Camera_Queue.Set_Power (True);
+         exception
+            when Fault: others =>
+               Trace_Message_Exception (True, Fault,
+                  "ignore exception in Set_Up for Set_Power");
+         end;
+      end if;
       Test.Camera_Queue.Set_Preset (Test.Camera_Queue.Get_Default_Preset);
       Log_Out (Debug or Trace_Set_Up);
    end Set_Up;
@@ -542,18 +537,14 @@ package body Camera.Lib.Base.Command_Tests is
       Brand          : Brand_Type renames Options.Camera_Options.Brand;
       Test_Suite     : constant AUnit.Test_Suites.Access_Test_Suite :=
                         new AUnit.Test_Suites.Test_Suite;
-      Raw_Test       : constant Raw_Test_Access := new Raw_Test_Type (Brand,
-                        new String'("camera"));
-      Test           : constant Test_Access := new Test_Type (Brand,
-                        new String'("camera"));
+      Raw_Test       : constant Raw_Test_Access := new Raw_Test_Type (Brand);
+      Test           : constant Test_Access := new Test_Type (Brand);
    begin
       Log_In (Debug, "brand " & Brand'img);
       Ada_Lib.Unit_Test.Suite (Raw_Suite_Name);
       Ada_Lib.Unit_Test.Suite (Suite_Name);
       Test_Suite.Add_Test (Raw_Test);
       Test_Suite.Add_Test (Test);
-      Raw_Test.Set_Camera;
-      Test.Set_Camera;
       Log_Out (Debug);
       return Test_Suite;
    end Suite;
@@ -1247,20 +1238,99 @@ package body Camera.Lib.Base.Command_Tests is
    end Test_Power;
 
    ---------------------------------------------------------------
+   -- recall does not seem to change camera setting
    procedure Test_Recall_Memory (
       Test                       : in out AUnit.Test_Cases.Test_Case'class) is
    ---------------------------------------------------------------
 
-      Local_Test                 : Test_Type renames Test_Type (Test);
+      Local_Test                 : Raw_Test_Type renames Raw_Test_Type (Test);
+      Test_Preset                : constant := Last_Command;
 
    begin
       Log_In (Debug);
-      Pause (Local_Test.Manual, "set preset 3");
-      Local_Test.Camera_Queue.Set_Preset (3);
+      Local_Test.Camera_Queue.Process_Command (Memory_Recall,
+         Options     => ( 1 =>
+               (
+                  Data           => Test_Preset,
+                  Start          => 7,
+                  Variable_Width => False
+               )
+            ));
 
+--    Local_Test.Camera_Queue.Process_Command (Memory_Recall,
+--       Options     => ( 1 =>
+--             (
+--                Data           => 0,   -- preset 0
+--                Start          => 7,
+--                Variable_Width => False
+--             )
+--          ));
+
+--    Assert (Ask_Pause (Local_Test.Manual,
+--          "verify camer at preset 0"),
+--       "manual set failed");
+      Log_Out (Debug);
+   end Test_Recall_Memory;
+
+   ---------------------------------------------------------------
+   -- reset does not seem to change camera setting
+   procedure Test_Reset_Memory (
+      Test                       : in out AUnit.Test_Cases.Test_Case'class) is
+   ---------------------------------------------------------------
+
+      Different_Preset           : constant := 1;
+      Initial_Preset             : constant := 0;
+      Local_Test                 : Raw_Test_Type renames Raw_Test_Type (Test);
+      Response                   : Maximum_Response_Type;
+      Response_Length            : Index_Type;
+      Test_Preset                : constant := Last_Command;
+
+   begin
+      Log_In (Debug, "set initial preset");
+      -- set camera to Initial_Preset
+      Local_Test.Camera_Queue.Set_Preset (Initial_Preset);
+      Log_Here (Debug, "update rest preset");
+      -- update the test preset to Initial_Preset
+      Local_Test.Camera_Queue.Process_Command (Memory_Reset,
+         Options           => ( 1 =>
+               (
+                  Data           => Test_Preset,
+                  Start          => 6,
+                  Variable_Width => False
+               )
+            ),
+         Response          => Response,
+         Response_Length   => Response_Length);
+      Log_Here (Debug, "set camera to different preset");
+      -- set camera to Different_Preset
+      Local_Test.Camera_Queue.Set_Preset (Different_Preset);
+      Pause_On_Flag ("at different preset " & Different_Preset'img);
+      Log_Here (Debug, "set camera to test preset");
+      Local_Test.Camera_Queue.Set_Preset (Test_Preset);
+
+      Pause_On_Flag ("at test preset " & Test_Preset'img);
       Assert (Ask_Pause (Local_Test.Manual,
-            "verify that the preset is 3"),
+            "verify camera at preset" & Initial_Preset'img),
          "manual set failed");
+      Log_Out (Debug);
+   end Test_Reset_Memory;
+
+   ---------------------------------------------------------------
+   procedure Test_Set_Memory (         -- tests Memory_Set - sets camera to preset
+      Test                       : in out AUnit.Test_Cases.Test_Case'class) is
+   ---------------------------------------------------------------
+
+      Local_Test                 : Raw_Test_Type renames Raw_Test_Type (Test);
+      Test_Preset                : constant := Last_Command;
+
+   begin
+      Log_In (Debug);
+--    Pause (Local_Test.Manual, "set preset 3");
+      Local_Test.Camera_Queue.Set_Preset (Test_Preset);
+
+--    Assert (Ask_Pause (Local_Test.Manual,
+--          "verify that the preset is 3"),
+--       "manual set failed");
       Log_Out (Debug);
 
    exception
@@ -1268,43 +1338,7 @@ package body Camera.Lib.Base.Command_Tests is
          Ada_Lib.Unit_Test.Exception_Assert (Fault);
 
 
-   end Test_Recall_Memory;
-
-   ---------------------------------------------------------------
-   procedure Test_Recall_Set (
-      Test                       : in out AUnit.Test_Cases.Test_Case'class) is
-   ---------------------------------------------------------------
-
-      Local_Test                 : Test_Type renames Test_Type (Test);
-      Test_Preset                : constant := 254;
-
-   begin
-      Log_In (Debug);
-      Pause (Local_Test.Manual, "possition camera away from preset");
-
-      Local_Test.Camera_Queue.Process_Command (Memory_Set,
-         Options     => ( 1 =>
-               (
-                  Data           => Test_Preset,
-                  Start          => 6,
-                  Variable_Width => False
-               )
-            ));
-
-      Local_Test.Camera_Queue.Process_Command (Memory_Recall,
-         Options     => ( 1 =>
-               (
-                  Data           => 0,   -- preset 0
-                  Start          => 6,
-                  Variable_Width => False
-               )
-            ));
-
-      Assert (Ask_Pause (Local_Test.Manual,
-            "verify camer at preset 0"),
-         "manual set failed");
-      Log_Out (Debug);
-   end Test_Recall_Set;
+   end Test_Set_Memory;
 
 -- ---------------------------------------------------------------
 -- procedure Test_Recall_Speed (

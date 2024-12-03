@@ -1,6 +1,6 @@
 --with Ada.Exceptions;
 --with Ada_Lib.GNOGA;
-with ADA_LIB.Strings;
+--with ADA_LIB.Strings;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
 with Ada_Lib.Unit_Test;
 with AUnit.Assertions; use AUnit.Assertions;
@@ -17,10 +17,8 @@ package body Camera.Commands.Unit_Test is
 -- use type Camera.Lib.Base.Base_Camera_Class_Access;
 
    type Test_Type (
-      Brand          : Camera.Lib.Brand_Type;
-      Description    : Ada_Lib.Strings.String_Constant_Access
-                  ) is new Camera.Lib.Unit_Test.
-                     Camera_Test_Type (Brand, Description) with null record;
+      Brand          : Camera.Lib.Brand_Type) is new Camera.Lib.Unit_Test.
+                     Camera_Test_Type (Brand) with null record;
 
    type Test_Access is access Test_Type;
 
@@ -198,14 +196,12 @@ package body Camera.Commands.Unit_Test is
                                     Options.Camera_Options.Brand;
       Test_Suite                 : constant AUnit.Test_Suites.Access_Test_Suite :=
                                     new AUnit.Test_Suites.Test_Suite;
-      Test                       : constant Test_Access := new Test_Type (Brand,
-                                    new String'("camera command"));
+      Test                       : constant Test_Access := new Test_Type (Brand);
 
    begin
       Log_In (Debug);
       Ada_Lib.Unit_Test.Suite (Suite_Name);  -- used for listing suites
       Test_Suite.Add_Test (Test);
-      Test.Set_Camera;
       Log_Out (Debug);
       return Test_Suite;
    end Suite;

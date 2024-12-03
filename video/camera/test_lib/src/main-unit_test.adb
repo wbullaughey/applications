@@ -202,7 +202,7 @@ package body Main.Unit_Test is
       if not Options.Test_Driver then
          Log_Here (Debug);
 --       Button_Press_Event.Connection_Data :=
---          Camera.Lib.Connection.Connection_Data_Access (Local_Test.Connection_Data);
+--          Camera.Lib.Connection.Connection_Data_Access (Ada_Lib.GNOGA.Get_Connection_Data);
 
          Button_Press_Event.Initialize (0.75, "exit button push", False, False);
 

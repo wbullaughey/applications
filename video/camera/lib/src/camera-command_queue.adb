@@ -48,7 +48,7 @@ package body Camera.Command_Queue is
 
    end Process_Queue_Task;
 
-   Completion_Description        : aliased constant String := "completion event";
+-- Completion_Description        : aliased constant String := "completion event";
    Queue_Failed                  : Boolean := False;
    Task_Running                  : Boolean := False;
 
@@ -148,7 +148,8 @@ package body Camera.Command_Queue is
       Queued_Camera              : in out Queued_Camera_Type;
 --    Base_Camera                : in     Lib.Base.Base_Camera_Class_Access;
       Camera_Address             : in     Ada_Lib.Socket_IO.Address_Type;
-      Port_Number                : in     Ada_Lib.Socket_IO.Port_Type) is
+      Port_Number                : in     Ada_Lib.Socket_IO.Port_Type;
+      Connection_Timeout         : in     Ada_Lib.Socket_IO.Timeout_Type := 1.0) is
    ----------------------------------------------------------------
 
    begin
@@ -158,7 +159,7 @@ package body Camera.Command_Queue is
          new Ada_Lib.Socket_IO.Address_Type'(Camera_Address);
       Queued_Camera.Camera_Address.all := Camera_Address;
       Queued_Camera.Port_Number := Port_Number;
-      Queued_Camera.Base_Camera.Open (Camera_Address, Port_Number);
+      Queued_Camera.Base_Camera.Open (Camera_Address, Port_Number, Connection_Timeout);
       Log_Out (Debug);
    end Open;
 
@@ -323,9 +324,7 @@ package body Camera.Command_Queue is
    ---------------------------------------------------------------
 
    begin
-log_here;
       Camera_Queue.Base_Camera.Write (Data);
-log_here;
    end Write;
 
    ----------------------------------------------------------------

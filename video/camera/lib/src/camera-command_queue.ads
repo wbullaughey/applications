@@ -24,9 +24,7 @@ package Camera.Command_Queue is
    type Callback_Parameter_Class_Access
                                  is access all Callback_Parameter_Type;
 
-   type Queued_Camera_Type (
-      Description                : Ada_Lib.Strings.String_Constant_Access
-                                    ) is abstract tagged limited private;
+   type Queued_Camera_Type       is abstract tagged limited private;
 
    type Queued_Camera_Class_Access
                                  is access all Queued_Camera_Type'class;
@@ -46,7 +44,8 @@ package Camera.Command_Queue is
       Queued_Camera              : in out Queued_Camera_Type;
 --    Base_Camera                : in     Lib.Base.Base_Camera_Class_Access;
       Camera_Address             : in     Ada_Lib.Socket_IO.Address_Type;
-      Port_Number                : in     Ada_Lib.Socket_IO.Port_Type);
+      Port_Number                : in     Ada_Lib.Socket_IO.Port_Type;
+      Connection_Timeout         : in     Ada_Lib.Socket_IO.Timeout_Type := 1.0);
 
    procedure Process_Command (
       Camera_Queue               : in out Queued_Camera_Type;
@@ -106,10 +105,8 @@ package Camera.Command_Queue is
 
 private
 
-   type Queued_Camera_Type (
-      Description          : Ada_Lib.Strings.String_Constant_Access
-                              ) is abstract tagged limited record
-      Base_Camera          : aliased Lib.Base.Base_Camera_Type (Description);
+   type Queued_Camera_Type is abstract tagged limited record
+      Base_Camera          : aliased Lib.Base.Base_Camera_Type;
       Camera_Address       : Ada_Lib.Socket_IO.Address_Access := Null;
       Port_Number          : Ada_Lib.Socket_IO.Port_Type;
    end record;

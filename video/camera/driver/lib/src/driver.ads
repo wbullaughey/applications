@@ -1,5 +1,6 @@
 ﻿--with Ada_Lib.Command_Line_Iterator;
 with Ada_Lib.Options.Actual;
+with Ada_Lib.OS;
 with Ada_Lib.Strings.Unlimited;
 with Ada_Lib.Trace;
 --with Camera.Lib.Options;
@@ -8,7 +9,7 @@ package Driver is
 
    Failed                        : exception;
 
-   use type Ada_Lib.Options.Interface_Options_Constant_Class_Access;
+-- use type Ada_Lib.Options.Interface_Options_Constant_Class_Access;
 
    type Driver_Options_Type (
          Testing                 : Boolean) is limited new Ada_Lib.Options.
@@ -19,8 +20,8 @@ package Driver is
       List_Output                : Boolean := False;
       Main_Debug                 : Boolean := False;
       Remote_Camera              : Boolean := False;
-      Routine               : Ada_Lib.Strings.Unlimited.String_Type;
-      Suite                 : Ada_Lib.Strings.Unlimited.String_Type;
+      Run_Routine                : Ada_Lib.Strings.Unlimited.String_Type;
+      Run_Suite                  : Ada_Lib.Strings.Unlimited.String_Type;
    end record;
 
    type Driver_Options_Access    is access all Driver_Options_Type;
@@ -81,13 +82,11 @@ package Driver is
 
    function Get_Driver_Modifiable_Options (
       From                       : in  String := Ada_Lib.Trace.Here
-   ) return Driver_Options_Class_Access
-   with Pre => Ada_Lib.Options.Have_Options;
+   ) return Driver_Options_Class_Access;
 
    function Get_Driver_Read_Only_Options (
       From                       : in  String := Ada_Lib.Trace.Here
-   ) return Driver_Options_Constant_Class_Access
-   with Pre => Ada_Lib.Options.Have_Options;
+   ) return Driver_Options_Constant_Class_Access;
 
    procedure Get_Tests;
 
@@ -97,7 +96,11 @@ package Driver is
 
    procedure Queue_Tests;
 
-   procedure Run_Selection;
+   procedure Run_Selection (
+      Exit_Code                  :    out Ada_Lib.OS.OS_Exit_Code_Type);
+
+   procedure Set_Options (
+      Options                    : in     Driver_Options_Class_Access);
 
 private
 
@@ -110,5 +113,7 @@ private
    procedure Program_Help (
       Options                    : in     Program_Options_Type;  -- only used for dispatch
       Help_Mode                  : in     ADA_LIB.Options.Help_Mode_Type);
+
+   Driver_Options             : Driver_Options_Class_Access := Null;
 
 end Driver;

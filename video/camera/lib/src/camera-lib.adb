@@ -160,7 +160,8 @@ package body Camera.Lib is
    procedure Open (
       Camera                     :    out General_Camera_Type;
       Camera_Address             : in     Address_Type;
-      Port_Number                : in     Port_Type) is
+      Port_Number                : in     Port_Type;
+      Connection_Timeout         : in     Ada_Lib.Socket_IO.Timeout_Type := 1.0) is
    ----------------------------------------------------------------------------
 
    begin
@@ -440,6 +441,6 @@ begin
 exception
    when Fault: others =>
       Trace_Exception (Fault);
-      ADA_LIB.OS.Immediate_Halt (Ada_Lib.OS.No_Error);
+      ADA_LIB.OS.Immediate_Halt (Ada_Lib.OS.Exception_Exit);
 
 end Camera.Lib;

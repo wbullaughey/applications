@@ -187,6 +187,6 @@ begin
 exception
    when Fault: others =>
       Trace_Exception (Fault);
-      ADA_LIB.OS.Immediate_Halt (Ada_Lib.OS.No_Error);
+      ADA_LIB.OS.Immediate_Halt (Ada_Lib.OS.Exception_Exit);
 
 end Camera.Lib.Options;

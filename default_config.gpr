@@ -48,7 +48,7 @@ abstract project Default_Config is
    Linker_Options := ( );
    case OS_Version is
 
-      when "12.7.5"=>
+      when "12.7.6"=>
          Linker_Options := ( );
 
       when Others =>

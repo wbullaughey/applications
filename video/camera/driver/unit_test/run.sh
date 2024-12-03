@@ -76,7 +76,9 @@ case "$ROUTINE" in
 
 esac
 export COMMAND="$APPLICATION $OPTIONS $CAMERA_OPTIONS $COMMAND"
-
+pwd | tee -a $OUTPUT
+rm GNAT* >& /dev/null
 echo "command: $COMMAND"  | tee -a $OUTPUT
 $COMMAND 2>&1 | tee -a $OUTPUT
+ls -l GNAT* | tee -a $OUTPUT
 

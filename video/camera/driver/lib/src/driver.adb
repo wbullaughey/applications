@@ -14,7 +14,7 @@ with Command_Name;
 package body Driver is
 
    use Ada_Lib.Strings.Unlimited;
-   use type Ada_Lib.OS.Exit_Code_Type;
+   use type Ada_Lib.OS.OS_Exit_Code_Type;
 
 -- subtype String_Type           is String_Type;
 --
@@ -95,7 +95,8 @@ package body Driver is
    procedure Execute (
       Parameters                 : in     String;
       Process_Line               : access procedure (
-         Line                    : in     String)) is
+         Line                    : in     String);
+      Exit_Code                  :    out Ada_Lib.OS.OS_Exit_Code_Type) is
    ---------------------------------------------------------------
 
       Options                    : Driver_Options_Type'class renames
@@ -103,12 +104,12 @@ package body Driver is
       Camera_Program             : constant String :=
                                     Options.Camera_Directory.Coerce &
                                     "/bin/camera_aunit";
-      Scratch_File               : Ada_Lib.OS.File_Descriptor;
-      Scratch_Name               : Ada_Lib.OS.Temporary_File_Name;
+--    Scratch_File               : Ada_Lib.OS.File_Descriptor;
+--    Scratch_Name               : Ada_Lib.OS.Temporary_File_Name;
 
       ------------------------------------------------------
       function Error_Message (
-         Result                  : in     Ada_Lib.OS.Exit_Code_Type
+         Result                  : in     Ada_Lib.OS.OS_Exit_Code_Type
       ) return String is
       ------------------------------------------------------
 
@@ -124,35 +125,31 @@ package body Driver is
          Quote (" Parameters", Parameters));
 
       if Process_Line = Null then
-         declare
-            Result               : constant Ada_Lib.OS.Exit_Code_Type :=
-                                    Ada_Lib.OS.Run.Spawn (
-                                       Camera_Program, Parameters);
-         begin
-            Log_Here (Debug, "result " & Result'img);
-            if Result /= Ada_Lib.OS.No_Error then
-               raise Failed with Error_Message (Result);
-            end if;
-            Log_Here (Debug, "returned" & Result'img & " from spawn");
-         end;
+         Exit_Code := Ada_Lib.OS.Run.Spawn (Camera_Program, Parameters);
+         Log_Here (Debug, "Exit_Code " & Exit_Code'img);
+         if Exit_Code /= Ada_Lib.OS.No_Error then
+            raise Failed with Error_Message (Exit_Code);
+         end if;
+         Log_Here (Debug, "returned" & Exit_Code'img & " from spawn");
       else
-         Ada_Lib.OS.Create_Scratch_File (Scratch_File, Scratch_Name);
-         Ada_Lib.OS.Close_File (Scratch_File);
+--       Ada_Lib.OS.Create_Scratch_File (Scratch_File, Scratch_Name);
+--       Ada_Lib.OS.Close_File (Scratch_File);
+--dump (scratch_name'address,scratch_name'length, 64, Width_8, "scratch_name", Here);
 
-
-         Log_Here (Debug, Quote ("scratch name", Scratch_Name));
          declare
-            Result               : constant Ada_Lib.OS.Exit_Code_Type :=
-                                    Ada_Lib.OS.Run.Spawn (Camera_Program,
-                                       Parameters, Scratch_Name);
+            Scratch_File_Name    : constant String := Ada_Lib.OS.Create_Scratch_File;
+
          begin
-            Log_Here (Debug, "result " & Result'img & " returned from spawn");
+            Exit_Code := Ada_Lib.OS.Run.Spawn (Camera_Program, Parameters,
+               Scratch_File_Name);
+            Log_Here (Debug, Quote ("scratch name", Scratch_File_Name) &
+               " Exit_Code " & Exit_Code'img & " returned from spawn");
 
             declare
                Output_File             : File_Type;
 
             begin
-               Open (Output_File, In_File, Scratch_Name);
+               Open (Output_File, In_File, Scratch_File_Name);
                Log_Here (Debug, "output opened");
 
                while not End_Of_File (Output_File) loop
@@ -167,12 +164,10 @@ package body Driver is
                end loop;
                Close (Output_File);
             end;
-            Put_Line ("camera test result " & Result'img &
+            Put_Line ("camera test result " & Exit_Code'img &
                " returned from spawn");
          end;
-
       end if;
-
 
       Log_Out (Debug);
 
@@ -191,9 +186,10 @@ package body Driver is
 
    begin
       Log_Here (Debug_Options or Trace_Options, "from " & From);
-      return Program_Options_Class_Access (
-         Ada_Lib.Options.Get_Ada_Lib_Modifiable_Options).
-            Driver_Options'unchecked_access;
+      if Driver_Options = Null then
+         raise Failed with "Driver_Options not set from " & From;
+      end if;
+      return Driver_Options;
    end Get_Driver_Modifiable_Options;
 
    ---------------------------------------------------------------
@@ -205,15 +201,17 @@ package body Driver is
 
    begin
       Log_Here (Debug_Options or Trace_Options, "from " & From);
-      return Program_Options_Constant_Class_Access (
-         Ada_Lib.Options.Get_Ada_Lib_Read_Only_Options).
-            Driver_Options'unchecked_access;
+      if Driver_Options = Null then
+         raise Failed with "Driver_Options not set from " & From;
+      end if;
+      return Driver_Options_Constant_Class_Access (Driver_Options);
    end Get_Driver_Read_Only_Options;
 
    ---------------------------------------------------------------
    procedure Get_Tests is
    ---------------------------------------------------------------
 
+      Exit_Code      : Ada_Lib.OS.OS_Exit_Code_Type;
       Options        : Driver_Options_Type'class renames
                            Get_Driver_Read_Only_Options.all;
    begin
@@ -221,7 +219,10 @@ package body Driver is
       if Options.List_Output then
          Put_Line ("tests");
       end if;
-      Execute ("-@d", Process_Line'access);
+      Execute ("-@d", Process_Line'access, Exit_Code);
+      if Exit_Code /= Ada_Lib.OS.No_Error then
+         raise Failed with "application returned " & Exit_Code'img & " getting tests";
+      end if;
       Log_Out (Debug);
    end Get_Tests;
 
@@ -325,7 +326,7 @@ package body Driver is
          Trace_Exception (Debug, Fault,
             "missing suite or routine from test list");
          Put_Line (Quote ("missing suite or routine in test list line", Line));
-         Ada_Lib.OS.Immediate_Halt (Ada_Lib.OS.No_Error);
+         Ada_Lib.OS.Immediate_Halt (Ada_Lib.OS.Exception_Exit);
 
       when Fault: others =>
          Trace_Exception (Debug, Fault, "could not parse test list");
@@ -362,14 +363,14 @@ package body Driver is
                      Options.List_Output := True;
 
                   when 'R' =>
-                     Options.Routine.Construct (Iterator.Get_Parameter);
+                     Options.Run_Routine.Construct (Iterator.Get_Parameter);
 
                   when 'r' =>
                      Options.Remote_Camera := True;
 
                   when 's' =>
-                     Options.Suite.Construct (Iterator.Get_Parameter);
-                     Log_Here (Debug_Options, Quote ("suite", Options.Suite));
+                     Options.Run_Suite.Construct (Iterator.Get_Parameter);
+                     Log_Here (Debug_Options, Quote ("suite", Options.Run_Suite));
 
                   when 't' =>
                     declare
@@ -405,7 +406,7 @@ package body Driver is
                     end;
 
                  when 'u' =>
-                     Options.Suite.Construct (Iterator.Get_Parameter);
+                     Options.Run_Suite.Construct (Iterator.Get_Parameter);
 
                  when Camera_Option =>    -- X
                      declare
@@ -561,28 +562,30 @@ package body Driver is
                         Get_Driver_Read_Only_Options.all;
    begin
       Log_In (Debug, "testing " & Options.Testing'img &
+         Quote (" routine", Options.Run_Routine) &
          " Options tag " & Tag_Name (Options'tag));
 
-      if Options.Routine.Length = 0 then -- need list of suites and routines
+      if Options.Run_Routine.Length = 0 then -- need list of suites and routines
          Get_Tests;
       else
-         if Options.Suite.Length = 0 then
+         if Options.Run_Suite.Length = 0 then
             raise Failed with "no suite";
          else
-            Push (Options.Suite.Coerce, Options.Routine.Coerce);
+            Push (Options.Run_Suite.Coerce, Options.Run_Routine.Coerce);
          end if;
       end if;
       Log_Out (Debug);
    end Queue_Tests;
 
    ----------------------------------------------------------------------------
-   procedure Run_Selection is
+   procedure Run_Selection (
+      Exit_Code                  :    out Ada_Lib.OS.OS_Exit_Code_Type) is
    ----------------------------------------------------------------------------
 
       Options        : Driver_Options_Type'class renames
                         Get_Driver_Read_Only_Options.all;
    begin
-      Log_In (Debug, Quote ("suite", Options.Suite) &
+      Log_In (Debug, Quote ("suite", Options.Run_Suite) &
          Quote (" Camera_Options", Options.Camera_Options));
 
       for Element of Queue loop
@@ -607,12 +610,21 @@ package body Driver is
                Put_Line (Quote ("run suite", Element.Suite) &
                   Quote (" routine", Element.Routine) & " " & Here);
 
-               Execute (Camera_Options, Process_Line'access);
+               Execute (Camera_Options, Process_Line'access, Exit_Code);
             end;
 --       end if;
       end loop;
       Log_Out (Debug);
    end Run_Selection;
+
+   ----------------------------------------------------------------------------
+   procedure Set_Options (
+      Options                    : in     Driver_Options_Class_Access) is
+   ----------------------------------------------------------------------------
+
+   begin
+      Driver_Options := Options;
+   end Set_Options;
 
    ----------------------------------------------------------------------------
    overriding

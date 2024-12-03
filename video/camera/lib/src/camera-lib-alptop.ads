@@ -105,11 +105,11 @@ private
       Camera                     : in out ALPTOP_Type;
       On                         : in     Boolean);
 
-   -- sets camera to a preset
-   overriding
-   procedure Set_Preset (
-      Camera                     : in out ALPTOP_Type;
-      Preset_ID                  : in     Configuration.Camera.Preset_ID_Type;
-      Wait_Until_Finished        : in     Boolean := True);
+-- -- sets camera to a preset
+-- overriding
+-- procedure Set_Preset (
+--    Camera                     : in out ALPTOP_Type;
+--    Preset_ID                  : in     Configuration.Camera.Preset_ID_Type;
+--    Wait_Until_Finished        : in     Boolean := True);
 
 end Camera.LIB.ALPTOP;

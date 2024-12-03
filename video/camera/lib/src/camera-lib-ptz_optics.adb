@@ -39,10 +39,10 @@ package body Camera.Lib.PTZ_Optics is
       Standard.Camera.Position_Up          => ( 9, ( 16#81#,16#01#,16#06#,16#01#,16#00#,16#00#,16#03#,16#01#,16#FF#, others => 0 ), True, Default_Response_Timeout, False, 0),
       Standard.Camera.Position_Up_Left     => ( 9, ( 16#81#,16#01#,16#06#,16#01#,16#00#,16#00#,16#01#,16#01#,16#FF#, others => 0 ), True, Default_Response_Timeout, False, 0),
       Standard.Camera.Position_Up_Right    => ( 9, ( 16#81#,16#01#,16#06#,16#01#,16#00#,16#00#,16#02#,16#01#,16#FF#, others => 0 ), True, Default_Response_Timeout, False, 0),
-      Standard.Camera.Memory_Recall        => ( 7, ( 16#81#,16#01#,16#04#,16#3F#,16#02#,16#02#,16#FF#, others => 0 ), True, Position_Timeout, False, 0),
-      Standard.Camera.Memory_Set           => ( 7, ( 16#81#,16#01#,16#04#,16#3F#,16#02#,16#01#,16#FF#, others => 0 ), True, Default_Response_Timeout, False, 0),
-      Standard.Camera.Memory_Reset         => ( 7, ( 16#81#,16#01#,16#04#,16#3F#,16#02#,16#00#,16#FF#, others => 0 ), True, Default_Response_Timeout, False, 0),
-      Standard.Camera.Power                => ( 6, ( 16#81#,16#01#,16#04#,16#00#,16#00#,16#FF#, others => 0 ), False, Default_Response_Timeout, False, 4),
+      Standard.Camera.Memory_Recall        => ( 7, ( 16#81#,16#01#,16#04#,16#3F#,16#02#,16#00#,16#FF#, others => 0 ), False, Position_Timeout, True, 4),
+      Standard.Camera.Memory_Set           => ( 7, ( 16#81#,16#01#,16#04#,16#3F#,16#01#,16#00#,16#FF#, others => 0 ), True, Default_Response_Timeout, False, 0),
+      Standard.Camera.Memory_Reset         => ( 7, ( 16#81#,16#01#,16#04#,16#3F#,16#00#,16#00#,16#FF#, others => 0 ), True, Default_Response_Timeout, False, 0),
+      Standard.Camera.Power                => ( 6, ( 16#81#,16#01#,16#04#,16#00#,16#00#,16#FF#, others => 0 ), True, Default_Response_Timeout, False, 0),
       Standard.Camera.Power_Request        => ( 5, ( 16#81#,16#09#,16#04#,6#00#,16#FF#, others => 0 ), False, Default_Response_Timeout, True, 4),
       Standard.Camera.Zoom_Direct          => ( 7, ( 16#81#,16#01#,16#04#,16#3F#,16#02#,16#00#,16#FF#, others => 0 ), True, Default_Response_Timeout, False, 0),
       Standard.Camera.Zoom_Full            => ( 7, ( 16#81#,16#01#,16#04#,16#3F#,16#02#,16#00#,16#FF#, others => 0 ), True, Position_Timeout, False, 0),
@@ -138,6 +138,12 @@ package body Camera.Lib.PTZ_Optics is
       Log_Here (Debug, Hex_IO.Hex (Accumulator) &
          " conversion" & Conversion'img);
       Tilt := Conversion;
+
+   exception
+      when Fault : others =>
+         Log_Exception (Debug, Fault);
+         raise;
+
    end Get_Absolute;
 
    ----------------------------------------------------------------------------
@@ -423,6 +429,7 @@ package body Camera.Lib.PTZ_Optics is
 
    begin
       Log_In (Debug, "Command " & Command'img);
+      Standard.Camera.Lib.Base.Check_Command (Command, Selected_Command);
       Standard.Camera.Lib.Base.Apply_Parameters (Buffer, Options);
       if Buffer (Selected_Command.Length) /= 16#FF# then
          raise Failed with "missing end of command at" & Selected_Command.Length'img;
@@ -433,6 +440,12 @@ package body Camera.Lib.PTZ_Optics is
       Response_Length := Selected_Command.Response_Length;
       Log_Out (Debug, "get ack " & Get_Ack'img &
          " has response " & Has_Response'img);
+
+   exception
+      when Fault : others =>
+         Log_Exception (Debug, Fault);
+         raise;
+
    end Send_Command;
 
    ---------------------------------------------------------------
@@ -517,7 +530,9 @@ package body Camera.Lib.PTZ_Optics is
          end if;
       end;
       if On then -- need to reopen after power comes on
-         delay (15.0); -- wait for camera to come back on
+         Log_Here (Debug);
+         delay (90.0); -- wait for camera to come back on
+         Log_Here (Debug);
          Camera.reopen;
       end if;
       Log_Out (Debug);
@@ -531,43 +546,43 @@ package body Camera.Lib.PTZ_Optics is
 
    end Set_Power;
 
-   ---------------------------------------------------------------
-   overriding
-   procedure Set_Preset (
-      Camera                     : in out PTZ_Optics_Type;
-      Preset_ID                  : in     Configuration.Camera.Preset_ID_Type;
-      Wait_Until_Finished        : in     Boolean := True) is
-   ---------------------------------------------------------------
-
-   begin
-      Log_In (Debug, "preset id" & Preset_ID'img);
-      declare
-         Status         : constant Status_Type := Camera.Synchronous (
-                           Memory_Recall,
-                           Options     => ( 1 =>
-                                 (
-                                    Data           => Data_Type (Preset_ID),
-                                    Start          => 6,
-                                    Variable_Width => False
-                                 )
-                              ));
-      begin
-         if Status /= Success then
-            raise Failed with "Synchronous failed with " & Status'img;
-         end if;
-      end;
-
-      if Wait_Until_Finished then
-         declare
-            Pan                  : Absolute_Type;
-            Tilt                 : Absolute_Type;
-         begin
-            Camera.Get_Absolute (Pan, Tilt);
-            Log_Here (Debug, "pan " & Pan'img & " tilt " & Tilt'img);
-         end;
-      end if;
-      Log_Out (Debug);
-   end Set_Preset;
+-- ---------------------------------------------------------------
+-- overriding
+-- procedure Set_Preset (
+--    Camera                     : in out PTZ_Optics_Type;
+--    Preset_ID                  : in     Configuration.Camera.Preset_ID_Type;
+--    Wait_Until_Finished        : in     Boolean := True) is
+-- ---------------------------------------------------------------
+--
+-- begin
+--    Log_In (Debug, "preset id" & Preset_ID'img);
+--    declare
+--       Status         : constant Status_Type := Camera.Synchronous (
+--                         Memory_Set,
+--                         Options     => ( 1 =>
+--                               (
+--                                  Data           => Data_Type (Preset_ID),
+--                                  Start          => 6,
+--                                  Variable_Width => False
+--                               )
+--                            ));
+--    begin
+--       if Status /= Success then
+--          raise Failed with "Synchronous failed with " & Status'img;
+--       end if;
+--    end;
+--
+--    if Wait_Until_Finished then
+--       declare
+--          Pan                  : Absolute_Type;
+--          Tilt                 : Absolute_Type;
+--       begin
+--          Camera.Get_Absolute (Pan, Tilt);
+--          Log_Here (Debug, "pan " & Pan'img & " tilt " & Tilt'img);
+--       end;
+--    end if;
+--    Log_Out (Debug);
+-- end Set_Preset;
 
 begin
 --Debug := True;

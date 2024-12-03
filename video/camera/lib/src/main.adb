@@ -8,7 +8,7 @@ with Ada_Lib.Options;
 with Ada_Lib.OS;
 with ADA_LIB.Trace; use ADA_LIB.Trace;
 with Ask;
---with Camera.Commands;
+with Camera.Commands;
 --with Camera.Lib.PTZ_Optics;
 --with Camera.Command_Queue;
 with Camera.Lib.Connection;
@@ -22,6 +22,7 @@ with Gnoga.Types.Colors;
 
 package body Main is
 
+   use type Camera.Commands.Camera_Queue_Class_Access;
 -- use type Camera.Lib.Connection.Connection_Data_Class_Access;
 -- use type Configuration.Camera.State.State_Access;
    use type Gnoga.Types.Pointer_to_Connection_Data_Class;
@@ -46,7 +47,8 @@ package body Main is
 -- procedure On_Exit (
 --    Object                     : in out Gnoga.Gui.Base.Base_Type'Class);
 
-   procedure Open_Camera;
+   procedure Open_Camera
+   with Pre => Camera.Lib.Connection.Has_Camera_Queue;
 
 -- --  Setup another path in to the application for submitting results
 -- --  /result, see On_Connect_Handler in body of this procedure.
@@ -502,11 +504,11 @@ package body Main is
    exception
       when Fault: Standard.Camera.Lib.Base.Failed =>
          Put_Line (Ada.Exceptions.Exception_Message (Fault));
-         Ada_Lib.OS.Immediate_Halt (Ada_Lib.OS.Application_Exception);
+         Ada_Lib.OS.Immediate_Halt (Ada_Lib.OS.Exception_Exit);
 
       when Fault: others =>
          Trace_Exception (Fault, Here);
-         Ada_Lib.OS.Immediate_Halt (Ada_Lib.OS.ENOENT);
+         Ada_Lib.OS.Immediate_Halt (Ada_Lib.OS.Exception_Exit);
 
    end On_Connect;
 
@@ -569,6 +571,9 @@ package body Main is
       case Options.Brand is
 
          when Standard.Camera.Lib.PTZ_Optics_Camera =>
+if Connection_Data.Camera_Queue = null then
+log_here;
+end if;
             Connection_Data.Camera_Queue.Open (Camera_Address, Port_Number);
 
          when others =>
@@ -584,7 +589,7 @@ package body Main is
          Trace_Exception (Debug, Fault, Here);
          Put_Line ("Could not open camera. Error " &
             Ada.Exceptions.Exception_Message (Fault));
-         Ada_Lib.OS.Immediate_Halt (Ada_Lib.OS.Application_Exception);
+         Ada_Lib.OS.Immediate_Halt (Ada_Lib.OS.Exception_Exit);
 
    end Open_Camera;
 

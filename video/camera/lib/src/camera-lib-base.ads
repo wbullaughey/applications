@@ -30,9 +30,11 @@ package Camera.Lib.Base is
       Response_Length            : Index_Type;
    end record;
 
-   type Base_Camera_Type (
-      Description                : Ada_Lib.Strings.String_Constant_Access
-                                    ) is limited new General_Camera_Type with private;
+   procedure Check_Command (
+      Command_Code               : in     Commands_Type;
+      Command                    : in     Command_Type);
+
+   type Base_Camera_Type         is limited new General_Camera_Type with private;
    type Base_Camera_Class_Access is access all Base_Camera_Type'class;
 
 -- procedure Acked (
@@ -78,20 +80,23 @@ package Camera.Lib.Base is
    procedure Host_Open (
       Camera                     :    out Base_Camera_Type;
       Host_Address               : in     String;
-      Port                       : in     GNAT.Sockets.Port_Type);
+      Port                       : in     GNAT.Sockets.Port_Type;
+      Connection_Timeout         : in     Ada_Lib.Socket_IO.Timeout_Type := 1.0);
 
    overriding
    procedure IP_Open (
       Camera                     :    out Base_Camera_Type;
       IP_Address                 : in     GNAT.Sockets.Inet_Addr_V4_Type;
-      Port                       : in     GNAT.Sockets.Port_Type
+      Port                       : in     GNAT.Sockets.Port_Type;
+      Connection_Timeout         : in     Ada_Lib.Socket_IO.Timeout_Type := 1.0
    ) with Pre => Port /= 0;
 
    overriding
    procedure Open (
       Camera                     :    out Base_Camera_Type;
       Address                    : in     Ada_Lib.Socket_IO.Address_Type;
-      Port                       : in     Ada_Lib.Socket_IO.Port_Type);
+      Port                       : in     Ada_Lib.Socket_IO.Port_Type;
+      Connection_Timeout         : in     Ada_Lib.Socket_IO.Timeout_Type := 1.0);
 
 -- procedure Position_Relative (
 --    Camera                     : in out Base_Camera_Type;
@@ -189,17 +194,17 @@ package Camera.Lib.Base is
       Options                    : in     Options_Type);
 
    Debug                         : Boolean := False;
+   Last_Command                  : constant := 127;
    Power_On_Preset               : constant := 0;
 
 private
 
-   type Base_Camera_Type (
-      Description                : Ada_Lib.Strings.String_Constant_Access
-                                    ) is limited new General_Camera_Type with
-                                       record
+   Camera_Description            : aliased constant String := "camera socket";
+
+   type Base_Camera_Type   is limited new General_Camera_Type with record
       Last_Command               : Commands_Type := No_Command;
       Socket                     : Ada_Lib.Socket_IO.Client.Client_Socket_Type (
-                                       Description);
+                                       Camera_Description'access);
 --    Waiting_For_Response       : Boolean := False;
    end record;
 

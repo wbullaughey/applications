@@ -106,11 +106,11 @@ private
       Camera                     : in out PTZ_Optics_Type;
       On                         : in     Boolean);
 
-   -- sets camera to a preset
-   overriding
-   procedure Set_Preset (
-      Camera                     : in out PTZ_Optics_Type;
-      Preset_ID                  : in     Configuration.Camera.Preset_ID_Type;
-      Wait_Until_Finished        : in     Boolean := True);
+-- -- sets camera to a preset
+-- overriding
+-- procedure Set_Preset (
+--    Camera                     : in out PTZ_Optics_Type;
+--    Preset_ID                  : in     Configuration.Camera.Preset_ID_Type;
+--    Wait_Until_Finished        : in     Boolean := True);
 
 end Camera.Lib.PTZ_Optics;

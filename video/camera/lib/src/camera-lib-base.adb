@@ -34,7 +34,8 @@ package body Camera.Lib.Base is
             case Option.Variable_Width is
 
                when False =>
-                  Log_Here (Debug, "data " & Video.Lib.Hex (Option.Data));
+                  Log_Here (Debug, "start" & Option.Start'img &
+                     " data " & Video.Lib.Hex (Option.Data));
                   Buffer (Option.Start) := Option.Data;
 
                when True =>
@@ -77,7 +78,7 @@ package body Camera.Lib.Base is
    end Apply_Parameters;
 
    ---------------------------------------------------------------
-   procedure Camera_No_Found (
+   procedure Camera_Not_Found (
       Address                    : in     String;
       Port                       : in     GNAT.Sockets.Port_Type;
       Fault                      : in     Ada.Exceptions.Exception_Occurrence) is
@@ -89,7 +90,25 @@ package body Camera.Lib.Base is
 
       raise Failed with Quote ("Camera address", Address) &
          " port" & Port'img & " not found";
-   end Camera_No_Found;
+   end Camera_Not_Found;
+
+   ---------------------------------------------------------------
+   procedure Check_Command (
+      Command_Code               : in     Commands_Type;
+      Command                    : in     Command_Type) is
+   ---------------------------------------------------------------
+
+   begin
+      if Command.Has_Response then
+         if Command.Response_Length = 0 then
+            raise Failed with "response length zero for " & Command_Code'img;
+         end if;
+      else
+         if Command.Response_Length /= 0 then
+            raise Failed with "response length non zero for " & Command_Code'img;
+         end if;
+      end if;
+   end Check_Command;
 
    ---------------------------------------------------------------
    overriding
@@ -108,18 +127,19 @@ package body Camera.Lib.Base is
    procedure Host_Open (
       Camera                     :    out Base_Camera_Type;
       Host_Address               : in     String;
-      Port                       : in     GNAT.Sockets.Port_Type) is
+      Port                       : in     GNAT.Sockets.Port_Type;
+      Connection_Timeout         : in     Ada_Lib.Socket_IO.Timeout_Type := 1.0) is
    ---------------------------------------------------------------
 
    begin
       Log_In (Debug, "Host_Address " & Host_Address & " port" & Port'img);
-      Camera.Socket.Connect (Host_Address, Port);
+      Camera.Socket.Connect (Host_Address, Port, Connection_Timeout);
       Log_Out (Debug);
 
    exception
 
       when Fault: GNAT.Sockets.Host_Error | Ada_Lib.Socket_IO.Failed =>
-         Camera_No_Found (Host_Address, Port, Fault);
+         Camera_Not_Found (Host_Address, Port, Fault);
 
    end Host_Open;
 
@@ -128,7 +148,8 @@ package body Camera.Lib.Base is
    procedure IP_Open (
       Camera                     :    out Base_Camera_Type;
       IP_Address                 : in     Ada_Lib.Socket_IO.IP_Address_Type;
-      Port                       : in     Ada_Lib.Socket_IO.Port_Type) is
+      Port                       : in     Ada_Lib.Socket_IO.Port_Type;
+      Connection_Timeout         : in     Ada_Lib.Socket_IO.Timeout_Type := 1.0) is
    ---------------------------------------------------------------
 
       Address                    : constant String :=
@@ -137,14 +158,14 @@ package body Camera.Lib.Base is
 --Log_Here (Debug'img & " IP Address" & Address & " port" & Port'img);
       Log_In (Debug, "IP Address" & Address & " port" & Port'img);
 --    Camera.Socket.Set_Option (Ada_Lib.Socket_IO.Reuse_Address);
-      Camera.Socket.Connect (Address, Port);
+      Camera.Socket.Connect (Address, Port, Connection_Timeout);
 --    Camera.Socket.Create (Camera.Socket, 1.0, 0.5);
       Log_Out (Debug);
 
    exception
 
       when Fault: GNAT.Sockets.Host_Error | Ada_Lib.Socket_IO.Failed =>
-         Camera_No_Found (Address, Port, Fault);
+         Camera_Not_Found (Address, Port, Fault);
 
    end IP_Open;
 
@@ -153,19 +174,20 @@ package body Camera.Lib.Base is
    procedure Open (
       Camera                     :    out Base_Camera_Type;
       Address                    : in     Ada_Lib.Socket_IO.Address_Type;
-      Port                       : in     Ada_Lib.Socket_IO.Port_Type) is
+      Port                       : in     Ada_Lib.Socket_IO.Port_Type;
+      Connection_Timeout         : in     Ada_Lib.Socket_IO.Timeout_Type := 1.0) is
    ---------------------------------------------------------------
 
    begin
       Log_In (Debug, "Address " & Address.Image & " port" & Port'img &
          " tag " & Tag_Name (Base_Camera_Type'class (Camera)'tag));
-      Camera.Socket.Connect (Address, Port);
+      Camera.Socket.Connect (Address, Port, Connection_Timeout);
       Log_Out (Debug);
 
    exception
 
       when Fault: GNAT.Sockets.Host_Error | Ada_Lib.Socket_IO.Failed =>
-         Camera_No_Found (Address.Image, Port, Fault);
+         Camera_Not_Found (Address.Image, Port, Fault);
 
       when Fault: others =>
          Log_Exception (Debug, Fault, "could not open camera Address " &
@@ -280,6 +302,12 @@ package body Camera.Lib.Base is
          Dump ("camera command", Data);
       end if;
       Log_Out (Debug);
+
+   exception
+      when Fault : others =>
+         Log_Exception (Debug, Fault);
+         raise;
+
    end Read;
 
    procedure Reopen (
@@ -364,6 +392,12 @@ package body Camera.Lib.Base is
       end if;
       Camera.Socket.Write (Data);
       Log_Out (Debug);
+
+   exception
+      when Fault : others =>
+         Log_Exception (Debug, Fault);
+         raise;
+
    end Write;
 
 begin

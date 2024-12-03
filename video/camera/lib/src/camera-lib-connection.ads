@@ -1,8 +1,11 @@
 with Ada_Lib.Event;
 with Ada_Lib.GNOGA;
+--with Ada_Lib.Strings;
 --with Ada_Lib.Socket_IO.Client;
 --with Camera.Command_Queue;
 with Camera.Commands;
+with Camera.LIB.ALPTOP;
+with Camera.LIB.PTZ_Optics;
 with Configuration.Camera.State;
 --with GNAT.Sockets;
 with Gnoga.Gui.Element.Common;
@@ -24,8 +27,9 @@ package Camera.Lib.Connection is
    type Mouse_Click_Action_Type  is (Any_Scroll, Horizontal_Scroll,
                                        No_Action, No_Change, Vertical_Scroll);
 
-   type Connection_Data_Type     is new Ada_Lib.GNOGA.Connection_Data_Type with
-                                    record
+   type Connection_Data_Type (
+      Brand                      : Standard.Camera.Lib.Brand_Type) is new
+                                    Ada_Lib.GNOGA.Connection_Data_Type with record
       Camera_Queue               : Standard.Camera.Commands.Camera_Queue_Class_Access;
       Camera_Pan                 : Absolute_Type;
       Camera_Pan_Speed           : Property_Type;
@@ -42,6 +46,18 @@ package Camera.Lib.Connection is
       State                      : Configuration.Camera.State.State_Type;
       Update_Event               : Ada_Lib.Event.Event_Type (
                                     new String'("update event"));
+      case Brand is
+         when Standard.Camera.Lib.ALPTOP_Camera =>
+            ALPTOP                : aliased Standard.Camera.LIB.ALPTOP.
+                                    ALPTOP_Type;
+
+         when Standard.Camera.Lib.No_Camera=>
+            Null;
+
+         when Standard.Camera.LIB.PTZ_Optics_Camera =>
+            PTZ_Optics           : aliased Standard.Camera.Lib.
+                                    PTZ_Optics.PTZ_Optics_Type;
+      end case;
    end record;
 
    type Connection_Data_Access   is access all Connection_Data_Type;
@@ -80,6 +96,10 @@ package Camera.Lib.Connection is
    ) return Gnoga.Gui.View.Card.Pointer_To_Tab_Class;
 
    procedure Halt;
+
+   function Has_Camera_Queue (
+      From                       : in     String := Ada_Lib.Trace.Here
+   ) return Boolean;
 
    procedure Initialize (
       Connection_Data            : in out Connection_Data_Type);

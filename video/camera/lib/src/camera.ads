@@ -36,7 +36,7 @@ package Camera is
       Position_Up_Left,
       Position_Up_Right,
       Memory_Recall,
-      Memory_Set,
+      Memory_Set,          -- updates a preset to current location
       Memory_Reset,
       Power,
       Power_Request,

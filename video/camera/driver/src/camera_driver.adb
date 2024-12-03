@@ -30,17 +30,22 @@ begin
          Options.Process (
             Include_Options      => True,
             Include_Non_Options  => True) then
-      Log_In (Debug);
-      Put_Line (Command_Name);
-      Driver.Queue_Tests;
-      Driver.Run_Selection;
-      Log_Here (Debug, "timer stopped, stop trace tasks");
+      declare
+         Exit_Code               : Ada_Lib.OS.OS_Exit_Code_Type;
 
-      Ada_lib.Trace_Tasks.Stop;
-      if not Ada_Lib.Trace_Tasks.All_Stopped then
-         Ada_Lib.Trace_Tasks.Report;
-      end if;
-      Log_Out (Debug);
+      begin
+         Log_In (Debug);
+         Put_Line (Command_Name);
+         Driver.Queue_Tests;
+         Driver.Run_Selection (Exit_Code);
+         Put_Line ("text exit code " & Exit_Code'img);
+         Log_Here (Debug, "timer stopped, stop trace tasks");
+         Ada_lib.Trace_Tasks.Stop;
+         if not Ada_Lib.Trace_Tasks.All_Stopped then
+            Ada_Lib.Trace_Tasks.Report;
+         end if;
+         Log_Out (Debug);
+      end;
    else
       Ada_Lib.Options.Get_Ada_Lib_Read_Only_Options.Display_Help ("Initialize Options failed", False);
    end if;

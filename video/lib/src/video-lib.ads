@@ -32,17 +32,20 @@ package Video.Lib is
    procedure Host_Open (
       Camera                     :    out Camera_Type;
       Host_Address               : in     String;
-      Port                       : in     Port_Type) is abstract;
+      Port                       : in     Port_Type;
+      Connection_Timeout         : in     Ada_Lib.Socket_IO.Timeout_Type := 1.0) is abstract;
 
    procedure IP_Open (
       Camera                     :    out Camera_Type;
       IP_Address                 : in     GNAT.Sockets.Inet_Addr_V4_Type;
-      Port                       : in     Port_Type) is abstract;
+      Port                       : in     Port_Type;
+      Connection_Timeout         : in     Ada_Lib.Socket_IO.Timeout_Type := 1.0) is abstract;
 
    procedure Open (
       Camera                     :     out Camera_Type;
       Camera_Address             : in     Address_Type;
-      Port_Number                : in     Port_Type) is abstract;
+      Port_Number                : in     Port_Type;
+      Connection_Timeout         : in     Ada_Lib.Socket_IO.Timeout_Type := 1.0) is abstract;
 
    function Parse_Image_Value (
       Value                      : in     String;

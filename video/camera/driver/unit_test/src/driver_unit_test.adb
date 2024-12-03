@@ -14,12 +14,13 @@ procedure Driver_Unit_Test is
 
 begin
    Ada_Lib.Options.Set_Ada_Lib_Options (Options'unchecked_access);
+   Driver.Set_Options (Options.Driver_Options'unchecked_access);
 
-   Options.Driver_Options.Camera_Directory.Construct ("../../unit_test");
+   Options.Driver_Options.Camera_Directory.Construct ("../../../unit_test");
 
    if not Options.Initialize then
       Put_Line ("Options Initialization failed");
-      Ada_Lib.OS.Immediate_Halt (Ada_Lib.OS.No_Error);
+      Ada_Lib.OS.Immediate_Halt (Ada_Lib.OS.Application_Error);
    end if;
 
    Log_In (Debug);
@@ -50,6 +51,6 @@ begin
 exception
    when Fault: others =>
       Trace_Exception (Fault);
-      Ada_Lib.OS.Immediate_Halt (Ada_Lib.OS.No_Error);
+      Ada_Lib.OS.Immediate_Halt (Ada_Lib.OS.Exception_Exit);
 
 end Driver_Unit_Test;

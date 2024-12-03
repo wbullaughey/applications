@@ -10,9 +10,9 @@ with AUnit.Simple_Test_Cases;
 with AUnit.Test_Results;
 with AUnit.Test_Suites;
 with Camera.Commands;
-with Camera.LIB.ALPTOP;
+--with Camera.LIB.ALPTOP;
 --with Camera.LIB.Base;
-with Camera.Lib.PTZ_Optics;
+--with Camera.Lib.PTZ_Optics;
 with Configuration.Camera.Setup;
 with Configuration.State;
 with GNAT.Source_Info;
@@ -24,36 +24,21 @@ package Camera.Lib.Unit_Test is
 
    -- use for tests with camera but no web pages
    type Camera_Test_Type (
-      Brand                      : Standard.Camera.Lib.Brand_Type;
-      Description                : Ada_Lib.Strings.String_Constant_Access
-                                    ) is abstract new Ada_Lib.Unit_Test.
-                                       Test_Cases.Test_Case_Type with record
-      Camera_Queue               : Camera.Commands.Camera_Queue_Class_Access := Null;
-      Camera_Address             : Address_Constant_Access := Null;
-      Port_Number                : Port_Type;
-      Location                   : Configuration.State.Location_Type;
-      Setup                      : Configuration.Camera.Setup.Setup_Type;
-      Waiting_For_Response       : Boolean := False;
-      case Brand is
-         when Standard.Camera.Lib.ALPTOP_Camera =>
-            ALPTOP                : aliased Standard.Camera.LIB.ALPTOP.
-                                    ALPTOP_Type (Description);
-
-         when Standard.Camera.Lib.No_Camera=>
-            Null;
-
-         when Standard.Camera.LIB.PTZ_Optics_Camera =>
-            PTZ_Optics           : aliased Standard.Camera.Lib.
-                                    PTZ_Optics.PTZ_Optics_Type (Description);
-      end case;
+      Brand                : Standard.Camera.Lib.Brand_Type) is abstract new
+                              Ada_Lib.Unit_Test.Test_Cases.Test_Case_Type
+                                 with record
+      Set_Up_Load          : Boolean := True;
+      Camera_Queue         : Camera.Commands.Camera_Queue_Class_Access := Null;
+      Camera_Address       : Address_Constant_Access := Null;
+      Port_Number          : Port_Type;
+      Location             : Configuration.State.Location_Type;
+      Setup                : Configuration.Camera.Setup.Setup_Type;
+      Waiting_For_Response : Boolean := False;
    end record;
 
    type Camera_Test_Access       is access Camera_Test_Type;
    type Camera_Test_Constant_Access
                                  is access constant Camera_Test_Type;
-
-   procedure Set_Camera (
-      Test                       : in out Camera_Test_Type);
 
    overriding
    procedure Set_Up (
@@ -61,13 +46,14 @@ package Camera.Lib.Unit_Test is
    ) with Pre => not Test.Verify_Set_Up,
           Post => Test.Verify_Set_Up;
 
-   procedure Set_Up_Optional_Load (
-      Test                       : in out Camera_Test_Type;
-      Load                       : in     Boolean);
+-- procedure Set_Up_Optional_Load (
+--    Test                       : in out Camera_Test_Type;
+--    Load                       : in     Boolean);
 
    overriding
    procedure Tear_Down (
-      Test                       : in out Camera_Test_Type);
+      Test                       : in out Camera_Test_Type
+   ) with Pre => Test.Verify_Set_Up;
 
    -- use for test which create the standard main window which don't manipulate camera
    type Camera_Window_Test_Type (

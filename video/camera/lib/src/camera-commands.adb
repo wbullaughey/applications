@@ -233,6 +233,12 @@ package body Camera.Commands is
          end;
       end if;
       Log_Out (Debug);
+
+   exception
+      when Fault : others =>
+         Log_Exception (Debug, Fault);
+         raise;
+
    end Get_Response;
 
 -- ---------------------------------------------------------------
@@ -381,18 +387,52 @@ package body Camera.Commands is
 
       Get_Ack                    : Boolean;
       Has_Response               : Boolean;
---    Response                   : Maximum_Response_Type;
+      Response                   : Maximum_Response_Type;
       Response_Length            : Index_Type;
+      Timeout                    : constant Duration :=
+                                    Camera_Queue_Type'class (Camera_Queue).
+                                       Get_Timeout (Command);
 
    begin
       Log_In (Debug, "command " & Command'img);
       Camera_Queue_Type'class (Camera_Queue).Send_Command (Command, Options,
          Get_Ack, Has_Response, Response_Length);
-      if Get_Ack or else Has_Response then
-         raise Failed with "unexpected Ack " & Get_Ack'img &
-            " or Has_Response " & Has_Response'img;
+      if Has_Response then
+         declare
+            Message     : constant String := "unexpected has response " &
+                           Has_Response'img & " for " & Command'img;
+         begin
+            Log_Exception (Debug, Message);
+            raise Failed with Message;
+         end;
       end if;
+      if Camera_Queue.Waiting_For_Response then
+         declare
+            Message  : constant String :=
+                        "outstanding request " & Camera_Queue.Last_Command'img;
+         begin
+            Log_Exception (Debug, Message);
+            raise Failed with Message;
+         end;
+      end if;
+
+      if Get_Ack then
+         Camera_Queue.Waiting_For_Response := True;   -- make sure not nested
+         Camera_Queue.Last_Command := Command;
+      end if;
+
+      Camera_Queue.Get_Response (Get_Ack, Has_Response, Response,
+         Response_Length, Timeout);  -- get response
+
+      Camera_Queue.Waiting_For_Response := False;
+      Camera_Queue.Last_Command := No_Command;
       Log_Out (Debug);
+
+   exception
+      when Fault: others =>
+         Log_Exception (Debug, Fault);
+         raise;
+
    end Process_Command;
 
    ---------------------------------------------------------------
@@ -417,11 +457,18 @@ package body Camera.Commands is
          " timeout " & Timeout'img);
       if    Ada_Lib.Unit_Testing and then
             Standard.Camera.Command_Queue.Has_Queue_Failed then
+         Log_Exception (Debug, "command queue failed");
          raise Failed with "command queue failed";
       end if;
 
       if Camera_Queue.Waiting_For_Response then
-         raise Failed with "outstanding request " & Camera_Queue.Last_Command'img;
+         declare
+            Message  : constant String :=
+                        "outstanding request " & Camera_Queue.Last_Command'img;
+         begin
+            Log_Exception (Debug, Message);
+            raise Failed with Message;
+         end;
       end if;
 
       Camera_Queue_Type'class (Camera_Queue).Send_Command (Command, Options,
@@ -431,7 +478,7 @@ package body Camera.Commands is
          " response length" & Response_Length'img);
 
       if Get_Ack or else Has_Response then
-         Camera_Queue.Waiting_For_Response := True;
+         Camera_Queue.Waiting_For_Response := True;   -- make sure not nested
          Camera_Queue.Last_Command := Command;
       end if;
 
@@ -450,7 +497,8 @@ package body Camera.Commands is
 
    exception
       when Fault : others =>
-         Trace_Exception (Fault, Here);
+         Camera_Queue.Waiting_For_Response := False;  -- not nested
+         Log_Exception (Debug, Fault);
          raise;
 
    end Process_Command;
@@ -588,7 +636,7 @@ package body Camera.Commands is
 
    begin
       Log_In (Debug, "preset id" & Preset_ID'img);
-      case Camera_Queue.Synchronous (Memory_Recall,
+      case Camera_Queue.Synchronous (Memory_Set,
          Options     => ( 1 =>
                (
                   Data           => Data_Type (Preset_ID),
@@ -613,13 +661,23 @@ package body Camera.Commands is
       end case;
 
       if Wait_Until_Finished then
-         declare
-            Pan                  : Absolute_Type;
-            Tilt                 : Absolute_Type;
-         begin
-            Camera_Queue_Type'class (Camera_Queue).Get_Absolute (Pan, Tilt);
-            Log_Here (Debug, "pan " & Pan'img & " tilt " & Tilt'img);
-         end;
+         loop
+            declare
+               Pan                  : Absolute_Type;
+               Tilt                 : Absolute_Type;
+            begin
+               Log_Here (Debug);
+               Camera_Queue_Type'class (Camera_Queue).Get_Absolute (Pan, Tilt);
+               Log_Here (Debug, "pan " & Pan'img & " tilt " & Tilt'img);
+               exit;
+
+            exception
+               when Fault: others =>
+                  Trace_Exception (Debug, Fault);
+               delay 0.5;
+               Log_Here (Debug);
+            end;
+         end loop;
       end if;
       Log_Out (Debug);
    end Set_Preset;
@@ -634,9 +692,7 @@ package body Camera.Commands is
                                     1 => Data
                                  );
    begin
-log_here;
       Camera.Command_Queue.Queued_Camera_Type (Camera_Queue).Write (Buffer);
-log_here;
    end Write;
 
    ---------------------------------------------------------------
@@ -647,9 +703,7 @@ log_here;
    ---------------------------------------------------------------
 
    begin
-log_here;
       Camera.Command_Queue.Queued_Camera_Type (Camera_Queue).Write (Data);
-log_here;
    end Write;
 
 begin

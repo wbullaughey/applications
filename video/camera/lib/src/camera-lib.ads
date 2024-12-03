@@ -101,7 +101,8 @@ package Camera.Lib is
    procedure Open (
       Camera                     :    out General_Camera_Type;
       Camera_Address             : in     Address_Type;
-      Port_Number                : in     Port_Type);
+      Port_Number                : in     Port_Type;
+      Connection_Timeout         : in     Ada_Lib.Socket_IO.Timeout_Type := 1.0);
 
    function Hex is new Hex_IO.Modular_Hex (Value_Type);
 

@@ -119,6 +119,17 @@ package body Camera.Lib.Connection is
    end Halt;
 
    ----------------------------------------------------------------
+   function Has_Camera_Queue (
+      From                       : in     String := Ada_Lib.Trace.Here
+   ) return Boolean is
+   ----------------------------------------------------------------
+
+   begin
+not_implemented;
+return false;
+   end Has_Camera_Queue;
+
+   ----------------------------------------------------------------
    procedure Initialize (
       Connection_Data            : in out Connection_Data_Type) is
    ----------------------------------------------------------------

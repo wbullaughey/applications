@@ -8,10 +8,13 @@ with AUnit.Assertions; use AUnit.Assertions;
 with AUnit.Test_Cases;
 with Camera.Lib.Connection;
 with Camera.Lib.Unit_Test;
+with Configuration.Camera.State;
 
 --with Configuration.State;
 
 package body Configuration.Camera.Setup.Unit_Tests is
+
+   use type Configuration.Camera.State.Images_Access;
 
    type Configuration_Tests_Type is new Standard.Camera.Lib.
                                     Unit_Test.Camera_Test_Type with
@@ -98,7 +101,8 @@ package body Configuration.Camera.Setup.Unit_Tests is
 
    begin
       Log_In (Debug or Trace_Set_Up);
-      Test.Set_Up_Optional_Load (False);
+      Test.Set_Up_Load := False;
+      Standard.Camera.Lib.Unit_Test.Camera_Test_Type (Test).Set_Up;
       Log_Out (Debug or Trace_Set_Up);
 
    exception
@@ -120,8 +124,7 @@ package body Configuration.Camera.Setup.Unit_Tests is
                                  new AUnit.Test_Suites.Test_Suite;
       Tests                   : constant Configuration_Tests_Access :=
                                  new Configuration_Tests_Type (
-                                    Options.Camera_Options.Brand,
-                                    new String'("camera"));
+                                    Options.Camera_Options.Brand);
 
    begin
       Log_In (Debug);
@@ -165,10 +168,11 @@ package body Configuration.Camera.Setup.Unit_Tests is
       Log_In (Debug);
       Connection_Data.State.Load (Options.Camera_Options.Location, Test_State);
       Local_Test.Setup.Load (Connection_Data.State, Test_Setup);
-      Local_Test.Camera_Address := State.Video_Address;
-      Local_Test.Port_Number := State.Video_Port;
-      Local_Test.Camera_Queue := Local_Test.PTZ_Optics'unchecked_access;
-      Local_Test.Camera_Queue.Open (State.Video_Address.all, Local_Test.Port_Number);
+      Assert (State.CSS_Path.Length /= 0, "CSS_Path not set");
+      Assert (State.Images /= Null, "Images pointer not initialized");
+      Assert (State.Number_Columns /= 0, "Number_Columns not set");
+      Assert (State.Number_Configurations /= 0, "Number_Configurations not set");
+      Assert (State.Number_Rows /= 0, "Number_Rows not set");
       Log_Out (Debug);
 
    exception

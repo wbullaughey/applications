@@ -4,6 +4,7 @@ with Ada_Lib.Options.Runstring;
 --with Ada_Lib.Strings.Unlimited;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
 with Ada_Lib.Unit_Test.Reporter;
+with AUnit.Assertions; use AUnit.Assertions;
 with AUnit.Options;
 with AUnit.Test_Cases;
 with AUnit.Test_Results;
@@ -12,6 +13,8 @@ with Command_Name;
 with Main;
 
 package body Driver.Unit_Test is
+
+   use type Ada_Lib.OS.OS_Exit_Code_Type;
 
    procedure Run_All_Tests  (
       Test                       : in out AUnit.Test_Cases.Test_Case'class);
@@ -28,7 +31,7 @@ package body Driver.Unit_Test is
    Options_With_Parameters       : aliased constant
                                     Ada_Lib.Options.Options_Type :=
                                        Ada_Lib.Options.Create_Options (
-                                          Trace_Option);
+                                          Trace_Option, Ada_Lib.Options.Unmodified);
    Options_Without_Parameters    : aliased constant
                                     Ada_Lib.Options.Options_Type :=
                                        Ada_Lib.Options.Null_Options;
@@ -225,7 +228,7 @@ package body Driver.Unit_Test is
          New_Line;
          Put_Line (Command_Name & " trace options (-T)");
          Put_Line ("      a               all");
-         Put_Line ("      A               AUnit");
+         Put_Line ("      d               driver options driver_debug");
          Put_Line ("      m               Main Window");
          Put_Line ("      o               unit_test options");
          Put_Line ("      t               driver test trace");
@@ -332,6 +335,7 @@ package body Driver.Unit_Test is
      pragma Unused (Test);
      ---------------------------------------------------------------
 
+         Exit_Code      : Ada_Lib.OS.OS_Exit_Code_Type;
          Options        : Driver_Unit_Test_Options_Type'class renames
                            Get_Driver_Unit_Test_Modifiable_Options.all;
      begin
@@ -339,7 +343,8 @@ package body Driver.Unit_Test is
         Options.Routine.Construct ("");
         Options.Routine.Construct ("");
         Queue_Tests;
-        Run_Selection;
+        Run_Selection (Exit_Code);
+        Assert (Exit_Code = Ada_Lib.OS.No_Error, "application returned " & Exit_Code'img);
         Log_Out (Debug);
      end Run_All_Tests;
 
@@ -349,14 +354,16 @@ package body Driver.Unit_Test is
      pragma Unused (Test);
      ---------------------------------------------------------------
 
+         Exit_Code      : Ada_Lib.OS.OS_Exit_Code_Type;
          Options        : Driver_Unit_Test_Options_Type'class renames
                            Get_Driver_Unit_Test_Modifiable_Options.all;
      begin
         Log_In (Debug);
-        Options.Suite_Name.Construct ("Main");
-        Options.Routine.Construct ("Test_Halt");
+        Options.Driver_Options.Run_Suite.Construct ("Main");
+        Options.Driver_Options.Run_Routine.Construct ("Test_Halt");
         Queue_Tests;
-        Run_Selection;
+        Run_Selection (Exit_Code);
+        Assert (Exit_Code = Ada_Lib.OS.No_Error, "application returned " & Exit_Code'img);
         Log_Out (Debug);
 
      exception
@@ -372,14 +379,16 @@ package body Driver.Unit_Test is
      pragma Unused (Test);
      ---------------------------------------------------------------
 
+         Exit_Code      : Ada_Lib.OS.OS_Exit_Code_Type;
          Options        : Driver_Unit_Test_Options_Type'class renames
                            Get_Driver_Unit_Test_Modifiable_Options.all;
      begin
         Log_In (Debug);
-        Options.Suite_Name.Construct ("Main");
-        Options.Routine.Construct ("");
+        Options.Driver_Options.Run_Suite.Construct ("Main");
+        Options.Driver_Options.Run_Routine.Construct ("");
         Queue_Tests;
-        Run_Selection;
+        Run_Selection (Exit_Code);
+        Assert (Exit_Code = Ada_Lib.OS.No_Error, "application returned " & Exit_Code'img);
         Log_Out (Debug);
      end Run_Suite;
 

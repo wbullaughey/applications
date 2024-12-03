@@ -220,6 +220,7 @@ package body Camera.LIB.ALPTOP is
 
    begin
       Log_In (Debug, "Command " & Command'img);
+      Standard.Camera.Lib.Base.Check_Command (Command, Selected_Command);
       for Index in Options'range loop
          Buffer (Options (Index).Start) := Options (Index).Data;
       end loop;
@@ -262,18 +263,18 @@ package body Camera.LIB.ALPTOP is
 not_implemented;
    end Set_Power;
 
-   ---------------------------------------------------------------
-   overriding
-   procedure Set_Preset (
-      Camera                     : in out ALPTOP_Type;
-      Preset_ID                  : in     Configuration.Camera.Preset_ID_Type;
-      Wait_Until_Finished        : in     Boolean := True) is
-   pragma Unreferenced (Camera, Preset_ID, Wait_Until_Finished);
-   ---------------------------------------------------------------
-
-   begin
-      Not_Implemented;
-   end Set_Preset;
+-- ---------------------------------------------------------------
+-- overriding
+-- procedure Set_Preset (
+--    Camera                     : in out ALPTOP_Type;
+--    Preset_ID                  : in     Configuration.Camera.Preset_ID_Type;
+--    Wait_Until_Finished        : in     Boolean := True) is
+-- pragma Unreferenced (Camera, Preset_ID, Wait_Until_Finished);
+-- ---------------------------------------------------------------
+--
+-- begin
+--    Not_Implemented;
+-- end Set_Preset;
 
 begin
    -- Debug := True;
