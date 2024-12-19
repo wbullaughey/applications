@@ -248,6 +248,8 @@ package body Configuration.Camera.Setup is
       Log_In (Debug, Quote ("file name", Name) &
          Quote (" Current_Directory", Current_Directory) &
          Quote (" path", Path));
+log_Here ("state class " & Tag_Name (STATE'tag));
+--       " number connections" & State.Number_Configurations'img);
 
       Global_Camera_Setup := Setup'unchecked_access;
       Config.Load (Path, False);

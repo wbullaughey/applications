@@ -23,6 +23,7 @@ begin
       Ada_Lib.Options.Interface_Options_Class_Access'(
          Options'unchecked_access));
 
+   Driver.Set_Options (Options.Driver_Options'unchecked_access);
    Options.Driver_Options.Camera_Directory.Construct (
       Ada.Directories.Current_Directory);
 

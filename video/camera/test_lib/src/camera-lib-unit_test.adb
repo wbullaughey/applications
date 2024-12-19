@@ -214,7 +214,7 @@ package body Camera.Lib.Unit_Test is
          Put_Line ("      b               Base Command_Tests");
          Put_Line ("      c               Widgets.Control unit_test trace");
          Put_Line ("      C               Widgets.Configured unit test trace");
-         Put_Line ("      d               library unit test trace");
+         Put_Line ("      d               Camera.Lib.Unit_Test.Debug");
          Put_Line ("      m               main unit test trace, Camera_AUnit");
          Put_Line ("      o               unit_test options");
          Put_Line ("      p               program trace");
@@ -452,10 +452,12 @@ log_here;
       Log_In (Debug or Trace_Set_Up);
       Set_Camera_Queue (Options.Camera_Options.Brand, Connection_Data.all);
       Connection_Data.Initialize;
-
+log_here;
       Ada_Lib.GNOGA.Unit_Test.GNOGA_Tests_Type(Test).Set_Up;
+log_here;
 
       if not Test.Initialize_GNOGA then
+log_here;
          Main.Run (
             Directory            => Camera_Lib_Unit_Test_Options.
                                        Camera_Options.Directory.Coerce,

@@ -153,7 +153,6 @@
             <F N="../../ada_lib/.gitignore"/>
             <F N="../../ada_lib/ada_lib.gpr"/>
             <F N="../../ada_lib/alire.toml"/>
-            <F N="../../ada_lib/default_config.gpr"/>
         </Folder>
     </Files>
     <List Name="RTE">

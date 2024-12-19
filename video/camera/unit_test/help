@@ -1,18 +1,21 @@
 camera aunit
+camera_aunit
+
+
 
 camera_aunit command line options:
     -a <trace options>             : Ada_Lib library trace options   (Ada_Lib)
     -A <trace options>             : AUnit library traces            (AUnit library)
     -C <trace options>             : trace options                   (Camera Lib)
     -d <directory>                 : current directory               (Camera Lib)
-    -e <routine>                   : test routine.                   (test_ada_lib)
+    -e <routine>                   : routine to test.                (test_ada_lib)
     -E                             : simulate camera                 (Camera Lib)
     -G <trace options>             : GNOGA traces                    (GNOGA library)
     -h                             : this message                    (Ada_Lib)
     -l                             : local camera                    (Camera Lib)
     -P                             : pause                           (Ada_Lib)
     -r                             : remote camera                   (Camera Lib)
-    -s <test suite>                : select test suite to run.       (test_ada_lib)
+    -s <suite to test>             : select test suite to run.       (test_ada_lib)
     -S <suites>                    : enable default disabled suites. (test_ada_lib)
     -T <trace options>             : Camera Lib unit test            (Camera.Lib.Unit_Test)
     -U <unit test trace Ada_Lib.>  : select trace                    (test_ada_lib)
@@ -40,8 +43,8 @@ Camera Lib Unit Test trace options (T)
       b               Base Command_Tests
       c               Widgets.Control unit_test trace
       C               Widgets.Configured unit test trace
-      d               library unit test trace
-      m               main unit test trace
+      d               Camera.Lib.Unit_Test.Debug
+      m               main unit test trace, Camera_AUnit
       o               unit_test options
       p               program trace
       s               Configuration.Camera.State unit_test options
@@ -59,7 +62,7 @@ AUnit.Ada_Lib.Options library trace options (-A)
 Camera Lib trace options (-C)
       a               all
       b               camera lib base
-      c               configuration.camera
+      c               configuration.camera setup,state
       C               camera commands
       g               Widgets.Generic_Table
       l               camera Library
@@ -67,7 +70,7 @@ Camera Lib trace options (-C)
       m               Main Window
       q               Command Queue
       s               Trace simulator
-      S               configuration state
+      S               configuration setup & state
       T               Windows.Top
       v               Trace Video communications
       V               Trace Video widgets
@@ -82,8 +85,8 @@ Video Lib trace options (-V)
       s               Trace simulator
 Ada_Lib.Options.GNOGA library trace options (-G)
       a               all
-      g               Ada_Lib.GNOGA
-      m               GNOGA.Ada_Lib
+      g               Ada_Lib.GNOGA.Debug
+      m               GNOGA.Ada_Lib.Trace
       o               GNOGA options
 
 CAC ada_lib trace library options (-a)

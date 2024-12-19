@@ -83,7 +83,6 @@
                 N="../../gpr/*.gpr"
                 Recurse="1"
                 Excludes=""/>
-            <F N="../../../default_config.gpr"/>
         </Folder>
     </Files>
     <List Name="RTE">

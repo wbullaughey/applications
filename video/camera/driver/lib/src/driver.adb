@@ -122,7 +122,12 @@ package body Driver is
 
    begin
       Log_In (Debug, Quote (" Camera_Program", Camera_Program) &
-         Quote (" Parameters", Parameters));
+         Quote (" Parameters", Parameters) &
+         (if Process_Line = Null then
+            "no"
+         else
+            "have") &
+         " callback");
 
       if Process_Line = Null then
          Exit_Code := Ada_Lib.OS.Run.Spawn (Camera_Program, Parameters);
@@ -173,7 +178,7 @@ package body Driver is
 
    exception
       when Fault: others =>
-         Trace_Exception (Fault);
+         Log_Exception (Debug, Fault);
          raise;
 
    end Execute;
@@ -286,8 +291,10 @@ package body Driver is
                         Seperators  => ": ",
                         Value       => Line);
    begin
-      Log_In (Debug, (if Options.List_Output then "listing"
-                      else Quote ("line", Line)));
+      Log_In (Debug, (if Options.List_Output then "listing "
+                      else Quote ("line", Line)) &
+            Quote ("suite", Options.Run_Suite) &
+            Quote ("routine", Options.Run_Routine));
 
       if Options.List_Output then
          Put_Line ("Camera:" & Line);
@@ -313,9 +320,24 @@ package body Driver is
                Quote (" routine name", Routine_Name));
 
             if    Suite = "suite" and then
-                  Routine = "routine" and then
-                  Routine_Name (Routine_Name'last) /= '*' then
-               Push (Suite_Name, Routine_Name);
+                  Routine = "routine" then
+               if Options.Run_Suite.length = 0 then   -- run all suites
+                  Push (Suite_Name, Routine_Name);
+               else
+                  if Suite_Name = Options.Run_Suite.Coerce then
+                     if Options.Run_Routine.length = 0 then  -- run all routines for wuite
+                        Push (Suite_Name, Routine_Name);
+                     elsif Routine_Name (Routine_Name'last) = '*' and then
+                           Routine_Name (
+                              Routine_Name'first .. Routine_Name'last - 1) =
+                           Options.Run_Routine.Coerce then
+                        Push (Suite_Name, Routine_Name (
+                           Routine_Name'first .. Routine_Name'last - 1));
+                     elsif Routine_Name = Options.Run_Routine.Coerce then
+                        Push (Suite_Name, Routine_Name);
+                     end if;
+                  end if;
+               end if;
             end if;
          end;
       end if;

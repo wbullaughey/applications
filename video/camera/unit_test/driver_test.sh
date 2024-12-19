@@ -28,7 +28,7 @@ parameters() {
       trace FIRST $FIRST
       case $FIRST in
          "-")
-           trace option: $PARAMETER | tee -a $OUTPUT
+           trace option: $PARAMETER
            export OPTIONS="$OPTIONS $PARAMETER"
            trace OPTIONS $OPTIONS
            remove_1
@@ -48,9 +48,34 @@ parameters() {
    done
 }
 
+parameters  # process leading options
+
 trace PARAMETERS $PARAMETERS
 
-parameters  # process leading options
+case $PARAMETERS[1] in
+
+   "help")
+      echo "driver_test [<options>] <mode> <test>"
+      echo "   <options> := -<driver option> | @<camera option>"
+      echo "   <mode> := help | camera | test"
+      echo "   <test> := [<suite> [<routine>]]"
+      echo ""
+      echo " mode"
+      echo "   help  : displays driver help"
+      echo "   camera : runs the camera driver"
+      echo "   test   : runs the camera unit tests"
+      echo ""
+      echo " test"
+      echo "   no suite or routien runs all"
+      echo "   suite only runs all routines for suite"
+      echo "   suite and routine runs just one routine"
+      exit
+      ;;
+
+   *)
+      ;;
+
+esac
 
 export MODE="${PARAMETERS[1]}"
 trace MODE $MODE | tee -a $OUTPUT

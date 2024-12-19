@@ -297,7 +297,7 @@ package body Camera.Lib is
          Put_Line (Component & " trace options (-" & Trace_Option & ")");
          Put_Line ("      a               all");
          Put_Line ("      b               camera lib base");
-         Put_Line ("      c               configuration.camera ");
+         Put_Line ("      c               configuration.camera setup,state");
          Put_Line ("      C               camera commands");
          Put_Line ("      g               Widgets.Generic_Table");
          Put_Line ("      l               camera Library");
@@ -305,7 +305,7 @@ package body Camera.Lib is
          Put_Line ("      m               Main Window");
          Put_Line ("      q               Command Queue");
          Put_Line ("      s               Trace simulator");
-         Put_Line ("      S               configuration state");
+         Put_Line ("      S               configuration setup & state");
          Put_Line ("      T               Windows.Top");
          Put_Line ("      v               Trace Video communications");
          Put_Line ("      V               Trace Video widgets");

@@ -15,4 +15,10 @@ suites
 GNAT-*
 *-save
 list
-
+ada_lib-checked_in_version/
+alire/buuild/hash_inputs
+alire/flags
+video/camera/driver/bin
+video/camera/unit_test/c.c
+video/camera/unit_test/config/camera_tests_config.gpr-not_used
+alire/build_hash_inputs

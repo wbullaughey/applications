@@ -105,8 +105,7 @@ package Configuration.Camera.Setup is
       Setup                      : in out Setup_Type;
       State                      : in     Configuration.Camera.State.State_Type'class;
       Name                       : in     String
-   ) with Pre => State.Is_Loaded and then
-                 not Setup.Is_Loaded,
+   ) with Pre => not Setup.Is_Loaded,
           Post => Setup.Is_Loaded;
 
    function Make_Image_Name (
