@@ -8,9 +8,6 @@ package Camera.Commands is
 
    Failed                        : exception;
 
--- use type Data_Type;
--- use type Value_Type;
-
    type Camera_Queue_Type        is abstract new Command_Queue.
                                     Queued_Camera_Type with private;
 

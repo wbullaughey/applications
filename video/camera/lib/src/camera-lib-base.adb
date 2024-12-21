@@ -310,6 +310,7 @@ package body Camera.Lib.Base is
 
    end Read;
 
+   ---------------------------------------------------------------
    procedure Reopen (
       Camera                     : in out Base_Camera_Type;
       Address                    : in     Ada_Lib.Socket_IO.Address_Type;

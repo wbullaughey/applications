@@ -1252,23 +1252,11 @@ package body Camera.Lib.Base.Command_Tests is
          Options     => ( 1 =>
                (
                   Data           => Test_Preset,
-                  Start          => 7,
+                  Start          => 6,
                   Variable_Width => False
                )
             ));
 
---    Local_Test.Camera_Queue.Process_Command (Memory_Recall,
---       Options     => ( 1 =>
---             (
---                Data           => 0,   -- preset 0
---                Start          => 7,
---                Variable_Width => False
---             )
---          ));
-
---    Assert (Ask_Pause (Local_Test.Manual,
---          "verify camer at preset 0"),
---       "manual set failed");
       Log_Out (Debug);
    end Test_Recall_Memory;
 

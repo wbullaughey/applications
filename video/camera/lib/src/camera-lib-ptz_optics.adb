@@ -1,5 +1,6 @@
 with Ada.Calendar;
 with Ada.Streams;
+with Ada.Text_IO; use Ada.Text_IO;
 with Ada_Lib.Time;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
 with Camera.Lib.Base;
@@ -39,7 +40,7 @@ package body Camera.Lib.PTZ_Optics is
       Standard.Camera.Position_Up          => ( 9, ( 16#81#,16#01#,16#06#,16#01#,16#00#,16#00#,16#03#,16#01#,16#FF#, others => 0 ), True, Default_Response_Timeout, False, 0),
       Standard.Camera.Position_Up_Left     => ( 9, ( 16#81#,16#01#,16#06#,16#01#,16#00#,16#00#,16#01#,16#01#,16#FF#, others => 0 ), True, Default_Response_Timeout, False, 0),
       Standard.Camera.Position_Up_Right    => ( 9, ( 16#81#,16#01#,16#06#,16#01#,16#00#,16#00#,16#02#,16#01#,16#FF#, others => 0 ), True, Default_Response_Timeout, False, 0),
-      Standard.Camera.Memory_Recall        => ( 7, ( 16#81#,16#01#,16#04#,16#3F#,16#02#,16#00#,16#FF#, others => 0 ), False, Position_Timeout, True, 4),
+      Standard.Camera.Memory_Recall        => ( 7, ( 16#81#,16#01#,16#04#,16#3F#,16#02#,16#00#,16#FF#, others => 0 ), False, Position_Timeout, False, 0),
       Standard.Camera.Memory_Set           => ( 7, ( 16#81#,16#01#,16#04#,16#3F#,16#01#,16#00#,16#FF#, others => 0 ), True, Default_Response_Timeout, False, 0),
       Standard.Camera.Memory_Reset         => ( 7, ( 16#81#,16#01#,16#04#,16#3F#,16#00#,16#00#,16#FF#, others => 0 ), True, Default_Response_Timeout, False, 0),
       Standard.Camera.Power                => ( 6, ( 16#81#,16#01#,16#04#,16#00#,16#00#,16#FF#, others => 0 ), True, Default_Response_Timeout, False, 0),
@@ -531,9 +532,14 @@ package body Camera.Lib.PTZ_Optics is
       end;
       if On then -- need to reopen after power comes on
          Log_Here (Debug);
-         delay (90.0); -- wait for camera to come back on
+         Put_Line ("wait 90 seconds for camera to reset");
+         for Counter in 1 .. 90 loop
+            delay (1.0); -- wait for camera to come back on
+            Put (Counter'img & " ");
+         end loop;
+         New_Line;
          Log_Here (Debug);
-         Camera.reopen;
+         Camera.Reopen;
       end if;
       Log_Out (Debug);
 

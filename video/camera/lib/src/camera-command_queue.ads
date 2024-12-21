@@ -59,11 +59,6 @@ package Camera.Command_Queue is
       Response                   :    out Maximum_Response_Type;
       Response_Length            :    out Index_Type) is abstract;
 
--- procedure Read (
---    Camera_Queue               :    out Queued_Camera_Type;
---    Data                       :    out Data_Type;
---    Timeout                    : in     Duration := Video.Lib.No_Timeout);
-
    procedure Read (
       Camera_Queue               : in out Queued_Camera_Type;
       Data                       :    out Buffer_Type;
@@ -92,10 +87,6 @@ package Camera.Command_Queue is
    ) return Status_Type
    with Pre => Is_Queue_Running and then
                not Has_Queue_Failed;
-
--- procedure Write (
---    Camera_Queue               :    out Queued_Camera_Type;
---    Data                       : in     Data_Type);
 
    procedure Write (
       Camera_Queue               : in out Queued_Camera_Type;

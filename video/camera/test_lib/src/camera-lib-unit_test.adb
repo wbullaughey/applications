@@ -4,6 +4,7 @@ with Ada_Lib.Help;
 --with Ada_Lib.Options.AUnit.Ada_Lib_Tests;
 --with Ada_Lib.Options.Unit_Test;
 with Ada_Lib.Options.Runstring;
+with Ada_Lib.Socket_IO;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
 with Ada_Lib.Unit_Test.Reporter;
 with AUnit.Assertions; use AUnit.Assertions;
@@ -24,6 +25,8 @@ with Widgets.Configured.Unit_Test;
 package body Camera.Lib.Unit_Test is
 
    use type Ada_Lib.Options.Mode_Type;
+   use type Camera.Commands.Camera_Queue_Class_Access;
+   use type Ada_Lib.Socket_IO.Address_Constant_Access;
 
    Camera_Lib_Unit_Test_Options  : Camera_Lib_Unit_Test_Options_Class_Access :=
                                     Null;
@@ -301,7 +304,6 @@ not_implemented;
                            AUnit.Test_Suites.New_Suite;
 
       begin
-log_here;
          AUnit_Options.Filter := Options.Filter'unchecked_access;
          Test_Suite.Add_Test (Camera.Lib.Base.Test.Suite);
          Test_Suite.Add_Test (Main.Unit_Test.Suite);
@@ -315,25 +317,21 @@ log_here;
          Test_Suite.Add_Test (Widgets.Configured.Unit_Test.Suite);
          Test_Suite.Add_Test (Widgets.Control.Unit_Test.Suite);
          Test_Suite.Run (AUnit_Options, Results, Outcome);
-log_here;
          case Options.Mode is
 
             when  Ada_Lib.Options.Driver_Suites |
                   Ada_Lib.Options.List_Suites |
                   Ada_Lib.Options.Print_Suites =>
-log_here;
                Ada_Lib.Unit_Test.Iterate_Suites (
                   Ada_Lib.Options.Unit_Test.Suite_Action'access,
                   Ada_Lib.Options.Unit_Test.Routine_Action'access,
                   Options.Mode);
 
             when Ada_Lib.Options.Run_Tests =>
-log_here;
                Put_Line ("report camera test results");
                Reporter.Report (Results, AUnit_Options);
 
          end case;
-log_here;
       end;
       Log_Out (Debug or Trace_Options);
    end Run_Suite;
@@ -419,17 +417,24 @@ log_here;
       State             : Configuration.Camera.State.State_Type renames
                            Connection_Data.State;
   begin
-      Log_In (Debug or Trace_Set_Up, "Set_Up_Load " & Test.Set_Up_Load'img);
+      Log_In (Debug or Trace_Set_Up, "Set_Up_Load " & Test.Set_Up_Load'img &
+         " Open_Camera " & Test.Open_Camera'img);
       Ada_Lib.GNOGA.Set_Connection_Data (
          Ada_Lib.GNOGA.Connection_Data_Class_Access (Connection_Data));
       Set_Camera_Queue (Options.Camera_Options.Brand, Connection_Data.all);
       Test.Camera_Queue := Connection_Data.Camera_Queue;
-      Test.Camera_Address := State.Video_Address;
-      Test.Port_Number := State.Video_Port;
-
       if Test.Set_Up_Load then
          State.Load (Options.Camera_Options.Location, Camera_State_Path);
       end if;
+      Test.Camera_Address := State.Video_Address;
+      Test.Port_Number := State.Video_Port;
+
+assert (test.camera_queue /= null, "camera queue null");
+assert (test.Camera_Address /= null, "camera address null");
+      if Test.Open_Camera then
+         Test.Camera_Queue.Open (Test.Camera_Address.all, Test.Port_Number);
+      end if;
+
       Ada_Lib.Unit_Test.Test_Cases.Test_Case_Type (Test).Set_Up;
       Log_Out (Debug or Trace_Set_Up);
 
@@ -452,12 +457,9 @@ log_here;
       Log_In (Debug or Trace_Set_Up);
       Set_Camera_Queue (Options.Camera_Options.Brand, Connection_Data.all);
       Connection_Data.Initialize;
-log_here;
       Ada_Lib.GNOGA.Unit_Test.GNOGA_Tests_Type(Test).Set_Up;
-log_here;
 
       if not Test.Initialize_GNOGA then
-log_here;
          Main.Run (
             Directory            => Camera_Lib_Unit_Test_Options.
                                        Camera_Options.Directory.Coerce,

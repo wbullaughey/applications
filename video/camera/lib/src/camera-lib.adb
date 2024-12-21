@@ -307,7 +307,6 @@ package body Camera.Lib is
          Put_Line ("      s               Trace simulator");
          Put_Line ("      S               configuration setup & state");
          Put_Line ("      T               Windows.Top");
-         Put_Line ("      v               Trace Video communications");
          Put_Line ("      V               Trace Video widgets");
          Put_Line ("      wa              Adjust Window");
          Put_Line ("      wc              Control Window");
@@ -390,9 +389,6 @@ package body Camera.Lib is
 
                   when 'T' =>
                      Windows.Top.Debug := True;
-
---                when 'u' =>    -- url for camera
---                   Options.Camera_URL.Construct (Iterator.Get_Parameter);
 
                   when 'V' =>
                      Widgets.Video.Debug := True;

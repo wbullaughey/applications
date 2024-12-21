@@ -17,8 +17,8 @@ package body Configuration.Camera.State.Unit_Tests is
 -- use type Standard.Camera.Lib.Unit_Test.Options_Constant_Class_Test_Access;
    use type Ada_Lib.Options.Interface_Options_Constant_Class_Access;
 
-   type Connection_Data_Type     is new Ada_Lib.GNOGA.Connection_Data_Type
-                                    with null record;
+-- type Connection_Data_Type     is new Ada_Lib.GNOGA.Connection_Data_Type
+--                                  with null record;
    type Configuration_Tests_Type (
       Brand                      : Standard.Camera.Lib.Brand_Type) is new
                                     Standard.Camera.Lib.Unit_Test.
@@ -98,7 +98,8 @@ package body Configuration.Camera.State.Unit_Tests is
 
    begin
       Log_In (Debug or Trace_Set_Up);
-      Ada_Lib.GNOGA.Set_Connection_Data (new Connection_Data_Type);
+      Test.Set_Up_Load := False;
+--    Ada_Lib.GNOGA.Set_Connection_Data (new Connection_Data_Type);
       Standard.Camera.Lib.Unit_Test.Camera_Test_Type (Test).Set_Up ;
       Log_Out (Debug or Trace_Set_Up);
 
@@ -207,18 +208,18 @@ package body Configuration.Camera.State.Unit_Tests is
 
       Expected_Images            : constant Expect_Image_Type := Expect_Image_Type'(
                                        1 => (
-                                          1 => new String'("preset0.jpeg"),
-                                          2 => new String'("preset5.jpeg"),
+                                          1 => new String'("preset_0.png"),
+                                          2 => new String'("preset_5.png"),
                                           others => Null),
                                        2 => (
-                                          2 => new String'("preset2.jpeg"),
+                                          2 => new String'("preset_2.png"),
                                           others => Null),
                                        3 => (
-                                          2 => new String'("preset4.jpeg"),
-                                          3 => new String'("preset1.jpeg"),
+                                          2 => new String'("preset_4.png"),
+                                          3 => new String'("preset_1.png"),
                                           others => Null),
                                        4 => (
-                                          2 => new String'("preset3.jpeg"),
+                                          2 => new String'("preset_3.png"),
                                           others => Null));
 
 --    Expected_Prsets            : constant Expected_Preset_Type :=

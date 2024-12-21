@@ -30,6 +30,7 @@ package Camera.Lib.Unit_Test is
       Set_Up_Load          : Boolean := True;
       Camera_Queue         : Camera.Commands.Camera_Queue_Class_Access := Null;
       Camera_Address       : Address_Constant_Access := Null;
+      Open_Camera          : Boolean := True;
       Port_Number          : Port_Type;
       Location             : Configuration.State.Location_Type;
       Setup                : Configuration.Camera.Setup.Setup_Type;

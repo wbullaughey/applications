@@ -72,7 +72,6 @@ Camera Lib trace options (-C)
       s               Trace simulator
       S               configuration setup & state
       T               Windows.Top
-      v               Trace Video communications
       V               Trace Video widgets
       wa              Adjust Window
       wc              Control Window
