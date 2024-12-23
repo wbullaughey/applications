@@ -13,6 +13,7 @@ package body Camera.Lib.PTZ_Optics is
    use type Ada.Streams.Stream_Element;
    use type Interfaces.Integer_16;
    use type Interfaces.Unsigned_16;
+   use type Preset_ID_Type;
    use type Status_Type;
    use type Video.Lib.Index_Type;
 
@@ -22,33 +23,33 @@ package body Camera.Lib.PTZ_Optics is
    Commands                      : constant Array (Standard.Camera.
                                     Commands_Type) of Standard.Camera.
                                        Lib.Base.Command_Type := (
-      Standard.Camera.Auto_Focus           => ( 6, ( 16#81#,16#01#,16#04#,16#38#,16#02#,16#FF#, others => 0 ), True, Default_Response_Timeout, False, 0),
-      Standard.Camera.Manual_Focus         => ( 6, ( 16#81#,16#01#,16#04#,16#38#,16#03#,16#FF#, others => 0 ), True, Default_Response_Timeout, False, 0),
+      Standard.Camera.Auto_Focus           => ( 6, ( 16#81#,16#01#,16#04#,16#38#,16#02#,16#FF#, others => 0 ), Required, Default_Response_Timeout, False, 0),
+      Standard.Camera.Manual_Focus         => ( 6, ( 16#81#,16#01#,16#04#,16#38#,16#03#,16#FF#, others => 0 ), Required, Default_Response_Timeout, False, 0),
       Standard.Camera.Position_Absolute    => ( 15, ( 16#81#,16#01#,16#06#,16#02#,
          16#00#, 16#00#, 16#00#, 16#00#, 16#00#, 16#00#, 16#00#, 16#00#, 16#00#, 16#00#,
-         16#FF#, others => 0), True, Position_Timeout, False, 0),
-      Standard.Camera.Position_Down_Left   => ( 9, ( 16#81#,16#01#,16#06#,16#01#,16#00#,16#00#,16#01#,16#02#,16#FF#, others => 0 ), True, Default_Response_Timeout, False, 0),
-      Standard.Camera.Position_Down_Right  => ( 9, ( 16#81#,16#01#,16#06#,16#01#,16#00#,16#00#,16#02#,16#02#,16#FF#, others => 0 ), True, Default_Response_Timeout, False, 0),
-      Standard.Camera.Position_Down        => ( 9, ( 16#81#,16#01#,16#06#,16#01#,16#00#,16#00#,16#03#,16#02#,16#FF#, others => 0 ), True, Default_Response_Timeout, False, 0),
-      Standard.Camera.Position_Left        => ( 9, ( 16#81#,16#01#,16#06#,16#01#,16#00#,16#00#,16#01#,16#03#,16#FF#, others => 0 ), True, Default_Response_Timeout, False, 0),
+         16#FF#, others => 0), Required, Position_Timeout, False, 0),
+      Standard.Camera.Position_Down_Left   => ( 9, ( 16#81#,16#01#,16#06#,16#01#,16#00#,16#00#,16#01#,16#02#,16#FF#, others => 0 ), Required, Default_Response_Timeout, False, 0),
+      Standard.Camera.Position_Down_Right  => ( 9, ( 16#81#,16#01#,16#06#,16#01#,16#00#,16#00#,16#02#,16#02#,16#FF#, others => 0 ), Required, Default_Response_Timeout, False, 0),
+      Standard.Camera.Position_Down        => ( 9, ( 16#81#,16#01#,16#06#,16#01#,16#00#,16#00#,16#03#,16#02#,16#FF#, others => 0 ), Required, Default_Response_Timeout, False, 0),
+      Standard.Camera.Position_Left        => ( 9, ( 16#81#,16#01#,16#06#,16#01#,16#00#,16#00#,16#01#,16#03#,16#FF#, others => 0 ), None, Default_Response_Timeout, False, 0),
       Standard.Camera.Position_Relative    => ( 15, ( 16#81#,16#01#,16#06#,16#03#,
          16#00#, 16#00#, 16#00#, 16#00#, 16#00#, 16#00#, 16#00#, 16#00#, 16#00#, 16#00#,
-         16#FF#, others => 0 ), True, Position_Timeout, False, 0),
-      Standard.Camera.Position_Request     => ( 5, ( 16#81#,16#09#,16#06#,16#12#,16#FF#, others => 0 ), False, Default_Response_Timeout, True, 11),
-      Standard.Camera.Position_Right       => ( 9, ( 16#81#,16#01#,16#06#,16#01#,16#00#,16#00#,16#02#,16#03#,16#FF#, others => 0 ), True, Default_Response_Timeout, False, 0),
-      Standard.Camera.Position_Stop        => ( 9, ( 16#81#,16#01#,16#06#,16#01#,16#00#,16#00#,16#03#,16#03#,16#FF#, others => 0 ), True, Default_Response_Timeout, False, 0),
-      Standard.Camera.Position_Up          => ( 9, ( 16#81#,16#01#,16#06#,16#01#,16#00#,16#00#,16#03#,16#01#,16#FF#, others => 0 ), True, Default_Response_Timeout, False, 0),
-      Standard.Camera.Position_Up_Left     => ( 9, ( 16#81#,16#01#,16#06#,16#01#,16#00#,16#00#,16#01#,16#01#,16#FF#, others => 0 ), True, Default_Response_Timeout, False, 0),
-      Standard.Camera.Position_Up_Right    => ( 9, ( 16#81#,16#01#,16#06#,16#01#,16#00#,16#00#,16#02#,16#01#,16#FF#, others => 0 ), True, Default_Response_Timeout, False, 0),
-      Standard.Camera.Memory_Recall        => ( 7, ( 16#81#,16#01#,16#04#,16#3F#,16#02#,16#00#,16#FF#, others => 0 ), False, Position_Timeout, False, 0),
-      Standard.Camera.Memory_Set           => ( 7, ( 16#81#,16#01#,16#04#,16#3F#,16#01#,16#00#,16#FF#, others => 0 ), True, Default_Response_Timeout, False, 0),
-      Standard.Camera.Memory_Reset         => ( 7, ( 16#81#,16#01#,16#04#,16#3F#,16#00#,16#00#,16#FF#, others => 0 ), True, Default_Response_Timeout, False, 0),
-      Standard.Camera.Power                => ( 6, ( 16#81#,16#01#,16#04#,16#00#,16#00#,16#FF#, others => 0 ), True, Default_Response_Timeout, False, 0),
-      Standard.Camera.Power_Request        => ( 5, ( 16#81#,16#09#,16#04#,6#00#,16#FF#, others => 0 ), False, Default_Response_Timeout, True, 4),
-      Standard.Camera.Zoom_Direct          => ( 7, ( 16#81#,16#01#,16#04#,16#3F#,16#02#,16#00#,16#FF#, others => 0 ), True, Default_Response_Timeout, False, 0),
-      Standard.Camera.Zoom_Full            => ( 7, ( 16#81#,16#01#,16#04#,16#3F#,16#02#,16#00#,16#FF#, others => 0 ), True, Position_Timeout, False, 0),
-      Standard.Camera.Zoom_Inquire         => ( 5, ( 16#81#,16#09#,16#04#,16#47#,16#FF#, others => 0 ), False, Position_Timeout, True, 7),
-      Standard.Camera.No_Command           => ( 0, ( others => 0 ), False, 0.0, false, 0)
+         16#FF#, others => 0 ), Required, Position_Timeout, False, 0),
+      Standard.Camera.Position_Request     => ( 5, ( 16#81#,16#09#,16#06#,16#12#,16#FF#, others => 0 ), Optional, Default_Response_Timeout, True, 11),
+      Standard.Camera.Position_Right       => ( 9, ( 16#81#,16#01#,16#06#,16#01#,16#00#,16#00#,16#02#,16#03#,16#FF#, others => 0 ), Required, Default_Response_Timeout, False, 0),
+      Standard.Camera.Position_Stop        => ( 9, ( 16#81#,16#01#,16#06#,16#01#,16#00#,16#00#,16#03#,16#03#,16#FF#, others => 0 ), Required, Default_Response_Timeout, False, 0),
+      Standard.Camera.Position_Up          => ( 9, ( 16#81#,16#01#,16#06#,16#01#,16#00#,16#00#,16#03#,16#01#,16#FF#, others => 0 ), Required, Default_Response_Timeout, False, 0),
+      Standard.Camera.Position_Up_Left     => ( 9, ( 16#81#,16#01#,16#06#,16#01#,16#00#,16#00#,16#01#,16#01#,16#FF#, others => 0 ), Required, Default_Response_Timeout, False, 0),
+      Standard.Camera.Position_Up_Right    => ( 9, ( 16#81#,16#01#,16#06#,16#01#,16#00#,16#00#,16#02#,16#01#,16#FF#, others => 0 ), Required, Default_Response_Timeout, False, 0),
+      Standard.Camera.Memory_Recall        => ( 7, ( 16#81#,16#01#,16#04#,16#3F#,16#02#,16#00#,16#FF#, others => 0 ), Required, Position_Timeout, False, 0),
+      Standard.Camera.Memory_Set           => ( 7, ( 16#81#,16#01#,16#04#,16#3F#,16#01#,16#00#,16#FF#, others => 0 ), Required, Default_Response_Timeout, False, 0),
+      Standard.Camera.Memory_Reset         => ( 7, ( 16#81#,16#01#,16#04#,16#3F#,16#00#,16#00#,16#FF#, others => 0 ), Required, Default_Response_Timeout, False, 0),
+      Standard.Camera.Power_Set            => ( 6, ( 16#81#,16#01#,16#04#,16#00#,16#00#,16#FF#, others => 0 ), Required, Default_Response_Timeout, False, 0),
+      Standard.Camera.Power_Request        => ( 5, ( 16#81#,16#09#,16#04#,6#00#,16#FF#, others => 0 ), Optional, Default_Response_Timeout, True, 4),
+      Standard.Camera.Zoom_Direct          => ( 7, ( 16#81#,16#01#,16#04#,16#3F#,16#02#,16#00#,16#FF#, others => 0 ), Required, Default_Response_Timeout, False, 0),
+      Standard.Camera.Zoom_Full            => ( 7, ( 16#81#,16#01#,16#04#,16#3F#,16#02#,16#00#,16#FF#, others => 0 ), Required, Position_Timeout, False, 0),
+      Standard.Camera.Zoom_Inquire         => ( 5, ( 16#81#,16#09#,16#04#,16#47#,16#FF#, others => 0 ), None, Position_Timeout, True, 7),
+      Standard.Camera.No_Command           => ( 0, ( others => 0 ), None, 0.0, false, 0)
    );
 
    ----------------------------------------------------------------------------
@@ -291,6 +292,86 @@ package body Camera.Lib.PTZ_Optics is
 
    ---------------------------------------------------------------
    overriding
+   function Last_Preset (
+      Camera_Queue               : in     PTZ_Optics_Type
+   ) return Configuration.Camera.Preset_ID_Type is
+   ---------------------------------------------------------------
+
+   begin
+      return Max_Preset;
+   end Last_Preset;
+
+   ---------------------------------------------------------------
+   overriding
+   function Minimum_Test_Preset (
+      Camera_Queue               : in     PTZ_Optics_Type
+   ) return Configuration.Camera.Preset_ID_Type is
+   ---------------------------------------------------------------
+
+   begin
+      return Minimum_Preset_ID_For_Testing;
+   end Minimum_Test_Preset;
+
+   ---------------------------------------------------------------
+   overriding
+   procedure Move_To_Preset (
+      Camera_Queue               : in out PTZ_Optics_Type;
+      Preset_ID                  : in     Preset_ID_Type;
+      Wait_Until_Finished        : in     Boolean := True) is
+   ---------------------------------------------------------------
+
+   begin
+      Log_In (Debug, "preset id" & Preset_ID'img &
+         " Unit_Testing " & Ada_Lib.Unit_Testing'img);
+
+      case Camera_Queue.Synchronous (Memory_Recall,
+         Options     => ( 1 =>
+               (
+                  Data           => Data_Type (Preset_ID),
+                  Start          => 6,
+                  Variable_Width => False
+               )
+            )) is
+
+         when Fault =>
+            Log_Here ("Synchronous return fault");
+
+         when Not_Set =>
+            Log_Here ("Synchronous return not set");
+            raise Failed with "Synchronous command returnd not set";
+
+         when Success =>
+            Log_Here (Debug, "Synchronous return Success");
+
+         when Standard.Camera.Timeout =>
+            Log_Here ("Synchronous return Timeout");
+
+      end case;
+
+      if Wait_Until_Finished then
+         loop
+            declare
+               Pan                  : Absolute_Type;
+               Tilt                 : Absolute_Type;
+            begin
+               Log_Here (Debug);
+               Camera_Queue.Get_Absolute (Pan, Tilt);
+               Log_Here (Debug, "pan " & Pan'img & " tilt " & Tilt'img);
+               exit;
+
+            exception
+               when Fault: others =>
+                  Trace_Exception (Debug, Fault);
+               delay 0.5;
+               Log_Here (Debug);
+            end;
+         end loop;
+      end if;
+      Log_Out (Debug);
+   end Move_To_Preset;
+
+   ---------------------------------------------------------------
+   overriding
    procedure Position_Relative (
       Camera                     : in out PTZ_Optics_Type;
       Pan                        : in      Relative_Type;
@@ -400,7 +481,7 @@ package body Camera.Lib.PTZ_Optics is
    procedure Send_Command (
       Camera                     : in out PTZ_Optics_Type;
       Command                    : in     Commands_Type;
-      Get_Ack                    :    out Boolean;
+      Get_Ack                    :    out Ack_Response_Type;
       Has_Response               :    out Boolean;
       Response_Length            :    out Index_Type) is
    ----------------------------------------------------------------------------
@@ -418,7 +499,7 @@ package body Camera.Lib.PTZ_Optics is
       Camera                     : in out PTZ_Optics_Type;
       Command                    : in     Commands_Type;
       Options                    : in     Options_Type;
-      Get_Ack                    :    out Boolean;
+      Get_Ack                    :    out Ack_Response_Type;
       Has_Response               :    out Boolean;
       Response_Length            :    out Index_Type) is
    ----------------------------------------------------------------------------
@@ -515,7 +596,7 @@ package body Camera.Lib.PTZ_Optics is
 --    Log_Here (Debug, "Turning_On " & Turning_On'img);
       declare
          Status         : constant Status_Type := Camera.Synchronous (
-                           Power,
+                           Power_Set,
                            Options     => ( 1 =>
                                  (
                                     Data           => (if On then 2 else 3),
@@ -552,43 +633,49 @@ package body Camera.Lib.PTZ_Optics is
 
    end Set_Power;
 
--- ---------------------------------------------------------------
--- overriding
--- procedure Set_Preset (
---    Camera                     : in out PTZ_Optics_Type;
---    Preset_ID                  : in     Configuration.Camera.Preset_ID_Type;
---    Wait_Until_Finished        : in     Boolean := True) is
--- ---------------------------------------------------------------
---
--- begin
---    Log_In (Debug, "preset id" & Preset_ID'img);
---    declare
---       Status         : constant Status_Type := Camera.Synchronous (
---                         Memory_Set,
---                         Options     => ( 1 =>
---                               (
---                                  Data           => Data_Type (Preset_ID),
---                                  Start          => 6,
---                                  Variable_Width => False
---                               )
---                            ));
---    begin
---       if Status /= Success then
---          raise Failed with "Synchronous failed with " & Status'img;
---       end if;
---    end;
---
---    if Wait_Until_Finished then
---       declare
---          Pan                  : Absolute_Type;
---          Tilt                 : Absolute_Type;
---       begin
---          Camera.Get_Absolute (Pan, Tilt);
---          Log_Here (Debug, "pan " & Pan'img & " tilt " & Tilt'img);
---       end;
---    end if;
---    Log_Out (Debug);
--- end Set_Preset;
+   ---------------------------------------------------------------
+   overriding
+   procedure Update_Preset (
+      Camera_Queue               : in out PTZ_Optics_Type;
+      Preset_ID                  : in     Configuration.Camera.Preset_ID_Type) is
+   ---------------------------------------------------------------
+
+   begin
+      Log_In (Debug, "preset id" & Preset_ID'img);
+      if Ada_Lib.Unit_Testing and then Preset_ID <
+            Minimum_Preset_ID_For_Testing then
+         raise Failed with "tried to set non testing preset id" &
+            Preset_ID'img & ". Less than minimum for testing" &
+            Minimum_Preset_ID_For_Testing'img;
+      end if;
+
+      case Camera_Queue.Synchronous (Memory_Set,
+         Options     => ( 1 =>
+               (
+                  Data           => Data_Type (Preset_ID),
+                  Start          => 6,
+                  Variable_Width => False
+               )
+            )) is
+
+         when Fault =>
+            Log_Here ("Synchronous return fault");
+
+         when Not_Set =>
+            Log_Here ("Synchronous return not set");
+            raise Failed with "Synchronous command returnd not set";
+
+         when Success =>
+            Log_Here (Debug, "Synchronous return Success");
+            delay 2.0;  -- camera needs time to update memory
+
+         when Standard.Camera.Timeout =>
+            Log_Here ("Synchronous return Timeout");
+
+      end case;
+
+      Log_Out (Debug);
+   end Update_Preset;
 
 begin
 --Debug := True;

@@ -12,10 +12,10 @@ package body Camera.LIB.ALPTOP is
    Timeout                       : constant Duration := 0.5;
    Commands                      : constant Array (Commands_Type) of
                                     Camera.Lib.Base.Command_Type := (
-         Auto_Focus     => ( 6, ( 16#81#,16#01#,16#04#,16#38#,16#02#,16#FF#, others => 0 ), False, Timeout, False, 0),
-         Manual_Focus   => ( 6, ( 16#81#,16#01#,16#04#,16#38#,16#03#,16#FF#, others => 0 ), False, Timeout, False, 0),
-         Memory_Recall         => ( 7, ( 16#81#,16#01#,16#04#,16#3F#,16#02#,16#1#,16#FF#, others => 0 ), False, Timeout, False, 0),
-         others         => ( 1, ( others => 0), False, 0.0, False, 0)
+         Auto_Focus     => ( 6, ( 16#81#,16#01#,16#04#,16#38#,16#02#,16#FF#, others => 0 ), None, Timeout, False, 0),
+         Manual_Focus   => ( 6, ( 16#81#,16#01#,16#04#,16#38#,16#03#,16#FF#, others => 0 ), None, Timeout, False, 0),
+         Memory_Recall         => ( 7, ( 16#81#,16#01#,16#04#,16#3F#,16#02#,16#1#,16#FF#, others => 0 ), None, Timeout, False, 0),
+         others         => ( 1, ( others => 0), None, 0.0, False, 0)
       );
 
    ----------------------------------------------------------------------------
@@ -157,6 +157,43 @@ package body Camera.LIB.ALPTOP is
 
    ---------------------------------------------------------------
    overriding
+   function Last_Preset (
+      Camera_Queue               : in     ALPTOP_Type
+   ) return Configuration.Camera.Preset_ID_Type is
+   ---------------------------------------------------------------
+
+   begin
+      Not_Implemented;
+      return 0;
+   end Last_Preset;
+
+   ---------------------------------------------------------------
+   overriding
+   function Minimum_Test_Preset (
+      Camera_Queue               : in     ALPTOP_Type
+   ) return Configuration.Camera.Preset_ID_Type is
+   ---------------------------------------------------------------
+
+   begin
+      Not_Implemented;
+      return 0;
+   end Minimum_Test_Preset;
+
+   ---------------------------------------------------------------
+   overriding
+   procedure Move_To_Preset (
+      Camera_Queue               : in out ALPTOP_Type;
+      Preset_ID                  : in     Preset_ID_Type;
+      Wait_Until_Finished        : in     Boolean := True) is
+   pragma Unreferenced (Camera_Queue, Preset_ID, Wait_Until_Finished);
+   ---------------------------------------------------------------
+
+   begin
+      Not_Implemented;
+   end Move_To_Preset;
+
+   ---------------------------------------------------------------
+   overriding
    procedure Position_Relative (
       Camera                     : in out ALPTOP_Type;
       Pan                        : in      Relative_Type;
@@ -189,7 +226,7 @@ package body Camera.LIB.ALPTOP is
    procedure Send_Command (
       Camera                     : in out ALPTOP_Type;
       Command                    : in     Commands_Type;
-      Get_Ack                    :    out Boolean;
+      Get_Ack                    :    out Ack_Response_Type;
       Has_Response               :    out Boolean;
       Response_Length            :    out Index_Type) is
    ----------------------------------------------------------------------------
@@ -208,7 +245,7 @@ package body Camera.LIB.ALPTOP is
       Camera                     : in out ALPTOP_Type;
       Command                    : in     Commands_Type;
       Options                    : in     Options_Type;
-      Get_Ack                    :    out Boolean;
+      Get_Ack                    :    out Ack_Response_Type;
       Has_Response               :    out Boolean;
       Response_Length            :    out Index_Type) is
    ----------------------------------------------------------------------------
@@ -230,7 +267,7 @@ package body Camera.LIB.ALPTOP is
       end if;
 
       Camera.Write (Buffer (1 .. Selected_Command.Length));
-      Get_Ack := False;
+      Get_Ack := None;
       Has_Response := False;
       Response_Length := 0;
       Log_Out (Debug);
@@ -263,18 +300,17 @@ package body Camera.LIB.ALPTOP is
 not_implemented;
    end Set_Power;
 
--- ---------------------------------------------------------------
--- overriding
--- procedure Set_Preset (
---    Camera                     : in out ALPTOP_Type;
---    Preset_ID                  : in     Configuration.Camera.Preset_ID_Type;
---    Wait_Until_Finished        : in     Boolean := True) is
--- pragma Unreferenced (Camera, Preset_ID, Wait_Until_Finished);
--- ---------------------------------------------------------------
---
--- begin
---    Not_Implemented;
--- end Set_Preset;
+   ---------------------------------------------------------------
+   overriding
+   procedure Update_Preset (
+      Camera                     : in out ALPTOP_Type;
+      Preset_ID                  : in     Configuration.Camera.Preset_ID_Type) is
+   pragma Unreferenced (Camera, Preset_ID);
+   ---------------------------------------------------------------
+
+   begin
+      Not_Implemented;
+   end Update_Preset;
 
 begin
    -- Debug := True;

@@ -15,7 +15,7 @@ with Ada_Lib.Unit_Test;
 --with GNAT.Sockets;
 --with GNAT.Source_Info;
 --with Hex_IO;
-with Camera.Commands;
+with Camera.Command_Queue;
 --with Camera.Lib.PTZ_Optics;
 --with Camera.LIB.ALPTOP;
 with Camera.Lib.Unit_Test;
@@ -23,7 +23,7 @@ with Camera.Lib.Unit_Test;
 package body Camera.Lib.Base.Test is
 
    use type Ada_Lib.Socket_IO.Address_Access;
-   use type Camera.Commands.Camera_Queue_Class_Access;
+   use type Camera.Command_Queue.Queued_Camera_Class_Access;
 -- use type Index_Type;
 
    type Test_Type (

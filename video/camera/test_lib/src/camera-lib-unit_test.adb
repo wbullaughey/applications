@@ -8,8 +8,8 @@ with Ada_Lib.Socket_IO;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
 with Ada_Lib.Unit_Test.Reporter;
 with AUnit.Assertions; use AUnit.Assertions;
-with Camera.Command_Queue;
-with Camera.Commands.Unit_Test;
+--with Camera.Command_Queue;
+with Camera.Lib.PTZ_Optics.Unit_Test;
 with Camera.Lib.Base.Command_Tests;
 with Camera.Lib.Base.Test;
 with Camera.Lib.Connection;
@@ -25,7 +25,7 @@ with Widgets.Configured.Unit_Test;
 package body Camera.Lib.Unit_Test is
 
    use type Ada_Lib.Options.Mode_Type;
-   use type Camera.Commands.Camera_Queue_Class_Access;
+   use type Camera.Command_Queue.Queued_Camera_Class_Access;
    use type Ada_Lib.Socket_IO.Address_Constant_Access;
 
    Camera_Lib_Unit_Test_Options  : Camera_Lib_Unit_Test_Options_Class_Access :=
@@ -307,7 +307,7 @@ not_implemented;
          AUnit_Options.Filter := Options.Filter'unchecked_access;
          Test_Suite.Add_Test (Camera.Lib.Base.Test.Suite);
          Test_Suite.Add_Test (Main.Unit_Test.Suite);
-         Test_Suite.Add_Test (Standard.Camera.Commands.Unit_Test.Suite);
+         Test_Suite.Add_Test (Standard.Camera.Lib.PTZ_Optics.Unit_Test.Suite);
          Test_Suite.Add_Test (Standard.Camera.Lib.Base.Command_Tests.Suite);
          Test_Suite.Add_Test (
             Standard.Configuration.Camera.Setup.Unit_Tests.Suite);
@@ -357,7 +357,7 @@ not_implemented;
 --       Test_Suite.Add_Test (Standard.Configuration.Camera.Setup.Unit_Tests.Suite);
 --       Test_Suite.Add_Test (Main.Unit_Test.Suite);
 --       Test_Suite.Add_Test (Standard.Camera.Lib.Base.Command_Tests.Suite);
---       Test_Suite.Add_Test (Standard.Camera.Commands.Unit_Test.Suite);
+--       Test_Suite.Add_Test (Standard.Camera.Lib.PTZ_Optics.Unit_Test.Suite);
 --       Test_Suite.Add_Test (Widgets.Control.Unit_Test.Suite);
 --       Test_Suite.Add_Test (Widgets.Configured.Unit_Test.Suite);
 --       Test_Suite.Add_Test (Widgets.Adjust.Unit_Test.Suite);
@@ -622,7 +622,7 @@ assert (test.Camera_Address /= null, "camera address null");
 --             Widget_Trace := True;
 
             when 'u' =>
-               Camera.Commands.Unit_Test.Debug := True;
+               Camera.Lib.PTZ_Optics.Unit_Test.Debug := True;
 
             when others =>
                Options.Bad_Option (Quote ("unexpected Camera_Library test trace option",

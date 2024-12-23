@@ -1,4 +1,4 @@
-with Camera.Commands;
+with Camera.Command_Queue;
 --with Camera.Lib.Base;
 with Configuration.Camera;
 
@@ -6,9 +6,11 @@ package Camera.Lib.PTZ_Optics is
 
    subtype Ack_Type              is Response_Type (1 .. 3);
 
-   type PTZ_Optics_Type is new Camera.Commands.Camera_Queue_Type with null record;
+   type PTZ_Optics_Type is new Camera.Command_Queue.Queued_Camera_Type with null record;
 
-   Last_Preset                   : constant := 127;
+   Failed                        : exception;
+
+   Max_Preset                    : constant := 127;
    Port                          : constant := 5678;
    Powerup_Preset                : constant Configuration.Camera.Preset_ID_Type := 0;
 
@@ -62,6 +64,23 @@ private
       Zoom                       :    out Absolute_Type);
 
    overriding
+   function Last_Preset (
+      Camera_Queue               : in     PTZ_Optics_Type
+   ) return Configuration.Camera.Preset_ID_Type;
+
+   overriding
+   function Minimum_Test_Preset (
+      Camera_Queue               : in     PTZ_Optics_Type
+   ) return Configuration.Camera.Preset_ID_Type;
+
+   -- sets camera location to a preset
+   overriding
+   procedure Move_To_Preset (
+      Camera_Queue               : in out PTZ_Optics_Type;
+      Preset_ID                  : in     Preset_ID_Type;
+      Wait_Until_Finished        : in     Boolean := True);
+
+   overriding
    procedure Position_Relative (
       Camera                     : in out PTZ_Optics_Type;
       Pan                        : in      Relative_Type;
@@ -80,7 +99,7 @@ private
    procedure Send_Command (
       Camera                     : in out PTZ_Optics_Type;
       Command                    : in    Commands_Type;
-      Get_Ack                    :    out Boolean;
+      Get_Ack                    :    out Ack_Response_Type;
       Has_Response               :    out Boolean;
       Response_Length            :    out Index_Type);
 
@@ -89,7 +108,7 @@ private
       Camera                     : in out PTZ_Optics_Type;
       Command                    : in    Commands_Type;
       Options                    : in    Options_Type;
-      Get_Ack                    :    out Boolean;
+      Get_Ack                    :    out Ack_Response_Type;
       Has_Response               :    out Boolean;
       Response_Length            :    out Index_Type);
 
@@ -106,11 +125,12 @@ private
       Camera                     : in out PTZ_Optics_Type;
       On                         : in     Boolean);
 
--- -- sets camera to a preset
--- overriding
--- procedure Set_Preset (
---    Camera                     : in out PTZ_Optics_Type;
---    Preset_ID                  : in     Configuration.Camera.Preset_ID_Type;
---    Wait_Until_Finished        : in     Boolean := True);
+   -- updates preset to current location
+   overriding
+   procedure Update_Preset (
+      Camera_Queue               : in out PTZ_Optics_Type;
+      Preset_ID                  : in     Configuration.Camera.Preset_ID_Type);
+
+   Minimum_Preset_ID_For_Testing : constant := 120;
 
 end Camera.Lib.PTZ_Optics;

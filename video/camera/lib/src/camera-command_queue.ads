@@ -1,8 +1,9 @@
 with Ada_Lib.Socket_IO;
-with Ada_Lib.Strings;
+--with Ada_Lib.Strings;
 --with ADA_LIB.Trace; use ADA_LIB.Trace;
 with Camera.Lib.Base;
---with Camera.Commands; use Camera.Commands;
+--with Camera.Command_Queue; use Camera.Command_Queue;
+with Configuration.Camera;
 with Video.Lib;
 
 package Camera.Command_Queue is
@@ -28,6 +29,12 @@ package Camera.Command_Queue is
 
    type Queued_Camera_Class_Access
                                  is access all Queued_Camera_Type'class;
+   procedure Acked (
+      Camera_Queue               : in     Queued_Camera_Type;
+      Response                   : in     Response_Type;
+      Value                      :    out Natural;
+      Next_Buffer_Index          :    out Index_Type) is abstract;
+
    procedure Asynchronous (
       Queued_Camera              : in out Queued_Camera_Type;
       Command                    : in     Commands_Type;
@@ -40,6 +47,58 @@ package Camera.Command_Queue is
    procedure Close (
       Queued_Camera              : in out Queued_Camera_Type);
 
+   procedure Completed (
+      Camera_Queue               : in     Queued_Camera_Type;
+      Buffer                     : in     Response_Type;
+      Start                      : in     Index_Type;
+      Completion_Value           :    out Natural;
+      Next_Byte                  :    out Index_Type) is abstract;
+
+   procedure Get_Absolute (
+      Camera_Queue               : in out Queued_Camera_Type;
+      Pan                        :    out Absolute_Type;
+      Tilt                       :    out Absolute_Type) is abstract;
+
+   procedure Get_Absolute_Iterate (
+      Camera_Queue               : in out Queued_Camera_Type;
+      Pan                        :    out Absolute_Type;
+      Tilt                       :    out Absolute_Type);
+
+   function Get_Ack_Length (
+      Camera_Queue               : in     Queued_Camera_Type
+   ) return Index_Type is abstract;
+
+   function Get_Default_Preset (
+      Camera_Queue               : in     Queued_Camera_Type
+   ) return Configuration.Camera.Preset_ID_Type is abstract;
+
+   procedure Get_Power (
+      Camera                     : in out Queued_Camera_Type;
+      Power                      :    out Boolean) is abstract;
+
+   function Get_Timeout (
+      Camera_Queue               : in     Queued_Camera_Type;
+      Command                    : in     Commands_Type
+   ) return Duration is abstract;
+
+   procedure Get_Zoom (
+      Camera_Queue               : in out Queued_Camera_Type;
+      Zoom                       :    out Absolute_Type) is abstract;
+
+   function Last_Preset (
+      Camera_Queue               : in     Queued_Camera_Type
+   ) return Configuration.Camera.Preset_ID_Type is abstract;
+
+   function Minimum_Test_Preset (
+      Camera_Queue               : in     Queued_Camera_Type
+   ) return Configuration.Camera.Preset_ID_Type is abstract;
+
+   -- sets camera location to a preset
+   procedure Move_To_Preset (
+      Camera_Queue               : in out Queued_Camera_Type;
+      Preset_ID                  : in     Configuration.Camera.Preset_ID_Type;
+      Wait_Until_Finished        : in     Boolean := True) is abstract;
+
    procedure Open (
       Queued_Camera              : in out Queued_Camera_Type;
 --    Base_Camera                : in     Lib.Base.Base_Camera_Class_Access;
@@ -47,17 +106,30 @@ package Camera.Command_Queue is
       Port_Number                : in     Ada_Lib.Socket_IO.Port_Type;
       Connection_Timeout         : in     Ada_Lib.Socket_IO.Timeout_Type := 1.0);
 
+   procedure Position_Relative (
+      Camera_Queue               : in out Queued_Camera_Type;
+      Pan                        : in      Relative_Type;
+      Tilt                       : in      Relative_Type;
+      Pan_Speed                  : in      Property_Type := 1;
+      Tilt_Speed                 : in      Property_Type := 1) is abstract;
+
+   procedure Process_Response (
+      Camera_Queue               : in     Queued_Camera_Type;
+      Response                   : in     Response_Type;
+      Value                      :    out Data_Type;
+      Next_Buffer_Start          :    out Index_Type) is abstract;
+
    procedure Process_Command (
       Camera_Queue               : in out Queued_Camera_Type;
       Command                    : in     Commands_Type;
-      Options                    : in     Options_Type) is abstract;
+      Options                    : in     Options_Type);
 
    procedure Process_Command (
       Camera_Queue               : in out Queued_Camera_Type;
       Command                    : in     Commands_Type;
       Options                    : in     Options_Type;
       Response                   :    out Maximum_Response_Type;
-      Response_Length            :    out Index_Type) is abstract;
+      Response_Length            :    out Index_Type);
 
    procedure Read (
       Camera_Queue               : in out Queued_Camera_Type;
@@ -66,6 +138,38 @@ package Camera.Command_Queue is
 
    procedure Reopen (
       Queued_Camera              : in out Queued_Camera_Type);
+
+   procedure Send_Command (
+      Camera_Queue               : in out Queued_Camera_Type;
+      Command                    : in     Commands_Type;
+      Get_Ack                    :    out Standard.Camera.Lib.Ack_Response_Type;
+      Has_Response               :    out Boolean;
+      Response_Length            :    out Index_Type) is abstract;
+
+   procedure Send_Command (
+      Camera_Queue               : in out Queued_Camera_Type;
+      Command                    : in     Commands_Type;
+      Options                    : in     Options_Type;
+      Get_Ack                    :    out Standard.Camera.Lib.Ack_Response_Type;
+      Has_Response               :    out Boolean;
+      Response_Length            :    out Index_Type) is abstract;
+
+   procedure Set_Absolute (
+      Camera                     : in out Queued_Camera_Type;
+      Pan                        : in     Absolute_Type;
+      Tilt                       : in     Absolute_Type;
+      Pan_Speed                  : in     Property_Type := 1;
+      Tilt_Speed                 : in     Property_Type := 1) is abstract;
+
+   procedure Set_Power (
+      Camera                     : in out Queued_Camera_Type;
+      On                         : in     Boolean) is abstract;
+
+   -- updates preset to current location
+   procedure Update_Preset (
+      Camera_Queue               : in out Queued_Camera_Type;
+      Preset_ID                  : in     Configuration.Camera.Preset_ID_Type
+   ) is abstract;
 
    procedure Stop_Task;
 
@@ -99,7 +203,19 @@ private
    type Queued_Camera_Type is abstract tagged limited record
       Base_Camera          : aliased Lib.Base.Base_Camera_Type;
       Camera_Address       : Ada_Lib.Socket_IO.Address_Access := Null;
+      Last_Command         : Commands_Type := No_Command;
       Port_Number          : Ada_Lib.Socket_IO.Port_Type;
+      Waiting_For_Response : Boolean := False;
    end record;
+
+   procedure Get_Response (
+      Camera_Queue               : in out Queued_Camera_Type;
+      Expect_Ack                 : in     Standard.Camera.Lib.Ack_Response_Type;
+      Expect_Response            : in     Boolean;
+      Response                   :    out Response_Type;
+      Response_Length            : in     Index_Type;
+      Response_Timeout           : in     Duration);
+
+
 
 end Camera.Command_Queue;

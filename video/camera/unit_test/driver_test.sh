@@ -97,7 +97,7 @@ case "$MODE" in
       ;;
 
    "")
-      echo missing mode
+      echo missing mode | tee -a $OUTPUT
       exit
       ;;
 

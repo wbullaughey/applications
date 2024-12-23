@@ -15,6 +15,7 @@ with Configuration.Camera.State;
 package body Configuration.Camera.Setup.Unit_Tests is
 
    use type Configuration.Camera.State.Images_Access;
+-- use type Preset_ID_Type;
 
    type Configuration_Tests_Type is new Standard.Camera.Lib.
                                     Unit_Test.Camera_Test_Type with
@@ -229,10 +230,10 @@ package body Configuration.Camera.Setup.Unit_Tests is
       New_Label                  : constant String := "New Label";
       New_Preset_ID              : constant := 5;
       New_Row                    : constant := 2;
-      Options                    : Standard.Camera.Lib.Unit_Test.
-                                    Camera_Lib_Unit_Test_Options_Type'class
-                                       renames Standard.Camera.Lib.Unit_Test.
-                                          Get_Camera_Lib_Unit_Test_Modifiable_Options.all;
+--    Options                    : Standard.Camera.Lib.Unit_Test.
+--                                  Camera_Lib_Unit_Test_Options_Type'class
+--                                     renames Standard.Camera.Lib.Unit_Test.
+--                                        Get_Camera_Lib_Unit_Test_Modifiable_Options.all;
       Preset_ID                  : constant := 3;
       Update_Setup               : constant String := "updated_setup.cfg";
       Updated_Setup              : Configuration.Camera.Setup.Setup_Type;
@@ -312,10 +313,10 @@ package body Configuration.Camera.Setup.Unit_Tests is
       Expected_Last_Presets      : constant := 5;
       Local_Test                 : Configuration_Tests_Type renames
                                     Configuration_Tests_Type (Test);
-      Options                    : Standard.Camera.Lib.Unit_Test.
-                                    Camera_Lib_Unit_Test_Options_Type'class
-                                       renames Standard.Camera.Lib.Unit_Test.
-                                          Get_Camera_Lib_Unit_Test_Modifiable_Options.all;
+--    Options                    : Standard.Camera.Lib.Unit_Test.
+--                                  Camera_Lib_Unit_Test_Options_Type'class
+--                                     renames Standard.Camera.Lib.Unit_Test.
+--                                        Get_Camera_Lib_Unit_Test_Modifiable_Options.all;
       State                      : Configuration.Camera.State.State_Type renames
                                     Connection_Data.State;
 

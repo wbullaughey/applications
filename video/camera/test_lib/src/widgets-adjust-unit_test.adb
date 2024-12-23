@@ -6,7 +6,7 @@ with AUnit.Assertions; use AUnit.Assertions;
 with AUnit.Test_Cases;
 with Camera.Lib.Connection;
 --with Configuration.Camera.State;
-with Camera.Commands;
+with Camera.Command_Queue;
 with Camera.Lib.Unit_Test;
 --with Configuration.Camera.Setup;
 --with Configuration.State;
@@ -180,7 +180,7 @@ package body Widgets.Adjust.Unit_Test is
       Connection_Data   : constant Camera.Lib.Connection.Connection_Data_Access :=
                               Camera.Lib.Connection.Connection_Data_Access (
                                  Ada_Lib.GNOGA.Get_Connection_Data);
-      Camera_Queue      : Standard.Camera.Commands.Camera_Queue_Class_Access renames
+      Camera_Queue      : Standard.Camera.Command_Queue.Queued_Camera_Class_Access renames
                            Connection_Data.Camera_Queue;
       Event             : Move_Package.Mouse_Move_Event_Type;
 

@@ -1,3 +1,5 @@
+--with Ada_Lib.Socket_IO;
+
 package Configuration.Camera is
 
    Failed                        : exception;

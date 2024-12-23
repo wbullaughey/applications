@@ -16,6 +16,7 @@ package body Configuration.Camera.State.Unit_Tests is
    use type Ada_Lib.Strings.String_Access;
 -- use type Standard.Camera.Lib.Unit_Test.Options_Constant_Class_Test_Access;
    use type Ada_Lib.Options.Interface_Options_Constant_Class_Access;
+-- use type Preset_ID_Type;
 
 -- type Connection_Data_Type     is new Ada_Lib.GNOGA.Connection_Data_Type
 --                                  with null record;

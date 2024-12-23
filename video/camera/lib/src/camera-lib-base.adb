@@ -296,7 +296,8 @@ package body Camera.Lib.Base is
    ---------------------------------------------------------------
 
    begin
-      Log_In (Debug, "Read");
+      Log_In (Debug, "Read length" & Data'length'img &
+         " timeout " & Timeout'img);
       Camera.Socket.Read (Data, Timeout);
       if Debug then
          Dump ("camera command", Data);

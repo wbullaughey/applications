@@ -1,6 +1,7 @@
 --with Ada_Lib.GNOGA;
 with Ada_Lib.Socket_IO; --.Stream_IO;
 with ADA_LIB.Trace;
+with Configuration.Camera;
 with Interfaces;
 with Video.Lib;
 
@@ -35,10 +36,10 @@ package Camera is
       Position_Up,
       Position_Up_Left,
       Position_Up_Right,
-      Memory_Recall,
+      Memory_Recall,       -- sets camera to a preset
       Memory_Set,          -- updates a preset to current location
       Memory_Reset,
-      Power,
+      Power_Set,
       Power_Request,
       Zoom_Direct,
       Zoom_Full,
@@ -51,6 +52,7 @@ package Camera is
    subtype Index_Type            is Video.Lib.Index_Type;
    subtype Maximum_Command_Type  is Video.Lib.Maximum_Command_Type;
    subtype Maximum_Response_Type is Video.Lib.Maximum_Response_Type;
+   subtype Preset_ID_Type        is Configuration.Camera.Preset_ID_Type;
    subtype Property_Type         is Data_Type range 0 .. 255; -- 2**8;
    subtype Relative_Type         is Video.Lib.Relative_Type range -2**15 .. 2**15;
 -- subtype Relative_Type         is Video.Lib.Relative_Type range -16#EF# .. 16#EF#;

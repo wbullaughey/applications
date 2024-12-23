@@ -122,6 +122,7 @@ package body Camera.Lib.Connection is
    function Has_Camera_Queue (
       From                       : in     String := Ada_Lib.Trace.Here
    ) return Boolean is
+   pragma Unreferenced (From);
    ----------------------------------------------------------------
 
    begin

@@ -6,7 +6,7 @@ with ADA_LIB.Trace; use ADA_LIB.Trace;
 --with Camera.Command_Queue;
 --with Camera.Lib.Base;
 with Camera.Lib.Connection;
---with Camera.Commands;
+--with Camera.Command_Queue;
 --with Configuration.Camera.Setup;
 --with Configuration.State; use Configuration;
 --with Main;
@@ -224,15 +224,15 @@ package body Widgets.Adjust is
 --             Camera.Position_Relative,
 --          Camera.Command_Queue.Relative_Command (
 --             Connection_Data.Camera.all,
---             Camera.Commands.Relative_Type (Mouse_Event.X),
---             Camera.Commands.Relative_Type (Mouse_Event.Y),
+--             Camera.Command_Queue.Relative_Type (Mouse_Event.X),
+--             Camera.Command_Queue.Relative_Type (Mouse_Event.Y),
 --             Connection_Data.Camera_Pan_Speed,
 --             Connection_Data.Camera_Tilt_Speed);
 --
 --       when Camera.Lib.Connection.Horizontal_Scroll =>
 --          Camera.Command_Queue.Relative_Command (
 --             Connection_Data.Camera.all,
---             Camera.Commands.Relative_Type (Mouse_Event.X), 0,
+--             Camera.Command_Queue.Relative_Type (Mouse_Event.X), 0,
 --             Connection_Data.Camera_Pan_Speed, 0);
 --
 --       when Camera.Lib.Connection.No_Action | Camera.Lib.Connection.No_Change =>
@@ -242,7 +242,7 @@ package body Widgets.Adjust is
 --       when Camera.Lib.Connection.Vertical_Scroll =>
 --          Camera.Command_Queue.Relative_Command (
 --             Connection_Data.Camera.all, 0,
---             Camera.Commands.Relative_Type (Mouse_Event.Y), 0,
+--             Camera.Command_Queue.Relative_Type (Mouse_Event.Y), 0,
 --             Connection_Data.Camera_Tilt_Speed);
 --
 --    end case;

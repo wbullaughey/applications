@@ -1,4 +1,5 @@
 --with Ada.Exceptions;
+with Ada.Text_IO; use Ada.Text_IO;
 --with Ada_Lib.GNOGA;
 --with ADA_LIB.Strings;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
@@ -7,14 +8,15 @@ with AUnit.Assertions; use AUnit.Assertions;
 with AUnit.Test_Cases;
 --with Base;
 --with Camera.Lib.Base;
-with Camera.Lib.PTZ_Optics;
 with Camera.Lib.Unit_Test;
 with Interfaces;
 
-package body Camera.Commands.Unit_Test is
+package body Camera.Lib.PTZ_Optics.Unit_Test is
 
    use type Interfaces.Integer_16;
 -- use type Camera.Lib.Base.Base_Camera_Class_Access;
+   use type Camera.Command_Queue.Queued_Camera_Class_Access;
+   use type Preset_ID_Type;
 
    type Test_Type (
       Brand          : Camera.Lib.Brand_Type) is new Camera.Lib.Unit_Test.
@@ -58,7 +60,7 @@ package body Camera.Commands.Unit_Test is
       Test                       : in out AUnit.Test_Cases.Test_Case'class
    ) with Pre => Have_Camera (Test);
 
-   procedure Test_Set_Preset (
+   procedure Test_Move_To_Preset (
       Test                       : in out AUnit.Test_Cases.Test_Case'class
    ) with Pre => Have_Camera (Test);
 
@@ -66,9 +68,12 @@ package body Camera.Commands.Unit_Test is
       Test                       : in out AUnit.Test_Cases.Test_Case'class
    ) with Pre => Have_Camera (Test);
 
+   procedure Test_Update_Preset (
+      Test                       : in out AUnit.Test_Cases.Test_Case'class);
+
    Suite_Name                    : constant String := "Commands";
    Test_Preset                   : constant := Camera.Lib.PTZ_Optics.
-                                    Last_Preset;
+                                    Max_Preset;
 
    ---------------------------------------------------------------
    procedure Check_Coordinates (
@@ -136,10 +141,13 @@ package body Camera.Commands.Unit_Test is
          Routine        => Test_Set_Absolute'access,
          Routine_Name   => AUnit.Format ("Test_Set_Absolute")));
 
+      Test.Add_Routine (AUnit.Test_Cases.Routine_Spec'(
+         Routine        => Test_Move_To_Preset'access,
+         Routine_Name   => AUnit.Format ("Test_Move_To_Preset")));
 
       Test.Add_Routine (AUnit.Test_Cases.Routine_Spec'(
-         Routine        => Test_Set_Preset'access,
-         Routine_Name   => AUnit.Format ("Test_Set_Preset")));
+         Routine        => Test_Update_Preset'access,
+         Routine_Name   => AUnit.Format ("Test_Update_Preset")));
 
       Test.Add_Routine (AUnit.Test_Cases.Routine_Spec'(
          Routine        => Test_Set_Zoom'access,
@@ -275,7 +283,7 @@ package body Camera.Commands.Unit_Test is
    begin
       Log_In (Debug);
       -- use Test_Preset as reference
-      Local_Test.Camera_Queue.Set_Preset (Test_Preset);
+      Local_Test.Camera_Queue.Move_To_Preset (Test_Preset);
       -- get coordinats of test preset
       Local_Test.Camera_Queue.Get_Absolute_Iterate (Test_Pan, Test_Tilt);
       -- set relative
@@ -286,7 +294,7 @@ package body Camera.Commands.Unit_Test is
       Check_Coordinates (Final_Pan, Test_Pan + Pan_Offset,
          Final_Tilt, Test_Tilt + Tilt_Offset);
       -- set it back to reference
-      Local_Test.Camera_Queue.Set_Preset (Test_Preset);
+      Local_Test.Camera_Queue.Move_To_Preset (Test_Preset);
       -- git its coordinats
       Local_Test.Camera_Queue.Get_Absolute_Iterate (Final_Pan, Final_Tilt);
       Check_Coordinates (Final_Pan, Test_Pan, Final_Tilt, Test_Tilt);
@@ -316,7 +324,7 @@ package body Camera.Commands.Unit_Test is
    begin
       Log_In (Debug);
       -- use Test_Preset as reference
-      Local_Test.Camera_Queue.Set_Preset (Test_Preset);
+      Local_Test.Camera_Queue.Move_To_Preset (Test_Preset);
       -- get coordinats of test preset
       Local_Test.Camera_Queue.Get_Absolute_Iterate (Test_Pan, Test_Tilt);
       -- calculate offset from reference
@@ -329,7 +337,7 @@ package body Camera.Commands.Unit_Test is
       -- verify it got coordinates that were set
       Check_Coordinates (Final_Pan, Pan_Set, Final_Tilt, Tilt_Set);
       -- set it back to reference
-      Local_Test.Camera_Queue.Set_Preset (Test_Preset);
+      Local_Test.Camera_Queue.Move_To_Preset (Test_Preset);
       -- git its coordinats
       Local_Test.Camera_Queue.Get_Absolute_Iterate (Final_Pan, Final_Tilt);
       Check_Coordinates (Final_Pan, Test_Pan, Final_Tilt, Test_Tilt);
@@ -344,41 +352,98 @@ package body Camera.Commands.Unit_Test is
    end Test_Set_Absolute;
 
    ----------------------------------------------------------------
-   procedure Test_Set_Preset (
+   procedure Test_Move_To_Preset (
       Test                       : in out AUnit.Test_Cases.Test_Case'class) is
    ----------------------------------------------------------------
 
-      Local_Test                 : Test_Type'class renames Test_Type'class (Test);
-      Test_Pan                      : Absolute_Type;
-      Pan                        : Absolute_Type;
-      Pan_Set                    : Absolute_Type;
-      Tilt                       : Absolute_Type;
-      Test_Tilt                     : Absolute_Type;
-      Tilt_Set                   : Absolute_Type;
+      Local_Test                 : Test_Type renames Test_Type (Test);
+      Default_Preset             : constant Preset_ID_Type :=
+                                    Local_Test.Camera_Queue.Get_Default_Preset;
+      Options                    : Standard.Camera.Lib.Unit_Test.
+                                    Camera_Lib_Unit_Test_Options_Type'class
+                                       renames Standard.Camera.Lib.Unit_Test.
+                                          Get_Camera_Lib_Unit_Test_Read_Only_Options.all;
+      Test_Preset                : constant Preset_ID_Type :=
+                                    Local_Test.Camera_Queue.Last_Preset;
 
    begin
-      Log_In (Debug);
-      -- use test preset as reference
-      Local_Test.Camera_Queue.Set_Preset (Test_Preset);
-      -- get coordinats of test preset
-      Local_Test.Camera_Queue.Get_Absolute_Iterate (Test_Pan, Test_Tilt);
-      -- calculate some points relative to test preset
-      Pan_Set := Test_Pan + 100;
-      Tilt_Set := Test_Tilt - 100;
-      -- set camera to those offsets
-      Local_Test.Camera_Queue.Set_Absolute (Pan_Set, Tilt_Set);
-      -- check it was set to that point
-      Local_Test.Camera_Queue.Get_Absolute_Iterate (Pan, Tilt);
-      Check_Coordinates (Pan, Pan_Set, Tilt, Tilt_Set);
+      Log_In (Debug, "Test_Preset" & Test_Preset'img);
+      Pause (Options.Manual, "set preset" & Test_Preset'img);
+      Local_Test.Camera_Queue.Move_To_Preset (Default_Preset);
+      if Options.Manual then
+         Assert (Ask_Pause (True, "check default preset" & Default_Preset'img),
+            "move to preset" & Default_Preset'img & " failed");
+      end if;
+      Local_Test.Camera_Queue.Move_To_Preset (Test_Preset);
+
+      Assert (Ask_Pause (Options.Manual,
+         "verify that the preset" & Test_Preset'img),
+         "manual set failed");
       Log_Out (Debug);
 
    exception
+      when Fault: others =>
+         Ada_Lib.Unit_Test.Exception_Assert (Fault);
 
-      when Error: others =>
-         Log_Exception (Debug, Error);
-         Ada_Lib.Unit_Test.Exception_Assert (Error);
+   end Test_Move_To_Preset;
 
-   end Test_Set_Preset;
+   ---------------------------------------------------------------
+   procedure Test_Update_Preset (
+      Test                       : in out AUnit.Test_Cases.Test_Case'class) is
+   ---------------------------------------------------------------
+
+      Local_Test                 : Test_Type renames Test_Type (Test);
+      Default_Preset             : constant Preset_ID_Type :=
+                                    Local_Test.Camera_Queue.Get_Default_Preset;
+      Minimum_Test_Preset        : constant Preset_ID_Type :=
+                                    Local_Test.Camera_Queue.Minimum_Test_Preset;
+      Options                    : Standard.Camera.Lib.Unit_Test.
+                                    Camera_Lib_Unit_Test_Options_Type'class
+                                       renames Standard.Camera.Lib.Unit_Test.
+                                          Get_Camera_Lib_Unit_Test_Read_Only_Options.all;
+      Test_Preset                : constant  Preset_ID_Type :=
+                                    Local_Test.Camera_Queue.Last_Preset;
+      Alternate_Preset           : constant Preset_ID_Type := Default_Preset + 1;
+
+   begin
+      Log_In (Debug, "Test_Preset" & Test_Preset'img &
+         " saved preset" & Default_Preset'img &
+         " Minimum_Test_Preset" & Minimum_Test_Preset'img);
+      if Test_Preset < Minimum_Test_Preset then
+         raise Failed with "tried to set non testing preset id" &
+            Test_Preset'img & ". Less than minimum for testing" &
+            Minimum_Test_Preset'img;
+      end if;
+      Local_Test.Camera_Queue.Move_To_Preset (Default_Preset);
+      if Options.Manual then
+         Assert (Ask_Pause (True, "check default preset" & Default_Preset'img),
+            "move to preset" & Default_Preset'img & " failed");
+      else
+         Put_Line ("camera moved to default preset" & Default_Preset'img);
+      end if;
+      Local_Test.Camera_Queue.Update_Preset (Test_Preset);
+      Put_Line ("preset" & Test_Preset'img &
+         " saved location" & Default_Preset'img);
+      Local_Test.Camera_Queue.Move_To_Preset (Alternate_Preset);
+      if Options.Manual then
+         Assert (Ask_Pause (True, "check alternate preset" & Alternate_Preset'img),
+            "move to preset" & Alternate_Preset'img & " failed");
+      else
+         delay 2.5;  -- wait for camera to move
+         Put_Line ("camera moved to alternate preset" & Alternate_Preset'img);
+      end if;
+      Local_Test.Camera_Queue.Move_To_Preset (Test_Preset);
+      if Options.Manual then
+         Assert (Ask_Pause (True, "check test preset" & Test_Preset'img &
+            ". Should be same as" & Default_Preset'img),
+            "move to preset" & Test_Preset'img & " failed");
+      else
+         Put_Line ("camera moved to test preset" & Test_Preset'img);
+      end if;
+
+      Log_Out (Debug);
+   end Test_Update_Preset;
+
 
    ----------------------------------------------------------------
    procedure Test_Set_Zoom (
@@ -406,4 +471,4 @@ begin
       Debug := Trace_Tests;
    end if;
 
-end Camera.Commands.Unit_Test;
+end Camera.Lib.PTZ_Optics.Unit_Test;

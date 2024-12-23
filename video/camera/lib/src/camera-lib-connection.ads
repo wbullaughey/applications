@@ -3,7 +3,7 @@ with Ada_Lib.GNOGA;
 --with Ada_Lib.Strings;
 --with Ada_Lib.Socket_IO.Client;
 --with Camera.Command_Queue;
-with Camera.Commands;
+with Camera.Command_Queue;
 with Camera.LIB.ALPTOP;
 with Camera.LIB.PTZ_Optics;
 with Configuration.Camera.State;
@@ -30,7 +30,7 @@ package Camera.Lib.Connection is
    type Connection_Data_Type (
       Brand                      : Standard.Camera.Lib.Brand_Type) is new
                                     Ada_Lib.GNOGA.Connection_Data_Type with record
-      Camera_Queue               : Standard.Camera.Commands.Camera_Queue_Class_Access;
+      Camera_Queue               : Standard.Camera.Command_Queue.Queued_Camera_Class_Access;
       Camera_Pan                 : Absolute_Type;
       Camera_Pan_Speed           : Property_Type;
       Camera_Tilt                : Absolute_Type;

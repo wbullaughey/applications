@@ -7,7 +7,6 @@ with Ada_Lib.Socket_IO;
 with Ada_Lib.Strings;
 with ADA_LIB.Trace; use Ada_Lib.Trace;
 with Camera.Command_Queue;
-with Camera.Commands;
 with Camera.Lib.Base;
 with Configuration.Camera;
 with Configuration.State;
@@ -343,7 +342,7 @@ package body Camera.Lib is
                case Trace is
 
                   when 'a' =>
-                     Camera.Commands.Debug := True;
+                     Camera.Command_Queue.Debug := True;
                      Camera.Lib.Base.Debug := True;
                      Configuration.Camera.Debug := True;
                      Configuration.State.Debug := True;
@@ -364,7 +363,7 @@ package body Camera.Lib is
                      Configuration.Camera.Debug := True;
 
                   when 'C' =>
-                     Camera.Commands.Debug := True;
+                     Camera.Command_Queue.Debug := True;
 
                   when 'g' =>
                      Widgets.Generic_Table.Debug := True;

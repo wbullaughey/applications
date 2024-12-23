@@ -23,7 +23,7 @@ with Main;
 package body Widgets.Configured.Unit_Test is
 
    use type Configuration_ID_Type;
-   use type Preset_ID_Type;
+   use type Camera.Preset_ID_Type;
 -- use type Gnoga.Gui.Plugin.Message_Boxes.Message_Box_Result;
    use type Gnoga.Gui.View.Pointer_To_View_Base_Class;
 
@@ -55,7 +55,7 @@ package body Widgets.Configured.Unit_Test is
       Test                       : in out Test_Type
    ) with post => Verify_Torn_Down (Test);
 
-   procedure Test_Memory_Set (
+   procedure Test_Move_To_Preset (
       Test                       : in out AUnit.Test_Cases.Test_Case'class);
 
    procedure Test_Update_Invalid_Preset (
@@ -648,8 +648,8 @@ package body Widgets.Configured.Unit_Test is
          Routine_Name   => AUnit.Format ("Test_Cancel_Configured")));
 
       Test.Add_Routine (AUnit.Test_Cases.Routine_Spec'(
-         Routine        => Test_Memory_Set'access,
-         Routine_Name   => AUnit.Format ("Test_Memory_Set")));
+         Routine        => Test_Move_To_Preset'access,
+         Routine_Name   => AUnit.Format ("Test_Move_To_Preset")));
 
       Test.Add_Routine (AUnit.Test_Cases.Routine_Spec'(
          Routine        => Test_Update_Label'access,
@@ -1017,7 +1017,7 @@ package body Widgets.Configured.Unit_Test is
    end Test_Create_Configured;
 
    ----------------------------------------------------------------
-   procedure Test_Memory_Set (
+   procedure Test_Move_To_Preset (
       Test                       : in out AUnit.Test_Cases.Test_Case'class) is
    pragma Unreferenced (Test);
    ----------------------------------------------------------------
@@ -1042,7 +1042,7 @@ package body Widgets.Configured.Unit_Test is
                                    Configured_Card_Type (Current_Card.all);
    begin
       Log_In (Debug);
-         Connection_Data.Camera_Queue.Set_Preset (Camera.Lib.Base.Power_On_Preset);
+         Connection_Data.Camera_Queue.Move_To_Preset (Camera.Lib.Base.Power_On_Preset);
          declare
             Cell                 : constant Preset_Package.Cell_Class_Access :=
                                      Preset_Package.Cell_Class_Access (
@@ -1071,7 +1071,7 @@ package body Widgets.Configured.Unit_Test is
          end;
 
       Log_Out (Debug);
-   end Test_Memory_Set;
+   end Test_Move_To_Preset;
 
    ----------------------------------------------------------------
    procedure Test_Update_Invalid_Preset (

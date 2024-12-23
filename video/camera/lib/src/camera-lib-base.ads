@@ -24,7 +24,7 @@ package Camera.Lib.Base is
    type Command_Type             is record
       Length                     : Index_Type;
       Command                    : Maximum_Command_Type;
-      Get_Ack                    : Boolean;
+      Get_Ack                    : Ack_Response_Type;
       Response_Timeout           : Duration;
       Has_Response               : Boolean;
       Response_Length            : Index_Type;
@@ -164,8 +164,8 @@ package Camera.Lib.Base is
 --    Camera                     : in out Base_Camera_Type;
 --    On                         : in     Boolean) is abstract;
 
-   -- sets camera to a preset
--- procedure Set_Preset (
+   -- updates preset to current location
+-- procedure Update_Preset (
 --    Camera                     : in out Base_Camera_Type;
 --    Preset_ID                  : in     Configuration.Camera.Preset_ID_Type;
 --    Wait_Until_Finished        : in     Boolean := True) is abstract;

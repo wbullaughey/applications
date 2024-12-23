@@ -10,6 +10,7 @@ with Camera.Lib;
 
 package body Configuration.Camera.Setup is
 
+-- use type Preset_ID_Type;
 -- use type System.Address;
 
 -- package Configuration_Address_Converter is new

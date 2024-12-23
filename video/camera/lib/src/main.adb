@@ -8,7 +8,7 @@ with Ada_Lib.Options;
 with Ada_Lib.OS;
 with ADA_LIB.Trace; use ADA_LIB.Trace;
 with Ask;
-with Camera.Commands;
+with Camera.Command_Queue;
 --with Camera.Lib.PTZ_Optics;
 --with Camera.Command_Queue;
 with Camera.Lib.Connection;
@@ -22,7 +22,7 @@ with Gnoga.Types.Colors;
 
 package body Main is
 
-   use type Camera.Commands.Camera_Queue_Class_Access;
+   use type Camera.Command_Queue.Queued_Camera_Class_Access;
 -- use type Camera.Lib.Connection.Connection_Data_Class_Access;
 -- use type Configuration.Camera.State.State_Access;
    use type Gnoga.Types.Pointer_to_Connection_Data_Class;

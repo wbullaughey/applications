@@ -9,7 +9,7 @@ with AUnit.Options;
 with AUnit.Simple_Test_Cases;
 with AUnit.Test_Results;
 with AUnit.Test_Suites;
-with Camera.Commands;
+with Camera.Command_Queue;
 --with Camera.LIB.ALPTOP;
 --with Camera.LIB.Base;
 --with Camera.Lib.PTZ_Optics;
@@ -28,7 +28,7 @@ package Camera.Lib.Unit_Test is
                               Ada_Lib.Unit_Test.Test_Cases.Test_Case_Type
                                  with record
       Set_Up_Load          : Boolean := True;
-      Camera_Queue         : Camera.Commands.Camera_Queue_Class_Access := Null;
+      Camera_Queue         : Camera.Command_Queue.Queued_Camera_Class_Access := Null;
       Camera_Address       : Address_Constant_Access := Null;
       Open_Camera          : Boolean := True;
       Port_Number          : Port_Type;

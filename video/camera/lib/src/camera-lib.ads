@@ -14,6 +14,8 @@ package Camera.Lib is
 
    type Brand_Type               is (ALPTOP_Camera, PTZ_Optics_Camera, No_Camera);
 
+   type Ack_Response_Type        is (None, Optional, Required);
+
    type Source_Iterator_Type     is new Ada_Lib.Command_Line_Iterator.
                                     Internal.Iterator_Type with record
       Window                     : Gnoga.Gui.Base.Pointer_To_Base_Class;
