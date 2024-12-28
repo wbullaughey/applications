@@ -19,7 +19,7 @@ package Camera.Command_Queue is
 
    type Callback_Parameter_Type  is record
       Command_Code               : Commands_Type;
-      Response_Buffer            : Video.Lib.Response_Buffer_Access;
+      Response_Buffer            : Video.Lib.Response_Buffer_Class_Access;
    end record;
 
    type Callback_Parameter_Class_Access
@@ -40,7 +40,8 @@ package Camera.Command_Queue is
       Command                    : in     Commands_Type;
       Options                    : in     Options_Type;
       Callback_Parameter         : in     Callback_Parameter_Class_Access;
-      Dynamic                    : in     Boolean  -- when true it will be freed
+      Dynamic                    : in     Boolean;  -- when true it will be freed
+      Wait_Until_Finished        : in     Boolean
    ) with Pre => Is_Queue_Running and then
                  not Has_Queue_Failed;
 
@@ -122,14 +123,16 @@ package Camera.Command_Queue is
    procedure Process_Command (
       Camera_Queue               : in out Queued_Camera_Type;
       Command                    : in     Commands_Type;
-      Options                    : in     Options_Type);
+      Options                    : in     Options_Type;
+      Wait_Until_Finished        : in     Boolean);
 
    procedure Process_Command (
       Camera_Queue               : in out Queued_Camera_Type;
       Command                    : in     Commands_Type;
       Options                    : in     Options_Type;
       Response                   :    out Maximum_Response_Type;
-      Response_Length            :    out Index_Type);
+      Response_Length            :    out Index_Type;
+      Wait_Until_Finished        : in     Boolean);
 
    procedure Read (
       Camera_Queue               : in out Queued_Camera_Type;
@@ -177,7 +180,8 @@ package Camera.Command_Queue is
    function Synchronous (
       Queued_Camera              : in out Queued_Camera_Type;
       Command                    : in     Commands_Type;
-      Options                    : in     Options_Type
+      Options                    : in     Options_Type;
+      Wait_Until_Finished        : in     Boolean
    ) return Status_Type
    with Pre => Is_Queue_Running and then
                not Has_Queue_Failed;
@@ -187,7 +191,8 @@ package Camera.Command_Queue is
       Queued_Camera              : in out Queued_Camera_Type;
       Command                    : in     Commands_Type;
       Options                    : in     Options_Type;
-      Response_Buffer            :    out Response_Buffer_Type
+      Response_Buffer            : in     Response_Buffer_Class_Access;
+      Wait_Until_Finished        : in     Boolean
    ) return Status_Type
    with Pre => Is_Queue_Running and then
                not Has_Queue_Failed;
@@ -216,6 +221,7 @@ private
       Response_Length            : in     Index_Type;
       Response_Timeout           : in     Duration);
 
-
+   procedure Wait_For_Move (   -- wait until camera stabalizes in one spot
+      Queued_Camera           : in out Queued_Camera_Type);
 
 end Camera.Command_Queue;

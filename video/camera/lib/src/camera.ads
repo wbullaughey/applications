@@ -15,8 +15,8 @@ package Camera is
                                  is Video.Lib.Address_Constant_Access;
    subtype Address_Kind_Type     is Video.Lib.Address_Kind_Type;
    subtype Response_Buffer_Type  is Video.Lib.Response_Buffer_Type;
-   type Response_Buffer_Class_Access
-                                 is access all Response_Buffer_Type'class;
+   subtype Response_Buffer_Class_Access
+                                 is  Video.Lib.Response_Buffer_Class_Access;
    subtype Camera_Preset_Type    is Video.Lib.Camera_Preset_Type; -- range
 --                                    Video.Lib.Unset_Preset .. 127;
    subtype Camera_Type           is Video.Lib.Camera_Type;

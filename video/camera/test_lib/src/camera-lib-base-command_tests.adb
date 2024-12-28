@@ -121,11 +121,25 @@ package body Camera.Lib.Base.Command_Tests is
 -- procedure Test_Zoom_Full (
 --    Test                       : in out AUnit.Test_Cases.Test_Case'class);
 
-   procedure Wait (
-      Length                     : in     Duration);
+-- procedure Wait (
+--    Length                     : in     Duration);
 
    Raw_Suite_Name                : constant String := "Raw_Video_Commands";
    Suite_Name                    : constant String := "Video_Commands";
+
+   ---------------------------------------------------------------
+   function Compare_Offsets (
+      Left              : in     Absolute_Type;
+      Right             : in     Absolute_Type;
+      Difference             : in     Absolute_Type
+   ) return Boolean is
+   ---------------------------------------------------------------
+
+   begin
+      Log_In (Debug, Left'img & Right'img & Difference'img);
+      return Log_Out (abs (Integer (Left) - Integer (Right)) <
+         Integer (Difference), Debug);
+   end Compare_Offsets;
 
 --   ---------------------------------------------------------------
 --   procedure Get_Absolute (
@@ -175,24 +189,6 @@ package body Camera.Lib.Base.Command_Tests is
 --   end Get_Absolute;
 
    ---------------------------------------------------------------
-   procedure Get_Absolute_Iterate (
-      Test              : in out AUnit.Test_Cases.Test_Case'class) is
-      Pan                        :    out Absolute_Type;
-      Tilt                       :    out Absolute_Type) is
-   ---------------------------------------------------------------
-
-      Last_Pan                   : Absolute_Type := Absolute_Type'last;
-      Last_Tilt                  : Absolute_Type := Absolute_Type'last;
-      Local_Test        : Test_Type renames Test_Type (Test);
-
-   begin
-      Log_In (Debug);
-      loop
-         Local_Test.Command_Queue.Camera.Get_Absolute (Pan, Tilt);
-      end loop;
-   end Get_Absolute_Iterate;
-
-   ---------------------------------------------------------------
    function Get_Power (
       Test              : in out Raw_Test_Type'class
    ) return Boolean is
@@ -205,9 +201,10 @@ package body Camera.Lib.Base.Command_Tests is
    begin
       Log_In (Debug);
       Test.Camera_Queue.Process_Command (Power_Request,
-         Options           => Null_Options,
-         Response          => Response_Buffer,
-         Response_Length   => Response_Length);
+         Options                 => Null_Options,
+         Response                => Response_Buffer,
+         Response_Length         => Response_Length,
+         Wait_Until_Finished     => False);
 
       case Response_Buffer (3) is
 
@@ -237,14 +234,8 @@ package body Camera.Lib.Base.Command_Tests is
 
    begin
       Log_In (Debug, "Move to Preset" & Set_Point'img);
-      Test.Camera_Queue.Process_Command (Memory_Recall,
-         Options           => ( 1 =>
-               (
-                  Data           => Data_Type (Set_Point),
-                  Start          => 6,
-                  Variable_Width => False
-               )
-            ));
+      Test.Camera_Queue.Move_To_Preset (Set_Point,
+         Wait_Until_Finished     => True);
       delay 2.0;     -- wait for camera to reposition
       Log_Out (Debug);
    end Move_To_Preset;
@@ -362,14 +353,16 @@ package body Camera.Lib.Base.Command_Tests is
                      Start          => 6,
                      Variable_Width => False
                   )
-               ));
+               ),
+               Wait_Until_Finished     => True);
 
          Log_Here (Debug, "wait to send stop");
          delay Wait (Index);
          Log_Here (Debug, "send stop");
 
          Test.Camera_Queue.Process_Command (Position_Stop,
-            Options     => Null_Options);
+            Options              => Null_Options,
+            Wait_Until_Finished  => False);
 
          delay 0.5;
          Assert (Ask_Pause (Test.Manual,
@@ -586,7 +579,8 @@ package body Camera.Lib.Base.Command_Tests is
                   Start          => 5,
                   Variable_Width => False
                )
-            ));
+            ),
+            Wait_Until_Finished  => True);
 
          if On then -- need to reopen after power comes on
             Log_Here (Debug);
@@ -793,18 +787,17 @@ package body Camera.Lib.Base.Command_Tests is
 
          begin
             Log_Here (Debug, "Count" & Count'img &
-               "initial pan" & Initial_Pan'img &
-               " initial Tilt" & Initial_Tilt'img);
+               " expected pan " & Expected_Pan'img &
+               " expected Tilt " & Expected_Tilt'img);
             Local_Test.Camera_Queue.Position_Relative (
                Pan   => Count,
                Tilt  => Count * 2);
             Local_Test.Camera_Queue.Get_Absolute_Iterate (Pan, Tilt);
             Log_Here (Debug, "pan" & Pan'img & " tilt" & Tilt'img &
-               " expected pan" & Expected_Pan'img &
-               " expected tilt" & Expected_Tilt'img);
-            Assert (abs (Pan - Expected_Pan) <= 1, "bad pan" & Pan'img &
-               " expected" & Expected_Pan'img & " for count" & Count'img);
-            Assert (abs (Tilt - Expected_Tilt) <= 2, "bad Tilt" & Tilt'img &
+               " pan" & Pan'img &
+               " tilt" & Tilt'img);
+            Assert (Compare_Offsets (Tilt, Expected_Tilt, 2),
+               "bad Tilt" & Tilt'img &
                " expected" & Expected_Tilt'img & " for count" & Count'img);
             -- update initial to last read
             Initial_Pan := Pan;
@@ -886,7 +879,8 @@ package body Camera.Lib.Base.Command_Tests is
                   Start          => 6,
                   Variable_Width => False
                )
-            ));
+            ),
+            Wait_Until_Finished     => False);
       Log_Out (Debug);
    end Test_Position_Stop;
 
@@ -991,7 +985,8 @@ package body Camera.Lib.Base.Command_Tests is
                   Start          => 6,
                   Variable_Width => False
                )
-            ));
+            ),
+            Wait_Until_Finished     => False);
       delay 3.0;  -- camera needs time to update memory
       Put_Line ("preset" & Test_Preset'img &
          " saved location" & Default_Preset'img);
@@ -1156,20 +1151,20 @@ package body Camera.Lib.Base.Command_Tests is
 --    Log_Out (Debug);
 -- end Test_Zoom_Full;
 
-   ---------------------------------------------------------------
-   procedure Wait (
-      Length                     : in     Duration) is
-   ---------------------------------------------------------------
-
-      Options                    : Standard.Camera.Lib.Unit_Test.
-                                    Camera_Lib_Unit_Test_Options_Type'class
-                                       renames Standard.Camera.Lib.Unit_Test.
-                                          Get_Camera_Lib_Unit_Test_Read_Only_Options.all;
-   begin
-      if not Options.Camera_Options.If_Emulation then
-         delay Length;
-      end if;
-   end Wait;
+-- ---------------------------------------------------------------
+-- procedure Wait (
+--    Length                     : in     Duration) is
+-- ---------------------------------------------------------------
+--
+--    Options                    : Standard.Camera.Lib.Unit_Test.
+--                                  Camera_Lib_Unit_Test_Options_Type'class
+--                                     renames Standard.Camera.Lib.Unit_Test.
+--                                        Get_Camera_Lib_Unit_Test_Read_Only_Options.all;
+-- begin
+--    if not Options.Camera_Options.If_Emulation then
+--       delay Length;
+--    end if;
+-- end Wait;
 
  begin
 --Debug := True;

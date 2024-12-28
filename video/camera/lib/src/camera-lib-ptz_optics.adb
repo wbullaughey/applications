@@ -18,7 +18,7 @@ package body Camera.Lib.PTZ_Optics is
    use type Video.Lib.Index_Type;
 
    Default_Response_Timeout      : constant Duration := 0.5;
-   Position_Timeout              : constant Duration := 30.0;
+   Position_Timeout              : constant Duration := 1.0;
 
    Commands                      : constant Array (Standard.Camera.
                                     Commands_Type) of Standard.Camera.
@@ -111,9 +111,10 @@ package body Camera.Lib.PTZ_Optics is
    begin
       Log_In (Debug);
       Camera.Process_Command (Position_Request,
-         Options           => Null_Options,
-         Response          => Response_Buffer,
-         Response_Length   => Response_Length);
+         Options              => Null_Options,
+         Response             => Response_Buffer,
+         Response_Length      => Response_Length,
+         Wait_Until_Finished  => True);
 
 --    if Debug then
 --       Response.Dump;
@@ -183,9 +184,10 @@ package body Camera.Lib.PTZ_Optics is
    begin
       Log_In (Debug);
       Camera.Process_Command (Power_Request,
-         Options           => Null_Options,
-         Response          => Response_Buffer,
-         Response_Length   => Response_Length);
+         Options              => Null_Options,
+         Response             => Response_Buffer,
+         Response_Length      => Response_Length,
+         Wait_Until_Finished  => False);
 
       case Response_Buffer (3) is
 
@@ -239,8 +241,9 @@ package body Camera.Lib.PTZ_Optics is
             Timeout              : constant Ada_Lib.Time.Time_Type :=
                                     Ada_Lib.Time.Now + 60.0;
             Status               : constant Status_Type := Camera.Synchronous (
-                                    Command           => Zoom_Inquire,
-                                    Options           => Null_Options);
+                                    Command              => Zoom_Inquire,
+                                    Options              => Null_Options,
+                                    Wait_Until_Finished  => False);
          begin
             if Status /= Success then
                raise Failed with "Synchronous failed with " & Status'img;
@@ -322,51 +325,41 @@ package body Camera.Lib.PTZ_Optics is
 
    begin
       Log_In (Debug, "preset id" & Preset_ID'img &
+         " Wait_Until_Finished " & Wait_Until_Finished'img &
          " Unit_Testing " & Ada_Lib.Unit_Testing'img);
 
-      case Camera_Queue.Synchronous (Memory_Recall,
-         Options     => ( 1 =>
-               (
-                  Data           => Data_Type (Preset_ID),
-                  Start          => 6,
-                  Variable_Width => False
-               )
-            )) is
+      declare
+         Status      : constant Status_Type :=
+                        Camera_Queue.Synchronous (Memory_Recall,
+                           Options     => ( 1 =>
+                                 (
+                                    Data           => Data_Type (Preset_ID),
+                                    Start          => 6,
+                                    Variable_Width => False
+                                 )
+                              ),
+                           Wait_Until_Finished  => Wait_Until_Finished);
+      begin
+         case Status is
+            when Success =>
+               Log_Here (Debug, "Synchronous return Success");
 
-         when Fault =>
-            Log_Here ("Synchronous return fault");
+            when Standard.Camera.Timeout =>
+               Log_Here ("Synchronous return Timeout");
+               raise Failed with "Move_To_Preset timed out";
 
-         when Not_Set =>
-            Log_Here ("Synchronous return not set");
-            raise Failed with "Synchronous command returnd not set";
+            when Others =>
+               declare
+                  Message     : constant String :=
+                                 "Move_To_Preset return status " &
+                                 Status'img;
+               begin
+                  Log_Here ("Synchronous return not set");
+                  raise Failed with "Move_To_Preset returnd not set";
+               end;
+         end case;
+      end;
 
-         when Success =>
-            Log_Here (Debug, "Synchronous return Success");
-
-         when Standard.Camera.Timeout =>
-            Log_Here ("Synchronous return Timeout");
-
-      end case;
-
-      if Wait_Until_Finished then
-         loop
-            declare
-               Pan                  : Absolute_Type;
-               Tilt                 : Absolute_Type;
-            begin
-               Log_Here (Debug);
-               Camera_Queue.Get_Absolute (Pan, Tilt);
-               Log_Here (Debug, "pan " & Pan'img & " tilt " & Tilt'img);
-               exit;
-
-            exception
-               when Fault: others =>
-                  Trace_Exception (Debug, Fault);
-               delay 0.5;
-               Log_Here (Debug);
-            end;
-         end loop;
-      end if;
       Log_Out (Debug);
    end Move_To_Preset;
 
@@ -408,7 +401,8 @@ package body Camera.Lib.PTZ_Optics is
                               Value          => Convert (Tilt),
                               Width          => 4
                            )
-                        )
+                        ),
+                        Wait_Until_Finished  => True
                      );
       begin
          if Status /= Success then
@@ -536,8 +530,8 @@ package body Camera.Lib.PTZ_Optics is
       Camera                     : in out PTZ_Optics_Type;
       Pan                        : in     Absolute_Type;
       Tilt                       : in     Absolute_Type;
-      Pan_Speed                  : in      Property_Type := 1;
-      Tilt_Speed                 : in      Property_Type := 1) is
+      Pan_Speed                  : in     Property_Type := 1;
+      Tilt_Speed                 : in     Property_Type := 1) is
    ---------------------------------------------------------------
 
    begin
@@ -568,7 +562,8 @@ package body Camera.Lib.PTZ_Optics is
                                  Value          => Convert (Tilt),
                                  Width          => 4
                               )
-                           )
+                           ),
+                           Wait_Until_Finished  => True
                         );
       begin
          if Status /= Success then
@@ -576,6 +571,26 @@ package body Camera.Lib.PTZ_Optics is
          end if;
       end;
 
+--    if Wait_Until_Finished then
+--       loop
+--          declare
+--             Pan                  : Absolute_Type;
+--             Tilt                 : Absolute_Type;
+--          begin
+--             Log_Here (Debug);
+--             Camera.Get_Absolute (Pan, Tilt);
+--             Log_Here (Debug, "pan " & Pan'img & " tilt " & Tilt'img);
+--             exit;
+--
+--          exception
+--             when Fault: others =>
+--                Trace_Exception (Debug, Fault);
+--             delay 0.5;
+--             Log_Here (Debug);
+--          end;
+--       end loop;
+--    end if;
+      Log_Out (Debug);
       Log_Out (Debug);
    end Set_Absolute;
 
@@ -603,7 +618,8 @@ package body Camera.Lib.PTZ_Optics is
                                     Start          => 5,
                                     Variable_Width => False
                                  )
-                              ));
+                              ),
+                           Wait_Until_Finished     => False);
 
       begin
          if Status /= Success then
@@ -656,7 +672,8 @@ package body Camera.Lib.PTZ_Optics is
                   Start          => 6,
                   Variable_Width => False
                )
-            )) is
+            ),
+            Wait_Until_Finished  => False) is
 
          when Fault =>
             Log_Here ("Synchronous return fault");

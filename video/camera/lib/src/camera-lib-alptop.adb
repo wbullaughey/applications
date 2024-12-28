@@ -64,9 +64,10 @@ package body Camera.LIB.ALPTOP is
    begin
       Log_In (Debug);
       Camera.Process_Command (Position_Request,
-         Options           => Null_Options,
-         Response          => Response_Buffer,
-         Response_Length   => Response_Length);
+         Options                 => Null_Options,
+         Response                => Response_Buffer,
+         Response_Length         => Response_Length,
+         Wait_Until_Finished     => False);
 
 --    if Debug then
 --       Response.Dump;

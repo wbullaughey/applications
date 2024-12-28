@@ -79,6 +79,8 @@ package Video.Lib is
    end record;
 
    type Response_Buffer_Access   is access all Response_Buffer_Type;
+   type Response_Buffer_Class_Access
+                                 is access all Response_Buffer_Type'class;
 
    function Callback (
       Response                  : in out Response_Buffer_Type

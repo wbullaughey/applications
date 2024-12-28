@@ -313,9 +313,15 @@ package body Camera.Lib.PTZ_Optics.Unit_Test is
       Test                       : in out AUnit.Test_Cases.Test_Case'class) is
    ----------------------------------------------------------------
 
-      Local_Test                 : Test_Type'class renames Test_Type'class (Test);
+      Local_Test        : Test_Type'class renames Test_Type'class (Test);
+      Default_Preset    : constant Preset_ID_Type :=
+                           Local_Test.Camera_Queue.Get_Default_Preset;
       Final_Pan         : Absolute_Type;
       Final_Tilt        : Absolute_Type;
+      Options           : Standard.Camera.Lib.Unit_Test.
+                           Camera_Lib_Unit_Test_Options_Type'class
+                              renames Standard.Camera.Lib.Unit_Test.
+                                 Get_Camera_Lib_Unit_Test_Read_Only_Options.all;
       Pan_Set           : Absolute_Type;
       Test_Pan           : Absolute_Type;
       Test_Tilt           : Absolute_Type;
@@ -324,21 +330,30 @@ package body Camera.Lib.PTZ_Optics.Unit_Test is
    begin
       Log_In (Debug);
       -- use Test_Preset as reference
-      Local_Test.Camera_Queue.Move_To_Preset (Test_Preset);
+      Local_Test.Camera_Queue.Move_To_Preset (Default_Preset);
       -- get coordinats of test preset
+      Pause (Options.Manual, "camera set to default");
       Local_Test.Camera_Queue.Get_Absolute_Iterate (Test_Pan, Test_Tilt);
       -- calculate offset from reference
       Pan_Set := Test_Pan + 100;
       Tilt_Set := Test_Tilt - 100;
       -- set to that offset
+      Log_Here (Debug, "set pan " & Pan_Set'img & " tilt " & Tilt_Set'img);
       Local_Test.Camera_Queue.Set_Absolute (Pan_Set, Tilt_Set);
+      if Options.Manual then
+         Pause ("camera set to offset from default");
+      end if;
       -- get coordinates of new location
       Local_Test.Camera_Queue.Get_Absolute_Iterate (Final_Pan, Final_Tilt);
+      Log_Here (Debug, "got pan " & Final_Pan'img & " tilt " & Final_Tilt'img);
       -- verify it got coordinates that were set
       Check_Coordinates (Final_Pan, Pan_Set, Final_Tilt, Tilt_Set);
       -- set it back to reference
-      Local_Test.Camera_Queue.Move_To_Preset (Test_Preset);
+      Local_Test.Camera_Queue.Move_To_Preset (Default_Preset);
       -- git its coordinats
+      if Options.Manual then
+         Pause ("camera set to default");
+      end if;
       Local_Test.Camera_Queue.Get_Absolute_Iterate (Final_Pan, Final_Tilt);
       Check_Coordinates (Final_Pan, Test_Pan, Final_Tilt, Test_Tilt);
       Log_Out (Debug);
