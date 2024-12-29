@@ -103,6 +103,7 @@ package body Camera.Command_Queue is
    ---------------------------------------------------------------
    procedure Get_Absolute_Iterate (
       Camera_Queue               : in out Queued_Camera_Type;
+      Synchronus                 : in     Boolean;
       Pan                        :    out Absolute_Type;
       Tilt                       :    out Absolute_Type) is
    ---------------------------------------------------------------
@@ -173,78 +174,100 @@ package body Camera.Command_Queue is
 
    begin
       Log_In (Debug);
-      loop
-         declare
-            Accumulator          : Interfaces.Unsigned_16;
-            Conversion           : Absolute_Type;
-            for Conversion'address use Accumulator'address;
-            Response             : aliased Derived_Response_Buffer_Type;
-         begin
-            case Camera_Queue.Synchronous (
-                  Command              => Position_Request,
-                  Options              => Null_Options,
-                  Response_Buffer      => Response'unchecked_access,
-                  Wait_Until_Finished  => False) is
+      if Synchronus then
+         loop
+            declare
+               Accumulator          : Interfaces.Unsigned_16;
+               Conversion           : Absolute_Type;
+               for Conversion'address use Accumulator'address;
+               Response             : aliased Derived_Response_Buffer_Type;
+            begin
+               case Camera_Queue.Synchronous (
+                     Command              => Position_Request,
+                     Options              => Null_Options,
+                     Response_Buffer      => Response'unchecked_access,
+                     Wait_Until_Finished  => False) is
 
-               when Fault =>
-                  Log_Here ("Synchronous return fault");
-                  raise Failed with "Synchronous return fault";
+                  when Fault =>
+                     Log_Here ("Synchronous return fault");
+                     raise Failed with "Synchronous return fault";
 
-               when Not_Set =>
-                  Log_Here ("Synchronous return not set");
-                  raise Failed with "Synchronous return not set";
+                  when Not_Set =>
+                     Log_Here ("Synchronous return not set");
+                     raise Failed with "Synchronous return not set";
 
-               when Success =>
-                  Log_Here (Debug, "Synchronous return Success");
+                  when Success =>
+                     Log_Here (Debug, "Synchronous return Success");
 
-               when Standard.Camera.Timeout =>
-                  Log_Here ("Synchronous return Timeout");
-                  raise Failed with "Synchronous return timed out";
+                  when Standard.Camera.Timeout =>
+                     Log_Here ("Synchronous return Timeout");
+                     raise Failed with "Synchronous return timed out";
 
-            end case;
+               end case;
 
-            if Last_Pan /= Absolute_Type'last then
-               if Ada_Lib.Time.Now > Timeout then
-                  raise Failed with "camera move did not converge in " &
-                     Converge_Timeout'img & " seconds";
+               if Last_Pan /= Absolute_Type'last then
+                  if Ada_Lib.Time.Now > Timeout then
+                     raise Failed with "camera move did not converge in " &
+                        Converge_Timeout'img & " seconds";
+                  end if;
+
+                  declare
+                     Delta_Pan      : constant Integer := abs (
+                                       Integer (Last_Pan) -
+                                          Integer (Response.Pan));
+                     Delta_Tilt     : constant Integer := abs (
+                                       Integer (Last_Tilt) -
+                                          Integer (Response.Tilt));
+                     Delta_Message  : constant String :=
+                                       " delta pan" & Delta_Pan'img &
+                                       " delta tilt" & Delta_Tilt'img;
+                  begin
+                     Log_Here (Debug, "Pan" & Response.Pan'img & " Tilt" & Response.Tilt'img &
+                        Delta_Message);
+                     if    Delta_Pan < 2 and then
+                           Delta_Tilt < 2 then
+                        Pan := Response.Pan;
+                        Tilt := Response.Tilt;
+                        Log_Out (Debug, "pan " & Pan'img & " tilt " & Tilt'img);
+                        return;
+                     elsif Ada_Lib.Time.Now > Timeout then
+                        declare
+                           Message        : constant String :=
+                                             "Get_Absolute did not converge. " &
+                                             Delta_Message;
+                        begin
+                           Log_Exception (Debug, Message);
+                           raise Failed with Message;
+                        end;
+                     end if;
+                  end;
                end if;
 
-               declare
-                  Delta_Pan      : constant Integer := abs (
-                                    Integer (Last_Pan) -
-                                       Integer (Response.Pan));
-                  Delta_Tilt     : constant Integer := abs (
-                                    Integer (Last_Tilt) -
-                                       Integer (Response.Tilt));
-                  Delta_Message  : constant String :=
-                                    " delta pan" & Delta_Pan'img &
-                                    " delta tilt" & Delta_Tilt'img;
-               begin
-                  Log_Here (Debug, "Pan" & Response.Pan'img & " Tilt" & Response.Tilt'img &
-                     Delta_Message);
-                  if    Delta_Pan < 2 and then
-                        Delta_Tilt < 2 then
-                     Pan := Response.Pan;
-                     Tilt := Response.Tilt;
-                     Log_Out (Debug, "pan " & Pan'img & " tilt " & Tilt'img);
-                     return;
-                  elsif Ada_Lib.Time.Now > Timeout then
-                     declare
-                        Message        : constant String :=
-                                          "Get_Absolute did not converge. " &
-                                          Delta_Message;
-                     begin
-                        Log_Exception (Debug, Message);
-                        raise Failed with Message;
-                     end;
-                  end if;
-               end;
-            end if;
+               Last_Pan := Response.Pan;
+               Last_Tilt := Response.Tilt;
+            end;
+         end loop;
+      else
+         declare
+            Parameter                  : Parameters_Access_Type :=
+                                          Parameters_Type (Dynamic  => False);
+            Callback_Parameter   : aliased Callback_Parameter_Type := (
+               Command_Code      => Command,
+               Response_Buffer   => Response_Buffer);
 
-            Last_Pan := Response.Pan;
-            Last_Tilt := Response.Tilt;
-         end;
-      end loop;
+         begin
+            Log_In (Debug, "command " & Command'img);
+            Initialize_Parameter (
+               Parameter            => Parameter,
+               Camera               => Queued_Camera'Unchecked_Access,
+               Command_Code         => Position_Request,
+               Options              => Null_Options,
+               Callback_Parameter   => Callback_Parameter'unchecked_access,
+               Wait_Until_Finished  => Wait_Until_Finished);
+
+            Process_Queue_Task.Push_Command (Parameter);
+         end if;
+      end if;
    end Get_Absolute_Iterate;
 
    ---------------------------------------------------------------
@@ -477,6 +500,11 @@ package body Camera.Command_Queue is
 
       Camera_Queue.Waiting_For_Response := False;
       Camera_Queue.Last_Command := No_Command;
+
+      if Wait_Until_Finished then   -- wait until camera stabalizes in one spot
+         Wait_For_Move (Camera_Queue);
+      end if;
+
       Log_Out (Debug);
 
    exception
@@ -547,15 +575,7 @@ package body Camera.Command_Queue is
       Camera_Queue.Last_Command := No_Command;
 
       if Wait_Until_Finished then   -- wait until camera stabalizes in one spot
-         declare
-            Pan                  : Absolute_Type;
-            Tilt                 : Absolute_Type;
-         begin
-            Log_Here (Debug);    -- allow nested request
-            Queued_Camera_Type'class (Camera_Queue).Get_Absolute_Iterate (
-               Pan, Tilt);
-            Log_Here (Debug, "pan " & Pan'img & " tilt " & Tilt'img);
-         end;
+         Wait_For_Move (Camera_Queue);
       end if;
 
       Log_Out (Debug);
@@ -602,20 +622,14 @@ package body Camera.Command_Queue is
    ) return Status_Type is
    ----------------------------------------------------------------
 
-      Parameter                  : aliased Parameters_Type (
-         Dynamic  => False);
-
    begin
       Log_In (Debug, "command " & Command'img & " length" & Options'length'img &
          " Wait_Until_Finished " & Wait_Until_Finished'img);
-      Initialize_Parameter (
-         Parameter            => Parameter,
-         Camera               => Queued_Camera'Unchecked_Access,
-         Command_Code         => Command,
-         Options              => Options,
-         Callback_Parameter   => null,
-         Wait_Until_Finished  => Wait_Until_Finished);
-      Process_Queue_Task.Push_Command (Parameter'unchecked_access);
+
+      Queued_Camera.Process_Command (
+         Command, Options, Wait_Until_Finished);
+      end if;u
+
       case Parameter.Completion_Event.Status is
 
          when Success =>
@@ -713,7 +727,9 @@ package body Camera.Command_Queue is
    begin
       Log_In (Debug);    -- allow nested request
       Queued_Camera_Type'class (Queued_Camera).Get_Absolute_Iterate (
-         Pan, Tilt);
+         Synchronus  => True,
+         Pan         => Pan,
+         Tilt        => Tilt);
       Log_Out (Debug, "pan " & Pan'img & " tilt " & Tilt'img);
 
    end Wait_For_Move;

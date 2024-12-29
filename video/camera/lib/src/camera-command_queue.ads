@@ -62,6 +62,7 @@ package Camera.Command_Queue is
 
    procedure Get_Absolute_Iterate (
       Camera_Queue               : in out Queued_Camera_Type;
+      Synchronus                 : in     Boolean;
       Pan                        :    out Absolute_Type;
       Tilt                       :    out Absolute_Type);
 

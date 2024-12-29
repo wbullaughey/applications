@@ -774,7 +774,11 @@ package body Camera.Lib.Base.Command_Tests is
    begin
       Log_In (Debug);
       Pause (Local_Test.Manual, "camera should be at preset 0");
-      Local_Test.Camera_Queue.Get_Absolute_Iterate (Initial_Pan, Initial_Tilt);
+      Local_Test.Camera_Queue.Get_Absolute_Iterate (
+               Synchronus  => True,
+               Pan         => Initial_Pan,
+               Tilt        => Initial_Tilt);
+
       Log_Here (Debug, "initial pan" & Initial_Pan'img & " inital tilt" & Initial_Tilt'img);
       for Count in Video.Lib.Relative_Type'(1) .. 10 loop
          declare
@@ -792,7 +796,11 @@ package body Camera.Lib.Base.Command_Tests is
             Local_Test.Camera_Queue.Position_Relative (
                Pan   => Count,
                Tilt  => Count * 2);
-            Local_Test.Camera_Queue.Get_Absolute_Iterate (Pan, Tilt);
+            Local_Test.Camera_Queue.Get_Absolute_Iterate (
+               Synchronus  => True,
+               Pan         => Pan,
+               Tilt        => Tilt);
+
             Log_Here (Debug, "pan" & Pan'img & " tilt" & Tilt'img &
                " pan" & Pan'img &
                " tilt" & Tilt'img);
@@ -836,7 +844,10 @@ package body Camera.Lib.Base.Command_Tests is
    begin
       Log_In (Debug, "set pan " & Set_Pan'img & " set tilt " & Set_Tilt'img);
       Local_Test.Camera_Queue.Set_Absolute (Set_Pan, Set_Tilt);
-      Local_Test.Camera_Queue.Get_Absolute_Iterate (Pan, Tilt);
+      Local_Test.Camera_Queue.Get_Absolute_Iterate (
+         Synchronus  => True,
+         Pan         => Initial_Pan,
+         Tilt        => Initial_Tilt);
 
       Assert (Pan = Set_Pan, "invalid pan " & Pan'img &
          " expected " & Set_Pan'img);
