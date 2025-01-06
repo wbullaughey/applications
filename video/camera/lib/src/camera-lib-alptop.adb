@@ -184,9 +184,8 @@ package body Camera.LIB.ALPTOP is
    overriding
    procedure Move_To_Preset (
       Camera_Queue               : in out ALPTOP_Type;
-      Preset_ID                  : in     Preset_ID_Type;
-      Wait_Until_Finished        : in     Boolean := True) is
-   pragma Unreferenced (Camera_Queue, Preset_ID, Wait_Until_Finished);
+      Preset_ID                  : in     Preset_ID_Type) is
+   pragma Unreferenced (Camera_Queue, Preset_ID);
    ---------------------------------------------------------------
 
    begin

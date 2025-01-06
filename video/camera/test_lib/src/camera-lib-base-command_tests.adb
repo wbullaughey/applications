@@ -227,18 +227,17 @@ package body Camera.Lib.Base.Command_Tests is
    end Get_Power;
 
    ---------------------------------------------------------------
-   procedure Move_To_Preset (         -- tests Memory_Set - sets camera to preset
+   procedure Checked_Move_To_Preset (         -- tests Memory_Set - sets camera to preset
       Test                       : in out Raw_Test_Type'class;
       Set_Point                  : in     Preset_ID_Type) is
    ---------------------------------------------------------------
 
    begin
       Log_In (Debug, "Move to Preset" & Set_Point'img);
-      Test.Camera_Queue.Move_To_Preset (Set_Point,
-         Wait_Until_Finished     => True);
+      Test.Camera_Queue.Checked_Move_To_Preset (Set_Point);
       delay 2.0;     -- wait for camera to reposition
       Log_Out (Debug);
-   end Move_To_Preset;
+   end Checked_Move_To_Preset;
 
    ---------------------------------------------------------------
    overriding
@@ -338,7 +337,7 @@ package body Camera.Lib.Base.Command_Tests is
    begin
       Log_In (Debug, Sideways & " " & Vertical);
       for Index in Speeds'range loop
---       Move_To_Preset (Test, Default_Preset); -- should be set by Set_Up
+--       Checked_Move_To_Preset (Test, Default_Preset); -- should be set by Set_Up
          Pause (Options.Manual, "watch " & Rate (Index) & " scan " &
            Description);
          Test.Camera_Queue.Process_Command (Command,
@@ -370,7 +369,7 @@ package body Camera.Lib.Base.Command_Tests is
                " scan for " & Wait (Index)'img &
                " seconds"),
             "manual set failed");
-         Move_To_Preset (Test, Default_Preset);
+         Checked_Move_To_Preset (Test, Default_Preset);
       end loop;
       Log_Out (Debug);
    end Position_Test;
@@ -639,7 +638,7 @@ package body Camera.Lib.Base.Command_Tests is
             end;
          end if;
       end;
-      Move_To_Preset (Test, Test.Camera_Queue.Get_Default_Preset);
+      Checked_Move_To_Preset (Test, Test.Camera_Queue.Get_Default_Preset);
       Log_Out (Debug or Trace_Set_Up);
    end Set_Up;
 
@@ -775,7 +774,6 @@ package body Camera.Lib.Base.Command_Tests is
       Log_In (Debug);
       Pause (Local_Test.Manual, "camera should be at preset 0");
       Local_Test.Camera_Queue.Get_Absolute_Iterate (
-               Synchronus  => True,
                Pan         => Initial_Pan,
                Tilt        => Initial_Tilt);
 
@@ -797,7 +795,6 @@ package body Camera.Lib.Base.Command_Tests is
                Pan   => Count,
                Tilt  => Count * 2);
             Local_Test.Camera_Queue.Get_Absolute_Iterate (
-               Synchronus  => True,
                Pan         => Pan,
                Tilt        => Tilt);
 
@@ -845,9 +842,8 @@ package body Camera.Lib.Base.Command_Tests is
       Log_In (Debug, "set pan " & Set_Pan'img & " set tilt " & Set_Tilt'img);
       Local_Test.Camera_Queue.Set_Absolute (Set_Pan, Set_Tilt);
       Local_Test.Camera_Queue.Get_Absolute_Iterate (
-         Synchronus  => True,
-         Pan         => Initial_Pan,
-         Tilt        => Initial_Tilt);
+         Pan         => Pan,
+         Tilt        => Tilt);
 
       Assert (Pan = Set_Pan, "invalid pan " & Pan'img &
          " expected " & Set_Pan'img);
@@ -981,7 +977,7 @@ package body Camera.Lib.Base.Command_Tests is
             Test_Preset'img & ". Less than minimum for testing" &
             Minimum_Test_Preset'img;
       end if;
-      Local_Test.Move_To_Preset (Default_Preset);
+      Local_Test.Checked_Move_To_Preset (Default_Preset);
       delay 2.5;
       if Local_Test.Manual then
          Assert (Ask_Pause (True, "check default preset" & Default_Preset'img),
@@ -1001,7 +997,7 @@ package body Camera.Lib.Base.Command_Tests is
       delay 3.0;  -- camera needs time to update memory
       Put_Line ("preset" & Test_Preset'img &
          " saved location" & Default_Preset'img);
-      Local_Test.Move_To_Preset (Alternate_Preset);
+      Local_Test.Checked_Move_To_Preset (Alternate_Preset);
       if Local_Test.Manual then
          Assert (Ask_Pause (True, "check alternate preset" & Alternate_Preset'img),
             "move to preset" & Alternate_Preset'img & " failed");
@@ -1009,7 +1005,7 @@ package body Camera.Lib.Base.Command_Tests is
          delay 2.5;  -- wait for camera to move
          Put_Line ("camera moved to alternate preset" & Alternate_Preset'img);
       end if;
-      Local_Test.Move_To_Preset (Test_Preset);
+      Local_Test.Checked_Move_To_Preset (Test_Preset);
       delay 2.5;
       if Local_Test.Manual then
          Assert (Ask_Pause (True, "check test preset" & Test_Preset'img &
@@ -1084,10 +1080,10 @@ package body Camera.Lib.Base.Command_Tests is
 --       Response_Length   => Response_Length);
 --    Log_Here (Debug, "set camera to different preset");
 --    -- set camera to Different_Preset
---    Local_Test.Camera_Queue.Move_To_Preset (Different_Preset);
+--    Local_Test.Camera_Queue.Checked_Move_To_Preset (Different_Preset);
 --    Pause (Options.Manual, "at different preset " & Different_Preset'img);
 --    Log_Here (Debug, "set camera to test preset");
---    Local_Test.Camera_Queue.Move_To_Preset (Test_Preset);
+--    Local_Test.Camera_Queue.Checked_Move_To_Preset (Test_Preset);
 --
 --    Pause (Options.Manual, "at test preset " & Test_Preset'img);
 --    Assert (Ask_Pause (Local_Test.Manual,
@@ -1110,12 +1106,12 @@ package body Camera.Lib.Base.Command_Tests is
    begin
       Log_In (Debug, "Test_Preset" & Test_Preset'img);
       Pause (Local_Test.Manual, "set preset" & Test_Preset'img);
-      Local_Test.Move_To_Preset (Default_Preset);
+      Local_Test.Checked_Move_To_Preset (Default_Preset);
       if Local_Test.Manual then
          Assert (Ask_Pause (True, "check default preset" & Default_Preset'img),
             "move to preset" & Default_Preset'img & " failed");
       end if;
-      Local_Test.Move_To_Preset (Test_Preset);
+      Local_Test.Checked_Move_To_Preset (Test_Preset);
 
       Assert (Ask_Pause (Local_Test.Manual,
          "verify that the preset" & Test_Preset'img),

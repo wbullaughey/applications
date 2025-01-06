@@ -74,8 +74,7 @@ private
    overriding
    procedure Move_To_Preset (
       Camera_Queue               : in out ALPTOP_Type;
-      Preset_ID                  : in     Preset_ID_Type;
-      Wait_Until_Finished        : in     Boolean := True);
+      Preset_ID                  : in     Preset_ID_Type);
 
    overriding
    procedure Position_Relative (

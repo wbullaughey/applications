@@ -45,6 +45,11 @@ package Camera.Command_Queue is
    ) with Pre => Is_Queue_Running and then
                  not Has_Queue_Failed;
 
+   -- sets camera location to a preset and waits for amera to stableize
+   procedure Checked_Move_To_Preset (
+      Camera_Queue               : in out Queued_Camera_Type;
+      Preset_ID                  : in     Configuration.Camera.Preset_ID_Type);
+
    procedure Close (
       Queued_Camera              : in out Queued_Camera_Type);
 
@@ -62,9 +67,9 @@ package Camera.Command_Queue is
 
    procedure Get_Absolute_Iterate (
       Camera_Queue               : in out Queued_Camera_Type;
-      Synchronus                 : in     Boolean;
       Pan                        :    out Absolute_Type;
-      Tilt                       :    out Absolute_Type);
+      Tilt                       :    out Absolute_Type;
+      Queued                     : in     Boolean := False);
 
    function Get_Ack_Length (
       Camera_Queue               : in     Queued_Camera_Type
@@ -98,8 +103,7 @@ package Camera.Command_Queue is
    -- sets camera location to a preset
    procedure Move_To_Preset (
       Camera_Queue               : in out Queued_Camera_Type;
-      Preset_ID                  : in     Configuration.Camera.Preset_ID_Type;
-      Wait_Until_Finished        : in     Boolean := True) is abstract;
+      Preset_ID                  : in     Configuration.Camera.Preset_ID_Type) is abstract;
 
    procedure Open (
       Queued_Camera              : in out Queued_Camera_Type;

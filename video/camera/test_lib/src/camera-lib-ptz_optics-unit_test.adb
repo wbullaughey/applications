@@ -286,14 +286,12 @@ package body Camera.Lib.PTZ_Optics.Unit_Test is
       Local_Test.Camera_Queue.Move_To_Preset (Test_Preset);
       -- get coordinats of test preset
       Local_Test.Camera_Queue.Get_Absolute_Iterate (
-               Synchronus  => True,
                Pan         => Test_Pan,
                Tilt        => Test_Tilt);
       -- set relative
       Local_Test.Camera_Queue.Position_Relative (Pan_Offset, Tilt_Offset);
       -- get coordinates of new location
       Local_Test.Camera_Queue.Get_Absolute_Iterate (
-               Synchronus  => True,
                Pan         => Final_Pan,
                Tilt        => Final_Tilt);
       -- verify it got coordinates that were set
@@ -303,7 +301,6 @@ package body Camera.Lib.PTZ_Optics.Unit_Test is
       Local_Test.Camera_Queue.Move_To_Preset (Test_Preset);
       -- git its coordinats
       Local_Test.Camera_Queue.Get_Absolute_Iterate (
-               Synchronus  => True,
                Pan         => Final_Pan,
                Tilt        => Final_Tilt);
       Check_Coordinates (Final_Pan, Test_Pan, Final_Tilt, Test_Tilt);
@@ -343,7 +340,6 @@ package body Camera.Lib.PTZ_Optics.Unit_Test is
       -- get coordinats of test preset
       Pause (Options.Manual, "camera set to default");
       Local_Test.Camera_Queue.Get_Absolute_Iterate (
-               Synchronus  => True,
                Pan         => Test_Pan,
                Tilt        => Test_Tilt);
       -- calculate offset from reference
@@ -357,7 +353,6 @@ package body Camera.Lib.PTZ_Optics.Unit_Test is
       end if;
       -- get coordinates of new location
       Local_Test.Camera_Queue.Get_Absolute_Iterate (
-               Synchronus  => True,
                Pan         => Final_Pan,
                Tilt        => Final_Tilt);
       Log_Here (Debug, "got pan " & Final_Pan'img & " tilt " & Final_Tilt'img);
@@ -370,7 +365,6 @@ package body Camera.Lib.PTZ_Optics.Unit_Test is
          Pause ("camera set to default");
       end if;
       Local_Test.Camera_Queue.Get_Absolute_Iterate (
-               Synchronus  => True,
                Pan         => Final_Pan,
                Tilt        => Final_Tilt);
       Check_Coordinates (Final_Pan, Test_Pan, Final_Tilt, Test_Tilt);

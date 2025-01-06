@@ -319,47 +319,22 @@ package body Camera.Lib.PTZ_Optics is
    overriding
    procedure Move_To_Preset (
       Camera_Queue               : in out PTZ_Optics_Type;
-      Preset_ID                  : in     Preset_ID_Type;
-      Wait_Until_Finished        : in     Boolean := True) is
+      Preset_ID                  : in     Preset_ID_Type) is
    ---------------------------------------------------------------
 
    begin
       Log_In (Debug, "preset id" & Preset_ID'img &
-         " Wait_Until_Finished " & Wait_Until_Finished'img &
          " Unit_Testing " & Ada_Lib.Unit_Testing'img);
 
-      declare
-         Status      : constant Status_Type :=
-                        Camera_Queue.Synchronous (Memory_Recall,
-                           Options     => ( 1 =>
+      Camera_Queue.Process_Command (Memory_Recall,
+         Options     => ( 1 =>
                                  (
                                     Data           => Data_Type (Preset_ID),
                                     Start          => 6,
                                     Variable_Width => False
                                  )
                               ),
-                           Wait_Until_Finished  => Wait_Until_Finished);
-      begin
-         case Status is
-            when Success =>
-               Log_Here (Debug, "Synchronous return Success");
-
-            when Standard.Camera.Timeout =>
-               Log_Here ("Synchronous return Timeout");
-               raise Failed with "Move_To_Preset timed out";
-
-            when Others =>
-               declare
-                  Message     : constant String :=
-                                 "Move_To_Preset return status " &
-                                 Status'img;
-               begin
-                  Log_Here ("Synchronous return not set");
-                  raise Failed with "Move_To_Preset returnd not set";
-               end;
-         end case;
-      end;
-
+         Wait_Until_Finished  => False);
       Log_Out (Debug);
    end Move_To_Preset;
 
