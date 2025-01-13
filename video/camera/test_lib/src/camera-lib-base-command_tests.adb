@@ -204,7 +204,8 @@ package body Camera.Lib.Base.Command_Tests is
          Options                 => Null_Options,
          Response                => Response_Buffer,
          Response_Length         => Response_Length,
-         Wait_Until_Finished     => False);
+         Wait_Until_Finished     => False,
+         In_Queue                => False);
 
       case Response_Buffer (3) is
 
@@ -353,7 +354,8 @@ package body Camera.Lib.Base.Command_Tests is
                      Variable_Width => False
                   )
                ),
-               Wait_Until_Finished     => True);
+               Wait_Until_Finished     => True,
+               In_Queue                => False);
 
          Log_Here (Debug, "wait to send stop");
          delay Wait (Index);
@@ -361,7 +363,8 @@ package body Camera.Lib.Base.Command_Tests is
 
          Test.Camera_Queue.Process_Command (Position_Stop,
             Options              => Null_Options,
-            Wait_Until_Finished  => False);
+            Wait_Until_Finished  => False,
+            In_Queue             => False);
 
          delay 0.5;
          Assert (Ask_Pause (Test.Manual,
@@ -579,7 +582,8 @@ package body Camera.Lib.Base.Command_Tests is
                   Variable_Width => False
                )
             ),
-            Wait_Until_Finished  => True);
+            Wait_Until_Finished  => True,
+            In_Queue             => False);
 
          if On then -- need to reopen after power comes on
             Log_Here (Debug);
@@ -775,7 +779,8 @@ package body Camera.Lib.Base.Command_Tests is
       Pause (Local_Test.Manual, "camera should be at preset 0");
       Local_Test.Camera_Queue.Get_Absolute_Iterate (
                Pan         => Initial_Pan,
-               Tilt        => Initial_Tilt);
+               Tilt        => Initial_Tilt,
+               In_Queue    => False);
 
       Log_Here (Debug, "initial pan" & Initial_Pan'img & " inital tilt" & Initial_Tilt'img);
       for Count in Video.Lib.Relative_Type'(1) .. 10 loop
@@ -796,7 +801,8 @@ package body Camera.Lib.Base.Command_Tests is
                Tilt  => Count * 2);
             Local_Test.Camera_Queue.Get_Absolute_Iterate (
                Pan         => Pan,
-               Tilt        => Tilt);
+               Tilt        => Tilt,
+               In_Queue    => False);
 
             Log_Here (Debug, "pan" & Pan'img & " tilt" & Tilt'img &
                " pan" & Pan'img &
@@ -843,7 +849,8 @@ package body Camera.Lib.Base.Command_Tests is
       Local_Test.Camera_Queue.Set_Absolute (Set_Pan, Set_Tilt);
       Local_Test.Camera_Queue.Get_Absolute_Iterate (
          Pan         => Pan,
-         Tilt        => Tilt);
+         Tilt        => Tilt,
+         In_Queue    => False);
 
       Assert (Pan = Set_Pan, "invalid pan " & Pan'img &
          " expected " & Set_Pan'img);
@@ -887,7 +894,8 @@ package body Camera.Lib.Base.Command_Tests is
                   Variable_Width => False
                )
             ),
-            Wait_Until_Finished     => False);
+            Wait_Until_Finished     => False,
+            In_Queue                => False);
       Log_Out (Debug);
    end Test_Position_Stop;
 
@@ -993,7 +1001,8 @@ package body Camera.Lib.Base.Command_Tests is
                   Variable_Width => False
                )
             ),
-            Wait_Until_Finished     => False);
+            Wait_Until_Finished     => False,
+            In_Queue                => False);
       delay 3.0;  -- camera needs time to update memory
       Put_Line ("preset" & Test_Preset'img &
          " saved location" & Default_Preset'img);

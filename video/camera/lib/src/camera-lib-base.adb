@@ -297,6 +297,8 @@ package body Camera.Lib.Base is
 
    begin
       Log_In (Debug, "Read length" & Data'length'img &
+         " first" & Data'first'img &
+         " last" & Data'last'img &
          " timeout " & Timeout'img);
       Camera.Socket.Read (Data, Timeout);
       if Debug then

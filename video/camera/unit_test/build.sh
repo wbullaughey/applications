@@ -8,12 +8,12 @@ case  ${OS_VERSION%%.*} in
       echo desktop
       echo $PATH
       which sshpass
-      sshpass -p 'grandkidsaregreat' ssh wayne@MacBook /Users/wayne/Projects/applications/video/camera/unit_test/build.sh
+      sshpass -p 'grandkidsaregreat' ssh wayne@MacBook /Volumes/wayne/Project/git/alr/applications/video/camera/unit_test/build.sh
       ;;
 
    *)
       echo lapstop
-      cd /Users/wayne/Projects/applications/video/camera/unit_test
+      cd /Volumes/wayne/Project/git/alr/applications/video/camera/unit_test
       pwd
       alr -v build -- -j10 -s -k -gnatE
       ;;

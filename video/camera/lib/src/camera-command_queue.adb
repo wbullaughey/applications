@@ -137,7 +137,7 @@ package body Camera.Command_Queue is
       Log_In (Debug);
       Parameter.Queued_Camera := Camera_Queue'unchecked_access;
       Process_Queue_Task.Push_Command (Parameter);
-      Parameter.Completion_Event.Wait_For_Event;
+--    Parameter.Completion_Event.Wait_For_Event;   -- needs to be called from task
       Log_Out (Debug);
    end Checked_Move_To_Preset;
 
@@ -146,7 +146,7 @@ package body Camera.Command_Queue is
       Camera_Queue               : in out Queued_Camera_Type;
       Pan                        :    out Absolute_Type;
       Tilt                       :    out Absolute_Type;
-      Queued                     : in     Boolean := False) is
+      In_Queue                     : in     Boolean := False) is
    ---------------------------------------------------------------
 
       type Derived_Response_Buffer_Type is new Response_Buffer_Type with record
@@ -214,8 +214,8 @@ package body Camera.Command_Queue is
                                     Ada_Lib.Time.Now + Converge_Timeout;
 
    begin
-      Log_In (Debug);
-      if Queued then  -- running in the queue task
+      Log_In (Debug, "In_Queue " & In_Queue'img);
+      if In_Queue then  -- running in the queue task
          loop
             declare
                Accumulator          : Interfaces.Unsigned_16;
@@ -229,7 +229,9 @@ package body Camera.Command_Queue is
                      Options              => Null_Options,
                      Response             => Derived_Buffer.Buffer,
                      Response_Length      => Derived_Buffer.Length,
-                     Wait_Until_Finished  => True);
+                     Wait_Until_Finished  => False,
+                     In_Queue             => In_Queue);
+                     -- don't wait, this loop does it
 
                if Last_Pan /= Absolute_Type'last then
                   if Ada_Lib.Time.Now > Timeout then
@@ -300,7 +302,7 @@ package body Camera.Command_Queue is
       Ack_Length                 : constant Index_Type :=   -- camera type length
                                     Queued_Camera_Type'class (
                                        Camera_Queue).Get_Ack_Length;
-      Got_Ack                    : Boolean := False;
+      Start_Offset               : Index_Type := Response'first;
       Length                     : Index_Type := Response_Length;
       Timeout                    : constant Ada_Lib.Time.Time_Type :=
                                     Ada_Lib.Time.Now + Response_Timeout;
@@ -311,44 +313,47 @@ package body Camera.Command_Queue is
          " Response_Length" & Response_Length'img &
          " Response_Timeout " & Response_Timeout'img &
          " timeout " & Ada_Lib.Time.Image (Timeout));
-      Camera_Queue.Read (Response (Response'first .. Ack_Length), Response_Timeout);
-      if Debug then
-         Video.Lib.Dump ("response", Response (Response'first .. Ack_Length),
-            Natural (Ack_Length));
-      end if;
 
-
-      if Response (Ack_Length) = 16#FF# then -- end of Ack
-         if Expect_Ack = No_Ack then
-            raise Failed with "got unexpected ack";
-         else
-            Log_Here (Debug, "got ack");
-            Length := Length - Ack_Length;
-            Got_Ack := True;
+      loop     -- loop looking for multiple acks
+         Log_Here (Debug, "start offset" & Start_Offset'img);
+         Camera_Queue.Read (Response (Start_Offset .. Ack_Length), Response_Timeout);
+         if Debug then
+            Video.Lib.Dump ("response", Response (Start_Offset .. Ack_Length),
+               Natural (Ack_Length));
          end if;
-      elsif Expect_Ack = Required_Ack then
-         Log_Exception (Debug, "missing Ack");
-         raise Failed with "missing Ack";
-      end if;
+
+         if Response (Start_Offset + Ack_Length - 1) = 16#FF# then -- end of Ack
+            if Expect_Ack = No_Ack then
+               raise Failed with "got unexpected ack";
+            else
+               Log_Here (Debug, "got ack");
+               Length := Length - Ack_Length;
+            end if;
+         elsif Expect_Ack = Required_Ack then
+            Log_Exception (Debug, "missing Ack");
+            raise Failed with "missing Ack";
+         else
+            Log_Here (Debug, "no more acks");
+            exit;    -- Wasn't ack
+         end if;
+         Start_Offset := Start_Offset + Ack_Length;
+      end loop;
 
       if Expect_Response then
          declare
-            End_Read          : constant Index_Type := Response_Length +
-                                 (if Got_Ack then
-                                    Ack_Length
-                                 else
-                                    0);
-         begin
-            Log_Here (Debug, " End_Read" & End_Read'img);
+            End_Read          : constant Index_Type := Start_Offset +
+                                 Response_Length - 1;
+            Start_Read        : constant Index_Type := Start_Offset;
 
-            Camera_Queue.Read (Response (Ack_Length + 1 .. End_Read),
+         begin
+            Log_Here (Debug, "read start" & Start_Read'img & " End" & End_Read'img &
+               " ack length" & Ack_Length'img &
+               " ack offset" & Start_Offset'img);
+
+            Camera_Queue.Read (Response (Start_Read .. End_Read),
                Response_Timeout);
             if Debug then
-               Video.Lib.Dump ("response", Response ((if Got_Ack then
-                     Ack_Length + 1
-                  else
-                     Response'first)
-                   .. End_Read),
+               Video.Lib.Dump ("response", Response (Start_Read .. End_Read),
                   Natural (Response_Length));
             end if;
 
@@ -357,11 +362,11 @@ package body Camera.Command_Queue is
                raise FAiled with "missing FF at end of response";
             end if;
 
-            if Got_Ack then     -- move response up to head
+            if Start_Offset > 0 then     -- move response up to head
                declare
                   Put         : Index_Type := Response'first;
                begin
-                  for Index in Ack_Length + 1 .. End_Read loop
+                  for Index in Start_Read .. End_Read loop
                      Response (Put) := Response (Index);
                      Put := Put + 1;
                   end loop;
@@ -471,7 +476,8 @@ package body Camera.Command_Queue is
       Camera_Queue               : in out Queued_Camera_Type;
       Command                    : in     Commands_Type;
       Options                    : in     Options_Type;
-      Wait_Until_Finished        : in     Boolean) is
+      Wait_Until_Finished        : in     Boolean;
+      In_Queue                   : in     Boolean) is
    ---------------------------------------------------------------
 
       Get_Ack                    : Ack_Response_Type;
@@ -484,7 +490,8 @@ package body Camera.Command_Queue is
 
    begin
       Log_In (Debug, "command " & Command'img &
-         " Wait_Until_Finished " & Wait_Until_Finished'img);
+         " Wait_Until_Finished " & Wait_Until_Finished'img &
+         " In_Queue " & In_Queue'img);
       Queued_Camera_Type'class (Camera_Queue).Send_Command (Command, Options,
          Get_Ack, Has_Response, Response_Length);
       if Has_Response then
@@ -519,7 +526,7 @@ package body Camera.Command_Queue is
       Camera_Queue.Last_Command := No_Command;
 
       if Wait_Until_Finished then   -- wait until camera stabalizes in one spot
-         Wait_For_Move (Camera_Queue);
+         Wait_For_Move (Camera_Queue, In_Queue => In_Queue);
       end if;
 
       Log_Out (Debug);
@@ -538,7 +545,8 @@ package body Camera.Command_Queue is
       Options                    : in     Options_Type;
       Response                   :    out Maximum_Response_Type;
       Response_Length            :    out Index_Type;
-      Wait_Until_Finished        : in     Boolean) is
+      Wait_Until_Finished        : in     Boolean;
+      In_Queue                   : in     Boolean) is
    ---------------------------------------------------------------
 
       Get_Ack                    : Ack_Response_Type;
@@ -592,7 +600,7 @@ package body Camera.Command_Queue is
       Camera_Queue.Last_Command := No_Command;
 
       if Wait_Until_Finished then   -- wait until camera stabalizes in one spot
-         Wait_For_Move (Camera_Queue);
+         Wait_For_Move (Camera_Queue, In_Queue => In_Queue);
       end if;
 
       Log_Out (Debug);
@@ -644,7 +652,8 @@ package body Camera.Command_Queue is
          " Wait_Until_Finished " & Wait_Until_Finished'img);
 
       Queued_Camera.Process_Command (
-         Command, Options, Wait_Until_Finished);
+         Command, Options, Wait_Until_Finished,
+         In_Queue    => False);
 
 --    case Parameter.Completion_Event.Status is
 --
@@ -711,7 +720,7 @@ package body Camera.Command_Queue is
 
          when Success =>
             if Wait_Until_Finished then
-               Queued_Camera.Wait_For_Move;
+               Queued_Camera.Wait_For_Move (In_Queue => False);
             end if;
             return Success;
 
@@ -736,17 +745,19 @@ package body Camera.Command_Queue is
 
    ----------------------------------------------------------------
    procedure Wait_For_Move (   -- wait until camera stabalizes in one spot
-      Queued_Camera           : in out Queued_Camera_Type) is
+      Queued_Camera           : in out Queued_Camera_Type;
+      In_Queue                : in     Boolean := False) is
    ----------------------------------------------------------------
 
       Pan                     : Absolute_Type;
       Tilt                    : Absolute_Type;
 
    begin
-      Log_In (Debug);    -- allow nested request
+      Log_In (Debug, "In_Queue " & In_Queue'img);    -- allow nested request
       Queued_Camera_Type'class (Queued_Camera).Get_Absolute_Iterate (
          Pan         => Pan,
-         Tilt        => Tilt);
+         Tilt        => Tilt,
+         In_Queue    => In_Queue);
       Log_Out (Debug, "pan " & Pan'img & " tilt " & Tilt'img);
 
    end Wait_For_Move;
@@ -806,17 +817,20 @@ package body Camera.Command_Queue is
                   Parameter   : Parameters_Access := Queue.First_Element;
 
                begin
+                  Log_Here (Debug, "have " & Parameter.Action'img);
                   case Parameter.Action is
 
                      when Get_Absolute_Location_Action =>
                         Log_Here (Debug);
                         Parameter.Queued_Camera.Get_Absolute_Iterate (Parameter.Pan,
-                           Parameter.Tilt, True);
+                           Parameter.Tilt,
+                           In_Queue    => True);
 
                      when Checked_Move_To_Preset_Action =>
                         Log_Here (Debug);
                         Parameter.Queued_Camera.Move_To_Preset (
-                           Parameter.Preset_ID);
+                           Parameter.Preset_ID,
+                           In_Queue             => True);
 
                         declare
                            Pan         : Absolute_Type;
@@ -824,7 +838,7 @@ package body Camera.Command_Queue is
 
                         begin
                            Parameter.Queued_Camera.Get_Absolute_Iterate (
-                              Pan, Tilt, Queued => True);
+                              Pan, Tilt, In_Queue => True);
                         end;
 
                      when Raw_Command_Action =>
@@ -844,7 +858,8 @@ package body Camera.Command_Queue is
                               Parameter.Command_Code, Parameter.Options (
                                  Parameter.Options'first .. Parameter.Last_Option),
                               Response_Buffer.Buffer, Response_Buffer.Length,
-                              Parameter.Wait_Until_Finished);
+                              Parameter.Wait_Until_Finished,
+                              In_Queue    => True);
                            if Parameter.Callback_Parameter /= Null then
                               Log_Here (Debug, "Response tag " &
                                  Tag_Name (Parameter.Callback_Parameter.

@@ -1042,7 +1042,8 @@ package body Widgets.Configured.Unit_Test is
                                    Configured_Card_Type (Current_Card.all);
    begin
       Log_In (Debug);
-         Connection_Data.Camera_Queue.Move_To_Preset (Camera.Lib.Base.Power_On_Preset);
+         Connection_Data.Camera_Queue.Move_To_Preset (
+            Camera.Lib.Base.Power_On_Preset, In_Queue => False);
          declare
             Cell                 : constant Preset_Package.Cell_Class_Access :=
                                      Preset_Package.Cell_Class_Access (

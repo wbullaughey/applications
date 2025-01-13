@@ -99,7 +99,8 @@ package body Camera.Lib.PTZ_Optics is
    procedure Get_Absolute (
       Camera                     : in out PTZ_Optics_Type;
       Pan                        :    out Absolute_Type;
-      Tilt                       :    out Absolute_Type) is
+      Tilt                       :    out Absolute_Type;
+      In_Queue                   : in     Boolean := False) is
    ---------------------------------------------------------------------------
 
       Accumulator                : Interfaces.Unsigned_16;
@@ -114,7 +115,8 @@ package body Camera.Lib.PTZ_Optics is
          Options              => Null_Options,
          Response             => Response_Buffer,
          Response_Length      => Response_Length,
-         Wait_Until_Finished  => True);
+         Wait_Until_Finished  => True,
+         In_Queue             => False);
 
 --    if Debug then
 --       Response.Dump;
@@ -187,7 +189,8 @@ package body Camera.Lib.PTZ_Optics is
          Options              => Null_Options,
          Response             => Response_Buffer,
          Response_Length      => Response_Length,
-         Wait_Until_Finished  => False);
+         Wait_Until_Finished  => False,
+         In_Queue             => False);
 
       case Response_Buffer (3) is
 
@@ -319,7 +322,8 @@ package body Camera.Lib.PTZ_Optics is
    overriding
    procedure Move_To_Preset (
       Camera_Queue               : in out PTZ_Optics_Type;
-      Preset_ID                  : in     Preset_ID_Type) is
+      Preset_ID                  : in     Preset_ID_Type;
+      In_Queue                   : in     Boolean := False) is
    ---------------------------------------------------------------
 
    begin
@@ -334,7 +338,8 @@ package body Camera.Lib.PTZ_Optics is
                                     Variable_Width => False
                                  )
                               ),
-         Wait_Until_Finished  => False);
+         Wait_Until_Finished  => True,
+         In_Queue             => In_Queue);
       Log_Out (Debug);
    end Move_To_Preset;
 

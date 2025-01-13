@@ -69,6 +69,8 @@ case $PARAMETERS[1] in
       echo "   no suite or routien runs all"
       echo "   suite only runs all routines for suite"
       echo "   suite and routine runs just one routine"
+      echo ""
+      ../driver/bin/camera_driver -h
       exit
       ;;
 

@@ -35,7 +35,8 @@ private
    procedure Get_Absolute (
       Camera                     : in out PTZ_Optics_Type;
       Pan                        :    out Absolute_Type;
-      Tilt                       :    out Absolute_Type);
+      Tilt                       :    out Absolute_Type;
+      In_Queue                   : in     Boolean := False);
 
    overriding
    function Get_Ack_Length (
@@ -77,7 +78,8 @@ private
    overriding
    procedure Move_To_Preset (
       Camera_Queue               : in out PTZ_Optics_Type;
-      Preset_ID                  : in     Preset_ID_Type);
+      Preset_ID                  : in     Preset_ID_Type;
+      In_Queue                   : in     Boolean := False);
 
    overriding
    procedure Position_Relative (

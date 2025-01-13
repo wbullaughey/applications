@@ -63,13 +63,14 @@ package Camera.Command_Queue is
    procedure Get_Absolute (
       Camera_Queue               : in out Queued_Camera_Type;
       Pan                        :    out Absolute_Type;
-      Tilt                       :    out Absolute_Type) is abstract;
+      Tilt                       :    out Absolute_Type;
+      In_Queue                   : in     Boolean := False) is abstract;
 
    procedure Get_Absolute_Iterate (
       Camera_Queue               : in out Queued_Camera_Type;
       Pan                        :    out Absolute_Type;
       Tilt                       :    out Absolute_Type;
-      Queued                     : in     Boolean := False);
+      In_Queue                     : in     Boolean := False);
 
    function Get_Ack_Length (
       Camera_Queue               : in     Queued_Camera_Type
@@ -103,7 +104,8 @@ package Camera.Command_Queue is
    -- sets camera location to a preset
    procedure Move_To_Preset (
       Camera_Queue               : in out Queued_Camera_Type;
-      Preset_ID                  : in     Configuration.Camera.Preset_ID_Type) is abstract;
+      Preset_ID                  : in     Configuration.Camera.Preset_ID_Type;
+      In_Queue                   : in     Boolean := False) is abstract;
 
    procedure Open (
       Queued_Camera              : in out Queued_Camera_Type;
@@ -129,7 +131,8 @@ package Camera.Command_Queue is
       Camera_Queue               : in out Queued_Camera_Type;
       Command                    : in     Commands_Type;
       Options                    : in     Options_Type;
-      Wait_Until_Finished        : in     Boolean);
+      Wait_Until_Finished        : in     Boolean;
+      In_Queue                   : in     Boolean);
 
    procedure Process_Command (
       Camera_Queue               : in out Queued_Camera_Type;
@@ -137,7 +140,8 @@ package Camera.Command_Queue is
       Options                    : in     Options_Type;
       Response                   :    out Maximum_Response_Type;
       Response_Length            :    out Index_Type;
-      Wait_Until_Finished        : in     Boolean);
+      Wait_Until_Finished        : in     Boolean;
+      In_Queue                   : in     Boolean);
 
    procedure Read (
       Camera_Queue               : in out Queued_Camera_Type;
@@ -227,6 +231,7 @@ private
       Response_Timeout           : in     Duration);
 
    procedure Wait_For_Move (   -- wait until camera stabalizes in one spot
-      Queued_Camera           : in out Queued_Camera_Type);
+      Queued_Camera           : in out Queued_Camera_Type;
+      In_Queue                : in     Boolean := False);
 
 end Camera.Command_Queue;
