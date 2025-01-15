@@ -5,7 +5,13 @@ export OUTPUT=list-camera_aunit.txt
 #export OPTIONS="-D $TARGET_SUBDIRECTORY"
 #export PARAMETERS=$*
 #echo PARAMETERS: $PARAMETERS
-echo camera aunit 2>&1 | tee $OUTPUT
+echo "camera aunit with $@" 2>&1 | tee $OUTPUT
+
+export COUNTER=1;
+for PARAMETER in $*; do
+   echo $COUNTER $PARAMETER
+   let COUNTEER++
+done
 
 for PARAMETER in $*; do
    export FIRST=${PARAMETER:0:1}
@@ -101,7 +107,7 @@ for PARAMETER in $*; do
    fi
 done
 
-rm GNAT*
+rm -f GNAT*
 export COMMAND="$APPLICATION $OPTIONS $* $VERBOSE"
 echo comand: $COMMAND  | tee -a $OUTPUT
 eval $COMMAND 2>&1 | tee -a $OUTPUT

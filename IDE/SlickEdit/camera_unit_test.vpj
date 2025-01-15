@@ -61,6 +61,8 @@
         <F N="../../video/camera/unit_test/list-camera_aunit.txt"/>
         <F N="../../video/camera/unit_test/list-camera_driver.txt"/>
         <F N="../../video/camera/unit_test/load_test_setup.cfg"/>
+        <F N="../../video/camera/unit_test/repeat.sh"/>
+        <F N="../../video/camera/unit_test/rsync.sh"/>
         <F N="../../video/camera/unit_test/run.sh"/>
         <F N="../../video/camera/unit_test/suites"/>
         <F N="../../video/lib/video_aunit/test-macosx"/>

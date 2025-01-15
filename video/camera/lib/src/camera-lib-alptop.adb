@@ -68,8 +68,7 @@ package body Camera.LIB.ALPTOP is
          Options                 => Null_Options,
          Response                => Response_Buffer,
          Response_Length         => Response_Length,
-         Wait_Until_Finished     => True,
-         In_Queue                => In_Queue);
+         In_Queue                => False);
 
 --    if Debug then
 --       Response.Dump;
@@ -186,8 +185,7 @@ package body Camera.LIB.ALPTOP is
    overriding
    procedure Move_To_Preset (
       Camera_Queue               : in out ALPTOP_Type;
-      Preset_ID                  : in     Preset_ID_Type;
-      In_Queue                   : in     Boolean := False) is
+      Preset_ID                  : in     Preset_ID_Type) is
    pragma Unreferenced (Camera_Queue, Preset_ID, In_Queue);
    ---------------------------------------------------------------
 

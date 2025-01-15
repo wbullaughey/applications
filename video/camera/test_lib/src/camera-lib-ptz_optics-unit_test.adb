@@ -283,8 +283,7 @@ package body Camera.Lib.PTZ_Optics.Unit_Test is
    begin
       Log_In (Debug);
       -- use Test_Preset as reference
-      Local_Test.Camera_Queue.Move_To_Preset (Test_Preset,
-         In_Queue    => False);
+      Local_Test.Camera_Queue.Move_To_Preset (Test_Preset);
       -- get coordinats of test preset
       Local_Test.Camera_Queue.Get_Absolute_Iterate (
                Pan         => Test_Pan,
@@ -300,7 +299,7 @@ package body Camera.Lib.PTZ_Optics.Unit_Test is
       Check_Coordinates (Final_Pan, Test_Pan + Pan_Offset,
          Final_Tilt, Test_Tilt + Tilt_Offset);
       -- set it back to reference
-      Local_Test.Camera_Queue.Move_To_Preset (Test_Preset, In_Queue => False);
+      Local_Test.Camera_Queue.Move_To_Preset (Test_Preset);
       -- git its coordinats
       Local_Test.Camera_Queue.Get_Absolute_Iterate (
                Pan         => Final_Pan,
@@ -339,7 +338,7 @@ package body Camera.Lib.PTZ_Optics.Unit_Test is
    begin
       Log_In (Debug);
       -- use Test_Preset as reference
-      Local_Test.Camera_Queue.Move_To_Preset (Default_Preset, In_Queue => False);
+      Local_Test.Camera_Queue.Move_To_Preset (Default_Preset);
       -- get coordinats of test preset
       Pause (Options.Manual, "camera set to default");
       Local_Test.Camera_Queue.Get_Absolute_Iterate (
@@ -364,7 +363,7 @@ package body Camera.Lib.PTZ_Optics.Unit_Test is
       -- verify it got coordinates that were set
       Check_Coordinates (Final_Pan, Pan_Set, Final_Tilt, Tilt_Set);
       -- set it back to reference
-      Local_Test.Camera_Queue.Move_To_Preset (Default_Preset, In_Queue => False);
+      Local_Test.Camera_Queue.Move_To_Preset (Default_Preset);
       -- git its coordinats
       if Options.Manual then
          Pause ("camera set to default");
@@ -402,12 +401,12 @@ package body Camera.Lib.PTZ_Optics.Unit_Test is
    begin
       Log_In (Debug, "Test_Preset" & Test_Preset'img);
       Pause (Options.Manual, "set preset" & Test_Preset'img);
-      Local_Test.Camera_Queue.Move_To_Preset (Default_Preset, In_Queue => False);
+      Local_Test.Camera_Queue.Move_To_Preset (Default_Preset);
       if Options.Manual then
          Assert (Ask_Pause (True, "check default preset" & Default_Preset'img),
             "move to preset" & Default_Preset'img & " failed");
       end if;
-      Local_Test.Camera_Queue.Move_To_Preset (Test_Preset, In_Queue => False);
+      Local_Test.Camera_Queue.Move_To_Preset (Test_Preset);
 
       Assert (Ask_Pause (Options.Manual,
          "verify that the preset" & Test_Preset'img),
@@ -447,7 +446,7 @@ package body Camera.Lib.PTZ_Optics.Unit_Test is
             Test_Preset'img & ". Less than minimum for testing" &
             Minimum_Test_Preset'img;
       end if;
-      Local_Test.Camera_Queue.Move_To_Preset (Default_Preset, In_Queue => False);
+      Local_Test.Camera_Queue.Move_To_Preset (Default_Preset);
       if Options.Manual then
          Assert (Ask_Pause (True, "check default preset" & Default_Preset'img),
             "move to preset" & Default_Preset'img & " failed");
@@ -457,7 +456,7 @@ package body Camera.Lib.PTZ_Optics.Unit_Test is
       Local_Test.Camera_Queue.Update_Preset (Test_Preset);
       Put_Line ("preset" & Test_Preset'img &
          " saved location" & Default_Preset'img);
-      Local_Test.Camera_Queue.Move_To_Preset (Alternate_Preset, In_Queue => False);
+      Local_Test.Camera_Queue.Move_To_Preset (Alternate_Preset);
       if Options.Manual then
          Assert (Ask_Pause (True, "check alternate preset" & Alternate_Preset'img),
             "move to preset" & Alternate_Preset'img & " failed");
@@ -465,7 +464,7 @@ package body Camera.Lib.PTZ_Optics.Unit_Test is
          delay 2.5;  -- wait for camera to move
          Put_Line ("camera moved to alternate preset" & Alternate_Preset'img);
       end if;
-      Local_Test.Camera_Queue.Move_To_Preset (Test_Preset, In_Queue => False);
+      Local_Test.Camera_Queue.Move_To_Preset (Test_Preset);
       if Options.Manual then
          Assert (Ask_Pause (True, "check test preset" & Test_Preset'img &
             ". Should be same as" & Default_Preset'img),

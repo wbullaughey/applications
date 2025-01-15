@@ -139,8 +139,7 @@ not_implemented;
          Log_In (Debug, "preset" & Cell.Preset'img &
             " message " & Mouse_Event.Message'img & " ID " & Object.ID);
 
-         Connection_Data.Camera_Queue.Move_To_Preset (Cell.Preset,
-            In_Queue    => False);
+         Connection_Data.Camera_Queue.Move_To_Preset (Cell.Preset);
 
          Log_Out (Debug);
       exception

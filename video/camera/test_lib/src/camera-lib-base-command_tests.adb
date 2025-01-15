@@ -200,12 +200,9 @@ package body Camera.Lib.Base.Command_Tests is
 
    begin
       Log_In (Debug);
-      Test.Camera_Queue.Process_Command (Power_Request,
+      Test.Camera_Queue.Synchronous (Power_Request,
          Options                 => Null_Options,
-         Response                => Response_Buffer,
-         Response_Length         => Response_Length,
-         Wait_Until_Finished     => False,
-         In_Queue                => False);
+         Response                => Response_Buffer);
 
       case Response_Buffer (3) is
 
@@ -227,18 +224,18 @@ package body Camera.Lib.Base.Command_Tests is
       return Log_Out (Result, Debug, "Power " & Result'img);
    end Get_Power;
 
-   ---------------------------------------------------------------
-   procedure Checked_Move_To_Preset (         -- tests Memory_Set - sets camera to preset
-      Test                       : in out Raw_Test_Type'class;
-      Set_Point                  : in     Preset_ID_Type) is
-   ---------------------------------------------------------------
-
-   begin
-      Log_In (Debug, "Move to Preset" & Set_Point'img);
-      Test.Camera_Queue.Checked_Move_To_Preset (Set_Point);
-      delay 2.0;     -- wait for camera to reposition
-      Log_Out (Debug);
-   end Checked_Move_To_Preset;
+-- ---------------------------------------------------------------
+-- procedure Checked_Move_To_Preset (         -- tests Memory_Set - sets camera to preset
+--    Test                       : in out Raw_Test_Type'class;
+--    Set_Point                  : in     Preset_ID_Type) is
+-- ---------------------------------------------------------------
+--
+-- begin
+--    Log_In (Debug, "Move to Preset" & Set_Point'img);
+--    Test.Camera_Queue.Checked_Move_To_Preset (Set_Point);
+--    delay 2.0;     -- wait for camera to reposition
+--    Log_Out (Debug);
+-- end Checked_Move_To_Preset;
 
    ---------------------------------------------------------------
    overriding
@@ -341,7 +338,7 @@ package body Camera.Lib.Base.Command_Tests is
 --       Checked_Move_To_Preset (Test, Default_Preset); -- should be set by Set_Up
          Pause (Options.Manual, "watch " & Rate (Index) & " scan " &
            Description);
-         Test.Camera_Queue.Process_Command (Command,
+         Test.Camera_Queue.Synchronous (Command,
             Options     => (
                   (
                      Data           => Speeds (Index),    -- pan speed
@@ -354,7 +351,6 @@ package body Camera.Lib.Base.Command_Tests is
                      Variable_Width => False
                   )
                ),
-               Wait_Until_Finished     => True,
                In_Queue                => False);
 
          Log_Here (Debug, "wait to send stop");
@@ -363,7 +359,6 @@ package body Camera.Lib.Base.Command_Tests is
 
          Test.Camera_Queue.Process_Command (Position_Stop,
             Options              => Null_Options,
-            Wait_Until_Finished  => False,
             In_Queue             => False);
 
          delay 0.5;
@@ -372,7 +367,7 @@ package body Camera.Lib.Base.Command_Tests is
                " scan for " & Wait (Index)'img &
                " seconds"),
             "manual set failed");
-         Checked_Move_To_Preset (Test, Default_Preset);
+--       Checked_Move_To_Preset (Test, Default_Preset);
       end loop;
       Log_Out (Debug);
    end Position_Test;
@@ -582,7 +577,6 @@ package body Camera.Lib.Base.Command_Tests is
                   Variable_Width => False
                )
             ),
-            Wait_Until_Finished  => True,
             In_Queue             => False);
 
          if On then -- need to reopen after power comes on
@@ -894,7 +888,6 @@ package body Camera.Lib.Base.Command_Tests is
                   Variable_Width => False
                )
             ),
-            Wait_Until_Finished     => False,
             In_Queue                => False);
       Log_Out (Debug);
    end Test_Position_Stop;
@@ -1001,7 +994,6 @@ package body Camera.Lib.Base.Command_Tests is
                   Variable_Width => False
                )
             ),
-            Wait_Until_Finished     => False,
             In_Queue                => False);
       delay 3.0;  -- camera needs time to update memory
       Put_Line ("preset" & Test_Preset'img &

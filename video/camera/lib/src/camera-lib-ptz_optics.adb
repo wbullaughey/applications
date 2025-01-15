@@ -111,12 +111,24 @@ package body Camera.Lib.PTZ_Optics is
 
    begin
       Log_In (Debug);
-      Camera.Process_Command (Position_Request,
-         Options              => Null_Options,
-         Response             => Response_Buffer,
-         Response_Length      => Response_Length,
-         Wait_Until_Finished  => True,
-         In_Queue             => False);
+
+      if In_Queue then
+         Camera.Process_Command (Position_Request,
+            Options              => Null_Options,
+            Response             => Response_Buffer,
+            Response_Length      => Response_Length,
+            In_Queue             => False);
+      else
+         Status      : constant Status_Type := Camera.Synchronous (
+            Command              =>Position_Request,
+            Options              => Null_Options,
+            Response             => Response_Buffer);
+
+         if Status /= Success then
+            raise Failed with Status'img & " from " & Here;
+         end if;
+
+      end if;
 
 --    if Debug then
 --       Response.Dump;
@@ -181,16 +193,12 @@ package body Camera.Lib.PTZ_Optics is
    ---------------------------------------------------------------------------
 
       Response_Buffer            : Maximum_Response_Type;
-      Response_Length            : Index_Type;
 
    begin
       Log_In (Debug);
-      Camera.Process_Command (Power_Request,
+      Camera.Synchronous (Power_Request,
          Options              => Null_Options,
-         Response             => Response_Buffer,
-         Response_Length      => Response_Length,
-         Wait_Until_Finished  => False,
-         In_Queue             => False);
+         Response             => Response_Buffer);
 
       case Response_Buffer (3) is
 
@@ -245,8 +253,7 @@ package body Camera.Lib.PTZ_Optics is
                                     Ada_Lib.Time.Now + 60.0;
             Status               : constant Status_Type := Camera.Synchronous (
                                     Command              => Zoom_Inquire,
-                                    Options              => Null_Options,
-                                    Wait_Until_Finished  => False);
+                                    Options              => Null_Options);
          begin
             if Status /= Success then
                raise Failed with "Synchronous failed with " & Status'img;
@@ -322,24 +329,23 @@ package body Camera.Lib.PTZ_Optics is
    overriding
    procedure Move_To_Preset (
       Camera_Queue               : in out PTZ_Optics_Type;
-      Preset_ID                  : in     Preset_ID_Type;
-      In_Queue                   : in     Boolean := False) is
+      Preset_ID                  : in     Preset_ID_Type) is
    ---------------------------------------------------------------
 
    begin
       Log_In (Debug, "preset id" & Preset_ID'img &
          " Unit_Testing " & Ada_Lib.Unit_Testing'img);
 
-      Camera_Queue.Process_Command (Memory_Recall,
-         Options     => ( 1 =>
-                                 (
-                                    Data           => Data_Type (Preset_ID),
-                                    Start          => 6,
-                                    Variable_Width => False
-                                 )
-                              ),
-         Wait_Until_Finished  => True,
-         In_Queue             => In_Queue);
+      Camera_Queue.Asynchronous (
+         Command              => Memory_Recall,
+         Options              => ( 1 =>
+                                    (
+                                       Data           => Data_Type (Preset_ID),
+                                       Start          => 6,
+                                       Variable_Width => False
+                                    )
+                                 ),
+         Callback_Parameter   => Null);
       Log_Out (Debug);
    end Move_To_Preset;
 
@@ -381,8 +387,7 @@ package body Camera.Lib.PTZ_Optics is
                               Value          => Convert (Tilt),
                               Width          => 4
                            )
-                        ),
-                        Wait_Until_Finished  => True
+                        )
                      );
       begin
          if Status /= Success then
@@ -542,8 +547,7 @@ package body Camera.Lib.PTZ_Optics is
                                  Value          => Convert (Tilt),
                                  Width          => 4
                               )
-                           ),
-                           Wait_Until_Finished  => True
+                           )
                         );
       begin
          if Status /= Success then
@@ -598,8 +602,7 @@ package body Camera.Lib.PTZ_Optics is
                                     Start          => 5,
                                     Variable_Width => False
                                  )
-                              ),
-                           Wait_Until_Finished     => False);
+                              ));
 
       begin
          if Status /= Success then
@@ -652,8 +655,7 @@ package body Camera.Lib.PTZ_Optics is
                   Start          => 6,
                   Variable_Width => False
                )
-            ),
-            Wait_Until_Finished  => False) is
+            )) is
 
          when Fault =>
             Log_Here ("Synchronous return fault");

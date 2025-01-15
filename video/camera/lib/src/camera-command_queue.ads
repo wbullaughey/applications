@@ -40,16 +40,15 @@ package Camera.Command_Queue is
       Command                    : in     Commands_Type;
       Options                    : in     Options_Type;
       Callback_Parameter         : in     Callback_Parameter_Class_Access;
-      Dynamic                    : in     Boolean;  -- when true it will be freed
-      Wait_Until_Finished        : in     Boolean
+      Dynamic                    : in     Boolean  -- when true it will be freed
    ) with Pre => Is_Queue_Running and then
                  not Has_Queue_Failed;
 
-   -- sets camera location to a preset and waits for amera to stableize
-   procedure Checked_Move_To_Preset (
-      Camera_Queue               : in out Queued_Camera_Type;
-      Preset_ID                  : in     Configuration.Camera.Preset_ID_Type);
-
+-- -- sets camera location to a preset and waits for camera to stableize
+-- procedure Checked_Move_To_Preset (
+--    Camera_Queue               : in out Queued_Camera_Type;
+--    Preset_ID                  : in     Configuration.Camera.Preset_ID_Type);
+--
    procedure Close (
       Queued_Camera              : in out Queued_Camera_Type);
 
@@ -66,11 +65,11 @@ package Camera.Command_Queue is
       Tilt                       :    out Absolute_Type;
       In_Queue                   : in     Boolean := False) is abstract;
 
-   procedure Get_Absolute_Iterate (
+   procedure Get_Absolute_Iterate ( -- use after move to make sure camera is stable
       Camera_Queue               : in out Queued_Camera_Type;
       Pan                        :    out Absolute_Type;
       Tilt                       :    out Absolute_Type;
-      In_Queue                     : in     Boolean := False);
+      In_Queue                   : in     Boolean := False);
 
    function Get_Ack_Length (
       Camera_Queue               : in     Queued_Camera_Type
@@ -104,8 +103,7 @@ package Camera.Command_Queue is
    -- sets camera location to a preset
    procedure Move_To_Preset (
       Camera_Queue               : in out Queued_Camera_Type;
-      Preset_ID                  : in     Configuration.Camera.Preset_ID_Type;
-      In_Queue                   : in     Boolean := False) is abstract;
+      Preset_ID                  : in     Configuration.Camera.Preset_ID_Type) is abstract;
 
    procedure Open (
       Queued_Camera              : in out Queued_Camera_Type;
@@ -126,22 +124,6 @@ package Camera.Command_Queue is
       Response                   : in     Response_Type;
       Value                      :    out Data_Type;
       Next_Buffer_Start          :    out Index_Type) is abstract;
-
-   procedure Process_Command (
-      Camera_Queue               : in out Queued_Camera_Type;
-      Command                    : in     Commands_Type;
-      Options                    : in     Options_Type;
-      Wait_Until_Finished        : in     Boolean;
-      In_Queue                   : in     Boolean);
-
-   procedure Process_Command (
-      Camera_Queue               : in out Queued_Camera_Type;
-      Command                    : in     Commands_Type;
-      Options                    : in     Options_Type;
-      Response                   :    out Maximum_Response_Type;
-      Response_Length            :    out Index_Type;
-      Wait_Until_Finished        : in     Boolean;
-      In_Queue                   : in     Boolean);
 
    procedure Read (
       Camera_Queue               : in out Queued_Camera_Type;
@@ -189,8 +171,7 @@ package Camera.Command_Queue is
    function Synchronous (
       Queued_Camera              : in out Queued_Camera_Type;
       Command                    : in     Commands_Type;
-      Options                    : in     Options_Type;
-      Wait_Until_Finished        : in     Boolean
+      Options                    : in     Options_Type
    ) return Status_Type
    with Pre => Is_Queue_Running and then
                not Has_Queue_Failed;
@@ -200,8 +181,7 @@ package Camera.Command_Queue is
       Queued_Camera              : in out Queued_Camera_Type;
       Command                    : in     Commands_Type;
       Options                    : in     Options_Type;
-      Response_Buffer            : in     Response_Buffer_Class_Access;
-      Wait_Until_Finished        : in     Boolean
+      Response_Buffer            : in     Response_Buffer_Class_Access
    ) return Status_Type
    with Pre => Is_Queue_Running and then
                not Has_Queue_Failed;
@@ -230,8 +210,22 @@ private
       Response_Length            : in     Index_Type;
       Response_Timeout           : in     Duration);
 
+   -- only call from queue task
+   procedure Process_Command (
+      Camera_Queue               : in out Queued_Camera_Type;
+      Command                    : in     Commands_Type;
+      Options                    : in     Options_Type);
+
+   -- only call from queue task
+   procedure Process_Command (
+      Camera_Queue               : in out Queued_Camera_Type;
+      Command                    : in     Commands_Type;
+      Options                    : in     Options_Type;
+      Response                   :    out Maximum_Response_Type;
+      Response_Length            :    out Index_Type);
+
    procedure Wait_For_Move (   -- wait until camera stabalizes in one spot
-      Queued_Camera           : in out Queued_Camera_Type;
-      In_Queue                : in     Boolean := False);
+                               -- only called in queue task
+      Queued_Camera           : in out Queued_Camera_Type);
 
 end Camera.Command_Queue;
