@@ -329,7 +329,7 @@ package body Camera.Lib.Base is
    end Reopen;
 
 -- ---------------------------------------------------------------
--- function Synchronous (
+-- procedure Synchronous (
 --    Camera                     : in out Base_Camera_Type;
 --    Command                    : in     Commands_Type;
 --    Options                    : in     Options_Type

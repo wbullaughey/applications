@@ -6,14 +6,14 @@ with AUnit.Assertions; use AUnit.Assertions;
 with AUnit.Test_Cases;
 --with Ada_Lib.Options.Unit_Test;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
---with Camera.Lib.Base;
+with Camera.Lib;
 --with Camera.Command_Queue;
 --with Camera.Lib.Connection;
 with Camera.Lib.Unit_Test;
 with Interfaces;
 with Video.Lib;
 
-package body Camera.Lib.Base.Command_Tests is
+package body Camera.Command_Queue.Tests is
 
 -- use type Ada.Streams.Stream_Element;
 -- use type Ada_Lib.Time.Time_Type;
@@ -22,7 +22,7 @@ package body Camera.Lib.Base.Command_Tests is
    use type Preset_ID_Type;
 
    type Raw_Test_Type (
-      Brand : Brand_Type) is new Camera.Lib.Unit_Test.Camera_Test_Type (
+      Brand : Camera.Lib.Brand_Type) is new Camera.Lib.Unit_Test.Camera_Test_Type (
          Brand) with record
       Manual                     : Boolean := False;
    end record;
@@ -42,7 +42,7 @@ package body Camera.Lib.Base.Command_Tests is
       Test                       : in out Raw_Test_Type);
 
    type Test_Type (
-      Brand    : Brand_Type) is new Raw_Test_Type (Brand) with null record;
+      Brand    : Camera.Lib.Brand_Type) is new Raw_Test_Type (Brand) with null record;
 
    type Test_Access              is access Test_Type;
 
@@ -194,15 +194,16 @@ package body Camera.Lib.Base.Command_Tests is
    ) return Boolean is
    ---------------------------------------------------------------
 
-      Response_Buffer      : Maximum_Response_Type;
-      Response_Length      : Index_Type;
-      Result               : Boolean;
+      Response_Buffer   : Response_Buffer_Type;
+      Response_Length   : Index_Type;
+      Result            : Boolean;
 
    begin
       Log_In (Debug);
-      Test.Camera_Queue.Synchronous (Power_Request,
-         Options                 => Null_Options,
-         Response                => Response_Buffer);
+      Test.Camera_Queue.Synchronous (
+         Command           => Power_Request,
+         Options           => Null_Options,
+         Response_Buffer   => Response_Buffer);
 
       case Response_Buffer (3) is
 
@@ -816,7 +817,7 @@ package body Camera.Lib.Base.Command_Tests is
 
    exception
 
-      when Fault: Timed_Out =>
+      when Fault: Ada_Lib.Socket_IO.Stream_IO.Timed_Out =>
          Ada_Lib.Unit_Test.Exception_Assert (Fault);
 
       when Fault: others =>
@@ -875,7 +876,8 @@ package body Camera.Lib.Base.Command_Tests is
 
    begin
       Log_In (Debug);
-      Local_Test.Camera_Queue.Process_Command (Position_Stop,
+      Local_Test.Camera_Queue.Process_Command (
+         Command     => Position_Stop,
          Options     => (
                (
                   Data           => 1,    -- pan slow speed
@@ -887,8 +889,7 @@ package body Camera.Lib.Base.Command_Tests is
                   Start          => 6,
                   Variable_Width => False
                )
-            ),
-            In_Queue                => False);
+            ));
       Log_Out (Debug);
    end Test_Position_Stop;
 
@@ -978,7 +979,7 @@ package body Camera.Lib.Base.Command_Tests is
             Test_Preset'img & ". Less than minimum for testing" &
             Minimum_Test_Preset'img;
       end if;
-      Local_Test.Checked_Move_To_Preset (Default_Preset);
+      Local_Test.Move_To_Preset (Default_Preset);
       delay 2.5;
       if Local_Test.Manual then
          Assert (Ask_Pause (True, "check default preset" & Default_Preset'img),
@@ -993,8 +994,7 @@ package body Camera.Lib.Base.Command_Tests is
                   Start          => 6,
                   Variable_Width => False
                )
-            ),
-            In_Queue                => False);
+            ));
       delay 3.0;  -- camera needs time to update memory
       Put_Line ("preset" & Test_Preset'img &
          " saved location" & Default_Preset'img);
@@ -1177,4 +1177,4 @@ package body Camera.Lib.Base.Command_Tests is
  begin
 --Debug := True;
     Log (Debug, Here, Who);
- end Camera.Lib.Base.Command_Tests;
+ end Camera.Command_Queue.Tests;

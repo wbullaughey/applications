@@ -11,7 +11,7 @@ with AUnit.Test_Cases;
 with Camera.Lib.Unit_Test;
 with Interfaces;
 
-package body Camera.Lib.PTZ_Optics.Unit_Test is
+package body Camera.Command_Queue.PTZ_Optics.Unit_Test is
 
    use type Interfaces.Integer_16;
 -- use type Camera.Lib.Base.Base_Camera_Class_Access;
@@ -72,7 +72,7 @@ package body Camera.Lib.PTZ_Optics.Unit_Test is
       Test                       : in out AUnit.Test_Cases.Test_Case'class);
 
    Suite_Name                    : constant String := "Commands";
-   Test_Preset                   : constant := Camera.Lib.PTZ_Optics.
+   Test_Preset                   : constant := Camera.Command_Queue.PTZ_Optics.
                                     Max_Preset;
 
    ---------------------------------------------------------------
@@ -503,4 +503,4 @@ begin
       Debug := Trace_Tests;
    end if;
 
-end Camera.Lib.PTZ_Optics.Unit_Test;
+end Camera.Command_Queue.PTZ_Optics.Unit_Test;

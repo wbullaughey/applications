@@ -1,10 +1,11 @@
 --
 --  Copyright (C) 2008, AdaCore
 --
+with Ada_Lib.Options;
 with AUnit.Test_Suites;
 --with Video.Lib;
 
-package Camera.Lib.Base.Command_Tests is
+package Camera.Command_Queue.Tests is
 
    Failed                        : exception;
 
@@ -14,4 +15,4 @@ package Camera.Lib.Base.Command_Tests is
    with Pre => Ada_Lib.Options.Get_Ada_Lib_Read_Only_Options /= Null;
    Debug                         : Boolean := False;
 
-end Camera.Lib.Base.Command_Tests;
+end Camera.Command_Queue.Tests;

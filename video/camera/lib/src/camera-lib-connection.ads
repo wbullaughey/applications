@@ -4,8 +4,8 @@ with Ada_Lib.GNOGA;
 --with Ada_Lib.Socket_IO.Client;
 --with Camera.Command_Queue;
 with Camera.Command_Queue;
-with Camera.LIB.ALPTOP;
-with Camera.LIB.PTZ_Optics;
+with Camera.Command_Queue.ALPTOP;
+with Camera.Command_Queue.PTZ_Optics;
 with Configuration.Camera.State;
 --with GNAT.Sockets;
 with Gnoga.Gui.Element.Common;
@@ -48,7 +48,7 @@ package Camera.Lib.Connection is
                                     new String'("update event"));
       case Brand is
          when Standard.Camera.Lib.ALPTOP_Camera =>
-            ALPTOP                : aliased Standard.Camera.LIB.ALPTOP.
+            ALPTOP                : aliased Standard.Camera.Command_Queue.ALPTOP.
                                     ALPTOP_Type;
 
          when Standard.Camera.Lib.No_Camera=>

@@ -30,8 +30,6 @@ package body Camera.Command_Queue is
    use type Interfaces.Integer_16;
 -- use type Interfaces.Unsigned_16;
 
-   subtype Ack_Response_Type     is Standard.Camera.Lib.Ack_Response_Type;
-
    type Completion_Event_Type    is new Ada_Lib.Event.Event_Type with record
       Status                     : Status_Type;
    end record;
@@ -653,11 +651,10 @@ package body Camera.Command_Queue is
 
    ----------------------------------------------------------------
    -- command that does not get data back from camera
-   function Synchronous (
+   procedure Synchronous (
       Queued_Camera              : in out Queued_Camera_Type;
       Command                    : in     Commands_Type;
-      Options                    : in     Options_Type
-   ) return Status_Type is
+      Options                    : in     Options_Type) is
    ----------------------------------------------------------------
 
       Parameter                  : aliased Parameters_Type (
@@ -674,20 +671,26 @@ package body Camera.Command_Queue is
          Callback_Parameter   => null);
       Process_Queue_Task.Push_Command (Parameter'unchecked_access);
       Parameter.Completion_Event.Wait_For_Event;
-      return Parameter.Completion_Event.Status;
+      case Parameter.Completion_Event.Status is
 
-   exception
+         when Success =>
+            Log_Out (Debug);
 
-      when Error: others =>
-         Queue_Failed := True;
-         Trace_Exception (Debug, Error);
-         return Fault;
+         when others =>
+            declare
+               Message     : constant String := "failed with " &
+                              Parameter.Completion_Event.Status'img & at & HERE;
+            begin
+               Log_Exception (Debug, Message);
+               raise Fault with Message;
+            end;
+      end case;
 
    end Synchronous;
 
    ----------------------------------------------------------------
    -- command that gets data back from camera
-   function Synchronous (
+   procedure Synchronous (
       Queued_Camera              : in out Queued_Camera_Type;
       Command                    : in     Commands_Type;
       Options                    : in     Options_Type;

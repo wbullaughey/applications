@@ -1,7 +1,7 @@
 with Ada_Lib.Options;
 with AUnit.Test_Suites;
 
-package Camera.Lib.PTZ_Optics.Unit_Test is
+package Camera.Command_Queue.PTZ_Optics.Unit_Test is
 
    Failed                        : exception;
 
@@ -10,4 +10,4 @@ package Camera.Lib.PTZ_Optics.Unit_Test is
 
    Debug                         : Boolean := False;
 
-end Camera.Lib.PTZ_Optics.Unit_Test;
+end Camera.Command_Queue.PTZ_Optics.Unit_Test;

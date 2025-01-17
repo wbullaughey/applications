@@ -3,7 +3,7 @@ with Ada_Lib.Trace; use Ada_Lib.Trace;
 with Camera.Lib.Base;
 with Hex_IO;
 
-package body Camera.LIB.ALPTOP is
+package body Camera.Command_Queue.ALPTOP is
 
    use type Ada.Streams.Stream_Element;
    use type Interfaces.Unsigned_16;
@@ -18,19 +18,19 @@ package body Camera.LIB.ALPTOP is
          others         => ( 1, ( others => 0), None, 0.0, False, 0)
       );
 
-   ----------------------------------------------------------------------------
-   overriding
-   procedure Acked (
-      Camera                     : in     ALPTOP_Type;
-      Response                   : in     Response_Type;
-      Value                      :    out Natural;
-      Next_Buffer_Index          :    out Video.Lib.Index_Type) is
-   pragma Unreferenced (Camera, Response, Value, Next_Buffer_Index);
-   ----------------------------------------------------------------------------
-
-   begin
-      raise Failed with "not implemented";
-   end Acked;
+-- ----------------------------------------------------------------------------
+-- overriding
+-- procedure Acked (
+--    Camera                     : in     ALPTOP_Type;
+--    Response                   : in     Response_Type;
+--    Value                      :    out Natural;
+--    Next_Buffer_Index          :    out Video.Lib.Index_Type) is
+-- pragma Unreferenced (Camera, Response, Value, Next_Buffer_Index);
+-- ----------------------------------------------------------------------------
+--
+-- begin
+--    raise Failed with "not implemented";
+-- end Acked;
 
    ----------------------------------------------------------------------------
    overriding
@@ -316,4 +316,4 @@ not_implemented;
 begin
    -- Debug := True;
    Log_Here (Debug or Trace_Options or Elaborate);
-end Camera.LIB.ALPTOP;
+end Camera.Command_Queue.ALPTOP;

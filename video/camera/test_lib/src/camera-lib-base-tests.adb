@@ -17,10 +17,10 @@ with Ada_Lib.Unit_Test;
 --with Hex_IO;
 with Camera.Command_Queue;
 --with Camera.Lib.PTZ_Optics;
---with Camera.LIB.ALPTOP;
+--with Camera.Command_Queue.ALPTOP;
 with Camera.Lib.Unit_Test;
 
-package body Camera.Lib.Base.Test is
+package body Camera.Lib.Base.Tests is
 
    use type Ada_Lib.Socket_IO.Address_Access;
    use type Camera.Command_Queue.Queued_Camera_Class_Access;
@@ -502,4 +502,4 @@ begin
    end if;
 --Debug := True;
 
-end Camera.Lib.Base.Test;
+end Camera.Lib.Base.Tests;

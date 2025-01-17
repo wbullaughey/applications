@@ -17,6 +17,8 @@ package Camera.Command_Queue is
    function Is_Queue_Running
    return Boolean;
 
+   subtype Ack_Response_Type     is Standard.Camera.Lib.Ack_Response_Type;
+
    type Callback_Parameter_Type  is record
       Command_Code               : Commands_Type;
       Response_Buffer            : Video.Lib.Response_Buffer_Class_Access;
@@ -29,11 +31,11 @@ package Camera.Command_Queue is
 
    type Queued_Camera_Class_Access
                                  is access all Queued_Camera_Type'class;
-   procedure Acked (
-      Camera_Queue               : in     Queued_Camera_Type;
-      Response                   : in     Response_Type;
-      Value                      :    out Natural;
-      Next_Buffer_Index          :    out Index_Type) is abstract;
+-- procedure Acked (
+--    Camera_Queue               : in     Queued_Camera_Type;
+--    Response                   : in     Response_Type;
+--    Value                      :    out Natural;
+--    Next_Buffer_Index          :    out Index_Type) is abstract;
 
    procedure Asynchronous (
       Queued_Camera              : in out Queued_Camera_Type;
@@ -125,11 +127,6 @@ package Camera.Command_Queue is
       Value                      :    out Data_Type;
       Next_Buffer_Start          :    out Index_Type) is abstract;
 
-   procedure Read (
-      Camera_Queue               : in out Queued_Camera_Type;
-      Data                       :    out Buffer_Type;
-      Timeout                    : in     Duration := Video.Lib.No_Timeout);
-
    procedure Reopen (
       Queued_Camera              : in out Queued_Camera_Type);
 
@@ -159,36 +156,30 @@ package Camera.Command_Queue is
       Camera                     : in out Queued_Camera_Type;
       On                         : in     Boolean) is abstract;
 
+   procedure Stop_Task;
+
+   -- command that does not get data back from camera
+   procedure Synchronous (
+      Queued_Camera              : in out Queued_Camera_Type;
+      Command                    : in     Commands_Type;
+      Options                    : in     Options_Type
+   ) with Pre => Is_Queue_Running and then
+               not Has_Queue_Failed;
+
+   -- command that gets data back from camera
+   procedure Synchronous (
+      Queued_Camera              : in out Queued_Camera_Type;
+      Command                    : in     Commands_Type;
+      Options                    : in     Options_Type;
+      Response_Buffer            : in     Response_Buffer_Class_Access
+   ) with Pre => Is_Queue_Running and then
+                 not Has_Queue_Failed;
+
    -- updates preset to current location
    procedure Update_Preset (
       Camera_Queue               : in out Queued_Camera_Type;
       Preset_ID                  : in     Configuration.Camera.Preset_ID_Type
    ) is abstract;
-
-   procedure Stop_Task;
-
-   -- command that does not get data back from camera
-   function Synchronous (
-      Queued_Camera              : in out Queued_Camera_Type;
-      Command                    : in     Commands_Type;
-      Options                    : in     Options_Type
-   ) return Status_Type
-   with Pre => Is_Queue_Running and then
-               not Has_Queue_Failed;
-
-   -- command that gets data back from camera
-   function Synchronous (
-      Queued_Camera              : in out Queued_Camera_Type;
-      Command                    : in     Commands_Type;
-      Options                    : in     Options_Type;
-      Response_Buffer            : in     Response_Buffer_Class_Access
-   ) return Status_Type
-   with Pre => Is_Queue_Running and then
-               not Has_Queue_Failed;
-
-   procedure Write (
-      Camera_Queue               : in out Queued_Camera_Type;
-      Data                       : in     Buffer_Type);
 
    Debug                         : Boolean := False;
 
@@ -210,13 +201,11 @@ private
       Response_Length            : in     Index_Type;
       Response_Timeout           : in     Duration);
 
-   -- only call from queue task
    procedure Process_Command (
       Camera_Queue               : in out Queued_Camera_Type;
       Command                    : in     Commands_Type;
       Options                    : in     Options_Type);
 
-   -- only call from queue task
    procedure Process_Command (
       Camera_Queue               : in out Queued_Camera_Type;
       Command                    : in     Commands_Type;
@@ -224,8 +213,17 @@ private
       Response                   :    out Maximum_Response_Type;
       Response_Length            :    out Index_Type);
 
+   procedure Read (
+      Camera_Queue               : in out Queued_Camera_Type;
+      Data                       :    out Buffer_Type;
+      Timeout                    : in     Duration := Video.Lib.No_Timeout);
+
    procedure Wait_For_Move (   -- wait until camera stabalizes in one spot
                                -- only called in queue task
       Queued_Camera           : in out Queued_Camera_Type);
+
+   procedure Write (
+      Camera_Queue               : in out Queued_Camera_Type;
+      Data                       : in     Buffer_Type);
 
 end Camera.Command_Queue;

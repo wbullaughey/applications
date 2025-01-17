@@ -7,7 +7,7 @@ with Camera.Lib.Base;
 with Hex_IO;
 --with Ada_Lib.Socket_IO.Stream_IO;
 
-package body Camera.Lib.PTZ_Optics is
+package body Camera.Command_Queue.PTZ_Optics is
 
    use type Ada.Calendar.Time;
    use type Ada.Streams.Stream_Element;
@@ -52,32 +52,32 @@ package body Camera.Lib.PTZ_Optics is
       Standard.Camera.No_Command           => ( 0, ( others => 0 ), None, 0.0, false, 0)
    );
 
-   ----------------------------------------------------------------------------
-   overriding
-   procedure Acked (
-      Camera                     : in     PTZ_Optics_Type;
-      Response                   : in     Response_Type;
-      Value                      :    out Natural;
-      Next_Buffer_Index          :    out Video.Lib.Index_Type) is
-   ----------------------------------------------------------------------------
-
-   begin
-      Value := Natural (Response (2));
-      Log_In (Debug, "value " & Hex_IO.Hex (Value, 8));
-      if    Response (1) = 16#90# and then
-            ((Response (2) and 16#F0#) = 16#40#) and then
-            Response (3) = 16#FF# then
-         Next_Buffer_Index := 4;
-         Log_Out (Debug, "next buffer " & Next_Buffer_Index'img);
-      else
-         Next_Buffer_Index := 0;
-         Log_Exception (Debug, "invalid ack");
-         if Debug then
-            Hex_IO.Dump_8 (Response'address, Response'size, 32);
-         end if;
-         raise Failed with "invalid ack";
-      end if;
-   end Acked;
+-- ----------------------------------------------------------------------------
+-- overriding
+-- procedure Acked (
+--    Camera                     : in     PTZ_Optics_Type;
+--    Response                   : in     Response_Type;
+--    Value                      :    out Natural;
+--    Next_Buffer_Index          :    out Video.Lib.Index_Type) is
+-- ----------------------------------------------------------------------------
+--
+-- begin
+--    Value := Natural (Response (2));
+--    Log_In (Debug, "value " & Hex_IO.Hex (Value, 8));
+--    if    Response (1) = 16#90# and then
+--          ((Response (2) and 16#F0#) = 16#40#) and then
+--          Response (3) = 16#FF# then
+--       Next_Buffer_Index := 4;
+--       Log_Out (Debug, "next buffer " & Next_Buffer_Index'img);
+--    else
+--       Next_Buffer_Index := 0;
+--       Log_Exception (Debug, "invalid ack");
+--       if Debug then
+--          Hex_IO.Dump_8 (Response'address, Response'size, 32);
+--       end if;
+--       raise Failed with "invalid ack";
+--    end if;
+-- end Acked;
 
    ----------------------------------------------------------------------------
    overriding
@@ -119,15 +119,11 @@ package body Camera.Lib.PTZ_Optics is
             Response_Length      => Response_Length,
             In_Queue             => False);
       else
-         Status      : constant Status_Type := Camera.Synchronous (
+         Camera.Synchronous (
             Command              =>Position_Request,
             Options              => Null_Options,
             Response             => Response_Buffer);
-
-         if Status /= Success then
-            raise Failed with Status'img & " from " & Here;
-         end if;
-
+         end;
       end if;
 
 --    if Debug then
@@ -193,12 +189,15 @@ package body Camera.Lib.PTZ_Optics is
    ---------------------------------------------------------------------------
 
       Response_Buffer            : Maximum_Response_Type;
+      Response_Length            : Index_Type;
 
    begin
       Log_In (Debug);
-      Camera.Synchronous (Power_Request,
+      Camera.Process_Command (Power_Request,
          Options              => Null_Options,
-         Response             => Response_Buffer);
+         Response             => Response_Buffer,
+         Response_Length      => Response_Length,
+         In_Queue             => False);
 
       case Response_Buffer (3) is
 
@@ -251,13 +250,10 @@ package body Camera.Lib.PTZ_Optics is
             Response             : Response_Buffer_Type;
             Timeout              : constant Ada_Lib.Time.Time_Type :=
                                     Ada_Lib.Time.Now + 60.0;
-            Status               : constant Status_Type := Camera.Synchronous (
-                                    Command              => Zoom_Inquire,
-                                    Options              => Null_Options);
          begin
-            if Status /= Success then
-               raise Failed with "Synchronous failed with " & Status'img;
-            end if;
+            Camera.Synchronous (
+               Command              => Zoom_Inquire,
+               Options              => Null_Options);
 
             if Debug then
                Response.Dump ("zoom");
@@ -361,40 +357,33 @@ package body Camera.Lib.PTZ_Optics is
 
    begin
       Log_In (Debug, "pan" & Pan'img & " tilt" & Tilt'img);
-      declare
-         Status      : constant Status_Type := Camera.Synchronous (
-                        Position_Relative,
-                        Options     => (
-                           (
-                              Data           => Pan_Speed,
-                              Start          => 5,
-                              Variable_Width => False
-                           ),
-                           (
-                              Data           => Tilt_Speed,
-                              Start          => 6,
-                              Variable_Width => False
-                           ),
-                           (
-                              Start          => 7,
-                              Variable_Width => True,
-                              Value          => Convert (Pan),
-                              Width          => 4
-                           ),
-                           (
-                              Start          => 11,
-                              Variable_Width => True,
-                              Value          => Convert (Tilt),
-                              Width          => 4
-                           )
-                        )
-                     );
-      begin
-         if Status /= Success then
-            raise Failed with "Synchronous failed with " & Status'img;
-         end if;
-      end;
-
+      Camera.Synchronous (
+         Position_Relative,
+         Options     => (
+            (
+               Data           => Pan_Speed,
+               Start          => 5,
+               Variable_Width => False
+            ),
+            (
+               Data           => Tilt_Speed,
+               Start          => 6,
+               Variable_Width => False
+            ),
+            (
+               Start          => 7,
+               Variable_Width => True,
+               Value          => Convert (Pan),
+               Width          => 4
+            ),
+            (
+               Start          => 11,
+               Variable_Width => True,
+               Value          => Convert (Tilt),
+               Width          => 4
+            )
+         )
+      );
       Log_Out (Debug);
 
    exception
@@ -521,39 +510,33 @@ package body Camera.Lib.PTZ_Optics is
 
    begin
       Log_In (Debug, "pan" & Pan'img & " tilt" & Tilt'img);
-      declare
-         Status         : constant Status_Type := Camera.Synchronous (
-                           Position_Absolute,
-                           Options     => (
-                              (
-                                 Data           => Pan_Speed,
-                                 Start          => 5,
-                                 Variable_Width => False
-                              ),
-                              (
-                                 Data           => Tilt_Speed,
-                                 Start          => 6,
-                                 Variable_Width => False
-                              ),
-                              (
-                                 Start          => 7,
-                                 Variable_Width => True,
-                                 Value          => Convert (Pan),
-                                 Width          => 4
-                              ),
-                              (
-                                 Start          => 11,
-                                 Variable_Width => True,
-                                 Value          => Convert (Tilt),
-                                 Width          => 4
-                              )
-                           )
-                        );
-      begin
-         if Status /= Success then
-            raise Failed with "Synchronous failed with " & Status'img;
-         end if;
-      end;
+      Camera.Synchronous (
+         Position_Absolute,
+         Options     => (
+            (
+               Data           => Pan_Speed,
+               Start          => 5,
+               Variable_Width => False
+            ),
+            (
+               Data           => Tilt_Speed,
+               Start          => 6,
+               Variable_Width => False
+            ),
+            (
+               Start          => 7,
+               Variable_Width => True,
+               Value          => Convert (Pan),
+               Width          => 4
+            ),
+            (
+               Start          => 11,
+               Variable_Width => True,
+               Value          => Convert (Tilt),
+               Width          => 4
+            )
+         )
+      );
 
 --    if Wait_Until_Finished then
 --       loop
@@ -575,7 +558,6 @@ package body Camera.Lib.PTZ_Optics is
 --       end loop;
 --    end if;
       Log_Out (Debug);
-      Log_Out (Debug);
    end Set_Absolute;
 
    ---------------------------------------------------------------
@@ -593,23 +575,16 @@ package body Camera.Lib.PTZ_Optics is
 --    Camera.Get_Power (Current_Power);
 --    Turning_On := On and not Current_Power;
 --    Log_Here (Debug, "Turning_On " & Turning_On'img);
-      declare
-         Status         : constant Status_Type := Camera.Synchronous (
-                           Power_Set,
-                           Options     => ( 1 =>
-                                 (
-                                    Data           => (if On then 2 else 3),
-                                    Start          => 5,
-                                    Variable_Width => False
-                                 )
-                              ));
+      Camera.Synchronous (
+         Power_Set,
+         Options     => ( 1 =>
+               (
+                  Data           => (if On then 2 else 3),
+                  Start          => 5,
+                  Variable_Width => False
+               )
+            ));
 
-      begin
-         if Status /= Success then
-            Log_Exception (Debug, "could not set power " & On'img);
-            raise Failed with "Synchronous failed with " & Status'img;
-         end if;
-      end;
       if On then -- need to reopen after power comes on
          Log_Here (Debug);
          Put_Line ("wait 90 seconds for camera to reset");
@@ -648,30 +623,14 @@ package body Camera.Lib.PTZ_Optics is
             Minimum_Preset_ID_For_Testing'img;
       end if;
 
-      case Camera_Queue.Synchronous (Memory_Set,
+      Camera_Queue.Synchronous (Memory_Set,
          Options     => ( 1 =>
                (
                   Data           => Data_Type (Preset_ID),
                   Start          => 6,
                   Variable_Width => False
                )
-            )) is
-
-         when Fault =>
-            Log_Here ("Synchronous return fault");
-
-         when Not_Set =>
-            Log_Here ("Synchronous return not set");
-            raise Failed with "Synchronous command returnd not set";
-
-         when Success =>
-            Log_Here (Debug, "Synchronous return Success");
-            delay 2.0;  -- camera needs time to update memory
-
-         when Standard.Camera.Timeout =>
-            Log_Here ("Synchronous return Timeout");
-
-      end case;
+            ));
 
       Log_Out (Debug);
    end Update_Preset;
@@ -679,5 +638,5 @@ package body Camera.Lib.PTZ_Optics is
 begin
 --Debug := True;
       Log_Here (Debug);
-end Camera.Lib.PTZ_Optics;
+end Camera.Command_Queue.PTZ_Optics;
 

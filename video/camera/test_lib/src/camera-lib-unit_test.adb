@@ -9,9 +9,9 @@ with Ada_Lib.Trace; use Ada_Lib.Trace;
 with Ada_Lib.Unit_Test.Reporter;
 with AUnit.Assertions; use AUnit.Assertions;
 --with Camera.Command_Queue;
-with Camera.Lib.PTZ_Optics.Unit_Test;
-with Camera.Lib.Base.Command_Tests;
-with Camera.Lib.Base.Test;
+with Camera.Command_Queue.PTZ_Optics.Unit_Test;
+with Camera.Command_Queue.Tests;
+with Camera.Command_Queue.Tests;
 with Camera.Lib.Connection;
 with Configuration.Camera.Setup.Unit_Tests;
 with Configuration.Camera.State.Unit_Tests;
@@ -305,10 +305,10 @@ not_implemented;
 
       begin
          AUnit_Options.Filter := Options.Filter'unchecked_access;
-         Test_Suite.Add_Test (Camera.Lib.Base.Test.Suite);
+         Test_Suite.Add_Test (Camera.Command_Queue.Tests.Suite);
          Test_Suite.Add_Test (Main.Unit_Test.Suite);
-         Test_Suite.Add_Test (Standard.Camera.Lib.PTZ_Optics.Unit_Test.Suite);
-         Test_Suite.Add_Test (Standard.Camera.Lib.Base.Command_Tests.Suite);
+         Test_Suite.Add_Test (Standard.Camera.Command_Queue.PTZ_Optics.Unit_Test.Suite);
+         Test_Suite.Add_Test (Standard.Camera.Command_Queue.Tests.Suite);
          Test_Suite.Add_Test (
             Standard.Configuration.Camera.Setup.Unit_Tests.Suite);
          Test_Suite.Add_Test (
@@ -356,8 +356,8 @@ not_implemented;
 --       Test_Suite.Add_Test (Standard.Configuration.Camera.State.Unit_Tests.Suite);
 --       Test_Suite.Add_Test (Standard.Configuration.Camera.Setup.Unit_Tests.Suite);
 --       Test_Suite.Add_Test (Main.Unit_Test.Suite);
---       Test_Suite.Add_Test (Standard.Camera.Lib.Base.Command_Tests.Suite);
---       Test_Suite.Add_Test (Standard.Camera.Lib.PTZ_Optics.Unit_Test.Suite);
+--       Test_Suite.Add_Test (Standard.Camera.Command_Queue.Tests.Suite);
+--       Test_Suite.Add_Test (Standard.Camera.Command_Queue.PTZ_Optics.Unit_Test.Suite);
 --       Test_Suite.Add_Test (Widgets.Control.Unit_Test.Suite);
 --       Test_Suite.Add_Test (Widgets.Configured.Unit_Test.Suite);
 --       Test_Suite.Add_Test (Widgets.Adjust.Unit_Test.Suite);
@@ -573,7 +573,7 @@ assert (test.Camera_Address /= null, "camera address null");
 
             when 'a' =>
                Camera.Command_Queue.Debug := True;
-               Standard.Camera.Lib.Base.Command_Tests.Debug := True;
+               Standard.Camera.Command_Queue.Tests.Debug := True;
                Standard.Configuration.Camera.Setup.Unit_Tests.Debug := True;
                Standard.Configuration.Camera.State.Unit_Tests.Debug := True;
                Debug := True;
@@ -589,7 +589,7 @@ assert (test.Camera_Address /= null, "camera address null");
                Widgets.Adjust.Unit_Test.Debug := True;
 
             when 'b' =>
-               Standard.Camera.Lib.Base.Command_Tests.Debug := True;
+               Standard.Camera.Command_Queue.Tests.Debug := True;
 
             when 'c' =>
                Widgets.Control.Unit_Test.Debug := True;
@@ -622,7 +622,7 @@ assert (test.Camera_Address /= null, "camera address null");
 --             Widget_Trace := True;
 
             when 'u' =>
-               Camera.Lib.PTZ_Optics.Unit_Test.Debug := True;
+               Camera.Command_Queue.PTZ_Optics.Unit_Test.Debug := True;
 
             when others =>
                Options.Bad_Option (Quote ("unexpected Camera_Library test trace option",
