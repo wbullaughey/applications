@@ -1,6 +1,7 @@
 #!/bin/zsh
 source ~/.zshrc
 echo building on $OS_VERSION
+export LOCATION=$1
 export RELATIVE_PATH="Project/git/alr/applications/video/camera/unit_test"
 export BUILD_PATH="/Volumes/wayne/$RELATIVE_PATH"
 echo BUILD_PATH $BUILD_PATH
@@ -19,7 +20,23 @@ case  ${OS_VERSION%%.*} in
    *)
       export OUTPUT=build.txt
       echo laptop 2>&1 | tee $OUTPUT
-      cd /Users/wayne/Project/git/alr/applications/video/camera/unit_test
+      case $LOCATION in
+
+         "local")
+            echo local build
+            ;;
+
+         "remote")
+            echo remote build
+            cd /Users/wayne/Project/git/alr/applications/video/camera/unit_test
+            ;;
+
+         *)
+            echo "invalid build location $LOCATION"
+            exit
+            ;;
+
+      esac
       pwd 2>&1 | tee -a $OUTPUT
       echo "path=$PATH"
       which alr
