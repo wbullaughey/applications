@@ -203,7 +203,7 @@ package body Camera.Command_Queue.Tests is
       Test.Camera_Queue.Synchronous (
          Command           => Power_Request,
          Options           => Null_Options,
-         Response_Buffer   => Response_Buffer);
+         Response_Buffer   => Response_Buffer'unchecked_access);
 
       case Response_Buffer (3) is
 
