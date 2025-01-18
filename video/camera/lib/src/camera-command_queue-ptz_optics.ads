@@ -1,4 +1,3 @@
-with Camera.Command_Queue;
 --with Camera.Lib.Base;
 with Configuration.Camera;
 
@@ -35,8 +34,7 @@ private
    procedure Get_Absolute (
       Camera                     : in out PTZ_Optics_Type;
       Pan                        :    out Absolute_Type;
-      Tilt                       :    out Absolute_Type;
-      In_Queue                   : in     Boolean := False);
+      Tilt                       :    out Absolute_Type);
 
    overriding
    function Get_Ack_Length (

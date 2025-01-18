@@ -1,2 +1,2 @@
-last_build_profile = "DEVELOPMENT"
+last_build_profile = "ada_lib=RELEASE,ada_lib_gnoga=RELEASE,ada_lib_tests=RELEASE,applications=RELEASE,aunit=RELEASE,camera_lib=RELEASE,camera_test_lib=RELEASE,camera_tests=DEVELOPMENT,gnat_native=RELEASE,gnatcoll=RELEASE,gnoga=RELEASE,libgpr=RELEASE,video_lib=RELEASE,xmlada=RELEASE"
 

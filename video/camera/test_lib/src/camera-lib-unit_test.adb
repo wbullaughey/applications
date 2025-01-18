@@ -11,7 +11,6 @@ with AUnit.Assertions; use AUnit.Assertions;
 --with Camera.Command_Queue;
 with Camera.Command_Queue.PTZ_Optics.Unit_Test;
 with Camera.Command_Queue.Tests;
-with Camera.Command_Queue.Tests;
 with Camera.Lib.Connection;
 with Configuration.Camera.Setup.Unit_Tests;
 with Configuration.Camera.State.Unit_Tests;

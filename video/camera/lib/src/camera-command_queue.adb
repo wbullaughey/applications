@@ -37,7 +37,7 @@ package body Camera.Command_Queue is
    Event_Description             : aliased constant String := "completion event";
 
    type Action_Type              is (
-      Checked_Move_To_Preset_Action,
+--    Checked_Move_To_Preset_Action,
       Get_Absolute_Location_Action,
       Raw_Command_Action);
 
@@ -60,8 +60,8 @@ package body Camera.Command_Queue is
             Pan                        : Absolute_Type;
             Tilt                       : Absolute_Type;
 
-         when Checked_Move_To_Preset_Action =>
-            Preset_ID                  : Configuration.Camera.Preset_ID_Type;
+--       when Checked_Move_To_Preset_Action =>
+--          Preset_ID                  : Configuration.Camera.Preset_ID_Type;
 
          when Raw_Command_Action =>
             Callback_Parameter         : Callback_Parameter_Class_Access := Null;
@@ -93,21 +93,21 @@ package body Camera.Command_Queue is
 
    Converge_Timeout              : constant := 5.0;
 -- In_Queue                      : Boolean := False;
-   Move_Command                  : constant array (Commands_Type) of Boolean := (
-      Position_Absolute    => True,
-      Position_Down_Left   => True,
-      Position_Down_Right  => True,
-      Position_Down        => True,
-      Position_Left        => True,
-      Position_Relative    => True,
-      Position_Request     => True,
-      Position_Right       => True,
-      Position_Stop        => True,
-      Position_Up          => True,
-      Position_Up_Left     => True,
-      Position_Up_Right    => True,
-      Memory_Recall        => True,
-      others               => False);
+-- Move_Command                  : constant array (Commands_Type) of Boolean := (
+--    Position_Absolute    => True,
+--    Position_Down_Left   => True,
+--    Position_Down_Right  => True,
+--    Position_Down        => True,
+--    Position_Left        => True,
+--    Position_Relative    => True,
+--    Position_Request     => True,
+--    Position_Right       => True,
+--    Position_Stop        => True,
+--    Position_Up          => True,
+--    Position_Up_Left     => True,
+--    Position_Up_Right    => True,
+--    Memory_Recall        => True,
+--    others               => False);
 
    No_Ack                        : Standard.Camera.Lib.Ack_Response_Type renames
                                     Standard.Camera.Lib.None;
@@ -240,7 +240,7 @@ package body Camera.Command_Queue is
             Accumulator          : Interfaces.Unsigned_16;
             Conversion           : Absolute_Type;
             for Conversion'address use Accumulator'address;
-            Derived_Buffer       : Derived_Response_Buffer_Type;
+            Derived_Buffer       : aliased Derived_Response_Buffer_Type;
             Response_Length      : Index_Type;
 
          begin
@@ -255,7 +255,7 @@ package body Camera.Command_Queue is
                Camera_Queue.Synchronous (
                      Command              => Position_Request,
                      Options              => Null_Options,
-                     Response             => Derived_Buffer.Buffer);
+                     Response_Buffer      => Derived_Buffer'unchecked_access);
             end if;
 
             if Last_Pan /= Absolute_Type'last then
@@ -678,11 +678,11 @@ package body Camera.Command_Queue is
 
          when others =>
             declare
-               Message     : constant String := "failed with " &
-                              Parameter.Completion_Event.Status'img & at & HERE;
+               Message  : constant String := "failed with " &
+                           Parameter.Completion_Event.Status'img & " at " & HERE;
             begin
                Log_Exception (Debug, Message);
-               raise Fault with Message;
+               raise Failed with Message;
             end;
       end case;
 
@@ -694,8 +694,7 @@ package body Camera.Command_Queue is
       Queued_Camera              : in out Queued_Camera_Type;
       Command                    : in     Commands_Type;
       Options                    : in     Options_Type;
-      Response_Buffer            : in     Response_Buffer_Class_Access
-   ) return Status_Type is
+      Response_Buffer            : in     Response_Buffer_Class_Access) is
    ----------------------------------------------------------------
 
       Parameter                  : aliased Parameters_Type (
@@ -719,14 +718,28 @@ package body Camera.Command_Queue is
       Maximum_Options (Maximum_Options'first .. Options'length) := Options;
       Process_Queue_Task.Push_Command (Parameter'unchecked_access);
       Parameter.Completion_Event.Wait_For_Event;
-      return Parameter.Completion_Event.Status;
+
+      case Parameter.Completion_Event.Status is
+
+         when Success =>
+            Log_Out (Debug);
+
+         when others =>
+            declare
+               Message  : constant String := "failed with " &
+                           Parameter.Completion_Event.Status'img & " at " & HERE;
+            begin
+               Log_Exception (Debug, Message);
+               raise Failed with Message;
+            end;
+      end case;
 
    exception
 
       when Error: others =>
          Queue_Failed := True;
          Trace_Exception (Debug, Error);
-         return Fault;
+         raise Failed;
 
    end Synchronous;
 
@@ -812,20 +825,20 @@ package body Camera.Command_Queue is
                            Parameter.Tilt,
                            In_Queue    => True);
 
-                     when Checked_Move_To_Preset_Action =>
-                        Log_Here (Debug);
-                        Parameter.Queued_Camera.Move_To_Preset (
-                           Parameter.Preset_ID,
-                           In_Queue             => True);
-
-                        declare
-                           Pan         : Absolute_Type;
-                           Tilt        : Absolute_Type;
-
-                        begin
-                           Parameter.Queued_Camera.Get_Absolute_Iterate (
-                              Pan, Tilt, In_Queue => True);
-                        end;
+--                   when Checked_Move_To_Preset_Action =>
+--                      Log_Here (Debug);
+--                      Parameter.Queued_Camera.Move_To_Preset (
+--                         Parameter.Preset_ID,
+--                         In_Queue             => True);
+--
+--                      declare
+--                         Pan         : Absolute_Type;
+--                         Tilt        : Absolute_Type;
+--
+--                      begin
+--                         Parameter.Queued_Camera.Get_Absolute_Iterate (
+--                            Pan, Tilt, In_Queue => True);
+--                      end;
 
                      when Raw_Command_Action =>
                         declare
@@ -843,8 +856,8 @@ package body Camera.Command_Queue is
                            Parameter.Queued_Camera.Process_Command (
                               Parameter.Command_Code, Parameter.Options (
                                  Parameter.Options'first .. Parameter.Last_Option),
-                              Response_Buffer.Buffer, Response_Buffer.Length,
-                              In_Queue    => True);
+                              Response_Buffer.Buffer, Response_Buffer.Length);
+
                            if Parameter.Callback_Parameter /= Null then
                               Log_Here (Debug, "Response tag " &
                                  Tag_Name (Parameter.Callback_Parameter.
@@ -889,7 +902,6 @@ package body Camera.Command_Queue is
                      raise;
 
                end;
-               In_Queue := False;
             end if;
          end select;
       end loop;

@@ -55,7 +55,7 @@ package Camera.Lib.Connection is
             Null;
 
          when Standard.Camera.LIB.PTZ_Optics_Camera =>
-            PTZ_Optics           : aliased Standard.Camera.Lib.
+            PTZ_Optics           : aliased Standard.Camera.Command_Queue.
                                     PTZ_Optics.PTZ_Optics_Type;
       end case;
    end record;

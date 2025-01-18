@@ -14,7 +14,7 @@ case  ${OS_VERSION%%.*} in
       echo $PATH
       ./rsync.sh
       which sshpass
-      sshpass -p 'grandkidsaregreat' ssh wayne@MacBook $BUILD_PATH/build.sh
+      sshpass -p 'grandkidsaregreat' ssh wayne@MacBook $BUILD_PATH/build.sh remote
       ;;
 
    *)

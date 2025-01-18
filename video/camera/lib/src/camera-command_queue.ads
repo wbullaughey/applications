@@ -64,8 +64,7 @@ package Camera.Command_Queue is
    procedure Get_Absolute (
       Camera_Queue               : in out Queued_Camera_Type;
       Pan                        :    out Absolute_Type;
-      Tilt                       :    out Absolute_Type;
-      In_Queue                   : in     Boolean := False) is abstract;
+      Tilt                       :    out Absolute_Type) is abstract;
 
    procedure Get_Absolute_Iterate ( -- use after move to make sure camera is stable
       Camera_Queue               : in out Queued_Camera_Type;

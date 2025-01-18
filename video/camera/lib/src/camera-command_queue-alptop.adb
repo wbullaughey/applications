@@ -12,10 +12,10 @@ package body Camera.Command_Queue.ALPTOP is
    Timeout                       : constant Duration := 0.5;
    Commands                      : constant Array (Commands_Type) of
                                     Camera.Lib.Base.Command_Type := (
-         Auto_Focus     => ( 6, ( 16#81#,16#01#,16#04#,16#38#,16#02#,16#FF#, others => 0 ), None, Timeout, False, 0),
-         Manual_Focus   => ( 6, ( 16#81#,16#01#,16#04#,16#38#,16#03#,16#FF#, others => 0 ), None, Timeout, False, 0),
-         Memory_Recall         => ( 7, ( 16#81#,16#01#,16#04#,16#3F#,16#02#,16#1#,16#FF#, others => 0 ), None, Timeout, False, 0),
-         others         => ( 1, ( others => 0), None, 0.0, False, 0)
+         Auto_Focus     => ( 6, ( 16#81#,16#01#,16#04#,16#38#,16#02#,16#FF#, others => 0 ), Camera.Lib.None, Timeout, False, 0),
+         Manual_Focus   => ( 6, ( 16#81#,16#01#,16#04#,16#38#,16#03#,16#FF#, others => 0 ), Camera.Lib.None, Timeout, False, 0),
+         Memory_Recall         => ( 7, ( 16#81#,16#01#,16#04#,16#3F#,16#02#,16#1#,16#FF#, others => 0 ), Camera.Lib.None, Timeout, False, 0),
+         others         => ( 1, ( others => 0), Camera.Lib.None, 0.0, False, 0)
       );
 
 -- ----------------------------------------------------------------------------
@@ -52,23 +52,19 @@ package body Camera.Command_Queue.ALPTOP is
    procedure Get_Absolute (
       Camera                     : in out ALPTOP_Type;
       Pan                        :    out Absolute_Type;
-      Tilt                       :    out Absolute_Type;
-      In_Queue                   : in     Boolean := False) is
+      Tilt                       :    out Absolute_Type) is
    ----------------------------------------------------------------------------
 
       Accumulator                : Interfaces.Unsigned_16;
       Conversion                 : Absolute_Type;
       for Conversion'address use Accumulator'address;
-      Response_Buffer            : Maximum_Response_Type;
-      Response_Length            : Index_Type;
+      Response_Buffer            : aliased Response_Buffer_Type;
 
    begin
       Log_In (Debug);
-      Camera.Process_Command (Position_Request,
+      Camera.Synchronous (Position_Request,
          Options                 => Null_Options,
-         Response                => Response_Buffer,
-         Response_Length         => Response_Length,
-         In_Queue                => False);
+         Response_Buffer         => Response_Buffer'unchecked_access);
 
 --    if Debug then
 --       Response.Dump;
@@ -77,9 +73,9 @@ package body Camera.Command_Queue.ALPTOP is
       Accumulator := 0;
       for I in Index_Type'(3) .. 6 loop
          Log_Here (Debug, I'img & ": " &
-            Ada_lib.Socket_IO.Hex (Response_Buffer (I)));
+            Ada_lib.Socket_IO.Hex (Response_Buffer.Buffer (I)));
          Accumulator := Accumulator * 16#10# +
-            Interfaces.Unsigned_16 (Response_Buffer (I) and 16#F#);
+            Interfaces.Unsigned_16 (Response_Buffer.Buffer (I) and 16#F#);
       end loop;
       Log_Here (Debug, Hex_IO.Hex (Accumulator) &
          " conversion" & Conversion'img);
@@ -88,9 +84,9 @@ package body Camera.Command_Queue.ALPTOP is
       Accumulator := 0;
       for I in Index_Type'(7) .. 10 loop
          Log_Here (Debug, I'img & ": " &
-            Ada_lib.Socket_IO.Hex (Response_Buffer (I)));
+            Ada_lib.Socket_IO.Hex (Response_Buffer.Buffer (I)));
          Accumulator := Accumulator * 16#10# +
-            Interfaces.Unsigned_16 (Response_Buffer (I) and 16#F#);
+            Interfaces.Unsigned_16 (Response_Buffer.Buffer (I) and 16#F#);
       end loop;
       Log_Here (Debug, Hex_IO.Hex (Accumulator) &
          " conversion" & Conversion'img);
@@ -186,7 +182,7 @@ package body Camera.Command_Queue.ALPTOP is
    procedure Move_To_Preset (
       Camera_Queue               : in out ALPTOP_Type;
       Preset_ID                  : in     Preset_ID_Type) is
-   pragma Unreferenced (Camera_Queue, Preset_ID, In_Queue);
+   pragma Unreferenced (Camera_Queue, Preset_ID);
    ---------------------------------------------------------------
 
    begin
@@ -268,7 +264,7 @@ package body Camera.Command_Queue.ALPTOP is
       end if;
 
       Camera.Write (Buffer (1 .. Selected_Command.Length));
-      Get_Ack := None;
+      Get_Ack := Standard.Camera.Lib.None;
       Has_Response := False;
       Response_Length := 0;
       Log_Out (Debug);

@@ -1,5 +1,6 @@
 with Ada.Text_IO; use Ada.Text_IO;
 --with Ada_Lib.GNOGA;
+--with Ada_Lib.Socket_IO.Stream_IO;
 --with Ada_Lib.Time;
 with Ada_Lib.Unit_Test;
 with AUnit.Assertions; use AUnit.Assertions;
@@ -194,8 +195,7 @@ package body Camera.Command_Queue.Tests is
    ) return Boolean is
    ---------------------------------------------------------------
 
-      Response_Buffer   : Response_Buffer_Type;
-      Response_Length   : Index_Type;
+      Response_Buffer   : aliased Response_Buffer_Type;
       Result            : Boolean;
 
    begin
@@ -205,7 +205,7 @@ package body Camera.Command_Queue.Tests is
          Options           => Null_Options,
          Response_Buffer   => Response_Buffer'unchecked_access);
 
-      case Response_Buffer (3) is
+      case Response_Buffer.Buffer (3) is
 
          when 2 =>
             Result := True;
@@ -215,11 +215,11 @@ package body Camera.Command_Queue.Tests is
 
          when 4 =>
             raise Failed with "camera power failure code" &
-               Response_Buffer (Response_Buffer'first)'img;
+               Response_Buffer.Buffer (Response_Buffer.Buffer'first)'img;
 
          when others =>
             raise Failed with "unexpected power value" &
-               Response_Buffer (Response_Buffer'first)'img;
+               Response_Buffer.Buffer (Response_Buffer.Buffer'first)'img;
 
       end case;
       return Log_Out (Result, Debug, "Power " & Result'img);
@@ -316,8 +316,8 @@ package body Camera.Command_Queue.Tests is
    ---------------------------------------------------------------
 
       Description       : constant String := Vertical & " " & Sideways;
-      Default_Preset    : constant Preset_ID_Type :=
-                           Test.Camera_Queue.Get_Default_Preset;
+--    Default_Preset    : constant Preset_ID_Type :=
+--                         Test.Camera_Queue.Get_Default_Preset;
       Options           : Standard.Camera.Lib.Unit_Test.
                            Camera_Lib_Unit_Test_Options_Type'class
                               renames Standard.Camera.Lib.Unit_Test.
@@ -351,16 +351,14 @@ package body Camera.Command_Queue.Tests is
                      Start          => 6,
                      Variable_Width => False
                   )
-               ),
-               In_Queue                => False);
+               ));
 
          Log_Here (Debug, "wait to send stop");
          delay Wait (Index);
          Log_Here (Debug, "send stop");
 
          Test.Camera_Queue.Process_Command (Position_Stop,
-            Options              => Null_Options,
-            In_Queue             => False);
+            Options              => Null_Options);
 
          delay 0.5;
          Assert (Ask_Pause (Test.Manual,
@@ -577,8 +575,7 @@ package body Camera.Command_Queue.Tests is
                   Start          => 5,
                   Variable_Width => False
                )
-            ),
-            In_Queue             => False);
+            ));
 
          if On then -- need to reopen after power comes on
             Log_Here (Debug);
@@ -637,7 +634,7 @@ package body Camera.Command_Queue.Tests is
             end;
          end if;
       end;
-      Checked_Move_To_Preset (Test, Test.Camera_Queue.Get_Default_Preset);
+      Test.Camera_Queue.Move_To_Preset (Test.Camera_Queue.Get_Default_Preset);
       Log_Out (Debug or Trace_Set_Up);
    end Set_Up;
 
@@ -649,7 +646,7 @@ package body Camera.Command_Queue.Tests is
                         Camera_Lib_Unit_Test_Options_Type'class
                            renames Standard.Camera.Lib.Unit_Test.
                               Get_Camera_Lib_Unit_Test_Read_Only_Options.all;
-      Brand          : Brand_Type renames Options.Camera_Options.Brand;
+      Brand          : Camera.Lib.Brand_Type renames Options.Camera_Options.Brand;
       Test_Suite     : constant AUnit.Test_Suites.Access_Test_Suite :=
                         new AUnit.Test_Suites.Test_Suite;
       Raw_Test       : constant Raw_Test_Access := new Raw_Test_Type (Brand);
@@ -817,7 +814,7 @@ package body Camera.Command_Queue.Tests is
 
    exception
 
-      when Fault: Ada_Lib.Socket_IO.Stream_IO.Timed_Out =>
+      when Fault: Camera.Lib.Base.Timed_Out =>
          Ada_Lib.Unit_Test.Exception_Assert (Fault);
 
       when Fault: others =>
@@ -979,7 +976,7 @@ package body Camera.Command_Queue.Tests is
             Test_Preset'img & ". Less than minimum for testing" &
             Minimum_Test_Preset'img;
       end if;
-      Local_Test.Move_To_Preset (Default_Preset);
+      Local_Test.Camera_Queue.Move_To_Preset (Default_Preset);
       delay 2.5;
       if Local_Test.Manual then
          Assert (Ask_Pause (True, "check default preset" & Default_Preset'img),
@@ -998,7 +995,7 @@ package body Camera.Command_Queue.Tests is
       delay 3.0;  -- camera needs time to update memory
       Put_Line ("preset" & Test_Preset'img &
          " saved location" & Default_Preset'img);
-      Local_Test.Checked_Move_To_Preset (Alternate_Preset);
+      Local_Test.Camera_Queue.Move_To_Preset (Alternate_Preset);
       if Local_Test.Manual then
          Assert (Ask_Pause (True, "check alternate preset" & Alternate_Preset'img),
             "move to preset" & Alternate_Preset'img & " failed");
@@ -1006,7 +1003,7 @@ package body Camera.Command_Queue.Tests is
          delay 2.5;  -- wait for camera to move
          Put_Line ("camera moved to alternate preset" & Alternate_Preset'img);
       end if;
-      Local_Test.Checked_Move_To_Preset (Test_Preset);
+      Local_Test.Camera_Queue.Move_To_Preset (Test_Preset);
       delay 2.5;
       if Local_Test.Manual then
          Assert (Ask_Pause (True, "check test preset" & Test_Preset'img &
@@ -1107,12 +1104,12 @@ package body Camera.Command_Queue.Tests is
    begin
       Log_In (Debug, "Test_Preset" & Test_Preset'img);
       Pause (Local_Test.Manual, "set preset" & Test_Preset'img);
-      Local_Test.Checked_Move_To_Preset (Default_Preset);
+      Local_Test.Camera_Queue.Move_To_Preset (Default_Preset);
       if Local_Test.Manual then
          Assert (Ask_Pause (True, "check default preset" & Default_Preset'img),
             "move to preset" & Default_Preset'img & " failed");
       end if;
-      Local_Test.Checked_Move_To_Preset (Test_Preset);
+      Local_Test.Camera_Queue.Move_To_Preset (Test_Preset);
 
       Assert (Ask_Pause (Local_Test.Manual,
          "verify that the preset" & Test_Preset'img),

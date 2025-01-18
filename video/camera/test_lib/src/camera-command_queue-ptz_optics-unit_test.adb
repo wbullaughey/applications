@@ -15,7 +15,7 @@ package body Camera.Command_Queue.PTZ_Optics.Unit_Test is
 
    use type Interfaces.Integer_16;
 -- use type Camera.Lib.Base.Base_Camera_Class_Access;
-   use type Camera.Command_Queue.Queued_Camera_Class_Access;
+-- use type Camera.Command_Queue.Queued_Camera_Class_Access;
    use type Preset_ID_Type;
 
    type Test_Type (
