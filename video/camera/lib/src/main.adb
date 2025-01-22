@@ -571,9 +571,6 @@ package body Main is
       case Options.Brand is
 
          when Standard.Camera.Lib.PTZ_Optics_Camera =>
-if Connection_Data.Camera_Queue = null then
-log_here;
-end if;
             Connection_Data.Camera_Queue.Open (Camera_Address, Port_Number);
 
          when others =>

@@ -11,7 +11,7 @@ export TRACE=1
 
 trace() {
    if (( $TRACE > 0 )) then
-      echo $* 2>&1 | tee -a $OUTPUT
+      echo "TRACE: $*" 2>&1 | tee -a $OUTPUT
    fi
 }
 
@@ -80,7 +80,7 @@ case $PARAMETERS[1] in
 esac
 
 export MODE="${PARAMETERS[1]}"
-trace MODE $MODE | tee -a $OUTPUT
+trace MODE $MODE
 remove_1
 parameters  # process leading options
 case "$MODE" in
@@ -107,6 +107,7 @@ esac
 trace APPLICATION $APPLICATION
 
 export SUITE="${PARAMETERS[1]}"
+echo "suite $SUITE"
 remove_1
 parameters  # process leading options
 trace "suite: $SUITE"
@@ -116,6 +117,10 @@ case "$SUITE" in
       echo no suites specified, run all
       ;;
 
+   "all")
+      echo "test all suites"
+      ;;
+
    *)
       export OPTIONS="$OPTIONS -u $SUITE"
       ;;
@@ -123,6 +128,8 @@ case "$SUITE" in
 esac
 
 export ROUTINE="${PARAMETERS[1]}"
+trace "routine $ROUTINE"
+
 remove_1
 parameters  # process leading options
 
@@ -146,8 +153,9 @@ parameters  # process leading options
 
 trace final OPTIONS $OPTIONS
 export COMMAND="../driver/bin/camera_driver $OPTIONS $VERBOSE"
-echo comand: $COMMAND 2>&1 | tee -a $OUTPUT
+trace "comand: $COMMAND" 2>&1
 rm GNAT-*
+echo run command
 eval $COMMAND 2>&1 | tee -a $OUTPUT
 
 

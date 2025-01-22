@@ -18,6 +18,9 @@ package Camera.Command_Queue is
    return Boolean;
 
    subtype Ack_Response_Type     is Standard.Camera.Lib.Ack_Response_Type;
+   None                          : Ack_Response_Type renames Standard.Camera.Lib.None;
+   Optional                      : Ack_Response_Type renames Standard.Camera.Lib.Optional;
+   Required                      : Ack_Response_Type renames Standard.Camera.Lib.Required;
 
    type Callback_Parameter_Type  is record
       Command_Code               : Commands_Type;

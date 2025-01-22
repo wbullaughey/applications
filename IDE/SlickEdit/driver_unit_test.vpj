@@ -62,7 +62,7 @@
                 ClearProcessBuffer="1"
                 Verbose="1"
                 Beep="1">
-                <Exec CmdLine="./build.sh"/>
+                <Exec CmdLine="./build.sh remote application/video/camera/driver/unit_test"/>
             </Target>
             <Target
                 Name="Compile"
@@ -171,7 +171,7 @@
                 ClearProcessBuffer="1"
                 Verbose="1"
                 Beep="1">
-                <Exec CmdLine="./build.sh"/>
+                <Exec CmdLine="./build.sh remote application/video/camera/driver/unit_test"/>
             </Target>
             <Target
                 Name="Compile"

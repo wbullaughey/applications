@@ -33,8 +33,10 @@
         <F N="../../applications.gpr"/>
         <F N="../../build_all.sh"/>
         <F N="../../build_all.txt"/>
+        <F N="../../build_base.sh"/>
         <F N="../../configuration.gpr"/>
         <F N="../../default_config.gpr"/>
+        <F N="../../rsync.sh"/>
     </Files>
     <Config
         Name="Debug"

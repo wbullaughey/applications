@@ -54,7 +54,7 @@
                 ClearProcessBuffer="1"
                 Verbose="1"
                 Beep="1">
-                <Exec CmdLine="./build.sh"/>
+                <Exec CmdLine="./build.sh remote"/>
             </Target>
             <Target
                 Name="Rebuild"

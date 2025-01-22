@@ -49,8 +49,8 @@ package body Video.Lib is
    ---------------------------------------------------------------
 
    begin
-      Not_Implemented;
-      return Fault;
+      Log_Here (Debug, "nop callback");
+      return Success;
    end Callback;
 
    ---------------------------------------------------------------

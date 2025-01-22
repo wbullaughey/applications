@@ -22,11 +22,11 @@
             Filters="*.*"
             GUID="{8257F735-0CA3-483C-9835-0228C6DCEF00}"/>
         <F
-            N="../../../../../GNAT/2020/lib/gcc/x86_64-apple-darwin17.7.0/8.4.1/adainclude/*.ad?"
+            N="../../../../../../../../opt/gcc-14.1.0-1-aarch64/lib/gcc/aarch64-apple-darwin21/14.1.0/adainclude/*.ad?"
             Recurse="1"
             Excludes=""/>
         <F
-            N="../../../../../GNAT/2020/lib/gcc/x86_64-apple-darwin17.7.0/8.4.1/adainclude/*.gpr"
+            N="../../../../../../../../opt/gcc-14.1.0-1-aarch64/lib/gcc/aarch64-apple-darwin21/14.1.0/adainclude/*.gpr"
             Recurse="1"
             Excludes=""/>
     </Files>

@@ -219,7 +219,7 @@ package body Camera.Command_Queue.Tests is
 
          when others =>
             raise Failed with "unexpected power value" &
-               Response_Buffer.Buffer (Response_Buffer.Buffer'first)'img;
+               Response_Buffer.Buffer (3)'img;
 
       end case;
       return Log_Out (Result, Debug, "Power " & Result'img);
@@ -821,7 +821,6 @@ package body Camera.Command_Queue.Tests is
          Ada_Lib.Unit_Test.Exception_Assert (Fault);
 
    end Test_Position_Relative;
-   ---------------------------------------------------------------
 
    ---------------------------------------------------------------
    procedure Test_Position_Request (
@@ -829,26 +828,38 @@ package body Camera.Command_Queue.Tests is
    ---------------------------------------------------------------
 
       Local_Test                 : Test_Type renames Test_Type (Test);
-      Pan                        : Absolute_Type := 0;
---    Response_Buffer            : Maximum_Response_Type;
-      Set_Pan                    : constant Absolute_Type := 16#123#;
-      Set_Tilt                   : constant Absolute_Type := 16#0bc#;
-      Tilt                       : Absolute_Type := 0;
---    Timeout                    : constant Ada_Lib.Time.Time_Type :=
---                                  Ada_Lib.Time.Now + 60.0;
-   begin
-      Log_In (Debug, "set pan " & Set_Pan'img & " set tilt " & Set_Tilt'img);
-      Local_Test.Camera_Queue.Set_Absolute (Set_Pan, Set_Tilt);
-      Local_Test.Camera_Queue.Get_Absolute_Iterate (
-         Pan         => Pan,
-         Tilt        => Tilt,
-         In_Queue    => False);
+      Initial_Pan                : Absolute_Type := 0;
+      Initial_Tilt               : Absolute_Type := 0;
 
-      Assert (Pan = Set_Pan, "invalid pan " & Pan'img &
-         " expected " & Set_Pan'img);
-      Assert (Tilt = Set_Tilt, "invalid tilt " & Tilt'img &
-         " expected " & Set_Tilt'img);
-      Log_Out (Debug, "Pan " & Pan'img & " tilt " & Tilt'img);
+   begin
+      Log_In (Debug);
+
+      Local_Test.Camera_Queue.Get_Absolute_Iterate (
+         Pan         => Initial_Pan,
+         Tilt        => Initial_Tilt,
+         In_Queue    => False);
+      Log_In (Debug, "initial pan " & Initial_Pan'img &
+         " initial tilt " & Initial_Tilt'img);
+
+      declare
+         Final_Pan   : Absolute_Type := 0;
+         Final_Tilt  : Absolute_Type := 0;
+         Set_Pan     : constant Absolute_Type := Initial_Pan + 100;
+         Set_Tilt    : constant Absolute_Type := Initial_Tilt + 100;
+
+      begin
+         Local_Test.Camera_Queue.Set_Absolute (Set_Pan, Set_Tilt);
+         Local_Test.Camera_Queue.Get_Absolute_Iterate (
+            Pan         => Final_Pan,
+            Tilt        => Final_Tilt,
+            In_Queue    => False);
+
+         Assert (Final_Pan = Set_Pan, "invalid pan " & Final_Pan'img &
+            " expected " & Set_Pan'img);
+         Assert (Final_Tilt = Set_Tilt, "invalid tilt " & Final_Tilt'img &
+            " expected " & Set_Tilt'img);
+         Log_Out (Debug, "Pan " & Final_Pan'img & " tilt " & Final_Tilt'img);
+      end;
    end Test_Position_Request;
 
    ---------------------------------------------------------------
@@ -873,7 +884,7 @@ package body Camera.Command_Queue.Tests is
 
    begin
       Log_In (Debug);
-      Local_Test.Camera_Queue.Process_Command (
+      Local_Test.Camera_Queue.Synchronous (
          Command     => Position_Stop,
          Options     => (
                (

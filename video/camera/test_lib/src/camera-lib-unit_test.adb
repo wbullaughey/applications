@@ -304,14 +304,11 @@ not_implemented;
 
       begin
          AUnit_Options.Filter := Options.Filter'unchecked_access;
-         Test_Suite.Add_Test (Camera.Command_Queue.Tests.Suite);
          Test_Suite.Add_Test (Main.Unit_Test.Suite);
-         Test_Suite.Add_Test (Standard.Camera.Command_Queue.PTZ_Optics.Unit_Test.Suite);
-         Test_Suite.Add_Test (Standard.Camera.Command_Queue.Tests.Suite);
+         Test_Suite.Add_Test (Camera.Command_Queue.PTZ_Optics.Unit_Test.Suite);
+         Test_Suite.Add_Test (Camera.Command_Queue.Tests.Suite);
          Test_Suite.Add_Test (
             Standard.Configuration.Camera.Setup.Unit_Tests.Suite);
-         Test_Suite.Add_Test (
-            Standard.Configuration.Camera.State.Unit_Tests.Suite);
          Test_Suite.Add_Test (Widgets.Adjust.Unit_Test.Suite);
          Test_Suite.Add_Test (Widgets.Configured.Unit_Test.Suite);
          Test_Suite.Add_Test (Widgets.Control.Unit_Test.Suite);
@@ -355,8 +352,8 @@ not_implemented;
 --       Test_Suite.Add_Test (Standard.Configuration.Camera.State.Unit_Tests.Suite);
 --       Test_Suite.Add_Test (Standard.Configuration.Camera.Setup.Unit_Tests.Suite);
 --       Test_Suite.Add_Test (Main.Unit_Test.Suite);
---       Test_Suite.Add_Test (Standard.Camera.Command_Queue.Tests.Suite);
---       Test_Suite.Add_Test (Standard.Camera.Command_Queue.PTZ_Optics.Unit_Test.Suite);
+--       Test_Suite.Add_Test (Camera.Command_Queue.Tests.Suite);
+--       Test_Suite.Add_Test (Camera.Command_Queue.PTZ_Optics.Unit_Test.Suite);
 --       Test_Suite.Add_Test (Widgets.Control.Unit_Test.Suite);
 --       Test_Suite.Add_Test (Widgets.Configured.Unit_Test.Suite);
 --       Test_Suite.Add_Test (Widgets.Adjust.Unit_Test.Suite);
@@ -388,6 +385,7 @@ not_implemented;
 ---------------------------------------------------------------
 
    begin
+log_here;
       case Brand is
 
          when ALPTOP_Camera =>
@@ -400,6 +398,7 @@ not_implemented;
             Connection_Data.Camera_Queue := Connection_Data.PTZ_Optics'unchecked_access;
 
       end case;
+log_here;
    end Set_Camera_Queue;
 
 ---------------------------------------------------------------
@@ -410,7 +409,7 @@ not_implemented;
 
       Options           : Camera_Lib_Unit_Test_Options_Type'class renames
                               Get_Camera_Lib_Unit_Test_Read_Only_Options.all;
-      Connection_Data   : constant Standard.Camera.Lib.Connection.Connection_Data_Access :=
+      Connection_Data   : constant Camera.Lib.Connection.Connection_Data_Access :=
                            new Camera.Lib.Connection.Connection_Data_Type (
                               Options.Camera_Options.Brand);
       State             : Configuration.Camera.State.State_Type renames
@@ -447,7 +446,7 @@ assert (test.Camera_Address /= null, "camera address null");
 
       Options           : Camera_Lib_Unit_Test_Options_Type'class renames
                               Get_Camera_Lib_Unit_Test_Read_Only_Options.all;
-      Connection_Data   : constant Standard.Camera.Lib.Connection.Connection_Data_Access :=
+      Connection_Data   : constant Camera.Lib.Connection.Connection_Data_Access :=
                            new Camera.Lib.Connection.Connection_Data_Type (
                               Options.Camera_Options.Brand);
 --    State             : Configuration.Camera.State.State_Type renames
@@ -455,10 +454,14 @@ assert (test.Camera_Address /= null, "camera address null");
    begin
       Log_In (Debug or Trace_Set_Up);
       Set_Camera_Queue (Options.Camera_Options.Brand, Connection_Data.all);
+log_here;
       Connection_Data.Initialize;
+log_here;
       Ada_Lib.GNOGA.Unit_Test.GNOGA_Tests_Type(Test).Set_Up;
+log_here;
 
       if not Test.Initialize_GNOGA then
+log_here;
          Main.Run (
             Directory            => Camera_Lib_Unit_Test_Options.
                                        Camera_Options.Directory.Coerce,
@@ -466,6 +469,7 @@ assert (test.Camera_Address /= null, "camera address null");
                                        GNOGA_Options.HTTP_Port,
             Verbose              => True,
             Wait_For_Completion  => False);
+log_here;
       end if;
 
       Log_Out (Debug or Trace_Set_Up);
@@ -509,14 +513,14 @@ assert (test.Camera_Address /= null, "camera address null");
 --
 ----      case Test.Brand is
 ----
-----         when Standard.Camera.Lib.ALPTOP_Camera =>
+----         when Camera.Lib.ALPTOP_Camera =>
 ----             not_implemented;
 ----
-----         when Standard.Camera.LIB.PTZ_Optics_Camera =>
+----         when Camera.LIB.PTZ_Optics_Camera =>
 ----             Test.Camera_Queue := Test.PTZ_Optics'unchecked_access;
 ----             Test.Camera_Queue.Open (State.Video_Address.all, Test.Port_Number);
 ----
-----         when Standard.Camera.Lib.No_Camera =>
+----         when Camera.Lib.No_Camera =>
 ----            raise Failed with "no camera set";
 ----
 ----      end case;
@@ -535,8 +539,8 @@ assert (test.Camera_Address /= null, "camera address null");
       Test                       : in out Camera_Test_Type) is
    ---------------------------------------------------------------
 
-      Connection_Data            : Standard.Camera.Lib.Connection.Connection_Data_Type renames
-                                    Standard.Camera.Lib.Connection.Connection_Data_Type (
+      Connection_Data            : Camera.Lib.Connection.Connection_Data_Type renames
+                                    Camera.Lib.Connection.Connection_Data_Type (
                                        Ada_Lib.GNOGA.Get_Connection_Data.all);
       State                      : Configuration.Camera.State.State_Type renames
                                     Connection_Data.State;
@@ -572,7 +576,7 @@ assert (test.Camera_Address /= null, "camera address null");
 
             when 'a' =>
                Camera.Command_Queue.Debug := True;
-               Standard.Camera.Command_Queue.Tests.Debug := True;
+               Camera.Command_Queue.Tests.Debug := True;
                Standard.Configuration.Camera.Setup.Unit_Tests.Debug := True;
                Standard.Configuration.Camera.State.Unit_Tests.Debug := True;
                Debug := True;
@@ -588,7 +592,7 @@ assert (test.Camera_Address /= null, "camera address null");
                Widgets.Adjust.Unit_Test.Debug := True;
 
             when 'b' =>
-               Standard.Camera.Command_Queue.Tests.Debug := True;
+               Camera.Command_Queue.Tests.Debug := True;
 
             when 'c' =>
                Widgets.Control.Unit_Test.Debug := True;

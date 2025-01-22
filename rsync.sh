@@ -1,6 +1,7 @@
 #!/bin/zsh
-export SOURCE=/Users/wayne/Project/git/alr/applications
-export DESTINATION=/Volumes/applications
+export RELATIVE_PATH=Project/git/alr/applications
+export SOURCE=/Users/wayne/$RELATIVE_PATH
+export DESTINATION=/Volumes/wayne/$RELATIVE_PATH
 export OPTIONS=-lptv
 export OUTPUT=rsync.txt
 
@@ -26,8 +27,14 @@ copy_directory "video/camera" 2>&1 | tee -a $OUTPUT
 copy_directory "video/camera/lib" 2>&1 | tee -a $OUTPUT
 copy_directory "video/camera/test_lib" 2>&1 | tee -a $OUTPUT
 copy_directory "video/camera/unit_test" 2>&1 | tee -a $OUTPUT
+copy_directory "video/camera/driver" 2>&1 | tee -a $OUTPUT
+copy_directory "video/camera/driver/unit_test" 2>&1 | tee -a $OUTPUT
 copy_directory "video/lib" 2>&1 | tee -a $OUTPUT
 copy_directory "video/lib/video_aunit" 2>&1 | tee -a $OUTPUT
 
+copy_file ada_lib/ada_lib_test/build.sh 2>&1 | tee -a $OUTPUT
+copy_file video/camera/build.sh 2>&1 | tee -a $OUTPUT
+copy_file video/camera/driver/build.sh 2>&1 | tee -a $OUTPUT
+copy_file video/camera/driver/unit_test/build.sh 2>&1 | tee -a $OUTPUT
 copy_file video/camera/unit_test/build.sh 2>&1 | tee -a $OUTPUT
 
