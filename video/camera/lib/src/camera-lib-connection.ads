@@ -98,6 +98,7 @@ package Camera.Lib.Connection is
    procedure Halt;
 
    function Has_Camera_Queue (
+      Connection_Data            : in     Connection_Data_Type;
       From                       : in     String := Ada_Lib.Trace.Here
    ) return Boolean;
 

@@ -1,5 +1,6 @@
 with Ada.Exceptions;
 with Ada.Text_IO;use Ada.Text_IO;
+with Ada_Lib.GNOGA;
 with Ada_Lib.Help;
 --with Ada_Lib.Options.AUnit.Ada_Lib_Tests;
 --with Ada_Lib.Options.Unit_Test;
@@ -453,6 +454,8 @@ assert (test.Camera_Address /= null, "camera address null");
 --                         Connection_Data.State;
    begin
       Log_In (Debug or Trace_Set_Up);
+      Ada_Lib.GNOGA.Set_Connection_Data (
+         Ada_Lib.GNOGA.Connection_Data_Class_Access (Connection_Data));
       Set_Camera_Queue (Options.Camera_Options.Brand, Connection_Data.all);
 log_here;
       Connection_Data.Initialize;

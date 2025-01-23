@@ -8,6 +8,7 @@ with Ada_Lib.Trace; use Ada_Lib.Trace;
 package body Camera.Lib.Connection is
 
 -- use type Ada_Lib.Time.Time_Type;
+   use type Camera.Command_Queue.Queued_Camera_Class_Access;
 -- use type Data_Type;
    use type Gnoga.Gui.Plugin.jQueryUI.Widget.Dialog_Access;
 -- use type Index_Type;
@@ -120,14 +121,14 @@ package body Camera.Lib.Connection is
 
    ----------------------------------------------------------------
    function Has_Camera_Queue (
+      Connection_Data            : in     Connection_Data_Type;
       From                       : in     String := Ada_Lib.Trace.Here
    ) return Boolean is
-   pragma Unreferenced (From);
    ----------------------------------------------------------------
 
    begin
-not_implemented;
-return false;
+      Log_Here (Debug, "called from " & From);
+      return Connection_Data.Camera_Queue /= Null;
    end Has_Camera_Queue;
 
    ----------------------------------------------------------------

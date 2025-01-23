@@ -10,6 +10,7 @@ with ADA_LIB.OS;
 with Ada_Lib.Options.Runstring;
 --with ADA_LIB.Text;
 with ADA_LIB.Trace; use ADA_LIB.Trace;
+with Camera.Lib.Connection;
 with Command_Name;
 --with Configuration.Camera.State;
 --with Configuration.State;
@@ -104,6 +105,10 @@ package body Camera.Lib.Options is
                         when 'a' =>
                            Debug_Options := True;
                            Options.Debug := True;
+                           Camera.Lib.Connection.Debug := True;
+
+                        when 'c' =>
+                           Camera.Lib.Connection.Debug := True;
 
                         when 'm' =>
                            Options.Debug := True;
@@ -163,6 +168,7 @@ package body Camera.Lib.Options is
          Put_Line (Command_Name & " trace options -" &
             Trace_Option & ")");
          Put_Line ("      a               all");
+         Put_Line ("      c               Camera.Lib.Connection.Debug");
          Put_Line ("      m               main program options");
          Put_Line ("      r               runtime options");
          New_Line;

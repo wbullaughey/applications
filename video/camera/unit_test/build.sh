@@ -1,7 +1,6 @@
 #!/bin/zsh
 source ~/.zshrc
 echo building camera unit test on $OS_VERSION
-export LOCATION=$1
 export APPLICATION_PATH="Project/git/alr/applications"
 export RELATIVE_PATH="/video/camera/unit_test"
 export LOCAL_APPLICATION_PATH="/Users/wayne/$APPLICATION_PATH"
@@ -18,15 +17,16 @@ case  ${OS_VERSION%%.*} in
    "15")
       echo desktop
       echo $PATH
-      case $LOCATION in
-
-         "local")
-            export OUTPUT=build.txt
-            echo local build
-#           cd $LOCAL_BUILD_PATH
-            ;;
-
-         "remote")
+      export LOCATION=remote
+#      case $LOCATION in
+#
+#         "local")
+#            export OUTPUT=build.txt
+#            echo local build
+##           cd $LOCAL_BUILD_PATH
+#            ;;
+#
+#         "remote")
             $LOCAL_APPLICATION_PATH/rsync.sh
       #     which sshpass
       #     sshpass -p 'grandkidsaregreat' ssh  wayne@MacBook ls $REMOTE_BUILD_PATH
@@ -34,17 +34,18 @@ case  ${OS_VERSION%%.*} in
 #           echo "COMMAND $COMMAND
 #           eval $COMMAND
             exit
-            ;;
-
-         *)
-            echo "invalid build location $LOCATION"
-            exit
-            ;;
-      esac
+#           ;;
+#
+#        *)
+#           echo "invalid build location $LOCATION"
+#           exit
+#           ;;
+#     esac
       ;;
 
    *)
       echo laptop $LOCAL 2>&1 | tee $OUTPUT
+      export LOCATION=local
       export OUTPUT=build.txt
       echo local build
       cd $LOCAL_BUILD_PATH

@@ -47,8 +47,9 @@ package body Main is
 -- procedure On_Exit (
 --    Object                     : in out Gnoga.Gui.Base.Base_Type'Class);
 
-   procedure Open_Camera
-   with Pre => Camera.Lib.Connection.Has_Camera_Queue;
+   procedure Open_Camera (
+      Connection_Data   : in out Camera.Lib.Connection.Connection_Data_Type'class
+   ) with Pre => Connection_Data.Has_Camera_Queue;
 
 -- --  Setup another path in to the application for submitting results
 -- --  /result, see On_Connect_Handler in body of this procedure.
@@ -100,7 +101,7 @@ package body Main is
    ---------------------------------------------------------------
    -- create the navigation buttons: exit delete all, delete unsubscribed, dump, reload css, trace
    procedure Create (
-      Navigation                 : in out Navigation_Type;
+      Navigation                 : in out Navigation_Type'class;
       Parent                     : in out Gnoga.Gui.Base.Base_Type'Class) is
    ---------------------------------------------------------------
 
@@ -367,7 +368,7 @@ package body Main is
 
       begin
          if not Started then
-            Open_Camera;
+            Open_Camera (Connection_Data);
          end if;
 
 --       if Started then
@@ -546,13 +547,14 @@ package body Main is
 -- end On_Result_Connect;
 
    ---------------------------------------------------------------
-   procedure Open_Camera is
+   procedure Open_Camera (
+      Connection_Data   : in out Camera.Lib.Connection.Connection_Data_Type'class) is
    ---------------------------------------------------------------
 
-      Connection_Data   : Standard.Camera.Lib.Connection.Connection_Data_Type
-                           renames Standard.Camera.Lib.Connection.
-                              Connection_Data_Type (
-                                 Ada_Lib.GNOGA.Get_Connection_Data.all);
+--    Connection_Data   : Standard.Camera.Lib.Connection.Connection_Data_Type
+--                         renames Standard.Camera.Lib.Connection.
+--                            Connection_Data_Type (
+--                               Ada_Lib.GNOGA.Get_Connection_Data.all);
       State             : Configuration.Camera.State.State_Type renames
                            Connection_Data.State;
       Options           : Standard.Camera.Lib.
