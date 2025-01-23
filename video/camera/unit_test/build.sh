@@ -18,44 +18,25 @@ case  ${OS_VERSION%%.*} in
       echo desktop
       echo $PATH
       export LOCATION=remote
-#      case $LOCATION in
-#
-#         "local")
-#            export OUTPUT=build.txt
-#            echo local build
-##           cd $LOCAL_BUILD_PATH
-#            ;;
-#
-#         "remote")
-            $LOCAL_APPLICATION_PATH/rsync.sh
-      #     which sshpass
-      #     sshpass -p 'grandkidsaregreat' ssh  wayne@MacBook ls $REMOTE_BUILD_PATH
-            sshpass -p 'grandkidsaregreat' ssh wayne@MacBook $LOCAL_BUILD_PATH/build.sh remote
-#           echo "COMMAND $COMMAND
-#           eval $COMMAND
-            exit
-#           ;;
-#
-#        *)
-#           echo "invalid build location $LOCATION"
-#           exit
-#           ;;
-#     esac
+      $LOCAL_APPLICATION_PATH/rsync.sh
+      export LOCAL_OUTPUT=build.txt
+      sshpass -p 'grandkidsaregreat' ssh wayne@MacBook $LOCAL_BUILD_PATH/build.sh remote 2>&1 | tee -a $LOCAL_OUTPUT
+      echo sshpass completed
       ;;
 
    *)
-      echo laptop $LOCAL 2>&1 | tee $OUTPUT
+      echo laptop $LOCAL 2>&1 | tee $LOCAL_OUTPUT
       export LOCATION=local
-      export OUTPUT=build.txt
+      export LOCAL_OUTPUT=build.txt
       echo local build
       cd $LOCAL_BUILD_PATH
-      rm $OUTPUT
-      pwd 2>&1 | tee -a $OUTPUT
+      rm $LOCAL_OUTPUT
+      pwd 2>&1 | tee -a $LOCAL_OUTPUT
+      alr -v build -- -j10 -s -k -gnatE 2>&1 | tee -a $LOCAL_OUTPUT
+      echo alr completed
 esac
-#     echo "path=$PATH"
-#     which alr
 
-alr -v build -- -j10 -s -k -gnatE 2>&1 | tee -a $OUTPUT
+echo LOCATION $LOCATION
 case $LOCATION in
 
    "local")
@@ -64,11 +45,17 @@ case $LOCATION in
 
    "remote")
       # check if build worked
-      grep "Build finished successfully" $OUTPUT
+      export REMOTE_OUTPUT=$REMOTE_BUILD_PATH/build.txt
+      echo "REMOTE_OUTPUT $REMOTE_OUTPUT"
+      echo grep $REMOTE_OUTPUT
+      grep "Build finished successfully" $REMOTE_OUTPUT
       RESULT=$?
       if [ $RESULT -eq 0 ]; then
          echo "compile successfully. copy camera_aunit"
-         rsync -lptv bin/camera_aunit $REMOTE_BUILD_PATH/bin
+         ls -l $REMOTE_BUILD_PATH/bin
+         COMMAND="rsync -lptv $REMOTE_BUILD_PATH/bin/camera_aunit bin"
+         echo COMMAND $COMMAND
+         eval $COMMAND
       else
          echo "compile failed."
          rm $REMOTE_BUILD_PATH/bin/camera_aunit

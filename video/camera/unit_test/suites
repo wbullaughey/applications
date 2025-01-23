@@ -1,4 +1,4 @@
-camera aunit
+camera aunit with suites
 Command bin/camera_aunit  -@l
 camera_aunit
 Adjust_Card Test_Mouse_Move
@@ -29,8 +29,6 @@ Raw_Video_Commands Test_Update_Preset
 Setup Test_Load
 Setup Test_Update
 Setup Test_Values
-State Test_Load
-State Test_Values
 Video_Commands Test_Position_Down_Left
 Video_Commands Test_Position_Down_Right
 Video_Commands Test_Position_Left

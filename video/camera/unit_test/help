@@ -1,4 +1,4 @@
-camera aunit
+camera aunit with help
 camera_aunit
 
 
@@ -46,6 +46,7 @@ Camera Lib Unit Test trace options (T)
       d               Camera.Lib.Unit_Test.Debug
       m               main unit test trace, Camera_AUnit
       o               unit_test options
+      O               Camera.Lib.Base.Tests
       p               program trace
       s               Configuration.Camera.State unit_test options
       S               Configuration.Camera.Setup unit_test options

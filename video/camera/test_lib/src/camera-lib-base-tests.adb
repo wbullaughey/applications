@@ -345,14 +345,16 @@ package body Camera.Lib.Base.Tests is
    begin
       Log_In (Debug or Trace_Set_Up);
       Test.Set_Up_Load := False;
-      if Options.Camera_Options.Camera_Address = Null then
-         Options.Camera_Options.Camera_Address :=
-            new Ada_Lib.Socket_IO.Address_Type (Ada_Lib.Socket_IO.URL);
-         Options.Camera_Options.Camera_Address.URL_Address :=
-            Ada_Lib.Strings.Unlimited.Coerce ("ucwc.dyndns.org");
-         Options.Camera_Options.Port_Number := 5678;
-      end if;
---    Camera.Lib.Unit_Test.Camera_Test_Type (Test).Set_Up_Optional_Load (False);
+      Camera.Lib.Unit_Test.Camera_Test_Type (Test).Set_Up;
+      -- moved to Camera.Lib.Unit_Test.Set_Up
+--    if Options.Camera_Options.Camera_Address = Null then
+--       Log_Here (Debug, "camera address not set in options");
+--       Options.Camera_Options.Camera_Address :=
+--          new Ada_Lib.Socket_IO.Address_Type (Ada_Lib.Socket_IO.URL);
+--       Options.Camera_Options.Camera_Address.URL_Address :=
+--          Ada_Lib.Strings.Unlimited.Coerce ("ucwc.dyndns.org");
+--       Options.Camera_Options.Port_Number := 5678;
+--    end if;
       Log_Out (Debug or Trace_Set_Up);
    end Set_Up;
 

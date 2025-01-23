@@ -1,0 +1,10 @@
+dependency:ada_lib_tests=0.1.0-dev=0fdf9475c387debe027b1c294a14d4b26aeec5bdc17f3eb55e474075633008a1
+dependency:applications=0.1.0-dev=47e7873208f8b0fdfffd66d9dcc0f434827b44e651a49766d89884a5689f0abc
+dependency:camera_test_lib=0.1.0-dev=81062930049d39893b797b76b4d6cd180fe623968ee07abc0707f422fcb61f42
+dependency:gnatcoll=23.0.0=2894667b53f0ec3808a3a1b33b2ecb9a4372db71756fb4b4901ddebfe4460a26
+dependency:gnoga=0.1.0-dev=8c33084fb35aafb243c7d6ee535f273dc3a686203c6fd777ff942a341e3e263f
+dependency:video_lib=0.1.0-dev=f9ae00f51ad964f8601111d2be0147a76a8bbb44364770a7dbac88850fd0cc02
+external:CAMERA_TESTS_LIBRARY_TYPE=default
+external:LIBRARY_TYPE=default
+profile:camera_tests=DEVELOPMENT
+switches:camera_tests=-Og,-fdata-sections,-ffunction-sections,-g,-gnatVa,-gnatW8,-gnatw.X,-gnatwa,-gnaty-d,-gnaty3,-gnatyA,-gnatyB,-gnatyI,-gnatyO,-gnatyS,-gnatya,-gnatyb,-gnatyc,-gnatye,-gnatyf,-gnatyh,-gnatyi,-gnatyk,-gnatyl,-gnatym,-gnatyn,-gnatyp,-gnatyr,-gnatyt,-gnatyu,-gnatyx

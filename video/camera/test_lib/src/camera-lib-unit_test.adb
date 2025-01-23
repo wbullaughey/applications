@@ -12,6 +12,7 @@ with AUnit.Assertions; use AUnit.Assertions;
 --with Camera.Command_Queue;
 with Camera.Command_Queue.PTZ_Optics.Unit_Test;
 with Camera.Command_Queue.Tests;
+with Camera.Lib.Base.Tests;
 with Camera.Lib.Connection;
 with Configuration.Camera.Setup.Unit_Tests;
 with Configuration.Camera.State.Unit_Tests;
@@ -26,6 +27,7 @@ package body Camera.Lib.Unit_Test is
 
    use type Ada_Lib.Options.Mode_Type;
    use type Camera.Command_Queue.Queued_Camera_Class_Access;
+   use type Ada_Lib.Socket_IO.Address_Access;
    use type Ada_Lib.Socket_IO.Address_Constant_Access;
 
    Camera_Lib_Unit_Test_Options  : Camera_Lib_Unit_Test_Options_Class_Access :=
@@ -220,6 +222,7 @@ package body Camera.Lib.Unit_Test is
          Put_Line ("      d               Camera.Lib.Unit_Test.Debug");
          Put_Line ("      m               main unit test trace, Camera_AUnit");
          Put_Line ("      o               unit_test options");
+         Put_Line ("      O               Camera.Lib.Base.Tests");
          Put_Line ("      p               program trace");
          Put_Line ("      s               Configuration.Camera.State unit_test options");
          Put_Line ("      S               Configuration.Camera.Setup unit_test options");
@@ -308,6 +311,7 @@ not_implemented;
          Test_Suite.Add_Test (Main.Unit_Test.Suite);
          Test_Suite.Add_Test (Camera.Command_Queue.PTZ_Optics.Unit_Test.Suite);
          Test_Suite.Add_Test (Camera.Command_Queue.Tests.Suite);
+         Test_Suite.Add_Test (Camera.Lib.Base.Tests.Suite);
          Test_Suite.Add_Test (
             Standard.Configuration.Camera.Setup.Unit_Tests.Suite);
          Test_Suite.Add_Test (Widgets.Adjust.Unit_Test.Suite);
@@ -409,7 +413,7 @@ log_here;
 ---------------------------------------------------------------
 
       Options           : Camera_Lib_Unit_Test_Options_Type'class renames
-                              Get_Camera_Lib_Unit_Test_Read_Only_Options.all;
+                              Get_Camera_Lib_Unit_Test_Modifiable_Options.all;
       Connection_Data   : constant Camera.Lib.Connection.Connection_Data_Access :=
                            new Camera.Lib.Connection.Connection_Data_Type (
                               Options.Camera_Options.Brand);
@@ -424,6 +428,28 @@ log_here;
       Test.Camera_Queue := Connection_Data.Camera_Queue;
       if Test.Set_Up_Load then
          State.Load (Options.Camera_Options.Location, Camera_State_Path);
+      else     -- if not loaded use options
+         if Options.Camera_Options.Camera_Address = Null then
+            Log_Here (Debug, "camera address not set in options");
+            Options.Camera_Options.Camera_Address :=
+               new Ada_Lib.Socket_IO.Address_Type (Ada_Lib.Socket_IO.URL);
+            Options.Camera_Options.Camera_Address.URL_Address :=
+               Ada_Lib.Strings.Unlimited.Coerce ("ucwc.dyndns.org");
+
+            case Options.Camera_Options.Location is
+
+               when Configuration.State.Local =>
+                  Options.Camera_Options.Port_Number := 5678;
+                  -- should be a function of camera type
+
+               when Configuration.State.Remote =>
+                  Options.Camera_Options.Port_Number := 9000;
+
+            end case;
+         end if;
+         State.Video_Address := Address_Constant_Access (
+            Options.Camera_Options.Camera_Address);
+         State.Video_Port := Options.Camera_Options.Port_Number;
       end if;
       Test.Camera_Address := State.Video_Address;
       Test.Port_Number := State.Video_Port;
@@ -580,6 +606,7 @@ log_here;
             when 'a' =>
                Camera.Command_Queue.Debug := True;
                Camera.Command_Queue.Tests.Debug := True;
+               Camera.Lib.Base.Tests.Debug := True;
                Standard.Configuration.Camera.Setup.Unit_Tests.Debug := True;
                Standard.Configuration.Camera.State.Unit_Tests.Debug := True;
                Debug := True;
@@ -611,6 +638,9 @@ log_here;
 
             when 'o' =>    -- options
                Debug_Options := True;
+
+            when 'O' =>    -- Base Tests open reopen
+               Camera.Lib.Base.Tests.Debug := True;
 
             when 'p' =>    -- program trace
                Options.Main_Debug := True;
