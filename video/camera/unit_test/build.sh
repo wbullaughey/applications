@@ -2,10 +2,10 @@
 source ~/.zshrc
 echo building camera unit test on $OS_VERSION
 export APPLICATION_PATH="Project/git/alr/applications"
-export RELATIVE_PATH="/video/camera/unit_test"
+export RELATIVE_PATH="video/camera/unit_test"
 export LOCAL_APPLICATION_PATH="/Users/wayne/$APPLICATION_PATH"
 export LOCAL_BUILD_PATH="$LOCAL_APPLICATION_PATH/$RELATIVE_PATH"
-export REMOTE_BUILD_PATH="/Volumes/wayne/$APPLICATION_PATH/$RELATIVE_PATH"
+export REMOTE_BUILD_PATH="/Volumes/applications/$RELATIVE_PATH"
 echo LOCAL_APPLICATION_PATH $LOCAL_APPLICATION_PATH
 echo LOCAL_BUILD_PATH $LOCAL_BUILD_PATH
 echo RELATIVE_PATH $RELATIVE_PATH
