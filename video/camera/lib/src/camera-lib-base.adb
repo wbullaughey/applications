@@ -187,6 +187,7 @@ package body Camera.Lib.Base is
    exception
 
       when Fault: GNAT.Sockets.Host_Error | Ada_Lib.Socket_IO.Failed =>
+         Log_Exception (Debug, Fault);
          Camera_Not_Found (Address.Image, Port, Fault);
 
       when Fault: others =>

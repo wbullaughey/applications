@@ -344,6 +344,7 @@ package body Camera.Lib.Base.Tests is
                                           Get_Camera_Lib_Unit_Test_Modifiable_Options.all;
    begin
       Log_In (Debug or Trace_Set_Up);
+      Test.Open_Camera := False;
       Test.Set_Up_Load := False;
       Camera.Lib.Unit_Test.Camera_Test_Type (Test).Set_Up;
       -- moved to Camera.Lib.Unit_Test.Set_Up
