@@ -1,7 +1,7 @@
 #!/bin/zsh
 export RELATIVE_PATH=Project/git/alr/applications
 export SOURCE=/Users/wayne/$RELATIVE_PATH
-export DESTINATION=/Volumes/wayne/$RELATIVE_PATH
+export DESTINATION=/Volumes/applications
 export OPTIONS=-lptv
 export OUTPUT=rsync.txt
 
