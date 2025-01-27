@@ -33,10 +33,10 @@ camera_test_lib = "*"
 camera_test_lib  = { path = "../test_lib" }
 
 [[depends-on]]
-ada_lib = "*"
+gnoga = { path ="/Users/Wayne/GNAT/share/gpr" } = "*"
 
 [[pins]]
-ada_lib  = { path = "../../../ada_lib" }
+gnoga = { path ="/Users/Wayne/GNAT/share/gpr" }  = { path = "../../../gnoga = { path ="/Users/Wayne/GNAT/share/gpr" }" }
 
 [[depends-on]]
 aunit = "*"

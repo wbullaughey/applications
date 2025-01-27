@@ -36,6 +36,6 @@ video_lib  = { path = "../lib" }
 gnoga = "*"
 
 [[pins]]
-gnoga  = { path = "../../vendor/github.com/gnoga" }
+gnoga = { path ="/Users/Wayne/GNAT/share" }
 
 

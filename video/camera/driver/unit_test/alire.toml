@@ -39,10 +39,10 @@ video_lib_unit_test  = { path = "../../../lib/unit_test" }
 camera_test_lib  = { path = "../../test_lib" }
 
 [[depends-on]]
-ada_lib = "*"
+gnoga = { path ="/Users/Wayne/GNAT/share/gpr" } = "*"
 
 [[pins]]
-ada_lib  = { path = "../../../../ada_lib" }
+gnoga = { path ="/Users/Wayne/GNAT/share/gpr" }  = { path = "../../../../gnoga = { path ="/Users/Wayne/GNAT/share/gpr" }" }
 
 [[depends-on]]
 aunit = "*"
@@ -54,7 +54,7 @@ aunit  = { path = "../../../../aunit" }
 gnoga = "*"
 
 [[pins]]
-gnoga  = { path = "../../../../vendor/github.com/gnoga" }
+gnoga = { path ="/Users/Wayne/GNAT/share" }
 
 [[depends-on]]
 applications = "*"

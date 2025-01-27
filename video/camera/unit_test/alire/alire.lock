@@ -17,7 +17,7 @@ crate = "ada_lib_gnoga"
 fulfilment = "linked"
 pinned = false
 transitivity = "direct"
-versions = "~0.1.0-dev"
+versions = "*"
 [solution.state.link]
 lockfiled = true
 path = "../../../ada_lib/ada_lib_gnoga"
@@ -189,10 +189,10 @@ crate = "gnoga"
 fulfilment = "linked"
 pinned = false
 transitivity = "direct"
-versions = "*"
+versions = "^2.1.2"
 [solution.state.link]
 lockfiled = true
-path = "../../../vendor/github.com/gnoga"
+path = "../../../vendor/github.com/gnoga-forked"
 [[solution.state]]
 crate = "libgpr"
 fulfilment = "solved"

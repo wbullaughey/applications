@@ -7,10 +7,10 @@ maintainers = ["Wayne Bullaughey <wlb122@verizon.net>"]
 maintainers-logins = ["wbullaughey"]
 
 [[depends-on]]
-ada_lib = "*"
+gnoga = { path ="/Users/Wayne/GNAT/share/gpr" } = "*"
 
 [[pins]]
-ada_lib  = { path = "../../../ada_lib" }
+gnoga = { path ="/Users/Wayne/GNAT/share/gpr" }  = { path = "../../../gnoga = { path ="/Users/Wayne/GNAT/share/gpr" }" }
 
 [[depends-on]]
 video_lib = "*"

@@ -22,7 +22,7 @@ ada_lib_gnoga  = { path = "../../../ada_lib/ada_lib_gnoga" }
 gnoga = "*"
 
 [[pins]]
-gnoga  = { path = "../../../vendor/github.com/gnoga" }
+gnoga = { path ="/Users/Wayne/GNAT/share" }
 
 [[depends-on]]
 video_lib = "*"
