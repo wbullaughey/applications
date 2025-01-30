@@ -32,10 +32,3 @@ video_lib = "*"
 [[pins]]
 video_lib  = { path = "../lib" }
 
-[[depends-on]]
-gnoga = "*"
-
-[[pins]]
-gnoga  = { path = "../../vendor/github.com/gnoga" }
-
-

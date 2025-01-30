@@ -1,6 +1,6 @@
 <!DOCTYPE Project SYSTEM "http://www.slickedit.com/dtd/vse/10.0/vpj.dtd">
 <Project
-    WorkingDir="../../"
+    WorkingDir="."
     Version="10.0"
     VendorName="SlickEdit"
     TemplateName="Ada - GNU Ada Compiler"
@@ -9,41 +9,41 @@
         <Folder
             Name="Source Files"
             Filters="*.ada;*.adb;*.c;*.cpp"
-            GUID="{2D587C32-D1F7-4EC0-AADB-D9A4D7BCEB89}"/>
+            GUID="{D16441C6-3560-43D4-A88C-0FFA4299354B}"/>
         <Folder
             Name="Header Files"
             Filters="*.h;*.ads"
-            GUID="{259E04AC-2E68-4501-B9FC-238122577C92}"/>
+            GUID="{AA1865E2-0B6C-4AE0-9BEC-309E0BD33C22}"/>
         <Folder
             Name="Resource Files"
             Filters="*.def;*.res"
-            GUID="{96BB9D41-2E48-445A-A0C9-6C0546FE66B4}"/>
+            GUID="{027B7A1B-B649-49EE-931C-548D746F39AB}"/>
         <Folder
             Name="Other Files"
             Filters="*.*"
-            GUID="{07E6EF19-DD22-4CAA-8AEC-F8E8657E35C1}"/>
+            GUID="{F31C47CA-4975-48D4-907B-158229A268EB}"/>
         <F
-            N="../../src/*.ad?"
-            Recurse="0"
-            Excludes=""
-            L="1"/>
-        <F N="../../.gitignore"/>
-        <F N="../../.gitmodules"/>
-        <F N="../../alire.toml"/>
-        <F N="../../applications.gpr"/>
-        <F N="../../build_all.sh"/>
-        <F N="../../build_all.txt"/>
-        <F N="../../build_base.sh"/>
-        <F N="../../configuration.gpr"/>
-        <F N="../../default_config.gpr"/>
-        <F N="../../remote_build.sh"/>
-        <F N="../../rsync.sh"/>
+            N="../../vendor/github.com/gnoga/demo/*.ad?"
+            Recurse="1"
+            Excludes=""/>
+        <F
+            N="../../vendor/github.com/gnoga/tutorial/*.ad?"
+            Recurse="1"
+            Excludes=""/>
+        <F
+            N="../../vendor/github.com/gnoga/demo/*.gpr"
+            Recurse="1"
+            Excludes=""/>
+        <F
+            N="../../vendor/github.com/gnoga/tutorial/*.gpr"
+            Recurse="1"
+            Excludes=""/>
     </Files>
     <Config
         Name="Debug"
         Type="gnuc"
         DebugCallbackName="gdb"
-        OutputFile="application"
+        OutputFile="gnoga_examples"
         CompilerConfigName="Latest Version">
         <Menu>
             <Target
@@ -147,7 +147,7 @@
         Name="Release"
         Type="gnuc"
         DebugCallbackName="gdb"
-        OutputFile="application"
+        OutputFile="gnoga_examples"
         CompilerConfigName="Latest Version">
         <Menu>
             <Target

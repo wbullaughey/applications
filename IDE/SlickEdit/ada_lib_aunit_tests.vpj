@@ -50,10 +50,10 @@
                 CaptureOutputWith="ProcessBuffer"
                 Deletable="0"
                 SaveOption="SaveWorkspaceFiles"
-                RunFromDir="/Users/wayne/Project/git/alr/applications/"
                 ClearProcessBuffer="1"
-                Beep="1">
-                <Exec CmdLine="./build_all.sh"/>
+                Beep="1"
+                RunFromDir="%rw">
+                <Exec CmdLine="./build.sh quick_build"/>
             </Target>
             <Target
                 Name="Debug"
@@ -144,6 +144,7 @@
             Filters="*.h;*.H;*.hh;*.hpp;*.hxx;*.h++;*.inc;*.sh;*.cpy;*.if"
             GUID="{2925DF5B-3B71-415B-9F7E-6AAA44AC9CCD}">
             <F N="../../ada_lib/ada_lib_tests/build.sh"/>
+            <F N="../../video/camera/unit_test/build.sh"/>
             <F N="../../build_all.sh"/>
             <F N="../../ada_lib/ada_lib_tests/loop.sh"/>
         </Folder>

@@ -1,4 +1,4 @@
-# THIS IS A MACHINE-GENERATED FILE. DO NOT EDIT MANUALLY.
+# THIS FILE IS GENERATED. DO NOT EDIT.
 
 [solution]
 [solution.context]
@@ -79,12 +79,11 @@ path = "../test_lib"
 crate = "gnat"
 fulfilment = "solved"
 pinned = false
-shared = true
 transitivity = "indirect"
 versions = "(/=2020) & (>=11)"
 [solution.state.release]
 auto-gpr-with = false
-description = "The GNAT Ada compiler - Native"
+description = "The GNAT Ada compiler - ARM cross-compiler"
 licenses = "GPL-3.0-or-later AND GPL-3.0-or-later WITH GCC-exception-3.1"
 maintainers = [
 "chouteau@adacore.com",
@@ -92,7 +91,7 @@ maintainers = [
 maintainers-logins = [
 "Fabien-Chouteau",
 ]
-name = "gnat_native"
+name = "gnat_arm_elf"
 provides = [
 "gnat=12.2.1",
 ]
@@ -110,14 +109,13 @@ prepend = "${CRATE_ROOT}/bin"
 [solution.state.release.origin]
 binary = true
 hashes = [
-"sha256:77267eb19842059c10f6eaf417b75d0483c0f977fb2a2cba0fb1d785fc5bfb78",
+"sha256:f4bfd822af8428fff63a46e5156f9904867871cf9eeb4d6cbde057aad14c9edb",
 ]
-url = "https://github.com/alire-project/GNAT-FSF-builds/releases/download/gnat-12.2.0-1/gnat-x86_64-darwin-12.2.0-1.tar.gz"
+url = "https://github.com/alire-project/GNAT-FSF-builds/releases/download/gnat-12.2.0-1/gnat-arm-elf-darwin-12.2.0-1.tar.gz"
 [[solution.state]]
 crate = "gnatcoll"
 fulfilment = "solved"
 pinned = false
-shared = false
 transitivity = "direct"
 versions = "^23.0.0"
 [solution.state.release]
@@ -189,7 +187,7 @@ crate = "gnoga"
 fulfilment = "linked"
 pinned = false
 transitivity = "direct"
-versions = "*"
+versions = "~0.1.0-dev"
 [solution.state.link]
 lockfiled = true
 path = "../../../vendor/github.com/gnoga"
@@ -197,7 +195,6 @@ path = "../../../vendor/github.com/gnoga"
 crate = "libgpr"
 fulfilment = "solved"
 pinned = false
-shared = false
 transitivity = "indirect"
 versions = "~23.0.0"
 [solution.state.release]
@@ -266,7 +263,6 @@ path = "../../lib/unit_test"
 crate = "xmlada"
 fulfilment = "solved"
 pinned = false
-shared = false
 transitivity = "indirect"
 versions = "~23.0.0"
 [solution.state.release]

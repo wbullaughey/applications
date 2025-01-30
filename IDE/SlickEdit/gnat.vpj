@@ -23,7 +23,12 @@
             Filters="*.*"
             GUID="{1CE923BE-9BEF-43DA-BF64-B3B2B6F787BC}"/>
         <F
-            N="../../../../../../GNAT/2020/lib/gcc/x86_64-apple-darwin17.7.0/8.4.1/adainclude/*.ad?"
+            N="../../../../../../../../opt/gcc-14.1.0-1-aarch64/lib/gcc/aarch64-apple-darwin21/14.1.0/adainclude/*.ad?"
+            Recurse="0"
+            Excludes=""
+            L="1"/>
+        <F
+            N="../../../../../../../../opt/gcc-14.1.0-1-aarch64/lib/gcc/aarch64-apple-darwin21/14.1.0/adainclude/*.gpr"
             Recurse="0"
             Excludes=""
             L="1"/>

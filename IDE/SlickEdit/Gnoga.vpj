@@ -25,29 +25,35 @@
             Filters="*.*"
             GUID="{3E38D3CA-5466-4ECB-AAF1-CB1315D94A16}"/>
         <F
-            N="../../vendor/github.com/gnoga/ada_lib/*.ad?"
+            N="../../vendor/github.com/gnoga-forked/ada_lib/*.ad?"
+            Recurse="1"
+            Excludes=""/>
+        <F
+            N="../../vendor/github.com/gnoga-forked/src/*.ad?"
             Recurse="0"
             Excludes=""
             L="1"/>
         <F
-            N="../../vendor/github.com/gnoga/src/*.ad?"
-            Recurse="0"
-            Excludes=""
-            L="1"/>
+            N="../../vendor/github.com/gnoga/components/*.ad?"
+            Recurse="1"
+            Excludes=""/>
         <F
-            N="../../vendor/github.com/gnoga/ada_lib/*.gpr"
-            Recurse="0"
-            Excludes=""
-            L="1"/>
+            N="../../vendor/github.com/gnoga/demo/*.ad?"
+            Recurse="1"
+            Excludes=""/>
         <F
-            N="../../vendor/github.com/gnoga/src/*.gpr"
+            N="../../vendor/github.com/gnoga/deps/*.ad?"
+            Recurse="1"
+            Excludes=""/>
+        <F
+            N="../../vendor/github.com/gnoga/tutorial/*.ad?"
+            Recurse="1"
+            Excludes=""/>
+        <F
+            N="../../vendor/github.com/gnoga-forked/src/*.gpr"
             Recurse="0"
             Excludes=""
             L="1"/>
-        <F N="../../vendor/github.com/gnoga/.gitignore"/>
-        <F N="../../vendor/github.com/gnoga/alire.toml"/>
-        <F N="../../vendor/github.com/gnoga/build.sh"/>
-        <F N="../../vendor/github.com/gnoga/gnoga.gpr"/>
         <F
             N="Gnoga.mak"
             Type="Makefile"/>
