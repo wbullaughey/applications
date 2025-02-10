@@ -1,6 +1,6 @@
 with ADA_LIB.Command_Line_Iterator;
 with ADA_LIB.Options.GNOGA;
-with Ada_Lib.Options_Interface;
+with Ada_Lib.Options;
 with ADA_LIB.Strings.Unlimited;
 --with ADA_LIB.Trace;
 --with Ada_Lib.Socket_IO;
@@ -11,7 +11,7 @@ package Camera.Lib.Options is
 
    Failed                        : Exception;
 
-   use type Ada_Lib.Options_Interface.Interface_Options_Constant_Class_Access;
+   use type Ada_Lib.Options.Interface_Options_Constant_Class_Access;
 
    subtype Runtime_Iterator_Type is Ada_Lib.Command_Line_Iterator.
                                     Abstract_Package.Abstract_Iterator_Type;
@@ -38,7 +38,7 @@ package Camera.Lib.Options is
 
    function Current_Directory -- set by runstring option 'c' else null
    return String
-   with Pre => Ada_Lib.Options_Interface.Read_Only_Options /= Null;
+   with Pre => Ada_Lib.Options.Read_Only_Options /= Null;
 
    function Get_Modifyable_Options return Options_Access;
 
@@ -57,7 +57,7 @@ package Camera.Lib.Options is
    function Process_Option (  -- process one option
      Options                    : in out Options_Type;
      Iterator                   : in out ADA_LIB.Command_Line_Iterator.Abstract_Package.Abstract_Iterator_Type'class;
-      Option                     : in     Ada_Lib.Options_Interface.
+      Option                     : in     Ada_Lib.Options.
                                              Option_Type'class
    ) return Boolean
    with pre => Options.Initialized;

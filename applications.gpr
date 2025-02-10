@@ -1,7 +1,0 @@
-with "default_config.gpr";
-
-project Applications is
-
-   for Source_Dirs use ("src/");
-
-end Applications;

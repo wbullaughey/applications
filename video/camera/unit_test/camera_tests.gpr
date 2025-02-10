@@ -1,10 +1,10 @@
 with "ada_lib.gpr";
-with "ada_lib_testing.gpr";
+with "ada_lib_tests.gpr";
 with "default_config.gpr";
-with "applications.gpr";
+--with "applications.gpr";
 with "aunit.gpr";
 with "camera_lib.gpr";
-with "camera_test_lib.gpr";
+with "test_lib.gpr";
 with "config/camera_tests_config.gpr";
 with "gnoga.gpr";
 with "video_lib.gpr";

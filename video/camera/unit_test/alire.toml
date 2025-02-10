@@ -15,10 +15,10 @@ camera_lib = "*"
 camera_lib  = { path = "../lib" }
 
 [[depends-on]]
-camera_lib_unit_test = "*"
+test_lib = "*"
 
 [[pins]]
-camera_lib_unit_test  = { path = "../lib/unit_test" }
+camera_test_lib  = { path = "../test_lib" }
 
 [[depends-on]]
 video_lib = "*"
@@ -27,46 +27,28 @@ video_lib = "*"
 video_lib  = { path = "../../lib" }
 
 [[depends-on]]
-video_lib_unit_test = "*"
-
-[[pins]]
-video_lib_unit_test  = { path = "../../lib/unit_test" }
-
-[[depends-on]]
-test_lib = "*"
-
-[[pins]]
-test_lib  = { path = "../test_lib" }
-
-[[depends-on]]
 ada_lib = "*"
 
-[[depends-on]]
-gpr = "*"
-
 [[pins]]
-gpr  = { path =  "../../../vendor/github.com/gpr" }
-
-[[pins]]
-ada_lib  = { path = "../../../ada_lib" }
+ada_lib  = { path = "../../../../ada_lib" }
 
 [[depends-on]]
 aunit = "*"
 
 [[pins]]
-aunit  = { path = "../../../aunit" }
+aunit  = { path = "../../../../aunit" }
 
 [[depends-on]]
-ada_lib_testing = "*"
+ada_lib_tests = "*"
 
 [[pins]]
-ada_lib_testing  = { path = "../../../ada_lib/ada_lib_testing" }
+ada_lib_tests  = { path = "../../../../ada_lib/ada_lib_tests" }
 
 [[depends-on]]
 gnoga = "*"
 
 [[pins]]
-gnoga  = { path = "../../../vendor/github.com/gnoga" }
+gnoga  = { path = "../../../../vendor/github.com/gnoga" }
 
 [[depends-on]]
 applications = "*"

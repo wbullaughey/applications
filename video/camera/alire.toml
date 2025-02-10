@@ -12,7 +12,7 @@ executables = ["camera_control"]
 ada_lib = "*"
 
 [[pins]]
-ada_lib  = { path = "../../ada_lib" }
+ada_lib  = { path = "../../../ada_lib" }
 
 [[depends-on]]
 camera_lib = "*"
@@ -30,6 +30,6 @@ video_lib  = { path = "../lib" }
 gnoga = "*"
 
 [[pins]]
-gnoga  = { path = "../../vendor/github.com/gnoga" }
+gnoga  = { path = "../../../vendor/github.com/gnoga" }
 
 

@@ -1,7 +1,7 @@
 --with Ada.Command_Line;
 with Ada.Text_IO; use Ada.Text_IO;
 with ADA_LIB.GNOGA;
---with Ada_Lib.Options_Interface;
+--with Ada_Lib.Options;
 with ADA_LIB.OS;
 with ADA_LIB.Trace; use ADA_LIB.Trace;
 with Ada_Lib.Trace_Tasks;

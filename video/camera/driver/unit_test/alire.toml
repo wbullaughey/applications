@@ -29,12 +29,6 @@ video_lib  = { path = "../../../lib" }
 [[depends-on]]
 test_lib = "*"
 
-[[depends-on]]
-video_lib_unit_test = "*"
-
-[[pins]]
-video_lib_unit_test  = { path = "../../../lib/unit_test" }
-
 [[pins]]
 test_lib  = { path = "../../test_lib" }
 
@@ -51,10 +45,10 @@ aunit = "*"
 aunit  = { path = "../../../../aunit" }
 
 [[depends-on]]
-ada_lib_testing = "*"
+ada_lib_tests = "*"
 
 [[pins]]
-ada_lib_testing  = { path = "../../../../ada_lib/ada_lib_testing" }
+ada_lib_tests  = { path = "../../../../ada_lib/ada_lib_tests" }
 
 [[depends-on]]
 gnoga = "*"

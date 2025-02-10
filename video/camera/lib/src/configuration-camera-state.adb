@@ -2,7 +2,7 @@ with Ada.Exceptions;
 with Ada.Unchecked_Deallocation;
 with Ada_Lib.Configuration;
 with Ada_Lib.Directory;
-with Ada_Lib.Options_Interface;
+with Ada_Lib.Options;
 --with Ada_Lib.Parser;
 with Ada_Lib.Socket_IO;
 with Ada_Lib.Strings.Unlimited; use Ada_Lib.Strings; use Ada_Lib.Strings.Unlimited;
@@ -124,7 +124,7 @@ package body Configuration.Camera.State is
       State_Path                 : Ada_Lib.Strings.Unlimited.String_Type
                                     renames Standard.Camera.Lib.Options.
                                        Options_Constant_Class_Access (
-                                          Ada_Lib.Options_Interface.Read_Only_Options).
+                                          Ada_Lib.Options.Read_Only_Options).
                                              Setup_Path;
 
    begin

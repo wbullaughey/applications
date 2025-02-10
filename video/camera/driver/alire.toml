@@ -27,28 +27,28 @@ camera_lib = "*"
 camera_lib  = { path = "../lib" }
 
 [[depends-on]]
-test_lib = "*"
+camera_test_lib = "*"
 
 [[pins]]
-test_lib  = { path = "../test_lib" }
+camera_test_lib  = { path = "../test_lib" }
 
 [[depends-on]]
 ada_lib = "*"
 
 [[pins]]
-ada_lib  = { path = "../../../ada_lib" }
+ada_lib  = { path = "../../../../ada_lib" }
 
 [[depends-on]]
 aunit = "*"
 
 [[pins]]
-aunit  = { path = "../../../aunit" }
+aunit  = { path = "../../../../aunit" }
 
 [[depends-on]]
-ada_lib_testing = "*"
+ada_lib_tests = "*"
 
 [[pins]]
-ada_lib_testing  = { path = "../../../ada_lib/ada_lib_testing" }
+ada_lib_tests  = { path = "../../../../ada_lib/ada_lib_tests" }
 
 [[depends-on]]
 applications = "*"

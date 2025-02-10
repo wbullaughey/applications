@@ -179,7 +179,7 @@ package body Widgets.Control.Unit_Test is
 
    begin
       Log_In (Debug);
---    if not Ada_Lib.Options.Program_Options_Type (
+--    if not Ada_Lib.Options.Actual.Program_Options_Type (
 --          Ada_Lib.Options.Program_Options.all).Test_Driver then
          Log_Here (Debug);
          declare

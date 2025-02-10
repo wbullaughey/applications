@@ -3,7 +3,7 @@ with Ada.Text_IO;use Ada.Text_IO;
 with Ada_Lib.Help;
 --with Ada_Lib.Options.AUnit.Ada_Lib_Tests;
 --with Ada_Lib.Options.Unit_Test;
-with Ada_Lib.Runstring_Options;
+with Ada_Lib.Options.Runstring;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
 with Ada_Lib.Unit_Test.Reporter;
 with AUnit.Assertions; use AUnit.Assertions;
@@ -27,19 +27,19 @@ package body Camera.Lib.Unit_Test is
 
    Trace_Option                  : constant Character := 'T';
    Options_With_Parameters       : aliased constant
-                                    Standard.Ada_Lib.Options_Interface.
+                                    Standard.Ada_Lib.Options.
                                        Options_Type :=
-                                          Ada_Lib.Options_Interface.Create_Options (
+                                          Ada_Lib.Options.Create_Options (
                                              Trace_Option & "R");
    Options_Without_Parameters       : aliased constant
-                                    Standard.Ada_Lib.Options_Interface.
+                                    Standard.Ada_Lib.Options.
                                        Options_Type :=
-                                          Ada_Lib.Options_Interface.Null_Options;
+                                          Ada_Lib.Options.Null_Options;
    Help_Recursed                 : Boolean := False;
    Initialize_Recursed           : Boolean := False;
    Protected_Options             : aliased Unit_Test_Options_Type;
 
--- use type Ada_Lib.Options_Interface.Interface_Options_Constant_Class_Access;
+-- use type Ada_Lib.Options.Interface_Options_Constant_Class_Access;
 
    Camera_State_Path             : constant String := "camera_state_path.cfg";
    Setup_Test_Path               : constant String := "configured_window_setup.cfg";
@@ -63,7 +63,7 @@ package body Camera.Lib.Unit_Test is
 
    begin
       Log_In (Debug_Options or Trace_Options);
-      Ada_Lib.Options_Interface.Set_Ada_Lib_Options (Protected_Options'access);
+      Ada_Lib.Options.Set_Ada_Lib_Options (Protected_Options'access);
 
 --    Ada_Lib.Options.Unit_Test.Unit_Test_Options :=
 --       Ada_Lib.Options.Unit_Test.Unit_Test_Options_Constant_Class_Access'(
@@ -98,13 +98,13 @@ package body Camera.Lib.Unit_Test is
       Log_In_Checked (Initialize_Recursed, Debug_Options or Trace_Options,
          "from " & From);
       Unit_Test_Options := Options'unchecked_access;
-      Ada_Lib.Options_Interface.Set_Ada_Lib_Options (Protected_Options'access);
+      Ada_Lib.Options.Set_Ada_Lib_Options (Protected_Options'access);
 
-      Ada_Lib.Runstring_Options.Options.Register (
-         Ada_Lib.Runstring_Options.With_Parameters,
+      Ada_Lib.Options.Runstring.Options.Register (
+         Ada_Lib.Options.Runstring.With_Parameters,
          Options_With_Parameters);
-      Ada_Lib.Runstring_Options.Options.Register (
-      Ada_Lib.Runstring_Options.Without_Parameters,
+      Ada_Lib.Options.Runstring.Options.Register (
+      Ada_Lib.Options.Runstring.Without_Parameters,
          Options_Without_Parameters);
       return Log_Out_Checked (Initialize_Recursed,
 --       Options.Camera_Options.Initialize and then
@@ -157,7 +157,7 @@ package body Camera.Lib.Unit_Test is
    function Process_Option (
       Options                    : in out Unit_Test_Options_Type;
       Iterator                   : in out ADA_LIB.Command_Line_Iterator.Abstract_Package.Abstract_Iterator_Type'class;
-      Option                     : in     Ada_Lib.Options_Interface.
+      Option                     : in     Ada_Lib.Options.
                                              Option_Type'class
    ) return Boolean is
    ----------------------------------------------------------------------------
@@ -168,7 +168,7 @@ package body Camera.Lib.Unit_Test is
          " initialized " & Options.Initialized'img &
          " options tag " & Tag_Name (Unit_Test_Options_Type'class (Options)'tag));
 
-      if Ada_Lib.Options_Interface.Has_Option (Option, Options_With_Parameters,
+      if Ada_Lib.Options.Has_Option (Option, Options_With_Parameters,
             Options_Without_Parameters) then
          case Option.Option is
 

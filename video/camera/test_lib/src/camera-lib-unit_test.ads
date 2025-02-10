@@ -51,8 +51,7 @@ package Camera.Lib.Unit_Test is
    overriding
    procedure Set_Up (
       Test                       : in out Camera_Test_Type
-   ) with Pre => Test.Verify_Pre_Setup,
-          Post => Test.Verify_Post_Setup;
+   ) with Post => Test.Verify_Setup;
 
    procedure Set_Up_Optional_Load (
       Test                       : in out Camera_Test_Type;
@@ -75,8 +74,7 @@ package Camera.Lib.Unit_Test is
    overriding
    procedure Set_Up (
       Test                       : in out Camera_Window_Test_Type
-   ) with Pre => Test.Verify_Pre_Setup,
-          Post => Test.Verify_Post_Setup;
+   ) with Post => Test.Verify_Setup;
 
    -- use for test which create the standard main window which manipulate camera
    type Camera_Window_Test_With_Camera_Type (
@@ -95,7 +93,7 @@ package Camera.Lib.Unit_Test is
 --                                  GNOGA_Unit_Test_Options_Type;F
       Main_Debug                 : Boolean := False;
       Unit_Test                  : Ada_Lib.Options.Unit_Test.
-                                    Unit_Test_Options_Type (False);
+                                    Ada_Lib_Unit_Test_Options_Type (False);
    end record;
 
    type Unit_Test_Options_Access           is access all Unit_Test_Options_Type;
@@ -129,7 +127,7 @@ package Camera.Lib.Unit_Test is
    function Process_Option (  -- process one option
      Options                    : in out Unit_Test_Options_Type;
      Iterator                   : in out Runtime_Iterator_Type'class;
-      Option                     : in     Ada_Lib.Options_Interface.
+      Option                     : in     Ada_Lib.Options.
                                              Option_Type'class
    ) return Boolean
    with Pre => Options.Initialized;
@@ -161,6 +159,7 @@ package Camera.Lib.Unit_Test is
 
    Debug                         : Boolean := False;
    Debug_Options                 : Boolean := False;
+   Main_Debug                    : Boolean := False;
    Unit_Test_Options             : Unit_Test_Options_Constant_Class_Access := Null;
 
 private

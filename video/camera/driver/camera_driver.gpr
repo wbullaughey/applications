@@ -1,7 +1,7 @@
 with "ada_lib.gpr";
---with "ada_lib_testing.gpr";
+--with "ada_lib_tests.gpr";
 with "default_config.gpr";
-with "applications.gpr";
+--with "applications.gpr";
 --with "aunit.gpr";
 with "camera_lib.gpr";
 with "config/camera_driver_config.gpr";

@@ -60,7 +60,10 @@ package Camera.Lib.Base is
       Response_Length            : Index_Type;
    end record;
 
-   type Base_Camera_Type         is abstract new General_Camera_Type with private;
+   type Base_Camera_Type  (
+      Description                : Ada_Lib.Strings.String_Constant_Access
+   ) is abstract new General_Camera_Type with private;
+
    type Base_Camera_Class_Access is access all Base_Camera_Type'class;
 
    procedure Acked (
@@ -184,8 +187,11 @@ package Camera.Lib.Base is
 
 private
 
-   type Base_Camera_Type         is abstract new General_Camera_Type with record
-      Socket                     : Ada_Lib.Socket_IO.Client.Client_Socket_Type;
+   type Base_Camera_Type  (
+      Description                : Ada_Lib.Strings.String_Constant_Access
+   ) is abstract new General_Camera_Type with record
+      Socket                     : Ada_Lib.Socket_IO.Client.Client_Socket_Type (
+                                    Description);
 --    Stream                     : Ada_Lib.Socket_IO.Stream_IO.Stream_Type;
    end record;
 

@@ -1,8 +1,8 @@
 --with Ada.Streams;
 with ADA_LIB.Command_Line_Iterator;
-with Ada_Lib.Options_Interface;
+with Ada_Lib.Options;
 with Ada_Lib.Trace;
-with ADA_LIB.Options;
+with ADA_LIB.Options.Actual;
 with Ada_Lib.Socket_IO; -- .Stream_IO;
 with Ada_Lib.Strings.Unlimited;
 with Configuration.State;
@@ -69,8 +69,8 @@ package Video.Lib is
    subtype Maximum_Response_Type
                                  is Buffer_Type (1 .. 30);
 
-   type Options_Type             is limited new Ada_Lib.Options.
-                                    Program_Options_Type with record
+   type Options_Type             is limited new Ada_Lib.Options.Actual.
+                                    Nested_Options_Type with record
       Address_Kind               : Configuration.Address_Kind_Type;
       If_Emulation               : Boolean := False;
       Location                   : Configuration.State.Location_Type :=
@@ -100,7 +100,7 @@ package Video.Lib is
      Options                     : in out Options_Type;
      Iterator                    : in out Ada_Lib.Command_Line_Iterator.
                                     Abstract_Package.Abstract_Iterator_Type'class;
-      Option                     : in     Ada_Lib.Options_Interface.
+      Option                     : in     Ada_Lib.Options.
                                              Option_Type'class
    ) return Boolean
    with pre => Options.Initialized;
@@ -109,8 +109,8 @@ package Video.Lib is
    overriding
    procedure Trace_Parse (
       Options                    : in out Options_Type;
-      Iterator                   : in out Ada_Lib.Command_Line_Iterator.
-                                             Abstract_Package.Abstract_Iterator_Type'class);
+      Iterator                   : in out Ada_Lib.Options.
+                                    Command_Line_Iterator_Interface'class);
 
    type Relative_Type            is new Integer;
    type Value_Type               is mod 2**32;

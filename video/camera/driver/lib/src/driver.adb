@@ -6,7 +6,7 @@ with Ada_Lib.Help;
 --with Ada_Lib.Options.Unit_Test;
 with Ada_Lib.OS.Run;
 with Ada_Lib.Parser;
-with Ada_Lib.Runstring_Options;
+with Ada_Lib.Options.Runstring;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
 with Command_Name;
 
@@ -25,8 +25,8 @@ package body Driver is
    end record;
 
    type Parameter_Type           is record
-      With_Parameters            : Ada_Lib.Options_Interface.Options_Access;
-      Without_Parameters         : Ada_Lib.Options_Interface.Options_Access;
+      With_Parameters            : Ada_Lib.Options.Options_Access;
+      Without_Parameters         : Ada_Lib.Options.Options_Access;
    end record;
 
    type Parameters_Type          is array (Boolean) of Parameter_Type;
@@ -50,30 +50,30 @@ package body Driver is
    Camera_Option                 : constant Character := 'X';
    Directory_Option              : constant Character := 'D';
 -- Options_With_Parameters       : aliased constant
---                                  Ada_Lib.Options_Interface.Options_Type :=
---                                     Ada_Lib.Options_Interface.Create_Options (
+--                                  Ada_Lib.Options.Options_Type :=
+--                                     Ada_Lib.Options.Create_Options (
 --                                        Camera_Option & Directory_Option & "Rstu");
 -- Options_Without_Parameters    : aliased constant
---                                  Ada_Lib.Options_Interface.Options_Type :=
---                                     Ada_Lib.Options_Interface.Create_Options (
+--                                  Ada_Lib.Options.Options_Type :=
+--                                     Ada_Lib.Options.Create_Options (
 --                                        "lr");
    Parameters                    : constant Parameters_Type := (
                                     False    => (
                                        With_Parameters      =>
-                                          Ada_Lib.Options_Interface.
+                                          Ada_Lib.Options.
                                              Create_Options (Camera_Option &
                                                 Directory_Option & "Rstu"),
                                        Without_Parameters   =>
-                                          Ada_Lib.Options_Interface.
+                                          Ada_Lib.Options.
                                              Create_Options ("lr")
                                     ),
                                     True    => (
                                        With_Parameters      =>
-                                          Ada_Lib.Options_Interface.
+                                          Ada_Lib.Options.
                                              Create_Options (Camera_Option &
                                                 Directory_Option & "Rtu"),
                                        Without_Parameters   =>
-                                          Ada_Lib.Options_Interface.
+                                          Ada_Lib.Options.
                                              Create_Options ("l")
                                     )
                                  );
@@ -198,7 +198,7 @@ package body Driver is
    begin
       Log_Here (Debug_Options or Trace_Options, "from " & From);
       return Driver_Options_Class_Access (
-         Ada_Lib.Options_Interface.Get_Modifiable_Options);
+         Ada_Lib.Options.Get_Modifiable_Options);
    end Get_Modifiable_Options;
 
    ---------------------------------------------------------------
@@ -224,18 +224,18 @@ package body Driver is
                                     Parameters (Options.Testing);
    begin
       Log_In (Debug_Options or Trace_Options, "testing " & Options.Testing'img &
-         " with parameters " & Ada_Lib.Options_Interface.Image (
+         " with parameters " & Ada_Lib.Options.Image (
             Selected_Parameters.With_Parameters.all) &
-         " without parameters" & Ada_Lib.Options_Interface.Image (
+         " without parameters" & Ada_Lib.Options.Image (
             Selected_Parameters.Without_Parameters.all) &
          " Initialized " & Options.Initialized'img &
          " from " & From);
       Protected_Options := Options'unchecked_access;
-      Ada_Lib.Runstring_Options.Options.Register (
-         Ada_Lib.Runstring_Options.With_Parameters,
+      Ada_Lib.Options.Runstring.Options.Register (
+         Ada_Lib.Options.Runstring.With_Parameters,
             Selected_Parameters.With_Parameters.all);
-      Ada_Lib.Runstring_Options.Options.Register (
-         Ada_Lib.Runstring_Options.Without_Parameters,
+      Ada_Lib.Options.Runstring.Options.Register (
+         Ada_Lib.Options.Runstring.Without_Parameters,
             Selected_Parameters.Without_Parameters.all);
 
       return Log_Out (
@@ -255,7 +255,7 @@ package body Driver is
    begin
       Log_In (Debug_Options or Trace_Options, "from " & From);
       return Log_Out (Options.Driver_Options.Initialize and then
-         Ada_Lib.Options.Program_Options_Type (Options).Initialize,
+         Ada_Lib.Options.Actual.Program_Options_Type (Options).Initialize,
          Debug_Options or Trace_Options);
    end Initialize;
 
@@ -324,7 +324,7 @@ package body Driver is
      Options                    : in out Driver_Options_Type;
      Iterator                   : in out Ada_Lib.Command_Line_Iterator.
                                           Abstract_Package.Abstract_Iterator_Type'class;
-      Option                     : in     Ada_Lib.Options_Interface.
+      Option                     : in     Ada_Lib.Options.
                                              Option_Type'class
    ) return Boolean is
    ---------------------------------------------------------------
@@ -335,11 +335,11 @@ package body Driver is
       Log_In (Debug_Options or Trace_Options, "testing " & Options.Testing'img &
          " " & Option.Image);
 
-      if Ada_Lib.Options_Interface.Has_Option (Option,
+      if Ada_Lib.Options.Has_Option (Option,
          Selected_Parameters.With_Parameters.all,
          Selected_Parameters.Without_Parameters.all) then
          case Option.Kind is
-            when Ada_Lib.Options_Interface.Plain =>
+            when Ada_Lib.Options.Plain =>
                case Option.Option is
 
                   when Directory_Option =>
@@ -415,10 +415,10 @@ package body Driver is
 
                end case;
 
-            when Ada_Lib.Options_Interface.Modified =>
+            when Ada_Lib.Options.Modified =>
                raise Failed with "Has_Option incorrectly passed " & Option.Image;
 
-            when Ada_Lib.Options_Interface.Nil_Option =>
+            when Ada_Lib.Options.Nil_Option =>
                raise Failed with "nil option";
 
          end case;
@@ -445,7 +445,7 @@ package body Driver is
      Options                    : in out Program_Options_Type;
      Iterator                   : in out Ada_Lib.Command_Line_Iterator.
                                           Abstract_Package.Abstract_Iterator_Type'class;
-      Option                     : in     Ada_Lib.Options_Interface.
+      Option                     : in     Ada_Lib.Options.
                                              Option_Type'class
    ) return Boolean is
    ---------------------------------------------------------------
@@ -454,7 +454,7 @@ package body Driver is
       Log_In (Debug_Options or Trace_Options);
       return Log_Out (
          Options.Driver_Options.Process_Option (Iterator, Option) or else
-         Ada_Lib.Options.Program_Options_Type (Options).Process_Option (
+         Ada_Lib.Options.Actual.Program_Options_Type (Options).Process_Option (
             Iterator, Option),
          Debug_Options or Trace_Options);
    end Process_Option;
@@ -516,7 +516,7 @@ package body Driver is
    begin
       Log_In (Debug_Options or Trace_Options, "help mode " & Help_Mode'img &
          Quote (" component", Component));
-      Ada_Lib.Options.Program_Options_Type (Options).Program_Help (Help_Mode);
+      Ada_Lib.Options.Actual.Program_Options_Type (Options).Program_Help (Help_Mode);
       Options.Driver_Options.Program_Help (Help_Mode);
       Log_Out (Debug_Options or Trace_Options);
 

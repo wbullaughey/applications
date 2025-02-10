@@ -1,3 +1,4 @@
+with "ada_lib.gpr";
 with "camera_lib.gpr";
 with "config/test_lib_config.gpr";
 

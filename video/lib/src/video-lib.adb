@@ -3,7 +3,7 @@ with Ada.Text_IO;use Ada.Text_IO;
 with Ada_Lib.Help;
 with ADA_LIB.OS;
 with Ada_Lib.Parser;
-with Ada_Lib.Runstring_Options;
+with Ada_Lib.Options.Runstring;
 with Ada_Lib.Socket_IO.Stream_IO;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
 --with Configuration.State;
@@ -17,14 +17,14 @@ package body Video.Lib is
    Debug_Option                  : constant Character := 'V';
    Options_Debug                 : Boolean := False;
    Options_With_Parameters       : aliased constant
-                                    Ada_Lib.Options_Interface.
+                                    Ada_Lib.Options.
                                        Options_Type :=
-                                          Ada_Lib.Options_Interface.Create_Options (
-                                             Debug_Option);
+                                          Ada_Lib.Options.Null_Options;
    Options_Without_Parameters    : aliased constant
-                                    Ada_Lib.Options_Interface.
+                                    Ada_Lib.Options.
                                        Options_Type :=
-                                          Ada_Lib.Options_Interface.Null_Options;
+                                          Ada_Lib.Options.Create_Options (
+                                             "alos", Ada_Lib.Options.Unmodified);
 
    ---------------------------------------------------------------
    function Address_Kind (
@@ -34,7 +34,7 @@ package body Video.Lib is
 
    begin
       return (case Options_Constant_Class_Access (
-         Ada_Lib.Options_Interface.Read_Only_Options).Location is
+         Ada_Lib.Options.Read_Only_Options).Location is
          when Configuration.State.Remote =>
             Configuration.URL,
 
@@ -76,11 +76,11 @@ package body Video.Lib is
    begin
       Log_In (Options_Debug or Trace_Options, "from " & From);
 
-      Ada_Lib.Runstring_Options.Options.Register (
-         Ada_Lib.Runstring_Options.With_Parameters,
+      Ada_Lib.Options.Runstring.Options.Register (
+         Ada_Lib.Options.Runstring.With_Parameters,
          Options_With_Parameters);
 
-      return Log_Out (Ada_Lib.Options.Program_Options_Type (
+      return Log_Out (Ada_Lib.Options.Actual.Program_Options_Type (
             Options).Initialize,
          Options_Debug or Trace_Options);
    end Initialize;
@@ -105,7 +105,7 @@ package body Video.Lib is
    function Process_Option (
       Options                    : in out Options_Type;
       Iterator                   : in out ADA_LIB.Command_Line_Iterator.Abstract_Package.Abstract_Iterator_Type'class;
-      Option                     : in     Ada_Lib.Options_Interface.
+      Option                     : in     Ada_Lib.Options.
                                              Option_Type'class
    ) return Boolean is
    ----------------------------------------------------------------------------
@@ -113,7 +113,7 @@ package body Video.Lib is
    begin
       Log_In (Options_Debug or Trace_Options, Option.Image);
 
-      if Ada_Lib.Options_Interface.Has_Option (Option, Options_With_Parameters,
+      if Ada_Lib.Options.Has_Option (Option, Options_With_Parameters,
             Options_Without_Parameters) then
          case Option.Option is
 
@@ -129,7 +129,7 @@ package body Video.Lib is
          return Log_Out (True, Options_Debug or Trace_Options,
             " option" & Option.Image & " handled");
       else
-         return Log_Out (Ada_Lib.Options.Program_Options_Type (
+         return Log_Out (Ada_Lib.Options.Actual.Program_Options_Type (
             Options).Process_Option (Iterator, Option),
             Trace_Options or Options_Debug, "other option" & Option.Image);
       end if;
@@ -168,7 +168,7 @@ package body Video.Lib is
 
       end case;
 
-      Ada_Lib.Options.Program_Options_Type (Options).Program_Help (Help_Mode);
+      Ada_Lib.Options.Actual.Program_Options_Type (Options).Program_Help (Help_Mode);
       Log_Out (Options_Debug or Trace_Options);
    end Program_Help;
 
@@ -176,8 +176,8 @@ package body Video.Lib is
    overriding
    procedure Trace_Parse (
       Options                    : in out Options_Type;
-      Iterator                   : in out Ada_Lib.Command_Line_Iterator.
-                                             Abstract_Package.Abstract_Iterator_Type'class) is
+      Iterator                   : in out Ada_Lib.Options.
+                                    Command_Line_Iterator_Interface'class) is
    ----------------------------------------------------------------------------
 
       Parameter                  : constant String := Iterator.Get_Parameter;
