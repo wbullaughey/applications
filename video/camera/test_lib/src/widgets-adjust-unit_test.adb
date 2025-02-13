@@ -115,13 +115,13 @@ package body Widgets.Adjust.Unit_Test is
 --                                       Base.Connection_Data_Type (
 --                                          Ada_Lib.GNOGA.Get_Connection_Data.all);
 --         Options                    : Standard.Camera.Lib.Unit_Test.
---                                       Unit_Test_Options_Type'class
+--                                       Unit_Test_Program_Options_Type'class
 --                                          renames Standard.Camera.Lib.Unit_Test.
 --                                             Options.all;
 --         State                      : Configuration.Camera.State.State_Type renames
 --                                       Connection_Data.State;
 --      begin
---         State.Load (Options.Location, State_Test_Path); -- need to load state 1st
+--         State.Load (Local_Test.Location, State_Test_Path); -- need to load state 1st
 ----       Test.Setup.Load (State, Setup_Test_Path);
 --      end;
 --      Log_Out (Debug or Trace_Set_Up);
@@ -140,7 +140,7 @@ package body Widgets.Adjust.Unit_Test is
    ---------------------------------------------------------------
 
 --    Options                    : Standard.Camera.Lib.Unit_Test.
---                                  Unit_Test_Options_Type'class
+--                                  Unit_Test_Program_Options_Type'class
 --                                     renames Standard.Camera.Lib.Unit_Test.
 --                                        Options.all;
       Test_Suite                 : constant AUnit.Test_Suites.Access_Test_Suite

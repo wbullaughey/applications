@@ -15,7 +15,7 @@ camera_lib = "*"
 camera_lib  = { path = "../lib" }
 
 [[depends-on]]
-test_lib = "*"
+camera_test_lib = "*"
 
 [[pins]]
 camera_test_lib  = { path = "../test_lib" }

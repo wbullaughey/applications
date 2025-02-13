@@ -16,11 +16,11 @@ package Driver.Unit_Test is
 
    type Driver_Unit_Test_Options_Type
                                  is limited new Ada_Lib.Options.Unit_Test.
-                                    Unit_Test_Options_Type (True) with record
+                                    Unit_Test_Program_Options_Type (True) with record
 --    Camera_Options             : Ada_Lib.Strings.Unlimited.String_Type;
       Driver_Options             : aliased Driver_Options_Type (True);
 --    Unit_Test_Options          : aliased Ada_Lib.Options.Unit_Test.
---                                     Unit_Test_Options_Type (True);
+--                                     Unit_Test_Program_Options_Type (True);
    end record;
 
    type Driver_Unit_Test_Option_Access

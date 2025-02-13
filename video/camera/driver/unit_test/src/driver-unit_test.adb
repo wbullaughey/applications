@@ -89,7 +89,7 @@ package body Driver.Unit_Test is
 
       return Log_Out (
          Protected_Options.Driver_Options.Initialize and then
-         Ada_Lib.Options.Unit_Test.Unit_Test_Options_Type (
+         Ada_Lib.Options.Unit_Test.Unit_Test_Program_Options_Type (
             Protected_Options).Initialize and then
          Protected_Options.Process (
             Include_Options      => True,
@@ -188,7 +188,7 @@ package body Driver.Unit_Test is
          end case;
       else
          return Log_Out (Options.Driver_Options.Process_Option (Iterator, Option) or else
-            Ada_Lib.Options.Unit_Test.Unit_Test_Options_Type (
+            Ada_Lib.Options.Unit_Test.Unit_Test_Program_Options_Type (
                Options).Process_Option (Iterator, Option),
             Debug_Options or Trace_Options, "other " & Option.Image);
       end if;
@@ -209,7 +209,7 @@ package body Driver.Unit_Test is
    begin
       Log_In (Debug_Options or Trace_Options, "help mode " & Help_Mode'img);
       Options.Driver_Options.Program_Help (Help_Mode);
-      Ada_Lib.Options.Unit_Test.Unit_Test_Options_Type (
+      Ada_Lib.Options.Unit_Test.Unit_Test_Program_Options_Type (
          Options).Program_Help (Help_Mode);
 
       case Help_Mode is

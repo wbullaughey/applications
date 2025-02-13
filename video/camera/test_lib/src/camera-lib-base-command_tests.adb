@@ -271,10 +271,10 @@ package body Camera.Lib.Base.Command_Tests is
    ---------------------------------------------------------------
 
       Options                    : Standard.Camera.Lib.Unit_Test.
-                                       Unit_Test_Options_Type'class
+                                       Unit_Test_Program_Options_Type'class
                                     renames Standard.Camera.Lib.Unit_Test.
                                        Options.all;
-      Brand                      : Brand_Type renames Options.Brand;
+      Brand                      : Brand_Type renames Local_Test.Brand;
       Test_Suite                 : constant AUnit.Test_Suites.Access_Test_Suite :=
                                     new AUnit.Test_Suites.Test_Suite;
       Test                       : constant Test_Access := new Test_Type (Brand);
@@ -1083,7 +1083,7 @@ package body Camera.Lib.Base.Command_Tests is
    ---------------------------------------------------------------
 
       Options                    : Standard.Camera.Lib.Unit_Test.
-                                    Unit_Test_Options_Type'class
+                                    Unit_Test_Program_Options_Type'class
                                        renames Standard.Camera.Lib.Unit_Test.
                                           Options.all;
    begin

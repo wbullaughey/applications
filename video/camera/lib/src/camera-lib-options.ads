@@ -1,6 +1,6 @@
 with ADA_LIB.Command_Line_Iterator;
 with ADA_LIB.Options.GNOGA;
-with Ada_Lib.Options;
+with Ada_Lib.Options.Actual;
 with ADA_LIB.Strings.Unlimited;
 --with ADA_LIB.Trace;
 --with Ada_Lib.Socket_IO;
@@ -21,7 +21,8 @@ package Camera.Lib.Options is
       Window                     : Gnoga.Gui.Base.Pointer_To_Base_Class;
    end record;
 
-   type Options_Type             is limited new Ada_Lib.Options.
+   -- type used for application options
+   type Program_Options_Type     is limited new Ada_Lib.Options.Actual.
                                     Program_Options_Type with record
       Camera_Library             : aliased Camera.Lib.Options_Type;
       Setup_Path                 : Ada_Lib.Strings.Unlimited.String_Type;
@@ -31,37 +32,45 @@ package Camera.Lib.Options is
       Template                   : Ada_Lib.Strings.Unlimited.String_Type;
    end record;
 
-   type Options_Access           is access all Options_Type;
-   type Options_Class_Access     is access all Options_Type'class;
-   type Options_Constant_Class_Access
-                                 is access constant Options_Type'class;
+   type Program_Options_Access   is access all Program_Options_Type;
+   type Program_Options_Class_Access
+                                 is access all Program_Options_Type'class;
+   type Program_Options_Constant_Class_Access
+                                 is access constant Program_Options_Type'class;
 
    function Current_Directory -- set by runstring option 'c' else null
    return String
-   with Pre => Ada_Lib.Options.Read_Only_Options /= Null;
+   with Pre => Have_Options;
 
-   function Get_Modifyable_Options return Options_Access;
+   function Get_Modifyable_Options
+   return Program_Options_Access
+   with Pre => Have_Options;
+
+   function Have_Options
+   return Boolean;
 
    overriding
    function Initialize (
-     Options                     : in out Options_Type;
+     Options                     : in out Program_Options_Type;
      From                        : in     String := Ada_Lib.Trace.Here
    ) return Boolean
    with pre => Options.Verify_Preinitialize;
 
--- function Process (
---   Options                     : in out Options_Type
--- ) return Boolean;
-
    overriding
    function Process_Option (  -- process one option
-     Options                    : in out Options_Type;
-     Iterator                   : in out ADA_LIB.Command_Line_Iterator.Abstract_Package.Abstract_Iterator_Type'class;
-      Option                     : in     Ada_Lib.Options.
+     Options         : in out Program_Options_Type;
+      Iterator       : in out Ada_Lib.Options.
+                        Command_Line_Iterator_Interface'class;
+      Option         : in     Ada_Lib.Options.
                                              Option_Type'class
    ) return Boolean
    with pre => Options.Initialized;
 -- with Pre => not Ada_Lib.Options.Have_Options;
+
+   procedure Set_Protected_Options (
+      Options                    : in not null Ada_Lib.Options.Actual.
+                                    Program_Options_Class_Access
+   ) with Pre => not Have_Options;
 
    Debug                         : aliased Boolean := False;  -- not set as option
 
@@ -69,13 +78,13 @@ private
 
 -- overriding
 -- procedure Process (     -- processes whole command line calling Process_Option for each option
---   Options                    : in out Options_Type;
+--   Options                    : in out Program_Options_Type;
 --   Iterator                   : in out ADA_LIB.Command_Line_Iterator.
 --                                  Abstract_Package.Abstract_Iterator_Type'class);
 
    overriding
    procedure Program_Help (
-      Options                    : in     Options_Type;  -- only used for dispatch
+      Options                    : in     Program_Options_Type;  -- only used for dispatch
       Help_Mode                  : in     ADA_LIB.Options.Help_Mode_Type);
 
 end Camera.Lib.Options;

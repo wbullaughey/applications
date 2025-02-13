@@ -1,8 +1,9 @@
-with Ada_Lib.Unit_Test.Test_Cases;
+with Ada_Lib.Options.AUnit_Lib;
 with Ada_Lib.GNOGA.Unit_Test; -- .Base;
 with Ada_Lib.Options.GNOGA;
 with Ada_Lib.Options.Unit_Test;
 with Ada_Lib.Trace;
+with Ada_Lib.Unit_Test.Test_Cases;
 with AUnit.Ada_Lib.Options;
 with AUnit.Options;
 with AUnit.Simple_Test_Cases;
@@ -51,7 +52,7 @@ package Camera.Lib.Unit_Test is
    overriding
    procedure Set_Up (
       Test                       : in out Camera_Test_Type
-   ) with Post => Test.Verify_Setup;
+   ) with Post => Test.Verify_Set_Up;
 
    procedure Set_Up_Optional_Load (
       Test                       : in out Camera_Test_Type;
@@ -74,7 +75,7 @@ package Camera.Lib.Unit_Test is
    overriding
    procedure Set_Up (
       Test                       : in out Camera_Window_Test_Type
-   ) with Post => Test.Verify_Setup;
+   ) with Post => Test.Verify_Set_Up;
 
    -- use for test which create the standard main window which manipulate camera
    type Camera_Window_Test_With_Camera_Type (
@@ -84,22 +85,22 @@ package Camera.Lib.Unit_Test is
                                        Initialize_GNOGA) with null record;
 
    -- allocated options for unit test of camera library
-   type Unit_Test_Options_Type   is new Options_Type
-                                    with record
-      AUnit_Options              : AUnit.Ada_Lib.Options.AUnit_Options_Type;
+   type Unit_Test_Program_Options_Type is new
+      Ada_Lib.Options.AUnit_Lib.Aunit_Program_Options_Type (False) with record
+         -- camera unit tests only can be run one test per invokation
 --    Camera_Options             : aliased Standard.Camera.Lib.Options_Type;
-      GNOGA_Options              : Ada_Lib.Options.GNOGA.GNOGA_Options_Type;
+--    GNOGA_Options              : Ada_Lib.Options.GNOGA.GNOGA_Options_Type;
 --    GNOGA_Unit_Test_Options    : Ada_Lib.GNOGA.Unit_Test.
 --                                  GNOGA_Unit_Test_Options_Type;F
       Main_Debug                 : Boolean := False;
       Unit_Test                  : Ada_Lib.Options.Unit_Test.
-                                    Ada_Lib_Unit_Test_Options_Type (False);
+                                    Ada_Lib_Unit_Test_Program_Options_Type (False);
    end record;
 
-   type Unit_Test_Options_Access           is access all Unit_Test_Options_Type;
-   type Unit_Test_Options_Class_Access     is access all Unit_Test_Options_Type'class;
+   type Unit_Test_Options_Access           is access all Unit_Test_Program_Options_Type;
+   type Unit_Test_Options_Class_Access     is access all Unit_Test_Program_Options_Type'class;
    type Unit_Test_Options_Constant_Class_Access
-                                 is access constant Unit_Test_Options_Type'class;
+                                 is access constant Unit_Test_Program_Options_Type'class;
    subtype Runtime_Iterator_Type is Ada_Lib.Command_Line_Iterator.
                                     Abstract_Package.Abstract_Iterator_Type;
 
@@ -108,7 +109,7 @@ package Camera.Lib.Unit_Test is
 
    overriding
    function Initialize (
-     Options                     : in out Unit_Test_Options_Type;
+     Options                     : in out Unit_Test_Program_Options_Type;
      From                        : in     String := Ada_Lib.Trace.Here
    ) return Boolean
    with pre => Options.Verify_Preinitialize;
@@ -125,8 +126,9 @@ package Camera.Lib.Unit_Test is
 
    overriding
    function Process_Option (  -- process one option
-     Options                    : in out Unit_Test_Options_Type;
-     Iterator                   : in out Runtime_Iterator_Type'class;
+     Options                     : in out Unit_Test_Program_Options_Type;
+      Iterator                   : in out Ada_Lib.Options.
+                                    Command_Line_Iterator_Interface'class;
       Option                     : in     Ada_Lib.Options.
                                              Option_Type'class
    ) return Boolean
@@ -134,13 +136,13 @@ package Camera.Lib.Unit_Test is
 --             not Ada_Lib.Options.Have_Options;
 
    procedure Run_Suite (
-     Options                    : in   Unit_Test_Options_Type);
+     Options                    : in   Unit_Test_Program_Options_Type);
 
    overriding
    procedure Trace_Parse (
-      Options                    : in out Unit_Test_Options_Type;
-      Iterator                   : in out Ada_Lib.Command_Line_Iterator.
-                                          Abstract_Package.Abstract_Iterator_Type'class
+      Options     : in out Unit_Test_Program_Options_Type;
+      Iterator    : in out Ada_Lib.Options.
+                     Command_Line_Iterator_Interface'class
    ) with Pre => Options.Initialized and then
                  Ada_Lib.Options.Have_Options;
 
@@ -166,7 +168,7 @@ private
 
    overriding
    procedure Program_Help (
-      Options                    : in     Unit_Test_Options_Type;  -- only used for dispatch
+      Options                    : in     Unit_Test_Program_Options_Type;  -- only used for dispatch
       Help_Mode                  : in     ADA_LIB.Options.Help_Mode_Type
    ) with Pre => Options.Initialized and then
                  Ada_Lib.Options.Have_Options;

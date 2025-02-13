@@ -96,17 +96,17 @@ package body Configuration.Camera.Setup is
    return String is
    ----------------------------------------------------------------
 
-      Setup_Path                 : Ada_Lib.Strings.Unlimited.String_Type
-                                    renames Standard.Camera.Lib.Options.
-                                       Options_Constant_Class_Access (
-                                          Ada_Lib.Options.Read_Only_Options).
-                                             Setup_Path;
+      Setup_Path     : Ada_Lib.Strings.Unlimited.String_Type
+                     renames Standard.Camera.Lib.Options.
+                        Program_Options_Constant_Class_Access (
+                           Ada_Lib.Options.Get_Ada_Lib_Read_Only_Options).
+                              Setup_Path;
 
    begin
       return (if Setup_Path.Length > 0 then
-         Setup_Path.Coerce
-      else
-         Default_Setup);
+                  Setup_Path.Coerce
+              else
+                  Default_Setup);
    end File_Path;
 
    ----------------------------------------------------------------

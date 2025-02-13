@@ -114,13 +114,13 @@ package body Configuration.Camera.Setup.Unit_Tests is
    ---------------------------------------------------------------
 
       Options                    : Standard.Camera.Lib.Unit_Test.
-                                    Unit_Test_Options_Type'class
+                                    Unit_Test_Program_Options_Type'class
                                        renames Standard.Camera.Lib.Unit_Test.
                                           Options.all;
       Test_Suite              : constant AUnit.Test_Suites.Access_Test_Suite :=
                                  new AUnit.Test_Suites.Test_Suite;
       Tests                   : constant Configuration_Tests_Access :=
-                                 new Configuration_Tests_Type (Options.Brand);
+                                 new Configuration_Tests_Type (Local_Test.Brand);
 
    begin
       Log_In (Debug);
@@ -154,14 +154,14 @@ package body Configuration.Camera.Setup.Unit_Tests is
       Local_Test                 : Configuration_Tests_Type renames
                                     Configuration_Tests_Type (Test);
       Options                    : Standard.Camera.Lib.Unit_Test.
-                                    Unit_Test_Options_Type'class renames
+                                    Unit_Test_Program_Options_Type'class renames
                                        Standard.Camera.Lib.Unit_Test.Options.all;
       State                      : Configuration.Camera.State.State_Type renames
                                     Connection_Data.State;
 
    begin
       Log_In (Debug);
-      Connection_Data.State.Load (Options.Location, Test_State);
+      Connection_Data.State.Load (Local_Test.Location, Test_State);
       Local_Test.Setup.Load (Connection_Data.State, Test_Setup);
       Local_Test.Camera_Address := State.Video_Address;
       Local_Test.Port_Number := State.Video_Port;

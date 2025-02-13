@@ -1,38 +1,34 @@
 with Ada.Exceptions;
 with Ada.Text_IO; use Ada.Text_IO;
-with Ada_Lib.Options;
+with Ada_Lib.Options.Actual;
 with Ada_Lib.OS;
 --with Ada_lib.Timer;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
 with Ada_Lib.Trace_Tasks;
 with Ada_Lib.Unit_Test;
+with Camera.Lib.Options;
 with Camera.Lib.Unit_Test;
 with Camera.Command_Queue;
 with Command_Name;
 
 procedure Camera_AUnit is
 
+   Options              : aliased Camera.Lib.Unit_Test.Unit_Test_Program_Options_Type;
+   Debug                : Boolean renames Options.Main_Debug;
+
 begin
 --Trace_Tests := True;
    Put_Line (Command_Name);
-   if Camera.Lib.Initialize then
-      declare
-         Options              : Camera.Lib.Unit_Test.Unit_Test_Options_Type'class
-                                 renames Standard.Camera.Lib.Unit_Test.Options.all;
-         Debug                : Boolean renames Options.Main_Debug;
+   Camera.Lib.Options.Set_Protected_Options (
+      Ada_Lib.Options.Actual.Program_Options_Type'class (Options)'unchecked_access);
+   if Options.Initialize then
+      Log_In (Debug);
+      Ada_lib.Trace_Tasks.Start ("main");
 
-      begin
-         Log_In (Debug);
-         Ada_lib.Trace_Tasks.Start ("main");
-
-         Log_Here (Debug, "start run suite");
-         Camera.Lib.Unit_Test.Run_Suite (Options);
-         Log_Here (Debug, "returned from run suite");
-      end;
-
-      Log_Here (Debug, "timer stopped, stop trace tasks");
+      Log_Here (Debug, "start run suite");
+      Camera.Lib.Unit_Test.Run_Suite (Options);
+      Log_Here (Debug, "returned from run suite");
       Camera.Command_Queue.Stop_Task;
-
       Ada_lib.Trace_Tasks.Stop;
       Log_Here (Debug, "timer stopped");
       if not Ada_Lib.Trace_Tasks.All_Stopped then
@@ -50,7 +46,7 @@ begin
 exception
 
    when Fault: Camera.Lib.Unit_Test.Failed =>
-      Ada_Lib.Options.Program_Options.Help (Ada.Exceptions.Exception_Message (
+      Options.Display_Help (Ada.Exceptions.Exception_Message (
          Fault), True);
 
    when Fault: others =>

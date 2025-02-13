@@ -505,7 +505,7 @@ package body Main is
 
       when Fault: others =>
          Trace_Exception (Fault, Here);
-         Ada_Lib.OS.Immediate_Halt (Ada_Lib.OS.ENOENT);
+         Ada_Lib.OS.Immediate_Halt (Ada_Lib.OS.No_such_file_or_directory);
 
    end On_Connect;
 

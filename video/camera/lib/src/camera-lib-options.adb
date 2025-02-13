@@ -3,6 +3,7 @@
 with Ada.Text_IO;use Ada.Text_IO;
 --with Ada_Lib.Command_Line_Iterator;
 with Ada_Lib.Help;
+with Ada_Lib.Options.Actual;
 --with Ada_Lib.Options.GNOGA;
 --with ADA_LIB.Strings.Unlimited;
 --with Ada_Lib.Test;
@@ -27,6 +28,8 @@ with Command_Name;
 
 package body Camera.Lib.Options is
 
+   use type Ada_Lib.Options.Actual.Program_Options_Class_Access;
+
 -- Configuration_Option          : constant Character := 'c';
 -- Template_Option               : constant Character := 't';
    Trace_Option                  : constant Character := 'T';
@@ -37,7 +40,8 @@ package body Camera.Lib.Options is
                                     Ada_Lib.Options.Options_Type :=
                                        Ada_Lib.Options.Create_Options (
                                           "amr", Ada_Lib.Options.Unmodified);
-   Protected_Options             : aliased Options_Type;
+   Protected_Options             : Ada_Lib.Options.Actual.
+                                    Program_Options_Class_Access := Null;
 
    -------------------------------------------------------------------------
    function Current_Directory  -- set by runstring option 'c' else null
@@ -45,21 +49,32 @@ package body Camera.Lib.Options is
    -------------------------------------------------------------------------
 
    begin
-      return Protected_Options.Camera_Library.Directory.Coerce;
+      return Program_Options_Constant_Class_Access (
+         Protected_Options).Camera_Library.Directory.Coerce;
    end Current_Directory;
 
    -------------------------------------------------------------------------
-   function Get_Modifyable_Options return Options_Access is
+   function Get_Modifyable_Options
+   return Program_Options_Access is
    -------------------------------------------------------------------------
 
    begin
-      return Protected_Options'access;
+      return Program_Options_Access (Protected_Options);
    end Get_Modifyable_Options;
+
+   -------------------------------------------------------------------------
+   function Have_Options
+   return Boolean is
+   -------------------------------------------------------------------------
+
+   begin
+      return Protected_Options /= Null;
+   end Have_Options;
 
    -------------------------------------------------------------------------
    overriding
    function Initialize (
-     Options                     : in out Options_Type;
+     Options                     : in out Program_Options_Type;
      From                        : in     String := Ada_Lib.Trace.Here
    ) return Boolean is
    -------------------------------------------------------------------------
@@ -94,8 +109,9 @@ package body Camera.Lib.Options is
    -- processes options it knows about and calls parent for others
    overriding
    function Process_Option (
-      Options                    : in out Options_Type;
-      Iterator                   : in out ADA_LIB.Command_Line_Iterator.Abstract_Package.Abstract_Iterator_Type'class;
+      Options                    : in out Program_Options_Type;
+      Iterator                   : in out Ada_Lib.Options.
+                                    Command_Line_Iterator_Interface'class;
       Option                     : in     Ada_Lib.Options.
                                              Option_Type'class
    ) return Boolean is
@@ -159,7 +175,7 @@ package body Camera.Lib.Options is
    ----------------------------------------------------------------------------
    overriding
    procedure Program_Help (
-      Options                    : in     Options_Type;  -- only used for dispatch
+      Options                    : in     Program_Options_Type;  -- only used for dispatch
       Help_Mode                  : in     ADA_LIB.Options.Help_Mode_Type) is
    ----------------------------------------------------------------------------
 
@@ -192,6 +208,16 @@ package body Camera.Lib.Options is
       Log_Out (Debug_Options or Trace_Options);
    end Program_Help;
 
+   ----------------------------------------------------------------------------
+   procedure Set_Protected_Options (
+      Options  : in not null Ada_Lib.Options.Actual.
+                              Program_Options_Class_Access) is
+   ----------------------------------------------------------------------------
+
+   begin
+      Protected_Options := Options;
+   end Set_Protected_Options;
+
 begin
 -- Debug := Debug_Options.Debug_All;
 
@@ -200,7 +226,8 @@ begin
 --Trace_Options := True;
 --Elaborate := True;
 
-   Ada_Lib.Options.Set_Ada_Lib_Options (Protected_Options'access);
+   Ada_Lib.Options.Set_Ada_Lib_Options (
+      Ada_Lib.Options.Interface_Options_Class_Access (Protected_Options));
    Log_Here (Elaborate or Debug_Options or Trace_Options, "options " &
       Image (Protected_Options'address));
 

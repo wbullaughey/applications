@@ -44,7 +44,7 @@ package body Camera.Lib is
 
    begin
       return Options_Constant_Class_Access (
-         Ada_Lib.Options.Read_Only_Options);
+         Ada_Lib.Options.Get_Ada_Lib_Read_Only_Options);
    end Camera_Options;
 
    -------------------------------------------------------------------------
@@ -171,7 +171,8 @@ package body Camera.Lib is
    overriding
    function Process_Option (
       Options                    : in out Options_Type;
-      Iterator                   : in out ADA_LIB.Command_Line_Iterator.Abstract_Package.Abstract_Iterator_Type'class;
+      Iterator                   : in out Ada_Lib.Options.
+                                    Command_Line_Iterator_Interface'class;
       Option                     : in     Ada_Lib.Options.
                                              Option_Type'class
    ) return Boolean is
@@ -188,20 +189,20 @@ package body Camera.Lib is
                Options.Directory.Construct (Iterator.Get_Parameter);
 
             when 'l' =>
-               if Options.Location = Configuration.State.Remote then
+               if Local_Test.Location = Configuration.State.Remote then
                   Options.Bad_Option ("Remote option (r) and Local remote (l) are incompatable");
                end if;
-               Options.Location := Configuration.State.Local;
+               Local_Test.Location := Configuration.State.Local;
 
             when 'r' =>    -- remote camera
                if Options.Simulate then
                   Options.Bad_Option ("Remote option (r) and Simulate (E) are incompatable");
                end if;
-               Options.Location := Configuration.State.Remote;
+               Local_Test.Location := Configuration.State.Remote;
 --log_here ("remote " & Image (Options.Remote'address));
 
             when 'E' =>    -- simulate Standard.Camera
-               if Options.Location = Configuration.State.Remote then
+               if Local_Test.Location = Configuration.State.Remote then
                   Options.Bad_Option ("Remote option (r) and Simulate (E) are incompatable");
                end if;
                Options.Simulate := True;

@@ -37,7 +37,7 @@ package body Camera.Lib.Unit_Test is
                                           Ada_Lib.Options.Null_Options;
    Help_Recursed                 : Boolean := False;
    Initialize_Recursed           : Boolean := False;
-   Protected_Options             : aliased Unit_Test_Options_Type;
+   Protected_Options             : aliased Unit_Test_Program_Options_Type;
 
 -- use type Ada_Lib.Options.Interface_Options_Constant_Class_Access;
 
@@ -89,7 +89,7 @@ package body Camera.Lib.Unit_Test is
    -------------------------------------------------------------------------
    overriding
    function Initialize (
-     Options                     : in out Unit_Test_Options_Type;
+     Options                     : in out Unit_Test_Program_Options_Type;
      From                        : in     String := Ada_Lib.Trace.Here
    ) return Boolean is
    -------------------------------------------------------------------------
@@ -155,8 +155,9 @@ package body Camera.Lib.Unit_Test is
    -- processes options it knows about and calls parent for others
    overriding
    function Process_Option (
-      Options                    : in out Unit_Test_Options_Type;
-      Iterator                   : in out ADA_LIB.Command_Line_Iterator.Abstract_Package.Abstract_Iterator_Type'class;
+      Options                    : in out Unit_Test_Program_Options_Type;
+      Iterator                   : in out Ada_Lib.Options.
+                                    Command_Line_Iterator_Interface'class;
       Option                     : in     Ada_Lib.Options.
                                              Option_Type'class
    ) return Boolean is
@@ -166,7 +167,7 @@ package body Camera.Lib.Unit_Test is
       Log_In (Trace_Options or Debug_Options, Option.Image &
          " options address " & Image (Options'address) &
          " initialized " & Options.Initialized'img &
-         " options tag " & Tag_Name (Unit_Test_Options_Type'class (Options)'tag));
+         " options tag " & Tag_Name (Unit_Test_Program_Options_Type'class (Options)'tag));
 
       if Ada_Lib.Options.Has_Option (Option, Options_With_Parameters,
             Options_Without_Parameters) then
@@ -196,7 +197,7 @@ package body Camera.Lib.Unit_Test is
    ----------------------------------------------------------------------------
    overriding
    procedure Program_Help (
-      Options                    : in     Unit_Test_Options_Type;  -- only used for dispatch
+      Options                    : in     Unit_Test_Program_Options_Type;  -- only used for dispatch
       Help_Mode                  : in     ADA_LIB.Options.Help_Mode_Type) is
    ----------------------------------------------------------------------------
 
@@ -276,7 +277,7 @@ package body Camera.Lib.Unit_Test is
    begin
       Log_In (Debug, "options class " & Tag_Name (Camera_Options'tag));
 not_implemented;
---      if Ada_Lib.Options.Unit_Test.Unit_Test_Options_Type (Options).Mode =
+--      if Ada_Lib.Options.Unit_Test.Unit_Test_Program_Options_Type (Options).Mode =
 --            Ada_Lib.Options.Run_Tests then
 --         Log_Here (Debug);
 ----       Register_Tests (Test_Case'Class (Test.all));
@@ -288,7 +289,7 @@ not_implemented;
 
    ---------------------------------------------------------------
    procedure Run_Suite (
-     Options                    : in   Unit_Test_Options_Type) is
+     Options                    : in   Unit_Test_Program_Options_Type) is
    ---------------------------------------------------------------
 
    begin
@@ -398,7 +399,7 @@ not_implemented;
       Connection_Data            : constant Standard.Base.Connection_Data_Access :=
                                     new Standard.Base.Connection_Data_Type;
       Options                    : Standard.Camera.Lib.Unit_Test.
-                                    Unit_Test_Options_Type'class
+                                    Unit_Test_Program_Options_Type'class
                                        renames Standard.Camera.Lib.Unit_Test.
                                           Options.all;
       State                      : Configuration.Camera.State.State_Type renames
@@ -419,7 +420,7 @@ not_implemented;
       Ada_Lib.Unit_Test.Test_Cases.Test_Case_Type (Test).Set_Up;
 
      if Load then
-        State.Load (Options.Location, Camera_State_Path);
+        State.Load (Local_Test.Location, Camera_State_Path);
         Test.Camera_Address := State.Video_Address;
         Test.Port_Number := State.Video_Port;
 
@@ -453,7 +454,7 @@ not_implemented;
       Connection_Data         : constant Standard.Base.Connection_Data_Access :=
                                  new Standard.Base.Connection_Data_Type;
       Options                 : Standard.Camera.Lib.Unit_Test.
-                                 Unit_Test_Options_Type'class
+                                 Unit_Test_Program_Options_Type'class
                                     renames Standard.Camera.Lib.Unit_Test.
                                        Options.all;
       State                      : Configuration.Camera.State.State_Type renames
@@ -464,7 +465,7 @@ not_implemented;
          Ada_Lib.GNOGA.Connection_Data_Class_Access (Connection_Data));
       Connection_Data.Initialize;
       State.Load (
-         Options.Location, State_Test_Path); -- need to load state 1st
+         Local_Test.Location, State_Test_Path); -- need to load state 1st
       Test.Setup.Load (State, Setup_Test_Path);
       Ada_Lib.GNOGA.Unit_Test.GNOGA_Tests_Type(Test).Set_Up;
 
@@ -539,7 +540,7 @@ not_implemented;
    ----------------------------------------------------------------------------
    overriding
    procedure Trace_Parse (
-      Options                    : in out Unit_Test_Options_Type;
+      Options                    : in out Unit_Test_Program_Options_Type;
       Iterator                   : in out Ada_Lib.Command_Line_Iterator.Abstract_Package.Abstract_Iterator_Type'class) is
    ----------------------------------------------------------------------------
 

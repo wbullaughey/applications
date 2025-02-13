@@ -2,9 +2,9 @@ with "ada_lib.gpr";
 with "camera_lib.gpr";
 with "config/test_lib_config.gpr";
 
-project Test_Lib is
+project camera_test_lib is
 
-   for Library_Name use "Test_Lib";
+   for Library_Name use "camera_test_lib";
    for Library_Version use Project'Library_Name & ".so." & Test_Lib_Config.Crate_Version;
 
    for Source_Dirs use ("src/", "config/");
@@ -29,4 +29,4 @@ project Test_Lib is
       for Artifacts (".") use ("share");
    end Install;
 
-end Test_Lib;
+end camera_test_lib;

@@ -34,7 +34,7 @@ package body Video.Lib is
 
    begin
       return (case Options_Constant_Class_Access (
-         Ada_Lib.Options.Read_Only_Options).Location is
+         Ada_Lib.Options.Get_Ada_Lib_Read_Only_Options).Location is
          when Configuration.State.Remote =>
             Configuration.URL,
 
@@ -80,7 +80,7 @@ package body Video.Lib is
          Ada_Lib.Options.Runstring.With_Parameters,
          Options_With_Parameters);
 
-      return Log_Out (Ada_Lib.Options.Actual.Program_Options_Type (
+      return Log_Out (Ada_Lib.Options.Actual.Nested_Options_Type (
             Options).Initialize,
          Options_Debug or Trace_Options);
    end Initialize;
@@ -104,7 +104,8 @@ package body Video.Lib is
    overriding
    function Process_Option (
       Options                    : in out Options_Type;
-      Iterator                   : in out ADA_LIB.Command_Line_Iterator.Abstract_Package.Abstract_Iterator_Type'class;
+      Iterator                   : in out Ada_Lib.Options.
+                                    Command_Line_Iterator_Interface'class;
       Option                     : in     Ada_Lib.Options.
                                              Option_Type'class
    ) return Boolean is
@@ -129,7 +130,7 @@ package body Video.Lib is
          return Log_Out (True, Options_Debug or Trace_Options,
             " option" & Option.Image & " handled");
       else
-         return Log_Out (Ada_Lib.Options.Actual.Program_Options_Type (
+         return Log_Out (Ada_Lib.Options.Actual.Nested_Options_Type (
             Options).Process_Option (Iterator, Option),
             Trace_Options or Options_Debug, "other option" & Option.Image);
       end if;
@@ -168,7 +169,7 @@ package body Video.Lib is
 
       end case;
 
-      Ada_Lib.Options.Actual.Program_Options_Type (Options).Program_Help (Help_Mode);
+      Ada_Lib.Options.Actual.Nested_Options_Type (Options).Program_Help (Help_Mode);
       Log_Out (Options_Debug or Trace_Options);
    end Program_Help;
 

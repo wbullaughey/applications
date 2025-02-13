@@ -4,6 +4,7 @@ with "ada_lib_tests.gpr";
 --with "applications.gpr";
 with "aunit.gpr";
 with "camera_lib.gpr";
+with "camera_test_lib.gpr";
 with "gnoga.gpr";
 with "video_lib.gpr";
 abstract project Camera_Tests_Config is

@@ -698,7 +698,7 @@ package body Widgets.Configured.Unit_Test is
 --   ---------------------------------------------------------------
 --
 --      Options                    : Standard.Camera.Lib.Unit_Test.
---                                    Unit_Test_Options_Type'class
+--                                    Unit_Test_Program_Options_Type'class
 --                                       renames Standard.Camera.Lib.Unit_Test.
 --                                          Options.all;
 --      Connection_Data            : Base.Connection_Data_Type renames
@@ -711,7 +711,7 @@ package body Widgets.Configured.Unit_Test is
 ----    Ada_Lib.GNOGA.Set_Connection_Data ( -- moved to parent
 ----       Ada_Lib.GNOGA.Connection_Data_Class_Access (Connection_Data));
 ----    State.Load (
-----       Options.Location, State_Test_Path); -- need to load state 1st
+----       Local_Test.Location, State_Test_Path); -- need to load state 1st
 ----    Test.Setup.Load (State, Setup_Test_Path);
 --      Camera.Lib.Unit_Test.Camera_Window_Test_Type (Test).Set_Up;
 ----    Button_Push_Event.Reset_Event;
@@ -734,7 +734,7 @@ package body Widgets.Configured.Unit_Test is
    function Suite return AUnit.Test_Suites.Access_Test_Suite is
    ---------------------------------------------------------------
 
---    Options                    : Camera.Lib.Unit_Test.Unit_Test_Options_Type'class
+--    Options                    : Camera.Lib.Unit_Test.Unit_Test_Program_Options_Type'class
 --                                  renames Camera.Lib.Unit_Test.Options.all;
       Test_Suite                 : constant AUnit.Test_Suites.Access_Test_Suite :=
                                     new AUnit.Test_Suites.Test_Suite;

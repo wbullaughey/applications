@@ -1,5 +1,5 @@
 --with Ada.Streams;
-with ADA_LIB.Command_Line_Iterator;
+--with ADA_LIB.Command_Line_Iterator;
 with Ada_Lib.Options;
 with Ada_Lib.Trace;
 with ADA_LIB.Options.Actual;
@@ -98,8 +98,8 @@ package Video.Lib is
    overriding
    function Process_Option (  -- process one option
      Options                     : in out Options_Type;
-     Iterator                    : in out Ada_Lib.Command_Line_Iterator.
-                                    Abstract_Package.Abstract_Iterator_Type'class;
+      Iterator                   : in out Ada_Lib.Options.
+                                    Command_Line_Iterator_Interface'class;
       Option                     : in     Ada_Lib.Options.
                                              Option_Type'class
    ) return Boolean

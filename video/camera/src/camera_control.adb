@@ -21,12 +21,13 @@ procedure Camera_Control is
    Camera_Setup                  : Configuration.Camera.Setup.Setup_Type;
    Connection_Data               : constant Base.Connection_Data_Class_Access :=
                                     new Base.Connection_Data_Type;
-   Options                       : constant Camera.Lib.Options.Options_Access :=
-                                    Camera.Lib.Options.Get_Modifyable_Options;
+   Options                       : aliased Camera.Lib.Options.Program_Options_Type;
    Debug                         : Boolean renames Options.Debug;
 
 begin
    Put_Line (Command_Name);
+   Camera.Lib.Options.Set_Protected_Options (
+      Camera.Lib.Options.Options_Type'class (Options)'access);
    if Options.Initialize then
       Log_In (Debug);
       Connection_Data.Initialize;

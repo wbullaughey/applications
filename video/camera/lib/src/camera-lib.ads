@@ -57,7 +57,8 @@ package Camera.Lib is
    overriding
    function Process_Option (  -- process one option
      Options                     : in out Options_Type;
-     Iterator                    : in out Abstract_Iterator_Type'class;
+      Iterator                   : in out Ada_Lib.Options.
+                                    Command_Line_Iterator_Interface'class;
       Option                     : in     Ada_Lib.Options.
                                              Option_Type'class
    ) return Boolean
@@ -66,9 +67,8 @@ package Camera.Lib is
    overriding
    procedure Trace_Parse (
       Options                    : in out Options_Type;
-      Iterator                   : in out Ada_Lib.Command_Line_Iterator.
-                                             Abstract_Package.
-                                                Abstract_Iterator_Type'class);
+      Iterator                   : in out Ada_Lib.Options.
+                                    Command_Line_Iterator_Interface'class);
 
    type General_Camera_Type      is abstract new Camera_Type
                                     with null record;

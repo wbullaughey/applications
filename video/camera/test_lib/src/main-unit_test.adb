@@ -123,7 +123,7 @@ package body Main.Unit_Test is
                                     Base.Connection_Data_Type (
                                        Ada_Lib.GNOGA.Get_Connection_Data.all);
       Options                    : Standard.Camera.Lib.Unit_Test.
-                                    Unit_Test_Options_Type'class
+                                    Unit_Test_Program_Options_Type'class
                                        renames Standard.Camera.Lib.Unit_Test.
                                           Options.all;
       State                      : Configuration.Camera.State.State_Type renames
@@ -131,7 +131,7 @@ package body Main.Unit_Test is
 
    begin
       Log_In (Debug or Trace_Set_Up);
-      State.Load (Options.Location, State_Path);
+      State.Load (Test.Location, State_Path);
       -- need to load state 1st
       Test.Setup.Load (State, Setup_Path);
       Camera.Lib.Unit_Test.Camera_Window_Test_Type (Test).Set_Up;
@@ -142,12 +142,12 @@ package body Main.Unit_Test is
    function Suite return AUnit.Test_Suites.Access_Test_Suite is
    ---------------------------------------------------------------
 
-      Options                    : Camera.Lib.Unit_Test.Unit_Test_Options_Type'class
+      Options                    : Camera.Lib.Unit_Test.Unit_Test_Program_Options_Type'class
                                     renames Camera.Lib.Unit_Test.Options.all;
       Test_Suite                 : constant AUnit.Test_Suites.Access_Test_Suite :=
                                     new AUnit.Test_Suites.Test_Suite;
       Tests                      : constant Test_Access := new Test_Type (
-                                    Options.Brand);
+                                    Local_Test.Brand);
 
    begin
       Log_In (Debug);
@@ -182,7 +182,7 @@ package body Main.Unit_Test is
    pragma Unreferenced (Test);
    ---------------------------------------------------------------
 
-      Options                 : Camera.Lib.Unit_Test.Unit_Test_Options_Type'
+      Options                 : Camera.Lib.Unit_Test.Unit_Test_Program_Options_Type'
                                  class renames Camera.Lib.
                                     Unit_Test.Unit_Test_Options_Constant_Class_Access (
                                        Ada_Lib.Options.Program_Options).all;

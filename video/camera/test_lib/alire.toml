@@ -1,4 +1,4 @@
-name = "test_lib"
+name = "camera_test_lib"
 description = "camera unit test library"
 version = "0.1.0-dev"
 

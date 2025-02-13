@@ -19,9 +19,9 @@ package body Configuration.Camera.State.Unit_Tests is
    type Connection_Data_Type     is new Ada_Lib.GNOGA.Connection_Data_Type
                                     with null record;
    type Configuration_Tests_Type (
-      Brand                      : Standard.Camera.Lib.Brand_Type) is new
-                                    Standard.Camera.Lib.Unit_Test.
-                                    Camera_Test_Type (Brand) with null record;
+      Brand    : Standard.Camera.Lib.Brand_Type) is new
+                  Standard.Camera.Lib.Unit_Test.
+                     Camera_Test_Type (Local_Test.Brand) with null record;
 
    type Configuration_Tests_Access is access Configuration_Tests_Type;
 
@@ -45,7 +45,7 @@ package body Configuration.Camera.State.Unit_Tests is
 
    procedure Test_Load (
       Test                       : in out AUnit.Test_Cases.Test_Case'class
-   ) with Pre => Ada_Lib.Options.Read_Only_Options /= Null;
+   ) with Pre => Ada_Lib.Options.Get_Ada_Lib_Read_Only_Options /= Null;
 
    procedure Test_Values (
       Test                       : in out AUnit.Test_Cases.Test_Case'class
@@ -115,13 +115,13 @@ log_here;
    ---------------------------------------------------------------
 
       Options                    : Standard.Camera.Lib.Unit_Test.
-                                    Unit_Test_Options_Type'class
+                                    Unit_Test_Program_Options_Type'class
                                        renames Standard.Camera.Lib.Unit_Test.
                                           Options.all;
       Test_Suite                 : constant AUnit.Test_Suites.Access_Test_Suite
                                     := new AUnit.Test_Suites.Test_Suite;
       Tests                      : constant Configuration_Tests_Access :=
-                                    new Configuration_Tests_Type (Options.Brand);
+                                    new Configuration_Tests_Type (Local_Test.Brand);
 
    begin
       Log_In (Debug, Quote ("suite", Suite_Name));
@@ -153,15 +153,17 @@ log_here;
       Connection_Data            : Base.Connection_Data_Type renames
                                     Base.Connection_Data_Type (
                                        Ada_Lib.GNOGA.Get_Connection_Data.all);
+      Local_Test                 : Camera_Test_Type renames
+                                    Camera_Test_Type (Test);
       Options                    : Standard.Camera.Lib.Unit_Test.
-                                    Unit_Test_Options_Type'class
+                                    Unit_Test_Program_Options_Type'class
                                        renames Standard.Camera.Lib.Unit_Test.
                                           Options.all;
       State                      : Configuration.Camera.State.State_Type renames
                                     Connection_Data.State;
    begin
       Log_In (Debug);
-      State.Load (Options.Location, Test_State);
+      State.Load (Local_Test.Location, Test_State);
       Log_Out (Debug);
 
    exception
@@ -226,17 +228,17 @@ log_here;
 --                                     3  => ( 1, 2 ),
 --                                     5  => ( 1, 3 ),
 --                                     others => Null_Preset );
---    Local_Test                 : Configuration_Tests_Type renames
---                                  Configuration_Tests_Type (Test);
+      Local_Test                 : Configuration_Tests_Type renames
+                                    Configuration_Tests_Type (Test);
       Options                    : Standard.Camera.Lib.Unit_Test.
-                                    Unit_Test_Options_Type'class
+                                    Unit_Test_Program_Options_Type'class
                                        renames Standard.Camera.Lib.Unit_Test.
                                           Options.all;
       State                      : Configuration.Camera.State.State_Type
                                     renames Connection_Data.State;
    begin
-      Log_In (Debug, "location " & Options.Location'img);
-      State.Load (Options.Location, Test_State);
+      Log_In (Debug, "location " & Local_Test.Location'img);
+      State.Load (Local_Test.Location, Test_State);
       Log_Here (Debug, "set " & State.Loaded'img & " Number_Columns " &
          " address " & Image (State.Number_Columns'address) &
          " bits " & State.Number_Columns'size'img);

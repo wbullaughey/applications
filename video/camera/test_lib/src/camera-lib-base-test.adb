@@ -20,19 +20,20 @@ package body Camera.Lib.Base.Test is
    use type Index_Type;
 
    type Test_Type (
-      Brand                      : Brand_Type) is new Ada_Lib.Unit_Test.
-                                    Test_Cases.Test_Case_Type with record
+      Brand             : Brand_Type) is new
+                           Camera.Lib.Unit_Test.Camera_Test_Type with record
 
-      Camera                     : Base.Base_Camera_Class_Access := Null;
+      Camera            : Base.Base_Camera_Class_Access := Null;
       case Brand is
          when ALPTOP_Camera =>
-            ALPTOP                : aliased Standard.Camera.LIB.ALPTOP.ALPTOP_Type;
+            ALPTOP      : aliased Standard.Camera.LIB.ALPTOP.ALPTOP_Type;
 
          when No_Camera=>
             Null;
 
          when PTZ_Optics_Camera =>
-            PTZ_Optics           : aliased Standard.Camera.Commands.PTZ_Optics.PTZ_Optics_Type;
+            PTZ_Optics  : aliased Standard.Camera.Commands.PTZ_Optics.
+                           PTZ_Optics_Type;
 
       end case;
    end record;
@@ -107,7 +108,7 @@ package body Camera.Lib.Base.Test is
 -- begin
 --    Log_In (Debug, "brand " & Global_Camera_Lib_Options.
 --       Brand'img & " port" & Port'img);
---    case Global_Camera_Lib_Options.Brand is
+--    case Global_Camera_Lib_Local_Test.Brand is
 --
 --       when ALPTOP_Camera =>
 --         Camera.IP_Open (ALPTOP_IP_Address, Port);
@@ -129,7 +130,7 @@ package body Camera.Lib.Base.Test is
    ---------------------------------------------------------------
 
       Options                    : Standard.Camera.Lib.Unit_Test.
-                                    Unit_Test_Options_Type'class
+                                    Unit_Test_Program_Options_Type'class
                                        renames Standard.Camera.Lib.Unit_Test.
                                           Options.all;
       First_Port                 : constant GNAT.Sockets.Port_Type := 1;
@@ -140,7 +141,7 @@ package body Camera.Lib.Base.Test is
       Put_Line ("test port scan");
       for Port in First_Port .. Last_Port loop
          begin
-            Local_Test.Camera.Open (Options.Camera_Address.all, Port);
+            Local_Test.Camera.Open (Local_Test.Camera_Address.all, Port);
             Put_Line ("opened port" & Port'img);
 
          exception
@@ -168,7 +169,7 @@ package body Camera.Lib.Base.Test is
       type Ports_Access          is access constant Ports_Type;
 
       Options                    : Standard.Camera.Lib.Unit_Test.
-                                    Unit_Test_Options_Type'class
+                                    Unit_Test_Program_Options_Type'class
                                        renames Standard.Camera.Lib.Unit_Test.
                                           Options.all;
       Local_Test                 : Test_Type renames Test_Type (Test);
@@ -186,7 +187,7 @@ package body Camera.Lib.Base.Test is
       Log_In (Debug);
       Put_Line ("read write");
 
-      case Options.Brand is
+      case Local_Test.Brand is
 
          when ALPTOP_Camera =>
             Ports := ALPTOP_Ports'access;
@@ -273,8 +274,8 @@ package body Camera.Lib.Base.Test is
          begin
             Log_Here (Debug, "Port" & Ports.all (Port)'img);
             Local_Test.Camera.URL_Open (
-               Options.Camera_Address.URL_Address.Coerce,
-               Options.Port_Number);
+               Local_Test.Camera_Address.URL_Address.Coerce,
+               Local_Test.Port_Number);
             Test_Port (Ports.all (PTZ_Optics_Port));
             Local_Test.Camera.Close;
 
@@ -342,18 +343,18 @@ package body Camera.Lib.Base.Test is
    ---------------------------------------------------------------
 
       Options                    : Standard.Camera.Lib.Unit_Test.
-                                    Unit_Test_Options_Type'class
+                                    Unit_Test_Program_Options_Type'class
                                        renames Standard.Camera.Lib.Unit_Test.
                                           Options.all;
       Test_Suite                 : constant AUnit.Test_Suites.Access_Test_Suite :=
                                     new AUnit.Test_Suites.Test_Suite;
       Test                       : constant Test_Access := new Test_Type (
-                                    Options.Brand);
+                                    Local_Test.Brand);
 
    begin
-      Log_In (Debug, "brand " & Options.Brand'img);
+      Log_In (Debug, "brand " & Local_Test.Brand'img);
       Test_Suite.Add_Test (Test);
-      case Options.Brand is
+      case Local_Test.Brand is
 
          when ALPTOP_Camera =>
             Test.Camera := Test.ALPTOP'access;
@@ -385,7 +386,7 @@ package body Camera.Lib.Base.Test is
    ---------------------------------------------------------------
 
       Options                    : Standard.Camera.Lib.Unit_Test.
-                                    Unit_Test_Options_Type'class
+                                    Unit_Test_Program_Options_Type'class
                                        renames Standard.Camera.Lib.Unit_Test.
                                           Options.all;
       Local_Test                 : Test_Type renames Test_Type (Test);
@@ -406,7 +407,7 @@ package body Camera.Lib.Base.Test is
 -- ---------------------------------------------------------------
 --
 -- begin
---    return (case Global_Camera_Lib_Options.Location is
+--    return (case Global_Camera_Lib_Local_Test.Location is
 --
 --       when Configuration.State.Local =>
 --          Global_Camera_Lib_Options.
@@ -423,7 +424,7 @@ package body Camera.Lib.Base.Test is
    ---------------------------------------------------------------
 
       Options                    : Standard.Camera.Lib.Unit_Test.
-                                    Unit_Test_Options_Type'class
+                                    Unit_Test_Program_Options_Type'class
                                        renames Standard.Camera.Lib.Unit_Test.
                                           Options.all;
       First_Unit                 : constant GNAT.Sockets.Inet_Addr_Comp_Type := 2;

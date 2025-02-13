@@ -1,6 +1,5 @@
 ﻿with Ada_Lib.Command_Line_Iterator;
-with Ada_Lib.Options;
-with Ada_Lib.Options;
+with Ada_Lib.Options.Actual;
 with Ada_Lib.Strings.Unlimited;
 with Ada_Lib.Trace;
 
@@ -51,7 +50,7 @@ package Driver is
                                        Abstract_Package.
                                           Abstract_Iterator_Type'class);
 
-   type Program_Options_Type     is limited new Ada_Lib.Options.
+   type Program_Options_Type     is limited new Ada_Lib.Options.Actual.
                                     Program_Options_Type with record
       Driver_Options             : Driver_Options_Type (False);
    end record;
