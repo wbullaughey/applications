@@ -121,7 +121,7 @@ package body Widgets.Adjust.Unit_Test is
 --         State                      : Configuration.Camera.State.State_Type renames
 --                                       Connection_Data.State;
 --      begin
---         State.Load (Local_Test.Location, State_Test_Path); -- need to load state 1st
+--         State.Load (Options.Camera_Options.Location, State_Test_Path); -- need to load state 1st
 ----       Test.Setup.Load (State, Setup_Test_Path);
 --      end;
 --      Log_Out (Debug or Trace_Set_Up);

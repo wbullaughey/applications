@@ -120,7 +120,7 @@ package body Configuration.Camera.Setup.Unit_Tests is
       Test_Suite              : constant AUnit.Test_Suites.Access_Test_Suite :=
                                  new AUnit.Test_Suites.Test_Suite;
       Tests                   : constant Configuration_Tests_Access :=
-                                 new Configuration_Tests_Type (Local_Test.Brand);
+                                 new Configuration_Tests_Type (Options.Camera_Options.Brand);
 
    begin
       Log_In (Debug);
@@ -161,7 +161,7 @@ package body Configuration.Camera.Setup.Unit_Tests is
 
    begin
       Log_In (Debug);
-      Connection_Data.State.Load (Local_Test.Location, Test_State);
+      Connection_Data.State.Load (Options.Camera_Options.Location, Test_State);
       Local_Test.Setup.Load (Connection_Data.State, Test_Setup);
       Local_Test.Camera_Address := State.Video_Address;
       Local_Test.Port_Number := State.Video_Port;

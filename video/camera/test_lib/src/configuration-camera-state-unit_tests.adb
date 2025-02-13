@@ -21,7 +21,7 @@ package body Configuration.Camera.State.Unit_Tests is
    type Configuration_Tests_Type (
       Brand    : Standard.Camera.Lib.Brand_Type) is new
                   Standard.Camera.Lib.Unit_Test.
-                     Camera_Test_Type (Local_Test.Brand) with null record;
+                     Camera_Test_Type (Brand) with null record;
 
    type Configuration_Tests_Access is access Configuration_Tests_Type;
 
@@ -121,7 +121,7 @@ log_here;
       Test_Suite                 : constant AUnit.Test_Suites.Access_Test_Suite
                                     := new AUnit.Test_Suites.Test_Suite;
       Tests                      : constant Configuration_Tests_Access :=
-                                    new Configuration_Tests_Type (Local_Test.Brand);
+                                    new Configuration_Tests_Type (Options.Camera_Options.Brand);
 
    begin
       Log_In (Debug, Quote ("suite", Suite_Name));
@@ -153,8 +153,8 @@ log_here;
       Connection_Data            : Base.Connection_Data_Type renames
                                     Base.Connection_Data_Type (
                                        Ada_Lib.GNOGA.Get_Connection_Data.all);
-      Local_Test                 : Camera_Test_Type renames
-                                    Camera_Test_Type (Test);
+      Local_Test                 : Configuration_Tests_Type renames
+                                    Configuration_Tests_Type (Test);
       Options                    : Standard.Camera.Lib.Unit_Test.
                                     Unit_Test_Program_Options_Type'class
                                        renames Standard.Camera.Lib.Unit_Test.
@@ -163,7 +163,7 @@ log_here;
                                     Connection_Data.State;
    begin
       Log_In (Debug);
-      State.Load (Local_Test.Location, Test_State);
+      State.Load (Options.Camera_Options.Location, Test_State);
       Log_Out (Debug);
 
    exception
@@ -237,8 +237,8 @@ log_here;
       State                      : Configuration.Camera.State.State_Type
                                     renames Connection_Data.State;
    begin
-      Log_In (Debug, "location " & Local_Test.Location'img);
-      State.Load (Local_Test.Location, Test_State);
+      Log_In (Debug, "location " & Options.Camera_Options.Location'img);
+      State.Load (Options.Camera_Options.Location, Test_State);
       Log_Here (Debug, "set " & State.Loaded'img & " Number_Columns " &
          " address " & Image (State.Number_Columns'address) &
          " bits " & State.Number_Columns'size'img);

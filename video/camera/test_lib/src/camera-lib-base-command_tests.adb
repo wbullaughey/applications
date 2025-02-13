@@ -274,7 +274,7 @@ package body Camera.Lib.Base.Command_Tests is
                                        Unit_Test_Program_Options_Type'class
                                     renames Standard.Camera.Lib.Unit_Test.
                                        Options.all;
-      Brand                      : Brand_Type renames Local_Test.Brand;
+      Brand                      : Brand_Type renames Options.Camera_Options.Brand;
       Test_Suite                 : constant AUnit.Test_Suites.Access_Test_Suite :=
                                     new AUnit.Test_Suites.Test_Suite;
       Test                       : constant Test_Access := new Test_Type (Brand);
@@ -1087,7 +1087,7 @@ package body Camera.Lib.Base.Command_Tests is
                                        renames Standard.Camera.Lib.Unit_Test.
                                           Options.all;
    begin
-      if not Options.If_Emulation then
+      if not Options.Camera_Options.If_Emulation then
          delay Length;
       end if;
    end Wait;

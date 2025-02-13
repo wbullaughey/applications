@@ -21,22 +21,22 @@ package body Camera.Lib.Base.Test is
 
    type Test_Type (
       Brand             : Brand_Type) is new
-                           Camera.Lib.Unit_Test.Camera_Test_Type with record
+                           Camera.Lib.Unit_Test.Camera_Test_Type (Brand) with null record;
 
-      Camera            : Base.Base_Camera_Class_Access := Null;
-      case Brand is
-         when ALPTOP_Camera =>
-            ALPTOP      : aliased Standard.Camera.LIB.ALPTOP.ALPTOP_Type;
-
-         when No_Camera=>
-            Null;
-
-         when PTZ_Optics_Camera =>
-            PTZ_Optics  : aliased Standard.Camera.Commands.PTZ_Optics.
-                           PTZ_Optics_Type;
-
-      end case;
-   end record;
+--    Camera            : Base.Base_Camera_Class_Access := Null;
+--    case Brand is
+--       when ALPTOP_Camera =>
+--          ALPTOP      : aliased Standard.Camera.LIB.ALPTOP.ALPTOP_Type;
+--
+--       when No_Camera=>
+--          Null;
+--
+--       when PTZ_Optics_Camera =>
+--          PTZ_Optics  : aliased Standard.Camera.Commands.PTZ_Optics.
+--                         PTZ_Optics_Type;
+--
+--    end case;
+-- end record;
 
    type Test_Access is access Test_Type;
 
@@ -187,7 +187,7 @@ package body Camera.Lib.Base.Test is
       Log_In (Debug);
       Put_Line ("read write");
 
-      case Local_Test.Brand is
+      case Ada_Lib.Options.Camera_Options.Brand is
 
          when ALPTOP_Camera =>
             Ports := ALPTOP_Ports'access;
@@ -349,12 +349,12 @@ package body Camera.Lib.Base.Test is
       Test_Suite                 : constant AUnit.Test_Suites.Access_Test_Suite :=
                                     new AUnit.Test_Suites.Test_Suite;
       Test                       : constant Test_Access := new Test_Type (
-                                    Local_Test.Brand);
+                                    Options.Camera_Options.Brand);
 
    begin
-      Log_In (Debug, "brand " & Local_Test.Brand'img);
+      Log_In (Debug, "brand " & Options.Camera_Options.Brand'img);
       Test_Suite.Add_Test (Test);
-      case Local_Test.Brand is
+      case Options.Camera_Options.Brand is
 
          when ALPTOP_Camera =>
             Test.Camera := Test.ALPTOP'access;
@@ -393,7 +393,7 @@ package body Camera.Lib.Base.Test is
 
    begin
       Put_Line ("test open");
-      Local_Test.Camera.Open (Options.Camera_Address.all, 80);
+      Local_Test.Camera.Open (Options.Camera_Options.Camera_Address.all, 80);
 
    exception
       when Fault: others =>
@@ -407,7 +407,7 @@ package body Camera.Lib.Base.Test is
 -- ---------------------------------------------------------------
 --
 -- begin
---    return (case Global_Camera_Lib_Local_Test.Location is
+--    return (case Global_Camera_Lib_Options.Camera_Options.Location is
 --
 --       when Configuration.State.Local =>
 --          Global_Camera_Lib_Options.
@@ -438,7 +438,7 @@ package body Camera.Lib.Base.Test is
       for Unit in First_Unit .. Last_Unit loop
 --       IP_Address (4) := Unit;
          begin
-            Local_Test.Camera.Open (Options.Camera_Address.all, 80);     -- use default HTTP port
+            Local_Test.Camera.Open (Options.Camera_Options.Camera_Address.all, 80);     -- use default HTTP port
             Put_Line ("opened unit" & Unit'img);
 
          exception

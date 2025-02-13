@@ -131,7 +131,7 @@ package body Main.Unit_Test is
 
    begin
       Log_In (Debug or Trace_Set_Up);
-      State.Load (Test.Location, State_Path);
+      State.Load (Options.Camera_Options.Location, State_Path);
       -- need to load state 1st
       Test.Setup.Load (State, Setup_Path);
       Camera.Lib.Unit_Test.Camera_Window_Test_Type (Test).Set_Up;
@@ -147,7 +147,7 @@ package body Main.Unit_Test is
       Test_Suite                 : constant AUnit.Test_Suites.Access_Test_Suite :=
                                     new AUnit.Test_Suites.Test_Suite;
       Tests                      : constant Test_Access := new Test_Type (
-                                    Local_Test.Brand);
+                                    Options.Camera_Options.Brand);
 
    begin
       Log_In (Debug);
@@ -185,7 +185,7 @@ package body Main.Unit_Test is
       Options                 : Camera.Lib.Unit_Test.Unit_Test_Program_Options_Type'
                                  class renames Camera.Lib.
                                     Unit_Test.Unit_Test_Options_Constant_Class_Access (
-                                       Ada_Lib.Options.Program_Options).all;
+                                       Ada_Lib.Options.Ada_Lib.Options.Get_Ada_Lib_Read_Only_Options).all;
       Button_Press_Event      : Button_Push_Event_Type;
 --    Local_Test              : Test_Type'class renames Test_Type'class (Test);
    begin

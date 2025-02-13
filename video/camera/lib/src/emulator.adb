@@ -314,9 +314,9 @@ hex_io.dump_8 (command'address, command'size, 32);
       Request_Description  : aliased constant String := "emulator request";
       Server_Description   : aliased constant String := "emulator server";
       Server_Socket        : Ada_Lib.Socket_IO.Server.Server_Socket_Type (
-                              Description'access, Port);
+                              Server_Description'unchecked_access, Port);
       Request_Socket       : Ada_Lib.Socket_IO.Server.Accepted_Socket_Type (
-                              Request_Description'access);
+                              Request_Description'unchecked_access);
       Stop                 : Boolean := False;
 
    begin

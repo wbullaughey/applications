@@ -501,7 +501,7 @@ package body Main is
    exception
       when Fault: Standard.Camera.Lib.Base.Failed =>
          Put_Line (Ada.Exceptions.Exception_Message (Fault));
-         Ada_Lib.OS.Immediate_Halt (Ada_Lib.OS.Application_Exception);
+         Ada_Lib.OS.Immediate_Halt (Ada_Lib.OS.Application_Error);
 
       when Fault: others =>
          Trace_Exception (Fault, Here);
@@ -574,7 +574,7 @@ package body Main is
          Trace_Exception (Debug, Fault, Here);
          Put_Line ("Could not open camera. Error " &
             Ada.Exceptions.Exception_Message (Fault));
-         Ada_Lib.OS.Immediate_Halt (Ada_Lib.OS.Application_Exception);
+         Ada_Lib.OS.Immediate_Halt (Ada_Lib.OS.Application_Error);
 
    end Open_Camera;
 

@@ -420,7 +420,7 @@ not_implemented;
       Ada_Lib.Unit_Test.Test_Cases.Test_Case_Type (Test).Set_Up;
 
      if Load then
-        State.Load (Local_Test.Location, Camera_State_Path);
+        State.Load (Options.Camera_Options.Location, Camera_State_Path);
         Test.Camera_Address := State.Video_Address;
         Test.Port_Number := State.Video_Port;
 
@@ -465,7 +465,7 @@ not_implemented;
          Ada_Lib.GNOGA.Connection_Data_Class_Access (Connection_Data));
       Connection_Data.Initialize;
       State.Load (
-         Local_Test.Location, State_Test_Path); -- need to load state 1st
+         Options.Camera_Options.Location, State_Test_Path); -- need to load state 1st
       Test.Setup.Load (State, Setup_Test_Path);
       Ada_Lib.GNOGA.Unit_Test.GNOGA_Tests_Type(Test).Set_Up;
 

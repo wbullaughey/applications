@@ -1,8 +1,9 @@
-with Ada.Exceptions;
+--with Ada.Exceptions;
 with Ada.Text_IO;use Ada.Text_IO;
 with Ada_Lib.Help;
 --with Ada_Lib.Options;
 with ADA_LIB.OS;
+with Ada_Lib.Options.Actual;
 with Ada_Lib.Options.Runstring;
 with Ada_Lib.Socket_IO;
 with Ada_Lib.Strings;
@@ -30,11 +31,11 @@ package body Camera.Lib is
    Options_With_Parameters       : aliased constant
                                     Ada_Lib.Options.Options_Type :=
                                        Ada_Lib.Options.Create_Options (
-                                          "cp" & Trace_Option);
+                                          "cp" & Trace_Option, Unmodified);
    Options_Without_Parameters    : aliased constant
                                     Ada_Lib.Options.Options_Type :=
                                        Ada_Lib.Options.Create_Options (
-                                          "Elr");
+                                          "Elr", Unmodified);
    Recursed                      : Boolean := False;
 
    -------------------------------------------------------------------------
@@ -108,11 +109,11 @@ package body Camera.Lib is
       exception
          when Fault: Ada_Lib.Options.Failed =>
             Trace_Exception (Debug_Options or Trace_Options, Fault);
-            Ada_Lib.Options.Program_Options.Help (Ada.Exceptions.Exception_Message (Fault), True);
+            Ada_Lib.Options.Actual.Display_Help (Ada.Exceptions.Exception_Message (Fault), True);
 
          when Fault: others =>
             Trace_Exception (Debug_Options or Trace_Options, Fault);
-            Ada_Lib.Options.Program_Options.Help (Ada.Exceptions.Exception_Message (Fault), True);
+            Ada_Lib.Options.Actual.Display_Help (Ada.Exceptions.Exception_Message (Fault), True);
       end;
 
       Log_Out (Debug_Options or Trace_Options);
@@ -189,20 +190,20 @@ package body Camera.Lib is
                Options.Directory.Construct (Iterator.Get_Parameter);
 
             when 'l' =>
-               if Local_Test.Location = Configuration.State.Remote then
+               if Options.Camera_Options.Location = Configuration.State.Remote then
                   Options.Bad_Option ("Remote option (r) and Local remote (l) are incompatable");
                end if;
-               Local_Test.Location := Configuration.State.Local;
+               Options.Camera_Options.Location := Configuration.State.Local;
 
             when 'r' =>    -- remote camera
                if Options.Simulate then
                   Options.Bad_Option ("Remote option (r) and Simulate (E) are incompatable");
                end if;
-               Local_Test.Location := Configuration.State.Remote;
+               Options.Camera_Options.Location := Configuration.State.Remote;
 --log_here ("remote " & Image (Options.Remote'address));
 
             when 'E' =>    -- simulate Standard.Camera
-               if Local_Test.Location = Configuration.State.Remote then
+               if Options.Camera_Options.Location = Configuration.State.Remote then
                   Options.Bad_Option ("Remote option (r) and Simulate (E) are incompatable");
                end if;
                Options.Simulate := True;

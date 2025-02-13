@@ -88,7 +88,7 @@ package Camera.Lib.Unit_Test is
    type Unit_Test_Program_Options_Type is new
       Ada_Lib.Options.AUnit_Lib.Aunit_Program_Options_Type (False) with record
          -- camera unit tests only can be run one test per invokation
---    Camera_Options             : aliased Standard.Camera.Lib.Options_Type;
+      Camera_Options             : aliased Standard.Camera.Lib.Options_Type;
 --    GNOGA_Options              : Ada_Lib.Options.GNOGA.GNOGA_Options_Type;
 --    GNOGA_Unit_Test_Options    : Ada_Lib.GNOGA.Unit_Test.
 --                                  GNOGA_Unit_Test_Options_Type;F

@@ -119,7 +119,7 @@ package body Widgets.Control.Unit_Test is
                                     Connection_Data.State;
    begin
       Log_In (Debug or Trace_Set_Up);
-      State.Load (Local_Test.Location, State_Test_Path);
+      State.Load (Options.Camera_Options.Location, State_Test_Path);
       -- need to load state 1st
       Test.Setup.Load (State, Setup_Test_Path);
       Camera.Lib.Unit_Test.Camera_Window_Test_Type (Test).Set_Up;
@@ -148,7 +148,7 @@ package body Widgets.Control.Unit_Test is
       Test_Suite                 : constant AUnit.Test_Suites.Access_Test_Suite :=
                                     new AUnit.Test_Suites.Test_Suite;
       Tests                      : constant Test_Access := new Test_Type (
-                                    Brand    => Local_Test.Brand,
+                                    Brand    => Ada_Lib.Options.Camera_Options.Band,
                                     Initialize_GNOGA  => True);
 
    begin
@@ -180,7 +180,7 @@ package body Widgets.Control.Unit_Test is
    begin
       Log_In (Debug);
 --    if not Ada_Lib.Options.Actual.Program_Options_Type (
---          Ada_Lib.Options.Program_Options.all).Test_Driver then
+--          Ada_Lib.Options.Ada_Lib.Options..all).Test_Driver then
          Log_Here (Debug);
          declare
 --          Local_Test           : Test_Type'class renames

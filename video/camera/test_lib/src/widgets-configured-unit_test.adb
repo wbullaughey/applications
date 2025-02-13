@@ -711,7 +711,7 @@ package body Widgets.Configured.Unit_Test is
 ----    Ada_Lib.GNOGA.Set_Connection_Data ( -- moved to parent
 ----       Ada_Lib.GNOGA.Connection_Data_Class_Access (Connection_Data));
 ----    State.Load (
-----       Local_Test.Location, State_Test_Path); -- need to load state 1st
+----       Options.Camera_Options.Location, State_Test_Path); -- need to load state 1st
 ----    Test.Setup.Load (State, Setup_Test_Path);
 --      Camera.Lib.Unit_Test.Camera_Window_Test_Type (Test).Set_Up;
 ----    Button_Push_Event.Reset_Event;

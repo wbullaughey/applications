@@ -50,11 +50,6 @@ gnoga = "*"
 [[pins]]
 gnoga  = { path = "../../../../vendor/github.com/gnoga" }
 
-[[depends-on]]
-applications = "*"
-
-[[pins]]
-applications  = { path = "../../.." }
 
 
 

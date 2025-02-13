@@ -45,7 +45,7 @@ begin
       end if;
       Log_Out (Debug);
    else
-      Ada_Lib.Options.Program_Options.Help ("Initialize Options failed", False);
+      Ada_Lib.Options.Ada_Lib.Options..Help ("Initialize Options failed", False);
    end if;
 
    Ada_Lib.OS.Immediate_Halt (Ada_Lib.OS.No_Error);
