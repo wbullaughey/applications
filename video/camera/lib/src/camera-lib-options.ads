@@ -11,7 +11,7 @@ package Camera.Lib.Options is
 
    Failed                        : Exception;
 
-   use type Ada_Lib.Options.Interface_Options_Constant_Class_Access;
+-- use type Ada_Lib.Options.Interface_Options_Constant_Class_Access;
 
    subtype Runtime_Iterator_Type is Ada_Lib.Command_Line_Iterator.
                                     Abstract_Package.Abstract_Iterator_Type;

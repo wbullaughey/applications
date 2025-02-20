@@ -1,10 +1,10 @@
 with Ada_Lib.Options.AUnit_Lib;
 with Ada_Lib.GNOGA.Unit_Test; -- .Base;
-with Ada_Lib.Options.GNOGA;
+--with Ada_Lib.Options.GNOGA;
 with Ada_Lib.Options.Unit_Test;
 with Ada_Lib.Trace;
 with Ada_Lib.Unit_Test.Test_Cases;
-with AUnit.Ada_Lib.Options;
+--with AUnit.Ada_Lib.Options;
 with AUnit.Options;
 with AUnit.Simple_Test_Cases;
 with AUnit.Test_Results;

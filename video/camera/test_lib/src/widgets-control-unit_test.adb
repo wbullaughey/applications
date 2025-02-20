@@ -148,7 +148,7 @@ package body Widgets.Control.Unit_Test is
       Test_Suite                 : constant AUnit.Test_Suites.Access_Test_Suite :=
                                     new AUnit.Test_Suites.Test_Suite;
       Tests                      : constant Test_Access := new Test_Type (
-                                    Brand    => Options.Camera_Options.Band,
+                                    Brand    => Options.Camera_Options.Brand,
                                     Initialize_GNOGA  => True);
 
    begin

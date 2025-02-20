@@ -138,7 +138,7 @@ package body Base is
       Connection_Data.Message_Box_Dialog := Message_Box_Dialog'unchecked_access;
       Connection_Data.Message_Box_Result :=
          Gnoga.Gui.Plugin.Message_Boxes.Message_Box (
-            Message_Box_Dialog, Connection_Data.Main_Window.all,
+            Message_Box_Dialog, -- Connection_Data.Main_Window.all,
             Title, Text, Style);
       Log_Out (Debug, "result " & Connection_Data.Message_Box_Result'img);
       Connection_Data.Message_Box_Dialog := Null;

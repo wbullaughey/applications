@@ -153,8 +153,8 @@ log_here;
       Connection_Data            : Base.Connection_Data_Type renames
                                     Base.Connection_Data_Type (
                                        Ada_Lib.GNOGA.Get_Connection_Data.all);
-      Local_Test                 : Configuration_Tests_Type renames
-                                    Configuration_Tests_Type (Test);
+--    Local_Test                 : Configuration_Tests_Type renames
+--                                  Configuration_Tests_Type (Test);
       Options                    : Standard.Camera.Lib.Unit_Test.
                                     Unit_Test_Program_Options_Type'class
                                        renames Standard.Camera.Lib.Unit_Test.
@@ -206,28 +206,28 @@ log_here;
 --    type Expected_Preset_Type  is array (Preset_ID_Type range 1 ..
 --                                  Expected_Last_Presets) of Preset_Value_Type;
 
-      Expected_Images            : constant Expect_Image_Type := Expect_Image_Type'(
-                                       1 => (
+      Expected_Images            : constant Expect_Image_Type := Expect_Image_Type'[
+                                       1 => [
                                           1 => new String'("preset0.jpeg"),
                                           2 => new String'("preset5.jpeg"),
-                                          others => Null),
-                                       2 => (
+                                          others => Null],
+                                       2 => [
                                           2 => new String'("preset2.jpeg"),
-                                          others => Null),
-                                       3 => (
+                                          others => Null],
+                                       3 => [
                                           2 => new String'("preset4.jpeg"),
                                           3 => new String'("preset1.jpeg"),
-                                          others => Null),
-                                       4 => (
+                                          others => Null],
+                                       4 => [
                                           2 => new String'("preset3.jpeg"),
-                                          others => Null));
+                                          others => Null]];
 
 --    Expected_Prsets            : constant Expected_Preset_Type :=
 --                                  Expected_Preset_Type'(
---                                     1  => ( 1, 1 ),
---                                     3  => ( 1, 2 ),
---                                     5  => ( 1, 3 ),
---                                     others => Null_Preset );
+--                                     1  => [ 1, 1 ],
+--                                     3  => [ 1, 2 ],
+--                                     5  => [ 1, 3 ],
+--                                     others => Null_Preset ];
       Local_Test                 : Configuration_Tests_Type renames
                                     Configuration_Tests_Type (Test);
       Options                    : Standard.Camera.Lib.Unit_Test.

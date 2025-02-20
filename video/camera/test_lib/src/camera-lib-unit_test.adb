@@ -113,7 +113,7 @@ package body Camera.Lib.Unit_Test is
 --       Options.GNOGA_Unit_Test_Options.Initialize and then
          Options.Unit_Test.Initialize and then
 --       Ada_Lib.Options.AUnit.Ada_Lib_Tests.Initialize and then
-         Options_Type (Options).Initialize,
+         Ada_Lib.Options.AUnit_Lib.Aunit_Program_Options_Type (Options).Initialize,
          Debug_Options or Trace_Options);
    end Initialize;
 
@@ -188,7 +188,7 @@ package body Camera.Lib.Unit_Test is
          return Log_Out (
 --          Options.AUnit_Options.Process_Option (Iterator, Option) or else
             Options.Unit_Test.Process_Option (Iterator, Option) or else
-            Options_Type (Options).Process_Option (Iterator, Option),
+            Ada_Lib.Options.AUnit_Lib.Aunit_Program_Options_Type (Options).Process_Option (Iterator, Option),
             Debug_Options or Trace_Options,
             "other " & Option.Image);
       end if;
@@ -235,7 +235,7 @@ package body Camera.Lib.Unit_Test is
 
       end case;
 
-     Options_Type (Options).Program_Help (Help_Mode);
+     Ada_Lib.Options.AUnit_Lib.Aunit_Program_Options_Type (Options).Program_Help (Help_Mode);
      Log_Out_Checked (Help_Recursed, Debug_Options or Trace_Options);
 
    end Program_Help;
