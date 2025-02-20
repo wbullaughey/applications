@@ -185,7 +185,7 @@ package body Main.Unit_Test is
       Options                 : Camera.Lib.Unit_Test.Unit_Test_Program_Options_Type'
                                  class renames Camera.Lib.
                                     Unit_Test.Unit_Test_Options_Constant_Class_Access (
-                                       Ada_Lib.Options.Ada_Lib.Options.Get_Ada_Lib_Read_Only_Options).all;
+                                       Ada_Lib.Options.Get_Ada_Lib_Read_Only_Options).all;
       Button_Press_Event      : Button_Push_Event_Type;
 --    Local_Test              : Test_Type'class renames Test_Type'class (Test);
    begin

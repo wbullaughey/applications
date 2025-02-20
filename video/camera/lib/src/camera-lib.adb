@@ -3,11 +3,12 @@ with Ada.Text_IO;use Ada.Text_IO;
 with Ada_Lib.Help;
 --with Ada_Lib.Options;
 with ADA_LIB.OS;
-with Ada_Lib.Options.Actual;
+--with Ada_Lib.Options.Actual;
 with Ada_Lib.Options.Runstring;
 with Ada_Lib.Socket_IO;
 with Ada_Lib.Strings;
 with ADA_LIB.Trace; use Ada_Lib.Trace;
+with Base;
 with Camera.Commands;
 --with Configuration.Camera.State;
 with Configuration.Camera;
@@ -31,11 +32,13 @@ package body Camera.Lib is
    Options_With_Parameters       : aliased constant
                                     Ada_Lib.Options.Options_Type :=
                                        Ada_Lib.Options.Create_Options (
-                                          "cp" & Trace_Option, Unmodified);
+                                          "cp" & Trace_Option,
+                                       Ada_Lib.Options.Unmodified);
    Options_Without_Parameters    : aliased constant
                                     Ada_Lib.Options.Options_Type :=
                                        Ada_Lib.Options.Create_Options (
-                                          "Elr", Unmodified);
+                                          "Elr",
+                                          Ada_Lib.Options.Unmodified);
    Recursed                      : Boolean := False;
 
    -------------------------------------------------------------------------
@@ -109,11 +112,14 @@ package body Camera.Lib is
       exception
          when Fault: Ada_Lib.Options.Failed =>
             Trace_Exception (Debug_Options or Trace_Options, Fault);
-            Ada_Lib.Options.Actual.Display_Help (Ada.Exceptions.Exception_Message (Fault), True);
+--          Ada_Lib.Options.Actual.Display_Help (
+--             Ada.Exceptions.Exception_Message (Fault), True);
+            raise;
 
          when Fault: others =>
             Trace_Exception (Debug_Options or Trace_Options, Fault);
-            Ada_Lib.Options.Actual.Display_Help (Ada.Exceptions.Exception_Message (Fault), True);
+--          Ada_Lib.Options.Actual.Display_Help (Ada.Exceptions.Exception_Message (Fault), True);
+            raise;
       end;
 
       Log_Out (Debug_Options or Trace_Options);
@@ -261,6 +267,7 @@ package body Camera.Lib is
 
          Put_Line (Component & " trace options (-" & Trace_Option & ")");
          Put_Line ("      a               all");
+         Put_Line ("      b               base.debug");
          Put_Line ("      c               camera configuration");
          Put_Line ("      C               camera commands");
          Put_Line ("      g               Widgets.Generic_Table");
@@ -285,9 +292,9 @@ package body Camera.Lib is
    ----------------------------------------------------------------------------
    overriding
    procedure Trace_Parse (
-      Options                    : in out Options_Type;
-      Iterator                   : in out Ada_Lib.Command_Line_Iterator.
-                                             Abstract_Package.Abstract_Iterator_Type'class) is
+      Options        : in out Options_Type;
+      Iterator       : in out Ada_Lib.Options.
+                                 Command_Line_Iterator_Interface'class) is
    ----------------------------------------------------------------------------
 
       type Suboption_Type        is (Plain, Widget);
@@ -307,6 +314,7 @@ package body Camera.Lib is
                case Trace is
 
                   when 'a' =>
+                     Base.Debug := True;
                      Camera.Commands.Debug := True;
                      Configuration.Camera.Debug := True;
                      Configuration.State.Debug := True;
@@ -319,6 +327,9 @@ package body Camera.Lib is
                      Widgets.Control.Debug := True;
                      Widgets.Configured.Debug := True;
                      Widgets.Generic_Table.Debug := True;
+
+                  when 'b' =>
+                     Base.Debug := True;
 
                   when 'c' =>
                      Configuration.Camera.Debug := True;

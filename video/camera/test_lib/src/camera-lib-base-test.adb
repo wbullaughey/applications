@@ -6,13 +6,13 @@ with Ada.Text_IO;use Ada.Text_IO;
 with AUnit.Assertions; use AUnit.Assertions;
 with AUnit.Test_Cases;
 --with AUnit.Test_Suites;
-with Ada_Lib.Unit_Test;
+--with Ada_Lib.Unit_Test;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
-with Ada_Lib.Unit_Test.Test_Cases;
+--with Ada_Lib.Unit_Test.Test_Cases;
 with GNAT.Sockets;
 with Hex_IO;
-with Camera.Commands.PTZ_Optics;
-with Camera.LIB.ALPTOP;
+--with Camera.Commands.PTZ_Optics;
+--with Camera.LIB.ALPTOP;
 with Camera.Lib.Unit_Test;
 
 package body Camera.Lib.Base.Test is
@@ -129,10 +129,10 @@ package body Camera.Lib.Base.Test is
       Test                       : in out AUnit.Test_Cases.Test_Case'class) is
    ---------------------------------------------------------------
 
-      Options                    : Standard.Camera.Lib.Unit_Test.
-                                    Unit_Test_Program_Options_Type'class
-                                       renames Standard.Camera.Lib.Unit_Test.
-                                          Options.all;
+--    Options                    : Standard.Camera.Lib.Unit_Test.
+--                                  Unit_Test_Program_Options_Type'class
+--                                     renames Standard.Camera.Lib.Unit_Test.
+--                                        Options.all;
       First_Port                 : constant GNAT.Sockets.Port_Type := 1;
       Last_Port                  : constant GNAT.Sockets.Port_Type := 9999;
       Local_Test                 : Test_Type renames Test_Type (Test);
@@ -187,7 +187,7 @@ package body Camera.Lib.Base.Test is
       Log_In (Debug);
       Put_Line ("read write");
 
-      case Ada_Lib.Options.Camera_Options.Brand is
+      case Options.Camera_Options.Brand is
 
          when ALPTOP_Camera =>
             Ports := ALPTOP_Ports'access;
@@ -407,7 +407,7 @@ package body Camera.Lib.Base.Test is
 -- ---------------------------------------------------------------
 --
 -- begin
---    return (case Global_Camera_Lib_Options.Camera_Options.Location is
+--    return (case Global_Camera_Lib_Options.Location is
 --
 --       when Configuration.State.Local =>
 --          Global_Camera_Lib_Options.

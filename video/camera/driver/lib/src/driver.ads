@@ -73,10 +73,9 @@ package Driver is
 
    overriding
    procedure Trace_Parse (
-      Options                    : in out Program_Options_Type;
-      Iterator                   : in out Ada_Lib.Command_Line_Iterator.
-                                       Abstract_Package.
-                                          Abstract_Iterator_Type'class);
+      Options        : in out Program_Options_Type;
+      Iterator       : in out Ada_Lib.Options.
+                                 Command_Line_Iterator_Interface'class);
 
    function Get_Modifiable_Options (
       From                       : in  String := Ada_Lib.Trace.Here

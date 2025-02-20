@@ -30,7 +30,8 @@ package body Camera.Lib.Unit_Test is
                                     Standard.Ada_Lib.Options.
                                        Options_Type :=
                                           Ada_Lib.Options.Create_Options (
-                                             Trace_Option & "R");
+                                             Trace_Option & "R",
+                                             Ada_Lib.Options.Unmodified);
    Options_Without_Parameters       : aliased constant
                                     Standard.Ada_Lib.Options.
                                        Options_Type :=
@@ -108,7 +109,7 @@ package body Camera.Lib.Unit_Test is
          Options_Without_Parameters);
       return Log_Out_Checked (Initialize_Recursed,
 --       Options.Camera_Options.Initialize and then
-         Options.AUnit_Options.Initialize and then
+--       Options.AUnit_Options.Initialize and then
 --       Options.GNOGA_Unit_Test_Options.Initialize and then
          Options.Unit_Test.Initialize and then
 --       Ada_Lib.Options.AUnit.Ada_Lib_Tests.Initialize and then
@@ -185,7 +186,7 @@ package body Camera.Lib.Unit_Test is
             " option" & Option.Image & " handled");
       else
          return Log_Out (
-            Options.AUnit_Options.Process_Option (Iterator, Option) or else
+--          Options.AUnit_Options.Process_Option (Iterator, Option) or else
             Options.Unit_Test.Process_Option (Iterator, Option) or else
             Options_Type (Options).Process_Option (Iterator, Option),
             Debug_Options or Trace_Options,
@@ -204,7 +205,7 @@ package body Camera.Lib.Unit_Test is
    begin
       Log_In_Checked (Help_Recursed, Debug_Options or Trace_Options,
          "help mode " & Help_Mode'img);
-      Options.AUnit_Options.Program_Help (Help_Mode);
+--    Options.AUnit_Options.Program_Help (Help_Mode);
       Options.Unit_Test.Program_Help (Help_Mode);
 
       case Help_Mode is
@@ -540,8 +541,9 @@ not_implemented;
    ----------------------------------------------------------------------------
    overriding
    procedure Trace_Parse (
-      Options                    : in out Unit_Test_Program_Options_Type;
-      Iterator                   : in out Ada_Lib.Command_Line_Iterator.Abstract_Package.Abstract_Iterator_Type'class) is
+      Options        : in out Unit_Test_Program_Options_Type;
+      Iterator       : in out Ada_Lib.Options.
+                                 Command_Line_Iterator_Interface'class) is
    ----------------------------------------------------------------------------
 
       Parameter                  : constant String := Iterator.Get_Parameter;

@@ -96,4 +96,7 @@ package Base is
    procedure Wait_For_Update_Event (
       Connection_Data            : in out Connection_Data_Type);
 
+   Debug                         : Boolean := False;
+
+
 end Base;
