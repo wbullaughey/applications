@@ -12,6 +12,7 @@ package Camera.Lib.Options is
    Failed                        : Exception;
 
 -- use type Ada_Lib.Options.Interface_Options_Constant_Class_Access;
+   use type Ada_Lib.Options.Actual.Program_Options_Class_Access;
 
    subtype Runtime_Iterator_Type is Ada_Lib.Command_Line_Iterator.
                                     Abstract_Package.Abstract_Iterator_Type;
@@ -42,8 +43,12 @@ package Camera.Lib.Options is
    return String
    with Pre => Have_Options;
 
-   function Get_Modifyable_Options
+   function Get_Camera_Modifyable_Options
    return Program_Options_Access
+   with Pre => Have_Options;
+
+   function Get_Camera_Read_Only_Options
+   return Program_Options_Constant_Class_Access
    with Pre => Have_Options;
 
    function Have_Options
@@ -70,7 +75,8 @@ package Camera.Lib.Options is
    procedure Set_Protected_Options (
       Options                    : in not null Ada_Lib.Options.Actual.
                                     Program_Options_Class_Access
-   ) with Pre => not Have_Options;
+   ) with Pre => Options /= Null and
+                 not Have_Options;
 
    Debug                         : aliased Boolean := False;  -- not set as option
 

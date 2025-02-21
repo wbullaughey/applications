@@ -179,7 +179,7 @@ package body Camera.Lib is
    function Process_Option (
       Options                    : in out Options_Type;
       Iterator                   : in out Ada_Lib.Options.
-                                    Command_Line_Iterator_Interface'class;
+                                             Command_Line_Iterator_Interface'class;
       Option                     : in     Ada_Lib.Options.
                                              Option_Type'class
    ) return Boolean is
@@ -196,20 +196,24 @@ package body Camera.Lib is
                Options.Directory.Construct (Iterator.Get_Parameter);
 
             when 'l' =>
-               if Options.Camera_Options.Location = Configuration.State.Remote then
+               if Options_Type (Options).Location =
+                     Configuration.State.Remote then
                   Options.Bad_Option ("Remote option (r) and Local remote (l) are incompatable");
                end if;
-               Options.Camera_Options.Location := Configuration.State.Local;
+               Options_Type (Options).Location :=
+                  Configuration.State.Local;
 
             when 'r' =>    -- remote camera
                if Options.Simulate then
                   Options.Bad_Option ("Remote option (r) and Simulate (E) are incompatable");
                end if;
-               Options.Camera_Options.Location := Configuration.State.Remote;
+               Options_Type (Options).Location :=
+                  Configuration.State.Remote;
 --log_here ("remote " & Image (Options.Remote'address));
 
             when 'E' =>    -- simulate Standard.Camera
-               if Options.Camera_Options.Location = Configuration.State.Remote then
+               if Options_Type (Options).Location =
+                     Configuration.State.Remote then
                   Options.Bad_Option ("Remote option (r) and Simulate (E) are incompatable");
                end if;
                Options.Simulate := True;

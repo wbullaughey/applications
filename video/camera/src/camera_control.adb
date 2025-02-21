@@ -26,6 +26,7 @@ procedure Camera_Control is
 
 begin
    Put_Line (Command_Name);
+log_here;
    Camera.Lib.Options.Set_Protected_Options (
       Camera.Lib.Options.Options_Type'class (Options)'access);
    if Options.Initialize then

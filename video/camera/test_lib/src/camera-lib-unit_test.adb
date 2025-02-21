@@ -38,7 +38,7 @@ package body Camera.Lib.Unit_Test is
                                           Ada_Lib.Options.Null_Options;
    Help_Recursed                 : Boolean := False;
    Initialize_Recursed           : Boolean := False;
-   Protected_Options             : aliased Unit_Test_Program_Options_Type;
+-- Protected_Options             : aliased Unit_Test_Program_Options_Type;
 
 -- use type Ada_Lib.Options.Interface_Options_Constant_Class_Access;
 
@@ -57,35 +57,36 @@ package body Camera.Lib.Unit_Test is
       Log_Here (Debug);
    end Add_Test;
 
-   ---------------------------------------------------------------
-   function Initialize
-   return Boolean is
-   ---------------------------------------------------------------
-
-   begin
-      Log_In (Debug_Options or Trace_Options);
-      Ada_Lib.Options.Set_Ada_Lib_Options (Protected_Options'access);
-
---    Ada_Lib.Options.Unit_Test.Unit_Test_Options :=
---       Ada_Lib.Options.Unit_Test.Unit_Test_Options_Constant_Class_Access'(
---          Protected_Options'unchecked_access);
-
-      return Log_Out (
-         Protected_Options.Initialize and then
-         Protected_Options.Process (
-            Include_Options      => True,
-            Include_Non_Options  => False,
-            Modifiers            => Ada_Lib.Help.Modifiers),
-         Debug_Options or Trace_Options,
-         "Initialized " & Protected_Options.Initialized'img);
-
-   exception
-
-      when Fault: others =>
-         Trace_Exception (True, Fault);
-         raise;
-
-   end Initialize;
+--   ---------------------------------------------------------------
+--   function Initialize
+--   return Boolean is
+--   ---------------------------------------------------------------
+--
+--   begin
+--      Log_In (Debug_Options or Trace_Options);
+--log_here;
+----    Ada_Lib.Options.Set_Ada_Lib_Options (Protected_Options'access);
+--
+----    Ada_Lib.Options.Unit_Test.Unit_Test_Options :=
+----       Ada_Lib.Options.Unit_Test.Unit_Test_Options_Constant_Class_Access'(
+----          Protected_Options'unchecked_access);
+--
+--      return Log_Out (
+--         Protected_Options.Initialize and then
+--         Protected_Options.Process (
+--            Include_Options      => True,
+--            Include_Non_Options  => False,
+--            Modifiers            => Ada_Lib.Help.Modifiers),
+--         Debug_Options or Trace_Options,
+--         "Initialized " & Protected_Options.Initialized'img);
+--
+--   exception
+--
+--      when Fault: others =>
+--         Trace_Exception (True, Fault);
+--         raise;
+--
+--   end Initialize;
 
    -------------------------------------------------------------------------
    overriding
@@ -99,7 +100,8 @@ package body Camera.Lib.Unit_Test is
       Log_In_Checked (Initialize_Recursed, Debug_Options or Trace_Options,
          "from " & From);
       Unit_Test_Options := Options'unchecked_access;
-      Ada_Lib.Options.Set_Ada_Lib_Options (Protected_Options'access);
+log_here (ada_lib.options.debug'img);
+--    Ada_Lib.Options.Set_Ada_Lib_Options (Protected_Options'access);
 
       Ada_Lib.Options.Runstring.Options.Register (
          Ada_Lib.Options.Runstring.With_Parameters,

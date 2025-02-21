@@ -1,7 +1,6 @@
 with ADA_LIB.Command_Line_Iterator;
 --with Ada_Lib.Configuration;
 with Ada_Lib.Options;
-with ADA_LIB.Options;
 with ADA_LIB.Strings.Unlimited;
 --with GNAT.Source_Info;
 with Hex_IO;
@@ -58,7 +57,7 @@ package Camera.Lib is
    function Process_Option (  -- process one option
      Options                     : in out Options_Type;
       Iterator                   : in out Ada_Lib.Options.
-                                    Command_Line_Iterator_Interface'class;
+                                             Command_Line_Iterator_Interface'class;
       Option                     : in     Ada_Lib.Options.
                                              Option_Type'class
    ) return Boolean

@@ -104,8 +104,8 @@ package Camera.Lib.Unit_Test is
    subtype Runtime_Iterator_Type is Ada_Lib.Command_Line_Iterator.
                                     Abstract_Package.Abstract_Iterator_Type;
 
-   function Initialize
-   return Boolean;
+-- function Initialize
+-- return Boolean;
 
    overriding
    function Initialize (

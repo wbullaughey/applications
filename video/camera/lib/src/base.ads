@@ -28,7 +28,7 @@ package Base is
       Camera_Tilt                : Standard.Camera.Commands.Absolute_Type;
       Camera_Tilt_Speed          : Standard.Camera.Commands.Property_Type;
       Camera_Zoom                : Standard.Camera.Commands.Property_Type;
-      Main_Data                  : access Main.Main_Data_Type;
+      Main_Data                  : Main.Main_Data_Access;
       Message_Box_Dialog         : Gnoga.Gui.Plugin.jQueryUI.Widget.
                                     Dialog_Access := Null;
       Message_Box_Result         : Gnoga.Gui.Plugin.Message_Boxes.

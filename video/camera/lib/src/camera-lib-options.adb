@@ -40,8 +40,8 @@ package body Camera.Lib.Options is
                                     Ada_Lib.Options.Options_Type :=
                                        Ada_Lib.Options.Create_Options (
                                           "amr", Ada_Lib.Options.Unmodified);
-   Protected_Options             : Ada_Lib.Options.Actual.
-                                    Program_Options_Class_Access := Null;
+-- Protected_Options             : Ada_Lib.Options.Actual.
+--                                  Program_Options_Class_Access := Null;
 
    -------------------------------------------------------------------------
    function Current_Directory  -- set by runstring option 'c' else null
@@ -54,13 +54,24 @@ package body Camera.Lib.Options is
    end Current_Directory;
 
    -------------------------------------------------------------------------
-   function Get_Modifyable_Options
+   function Get_Camera_Modifyable_Options
    return Program_Options_Access is
    -------------------------------------------------------------------------
 
    begin
-      return Program_Options_Access (Protected_Options);
-   end Get_Modifyable_Options;
+      return Program_Options_Access (
+         Ada_Lib.Options.Get_Ada_Lib_Modifiable_Options);
+   end Get_Camera_Modifyable_Options;
+
+   -------------------------------------------------------------------------
+   function Get_Camera_Read_Only_Options
+   return Program_Options_Constant_Class_Access is
+   -------------------------------------------------------------------------
+
+   begin
+      return Program_Options_Constant_Class_Access (
+         Ada_Lib.Options.Get_Ada_Lib_Read_Only_Options);
+   end Get_Camera_Read_Only_Options;
 
    -------------------------------------------------------------------------
    function Have_Options
@@ -216,20 +227,17 @@ package body Camera.Lib.Options is
 
    begin
       Protected_Options := Options;
+      Ada_Lib.Options.Set_Ada_Lib_Options (
+         Ada_Lib.Options.Interface_Options_Class_Access (Options));
    end Set_Protected_Options;
 
 begin
--- Debug := Debug_Options.Debug_All;
-
 --Protected_Options.Debug := True;
---Debug := True;
+Debug := True;
 --Trace_Options := True;
 --Elaborate := True;
 
-   Ada_Lib.Options.Set_Ada_Lib_Options (
-      Ada_Lib.Options.Interface_Options_Class_Access (Protected_Options));
-   Log_Here (Elaborate or Debug_Options or Trace_Options, "options " &
-      Image (Protected_Options'address));
+   Log_Here (Elaborate or Debug_Options or Trace_Options);
 
 exception
    when Fault: others =>
