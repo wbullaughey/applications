@@ -104,8 +104,11 @@ package Camera.Lib.Unit_Test is
    subtype Runtime_Iterator_Type is Ada_Lib.Command_Line_Iterator.
                                     Abstract_Package.Abstract_Iterator_Type;
 
--- function Initialize
--- return Boolean;
+   function Get_Camera_Unit_Test_Constant_Options (
+      From                    : in     String := Standard.GNAT.Source_Info.
+                                          Source_Location
+   ) return Unit_Test_Options_Constant_Class_Access;
+
 
    overriding
    function Initialize (
@@ -113,16 +116,6 @@ package Camera.Lib.Unit_Test is
      From                        : in     String := Ada_Lib.Trace.Here
    ) return Boolean
    with pre => Options.Verify_Preinitialize;
-
--- function Options (
---    From                    : in     String := Standard.GNAT.Source_Info.
---                                        Source_Location
--- ) return Options_Constant_Class_Access;
-
-   function Options (
-      From                    : in     String := Standard.GNAT.Source_Info.
-                                          Source_Location
-   ) return Unit_Test_Options_Constant_Class_Access;
 
    overriding
    function Process_Option (  -- process one option

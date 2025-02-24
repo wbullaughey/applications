@@ -72,11 +72,11 @@ package Camera.Lib.Options is
    with pre => Options.Initialized;
 -- with Pre => not Ada_Lib.Options.Have_Options;
 
-   procedure Set_Protected_Options (
-      Options                    : in not null Ada_Lib.Options.Actual.
-                                    Program_Options_Class_Access
-   ) with Pre => Options /= Null and
-                 not Have_Options;
+-- procedure Set_Protected_Options (
+--    Options                    : in not null Ada_Lib.Options.Actual.
+--                                  Program_Options_Class_Access
+-- ) with Pre => Options /= Null and then
+--               not Have_Options;
 
    Debug                         : aliased Boolean := False;  -- not set as option
 

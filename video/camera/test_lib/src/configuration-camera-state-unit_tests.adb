@@ -117,7 +117,7 @@ log_here;
       Options                    : Standard.Camera.Lib.Unit_Test.
                                     Unit_Test_Program_Options_Type'class
                                        renames Standard.Camera.Lib.Unit_Test.
-                                          Options.all;
+                                          Get_Camera_Unit_Test_Constant_Options.all;
       Test_Suite                 : constant AUnit.Test_Suites.Access_Test_Suite
                                     := new AUnit.Test_Suites.Test_Suite;
       Tests                      : constant Configuration_Tests_Access :=
@@ -158,7 +158,7 @@ log_here;
       Options                    : Standard.Camera.Lib.Unit_Test.
                                     Unit_Test_Program_Options_Type'class
                                        renames Standard.Camera.Lib.Unit_Test.
-                                          Options.all;
+                                          Get_Camera_Unit_Test_Constant_Options.all;
       State                      : Configuration.Camera.State.State_Type renames
                                     Connection_Data.State;
    begin
@@ -178,7 +178,6 @@ log_here;
    ---------------------------------------------------------------
    procedure Test_Values (
       Test                       : in out AUnit.Test_Cases.Test_Case'class) is
-   pragma Unreferenced (Test);
    ---------------------------------------------------------------
 
       Connection_Data            : Base.Connection_Data_Type renames
@@ -233,7 +232,7 @@ log_here;
       Options                    : Standard.Camera.Lib.Unit_Test.
                                     Unit_Test_Program_Options_Type'class
                                        renames Standard.Camera.Lib.Unit_Test.
-                                          Options.all;
+                                          Get_Camera_Unit_Test_Constant_Options.all;
       State                      : Configuration.Camera.State.State_Type
                                     renames Connection_Data.State;
    begin

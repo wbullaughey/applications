@@ -28,7 +28,7 @@ with Command_Name;
 
 package body Camera.Lib.Options is
 
-   use type Ada_Lib.Options.Actual.Program_Options_Class_Access;
+   use type Ada_Lib.Options.Interface_Options_Constant_Class_Access;
 
 -- Configuration_Option          : constant Character := 'c';
 -- Template_Option               : constant Character := 't';
@@ -49,8 +49,7 @@ package body Camera.Lib.Options is
    -------------------------------------------------------------------------
 
    begin
-      return Program_Options_Constant_Class_Access (
-         Protected_Options).Camera_Library.Directory.Coerce;
+      return Get_Camera_Read_Only_Options.Camera_Library.Directory.Coerce;
    end Current_Directory;
 
    -------------------------------------------------------------------------
@@ -79,7 +78,7 @@ package body Camera.Lib.Options is
    -------------------------------------------------------------------------
 
    begin
-      return Protected_Options /= Null;
+      return Ada_lib.Options.Get_Ada_Lib_Read_Only_Options /= Null;
    end Have_Options;
 
    -------------------------------------------------------------------------
@@ -92,8 +91,7 @@ package body Camera.Lib.Options is
 
    begin
       Log_In (Debug_Options or Trace_Options, "from " & From & " options address " &
-         Image (Options'address) &
-         " protected options address " & Image (Protected_Options'address));
+         Image (Options'address));
       Ada_Lib.Options.Runstring.Options.Register (
          Ada_Lib.Options.Runstring.With_Parameters,
          Options_With_Parameters);
@@ -219,17 +217,17 @@ package body Camera.Lib.Options is
       Log_Out (Debug_Options or Trace_Options);
    end Program_Help;
 
-   ----------------------------------------------------------------------------
-   procedure Set_Protected_Options (
-      Options  : in not null Ada_Lib.Options.Actual.
-                              Program_Options_Class_Access) is
-   ----------------------------------------------------------------------------
-
-   begin
-      Protected_Options := Options;
-      Ada_Lib.Options.Set_Ada_Lib_Options (
-         Ada_Lib.Options.Interface_Options_Class_Access (Options));
-   end Set_Protected_Options;
+-- ----------------------------------------------------------------------------
+-- procedure Set_Protected_Options (
+--    Options  : in not null Ada_Lib.Options.Actual.
+--                            Program_Options_Class_Access) is
+-- ----------------------------------------------------------------------------
+--
+-- begin
+--    Protected_Options := Options;
+--    Ada_Lib.Options.Set_Ada_Lib_Options (
+--       Ada_Lib.Options.Interface_Options_Class_Access (Options));
+-- end Set_Protected_Options;
 
 begin
 --Protected_Options.Debug := True;

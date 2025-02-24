@@ -25,12 +25,12 @@ package body Camera.Lib.Unit_Test is
 
    use type Ada_Lib.Options.Mode_Type;
 
-   Trace_Option                  : constant Character := 'T';
+   Trace_Option                  : constant Character := '1';
    Options_With_Parameters       : aliased constant
                                     Standard.Ada_Lib.Options.
                                        Options_Type :=
                                           Ada_Lib.Options.Create_Options (
-                                             Trace_Option & "R",
+                                             Trace_Option, -- & "R",
                                              Ada_Lib.Options.Unmodified);
    Options_Without_Parameters       : aliased constant
                                     Standard.Ada_Lib.Options.
@@ -57,6 +57,17 @@ package body Camera.Lib.Unit_Test is
       Log_Here (Debug);
    end Add_Test;
 
+   ----------------------------------------------------------------------------
+   function Get_Camera_Unit_Test_Constant_Options (
+      From                    : in     String := Standard.GNAT.Source_Info.
+                                          Source_Location
+   ) return Unit_Test_Options_Constant_Class_Access is
+
+   begin
+      return Unit_Test_Options_Constant_Class_Access (
+         Ada_Lib.Options.Get_Ada_Lib_Read_Only_Options);
+   end Get_Camera_Unit_Test_Constant_Options;
+   ----------------------------------------------------------------------------
 --   ---------------------------------------------------------------
 --   function Initialize
 --   return Boolean is
@@ -142,17 +153,17 @@ log_here (ada_lib.options.debug'img);
 --    return Protected_Options.Camera_Options'access;
 -- end Options;
 
-   ----------------------------------------------------------------------------
-   function Options (
-      From                    : in     String :=
-                                          Standard.GNAT.Source_Info.Source_Location
-   ) return Unit_Test_Options_Constant_Class_Access is
-   ----------------------------------------------------------------------------
-
-   begin
-      Log_Here (Debug, "from " & From);
-      return Protected_Options'access;
-   end Options;
+-- ----------------------------------------------------------------------------
+-- function Options (
+--    From                    : in     String :=
+--                                        Standard.GNAT.Source_Info.Source_Location
+-- ) return Unit_Test_Options_Constant_Class_Access is
+-- ----------------------------------------------------------------------------
+--
+-- begin
+--    Log_Here (Debug, "from " & From);
+--    return Protected_Options'access;
+-- end Options;
 
    ----------------------------------------------------------------------------
    -- processes options it knows about and calls parent for others
@@ -213,7 +224,7 @@ log_here (ada_lib.options.debug'img);
       case Help_Mode is
 
       when Ada_Lib.Options.Program =>
-         Ada_Lib.Help.Add_Option ('T', "trace options",
+         Ada_Lib.Help.Add_Option (Trace_Option, "trace options",
             "Camera Lib unit test", "Camera.Lib.Unit_Test");
          New_Line;
 
@@ -404,7 +415,7 @@ not_implemented;
       Options                    : Standard.Camera.Lib.Unit_Test.
                                     Unit_Test_Program_Options_Type'class
                                        renames Standard.Camera.Lib.Unit_Test.
-                                          Options.all;
+                                          Get_Camera_Unit_Test_Constant_Options.all;
       State                      : Configuration.Camera.State.State_Type renames
                                     Connection_Data.State;
   begin
@@ -459,7 +470,7 @@ not_implemented;
       Options                 : Standard.Camera.Lib.Unit_Test.
                                  Unit_Test_Program_Options_Type'class
                                     renames Standard.Camera.Lib.Unit_Test.
-                                       Options.all;
+                                       Get_Camera_Unit_Test_Constant_Options.all;
       State                      : Configuration.Camera.State.State_Type renames
                                     Connection_Data.State;
    begin

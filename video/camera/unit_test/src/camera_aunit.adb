@@ -1,13 +1,13 @@
 with Ada.Exceptions;
 with Ada.Text_IO; use Ada.Text_IO;
 with Ada_Lib.Help;
-with Ada_Lib.Options.Actual;
+with Ada_Lib.Options;
 with Ada_Lib.OS;
 --with Ada_lib.Timer;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
 with Ada_Lib.Trace_Tasks;
 with Ada_Lib.Unit_Test;
-with Camera.Lib.Options;
+--with Camera.Lib.Options;
 with Camera.Lib.Unit_Test;
 with Camera.Command_Queue;
 with Command_Name;
@@ -21,8 +21,8 @@ begin
 --Trace_Tests := True;
    Put_Line (Command_Name);
 log_here (ada_lib.options.debug'img);
-   Camera.Lib.Options.Set_Protected_Options (
-      Ada_Lib.Options.Actual.Program_Options_Type'class (Options)'unchecked_access);
+   Ada_Lib.Options.Set_Ada_Lib_Options (
+      Ada_Lib.Options.Interface_Options_Type (Options)'unchecked_access);
 log_here (ada_lib.options.debug'img);
    if Options.Initialize then
       Log_In (Debug);

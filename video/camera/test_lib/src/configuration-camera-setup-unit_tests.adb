@@ -116,7 +116,7 @@ package body Configuration.Camera.Setup.Unit_Tests is
       Options                    : Standard.Camera.Lib.Unit_Test.
                                     Unit_Test_Program_Options_Type'class
                                        renames Standard.Camera.Lib.Unit_Test.
-                                          Options.all;
+                                          Get_Camera_Unit_Test_Constant_Options.all;
       Test_Suite              : constant AUnit.Test_Suites.Access_Test_Suite :=
                                  new AUnit.Test_Suites.Test_Suite;
       Tests                   : constant Configuration_Tests_Access :=
@@ -155,7 +155,8 @@ package body Configuration.Camera.Setup.Unit_Tests is
                                     Configuration_Tests_Type (Test);
       Options                    : Standard.Camera.Lib.Unit_Test.
                                     Unit_Test_Program_Options_Type'class renames
-                                       Standard.Camera.Lib.Unit_Test.Options.all;
+                                       Standard.Camera.Lib.Unit_Test.
+                                          Get_Camera_Unit_Test_Constant_Options.all;
       State                      : Configuration.Camera.State.State_Type renames
                                     Connection_Data.State;
 
