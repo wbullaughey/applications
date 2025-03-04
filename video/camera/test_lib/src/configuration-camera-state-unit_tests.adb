@@ -96,7 +96,6 @@ package body Configuration.Camera.State.Unit_Tests is
    ---------------------------------------------------------------
 
    begin
-log_here;
       Log_In (Debug or Trace_Set_Up);
       Ada_Lib.GNOGA.Set_Connection_Data (new Connection_Data_Type);
       Standard.Camera.Lib.Unit_Test.Camera_Test_Type (Test).Set_Up ;

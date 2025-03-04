@@ -26,7 +26,6 @@ procedure Camera_Control is
 
 begin
    Put_Line (Command_Name);
-log_here;
    Ada_Lib.Options.Set_Ada_Lib_Options (
       Ada_Lib.Options.Interface_Options_Class_Access (Options)'access);
    if Options.Initialize then

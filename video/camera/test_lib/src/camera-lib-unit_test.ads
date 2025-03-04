@@ -93,8 +93,8 @@ package Camera.Lib.Unit_Test is
 --    GNOGA_Unit_Test_Options    : Ada_Lib.GNOGA.Unit_Test.
 --                                  GNOGA_Unit_Test_Options_Type;F
       Main_Debug                 : Boolean := False;
-      Unit_Test                  : Ada_Lib.Options.Unit_Test.
-                                    Ada_Lib_Unit_Test_Program_Options_Type (False);
+--    Unit_Test                  : Ada_Lib.Options.Unit_Test.
+--                                  Ada_Lib_Unit_Test_Program_Options_Type (False);
    end record;
 
    type Unit_Test_Options_Access           is access all Unit_Test_Program_Options_Type;

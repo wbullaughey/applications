@@ -21,7 +21,6 @@ procedure Camera_Driver is
                                     Driver_Options.Main_Debug;
 
 begin
-log_here;
    Ada_Lib.Options.Set_Ada_Lib_Options (
       Ada_Lib.Options.Interface_Options_Class_Access'(
          Protected_Options'unchecked_access));

@@ -231,7 +231,7 @@ package body Camera.Lib.Options is
 
 begin
 --Protected_Options.Debug := True;
-Debug := True;
+--Debug := True;
 --Trace_Options := True;
 --Elaborate := True;
 

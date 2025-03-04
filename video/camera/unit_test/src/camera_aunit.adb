@@ -20,10 +20,8 @@ procedure Camera_AUnit is
 begin
 --Trace_Tests := True;
    Put_Line (Command_Name);
-log_here (ada_lib.options.debug'img);
    Ada_Lib.Options.Set_Ada_Lib_Options (
       Ada_Lib.Options.Interface_Options_Type (Options)'unchecked_access);
-log_here (ada_lib.options.debug'img);
    if Options.Initialize then
       Log_In (Debug);
       if Options.Process (

@@ -64,6 +64,7 @@ package body Camera.Lib.Unit_Test is
    ) return Unit_Test_Options_Constant_Class_Access is
 
    begin
+      Log_Here (Debug, "from " & From);
       return Unit_Test_Options_Constant_Class_Access (
          Ada_Lib.Options.Get_Ada_Lib_Read_Only_Options);
    end Get_Camera_Unit_Test_Constant_Options;
@@ -111,7 +112,6 @@ package body Camera.Lib.Unit_Test is
       Log_In_Checked (Initialize_Recursed, Debug_Options or Trace_Options,
          "from " & From);
       Unit_Test_Options := Options'unchecked_access;
-log_here (ada_lib.options.debug'img);
 --    Ada_Lib.Options.Set_Ada_Lib_Options (Protected_Options'access);
 
       Ada_Lib.Options.Runstring.Options.Register (
@@ -124,7 +124,7 @@ log_here (ada_lib.options.debug'img);
 --       Options.Camera_Options.Initialize and then
 --       Options.AUnit_Options.Initialize and then
 --       Options.GNOGA_Unit_Test_Options.Initialize and then
-         Options.Unit_Test.Initialize and then
+--       Options.Unit_Test.Initialize and then
 --       Ada_Lib.Options.AUnit.Ada_Lib_Tests.Initialize and then
          Ada_Lib.Options.AUnit_Lib.Aunit_Program_Options_Type (Options).Initialize,
          Debug_Options or Trace_Options);
@@ -200,7 +200,7 @@ log_here (ada_lib.options.debug'img);
       else
          return Log_Out (
 --          Options.AUnit_Options.Process_Option (Iterator, Option) or else
-            Options.Unit_Test.Process_Option (Iterator, Option) or else
+--          Options.Unit_Test.Process_Option (Iterator, Option) or else
             Ada_Lib.Options.AUnit_Lib.Aunit_Program_Options_Type (Options).Process_Option (Iterator, Option),
             Debug_Options or Trace_Options,
             "other " & Option.Image);
@@ -219,7 +219,7 @@ log_here (ada_lib.options.debug'img);
       Log_In_Checked (Help_Recursed, Debug_Options or Trace_Options,
          "help mode " & Help_Mode'img);
 --    Options.AUnit_Options.Program_Help (Help_Mode);
-      Options.Unit_Test.Program_Help (Help_Mode);
+--    Options.Unit_Test.Program_Help (Help_Mode);
 
       case Help_Mode is
 
@@ -317,7 +317,7 @@ not_implemented;
                                     AUnit.Test_Suites.New_Suite;
 
       begin
-         AUnit_Options.Filter := Options.Unit_Test.Filter'unchecked_access;
+         AUnit_Options.Filter := Options.Filter'unchecked_access;
 --       Test_Suite.Add_Test (Camera.Lib.Base.Test.Suite);
          Test_Suite.Add_Test (Main.Unit_Test.Suite);
          Test_Suite.Add_Test (Standard.Camera.Commands.Unit_Test.Suite);
@@ -329,7 +329,7 @@ not_implemented;
          Test_Suite.Add_Test (Widgets.Control.Unit_Test.Suite);
 
          Test_Suite.Run (AUnit_Options, Results, Outcome);
-         case Options.Unit_Test.Mode is
+         case Options.Mode is
 
             when  Ada_Lib.Options.Driver_Suites |
                   Ada_Lib.Options.List_Suites |
@@ -337,7 +337,7 @@ not_implemented;
                Ada_Lib.Unit_Test.Iterate_Suites (
                   Ada_Lib.Options.Unit_Test.Suite_Action'access,
                   Ada_Lib.Options.Unit_Test.Routine_Action'access,
-                  Options.Unit_Test.Mode);
+                  Options.Mode);
 
             when Ada_Lib.Options.Run_Tests =>
                Put_Line ("report camera test results");
@@ -578,7 +578,7 @@ not_implemented;
                Debug_Options := True;
                Main.Unit_Test.Debug := True;
                Options.Main_Debug := True;
-               Options.Unit_Test.Debug := True;
+               Options.Debug := True;
                Widgets.Adjust.Unit_Test.Debug := True;
                Widgets.Control.Unit_Test.Debug := True;
                Widgets.Configured.Unit_Test.Debug := True;

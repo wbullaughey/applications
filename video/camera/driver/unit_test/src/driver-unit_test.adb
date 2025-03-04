@@ -78,13 +78,11 @@ package body Driver.Unit_Test is
          Options_Without_Parameters);
 
 --    Protected_Options.Unit_Test := True;
-log_here;
       Ada_Lib.Options.Set_Ada_Lib_Options (Protected_Options'access);
 
       Ada_Lib.Options.Unit_Test.Unit_Test_Options :=
          Protected_Options'unchecked_access;
 
-log_here;
       Set_Protected_Options (Protected_Options.Driver_Options'access);
       Protected_Options.Driver_Options.Camera_Directory.Construct (
          "../../unit_test");
