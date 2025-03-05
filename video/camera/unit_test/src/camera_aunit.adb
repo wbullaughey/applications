@@ -18,6 +18,7 @@ procedure Camera_AUnit is
    Debug                : Boolean renames Options.Main_Debug;
 
 begin
+--Debug := True;
 --Trace_Tests := True;
    Put_Line (Command_Name);
    Ada_Lib.Options.Set_Ada_Lib_Options (
