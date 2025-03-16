@@ -226,8 +226,8 @@ package body Configuration.Camera.State.Unit_Tests is
 --                                     3  => [ 1, 2 ],
 --                                     5  => [ 1, 3 ],
 --                                     others => Null_Preset ];
-      Local_Test                 : Configuration_Tests_Type renames
-                                    Configuration_Tests_Type (Test);
+--    Local_Test                 : Configuration_Tests_Type renames
+--                                  Configuration_Tests_Type (Test);
       Options                    : Standard.Camera.Lib.Unit_Test.
                                     Unit_Test_Program_Options_Type'class
                                        renames Standard.Camera.Lib.Unit_Test.

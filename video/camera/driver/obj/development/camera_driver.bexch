@@ -1,132 +1,110 @@
 [GENERATED OBJECT FILE]
 b__camera_driver.o
 [PROJECT FILES]
-/Users/wayne/Project/git/alr/applications/video/camera/driver/camera_driver.gpr
-20240704115407 080e68ce09560142190028c6a835e8c5
+/Users/wayne/Project/git/alr/alr_environment/applications/video/camera/driver/camera_driver.gpr
+20250207182803 6baad6d50a1a226f7e9bea3b32ef1951
 /Users/wayne/Project/git/alr/local.gpr
-20230926153711 27d4cee8e1268993d81c82da06b90174
-/Users/wayne/Project/git/alr/applications/video/camera/driver/lib/config/driver_lib_config.gpr
-20240309192828 84ed8c80ec8dd6950b1b4352cc817599
-/Users/wayne/Project/git/alr/applications/ada_lib/ada_lib_testing/config/ada_lib_testing_config.gpr
-20240705121318 dc9c4c82e5bed98fcd5e92a6254c702d
-/Users/wayne/Project/git/alr/applications/ada_lib/ada_lib_testing/ada_lib_testing.gpr
-20240704115411 1bcde8c2995cb45da457e658f8c7ee7d
-/Users/wayne/Project/git/alr/applications/video/camera/driver/lib/driver_lib.gpr
-20240704115407 15d79e4999a6ca746f4f4f62ce0e2d58
-/Users/wayne/Project/git/alr/applications/video/camera/driver/config/camera_driver_config.gpr
-20240704115407 e78eeb6bb51b2413abf8cfe31e48cd76
-/Users/wayne/Project/git/alr/applications/video/lib/config/video_lib_config.gpr
-20240705121318 28fb2abf91d70b8a8735dff8ac580dca
-/Users/wayne/Project/git/alr/applications/video/lib/video_lib.gpr
-20240704115407 b23f2c8bdbaf23f5e836e572285ed31d
-/Users/wayne/Project/git/alr/applications/aunit/config/aunit_config.gpr
-20240705121318 d7284c5b8b3ee0523168460f24c52d8a
-/Users/wayne/Project/git/alr/applications/aunit/aunit.gpr
-20240704115411 517138bb9f0a236e05adb29ddeb1484b
-/Users/wayne/Project/git/alr/applications/video/camera/lib/config/camera_lib_config.gpr
-20240705121318 751b37164ee00f4edf9a5f51920393be
-/Users/wayne/Project/git/alr/applications/video/camera/lib/camera_lib.gpr
-20240704115407 604787e3df30ebb7de369f3354ca5f13
-/Users/wayne/Project/git/alr/applications/vendor/github.com/gnoga/deps/simple_components/xpm/xpm_parser.gpr
-20240704115411 6041b40f3a7695c62b2ce39b021350a3
-/Users/wayne/Project/git/alr/applications/vendor/github.com/gnoga/deps/simple_components/components-connections_server.gpr
-20240704115411 2756f8780ac70fde4058ea1ab44547de
-/Users/wayne/Project/git/alr/applications/vendor/github.com/gnoga/deps/simple_components/tables.gpr
-20240704115411 b00481050b12fd01297f0bd4e765951e
-/Users/wayne/Project/git/alr/applications/vendor/github.com/gnoga/deps/simple_components/strings_edit.gpr
-20240704115411 6178a220818b54efdbcb21bb883c16d7
-/Users/wayne/Project/git/alr/applications/vendor/github.com/gnoga/deps/simple_components/components.gpr
-20240704115411 bde82591778a90ed8958baec4a9991a2
-/Users/wayne/Project/git/alr/applications/vendor/github.com/gnoga/deps/simple_components/components-connections_server-http_server.gpr
-20240704115411 4ad755ae353220d8c6eec43ff9330c20
-/Users/wayne/Project/git/alr/applications/vendor/github.com/gnoga/settings.gpr
-20240704115412 8c1f4328ff77b9993ba46c08d2292060
-/Users/wayne/Project/git/alr/applications/vendor/github.com/gnoga/config/gnoga_config.gpr
-20240704115411 c46a85821da38d01d87f9eab5c890882
-/Users/wayne/Project/git/alr/applications/vendor/github.com/gnoga/gnoga.gpr
-20240704115412 8ea7963297391f8b1018c1c0b716298b
-/Users/wayne/Project/git/alr/applications/video/camera/driver/alire/cache/dependencies/xmlada_23.0.0_70494123/schema/xmlada_schema.gpr
-20240704115407 c3aec663ae1a0d223b78ab88e0c359b9
-/Users/wayne/Project/git/alr/applications/video/camera/driver/alire/cache/dependencies/xmlada_23.0.0_70494123/dom/xmlada_dom.gpr
-20240704115407 eaed357c72b3d50108ba1303ff279a38
-/Users/wayne/Project/git/alr/applications/video/camera/driver/alire/cache/dependencies/xmlada_23.0.0_70494123/input_sources/xmlada_input.gpr
-20240704115407 c73aad11fe7a29b4fef699115f6d6c18
-/Users/wayne/Project/git/alr/applications/video/camera/driver/alire/cache/dependencies/xmlada_23.0.0_70494123/sax/xmlada_sax.gpr
-20240704115407 9f41d3bbe08ae0f72d6fa2925c987073
-/Users/wayne/Project/git/alr/applications/video/camera/driver/alire/cache/dependencies/xmlada_23.0.0_70494123/xmlada_shared.gpr
-20240630202738 fa39374ee48c471b1efe91fe17abee90
-/Users/wayne/Project/git/alr/applications/video/camera/driver/alire/cache/dependencies/xmlada_23.0.0_70494123/unicode/xmlada_unicode.gpr
-20240704115407 c4643b89e99be8ebddcfba05e20fa7d3
-/Users/wayne/Project/git/alr/applications/video/camera/driver/alire/cache/dependencies/xmlada_23.0.0_70494123/distrib/xmlada.gpr
-20240704115407 350a9ea5505707cfa610e383086b57f0
-/Users/wayne/Project/git/alr/applications/video/camera/driver/alire/cache/dependencies/libgpr_23.0.0_34e332b9/gpr/gpr.gpr
-20240704115407 9de7e45a664fbbb6aaa946224664fa1a
-/Users/wayne/Project/git/alr/applications/video/camera/driver/alire/cache/dependencies/gnatcoll_23.0.0_29478a20/gnatcoll.gpr
-20240704115406 70e4198ecd02704f58ac58dfa1735666
-/Users/wayne/Project/git/alr/applications/ada_lib/config/ada_lib_config.gpr
-20240705121318 8f8fffad7613f18f6f47f475373c0c53
-/Users/wayne/Project/git/alr/applications/default_config.gpr
-20240704115406 f06515d6108db570dc1af4765915b479
-/Users/wayne/Project/git/alr/applications/applications.gpr
-20240704115406 016dceb3a15f844a34555aa157d115aa
-/Users/wayne/Project/git/alr/applications/ada_lib/ada_lib.gpr
-20240704115411 53838bffeb5eacba6d5e75ddde3b3565
+20230926153711 b05b58303547d0c566a1c92193597791
+/Users/wayne/Project/git/alr/alr_environment/applications/video/camera/driver/lib/config/driver_lib_config.gpr
+20250307114801 384221b09a180bc9f0201c0bf278f574
+/Users/wayne/Project/git/alr/alr_environment/applications/video/camera/driver/lib/driver_lib.gpr
+20250206191400 a1c05543ace8d64bcb69b4c890d8e627
+/Users/wayne/Project/git/alr/alr_environment/applications/video/camera/test_lib/config/camera_test_lib_config.gpr
+20250210112312 b78d6da04ee15c7aefceee43578fea05
+/Users/wayne/Project/git/alr/alr_environment/applications/video/camera/test_lib/camera_test_lib.gpr
+20250213225946 dd992e34812be66c073d63f1d0f62db6
+/Users/wayne/Project/git/alr/alr_environment/applications/applications.gpr
+20250308014304 0a0da9d322c02559dab23a1f4dc2fa8f
+/Users/wayne/Project/git/alr/alr_environment/ada_lib/ada_lib_tests/ada_lib_tests.gpr
+20250206191347 234a5113adae08ffcda3f0b36ad3ca84
+/Users/wayne/Project/git/alr/alr_environment/applications/video/camera/driver/config/camera_driver_config.gpr
+20250307114801 d3c279042a469c84ebc5f2e1a508d33a
+/Users/wayne/Project/git/alr/alr_environment/applications/video/lib/config/video_lib_config.gpr
+20250209135038 55ac371d0c40a0c69e266e1a8b4f079a
+/Users/wayne/Project/git/alr/alr_environment/applications/video/lib/video_lib.gpr
+20250206114629 c9d7370050551cbe3e0aad28270a6595
+/Users/wayne/Project/git/alr/alr_environment/aunit/config/aunit_config.gpr
+20250209133120 6a92d8b2bed290efaa06e8c9e53696f9
+/Users/wayne/Project/git/alr/alr_environment/aunit/aunit.gpr
+20250213225318 de46c11c06f86a3edcc57785bb38a659
+/Users/wayne/Project/git/alr/alr_environment/applications/video/camera/lib/config/camera_lib_config.gpr
+20250209135038 2cee49d132f2ef18700cfd9361342684
+/Users/wayne/Project/git/alr/alr_environment/vendor/github.com/gnoga/deps/simple_components/xpm/xpm_parser.gpr
+20250203164211 355c76b23d9cb4f5c019eae9f957d459
+/Users/wayne/Project/git/alr/alr_environment/vendor/github.com/gnoga/deps/simple_components/components-connections_server.gpr
+20250203164211 1ff4f7c5aa47993fec71161a10c91f34
+/Users/wayne/Project/git/alr/alr_environment/vendor/github.com/gnoga/deps/simple_components/tables.gpr
+20250203164211 8a8f7a6a5254ee007ea62afe0b917c9c
+/Users/wayne/Project/git/alr/alr_environment/vendor/github.com/gnoga/deps/simple_components/strings_edit.gpr
+20250203164211 f3147c90aca3ae7340eafd15808011b1
+/Users/wayne/Project/git/alr/alr_environment/vendor/github.com/gnoga/deps/simple_components/components.gpr
+20250203164326 8e3a1d0496adb348047762c3975549bd
+/Users/wayne/Project/git/alr/alr_environment/vendor/github.com/gnoga/deps/simple_components/components-connections_server-http_server.gpr
+20250203164211 011775c8a1914400d809df0709133e56
+/Users/wayne/Project/git/alr/alr_environment/vendor/github.com/gnoga/settings.gpr
+20250203164212 6dd60def3f2c76c514d6d930bd770c4f
+/Users/wayne/Project/git/alr/alr_environment/vendor/github.com/gnoga/config/gnoga_config.gpr
+20250213225922 cfcc8f23781f8a3422f367dc56a82e44
+/Users/wayne/Project/git/alr/alr_environment/vendor/github.com/gnoga/GNOGA.gpr
+20250204225536 5ed0527eae25098e62393045383edeaf
+/Users/wayne/Project/git/alr/alr_environment/ada_lib/ada_lib_gnoga/ada_lib_gnoga.gpr
+20250206152049 985fdab869ed72ebae296204e9d2984c
+/Users/wayne/Project/git/alr/alr_environment/applications/video/camera/lib/camera_lib.gpr
+20250208131319 309640f7659c8dbcf5ea0709a8b95a5e
+/Users/wayne/.local/share/alire/builds/xmlada_23.0.0_70494123/7685b004ba9e13dfb39ba81bd42e62276ffb55bd21008ff7c90930fdbb7785a3/schema/xmlada_schema.gpr
+20250102132508 25fab4f1e08c076b79df71c727cacaa4
+/Users/wayne/.local/share/alire/builds/xmlada_23.0.0_70494123/7685b004ba9e13dfb39ba81bd42e62276ffb55bd21008ff7c90930fdbb7785a3/dom/xmlada_dom.gpr
+20250102132508 0da243c5612bb99ce954aff2cf46642d
+/Users/wayne/.local/share/alire/builds/xmlada_23.0.0_70494123/7685b004ba9e13dfb39ba81bd42e62276ffb55bd21008ff7c90930fdbb7785a3/input_sources/xmlada_input.gpr
+20250102132508 21384f854bea21a5d37ed9ce609cc431
+/Users/wayne/.local/share/alire/builds/xmlada_23.0.0_70494123/7685b004ba9e13dfb39ba81bd42e62276ffb55bd21008ff7c90930fdbb7785a3/sax/xmlada_sax.gpr
+20250102132508 5d3206977e3f90a58c091cad134e97ce
+/Users/wayne/.local/share/alire/builds/xmlada_23.0.0_70494123/7685b004ba9e13dfb39ba81bd42e62276ffb55bd21008ff7c90930fdbb7785a3/xmlada_shared.gpr
+20250102132510 76f8e0cccae39fe4cfd4ff3c0a7276c4
+/Users/wayne/.local/share/alire/builds/xmlada_23.0.0_70494123/7685b004ba9e13dfb39ba81bd42e62276ffb55bd21008ff7c90930fdbb7785a3/unicode/xmlada_unicode.gpr
+20250102132508 95bfd1ff17f36392a2ddf80abec83cb7
+/Users/wayne/.local/share/alire/builds/xmlada_23.0.0_70494123/7685b004ba9e13dfb39ba81bd42e62276ffb55bd21008ff7c90930fdbb7785a3/distrib/xmlada.gpr
+20250102132508 be5b12f92e9230ad17d42b8f9c895fa2
+/Users/wayne/.local/share/alire/builds/libgpr_23.0.0_34e332b9/22ca5c8d76c9b287e5ad2e686d3dc94dff8f4d0655b0bfea381006c16ac1ef1f/gpr/gpr.gpr
+20250102132508 bc0abdc82ece1e529e6aed286054332c
+/Users/wayne/.local/share/alire/builds/gnatcoll_23.0.0_29478a20/fea7301fb26384135574583f19a974bcd8572e0b6a317c0b13a579b2d5a9f507/gnatcoll.gpr
+20250102132509 333e9f2160ee2a8b134d49c113702197
+/Users/wayne/Project/git/alr/alr_environment/default_config.gpr
+20250203163413 4f7d3727a3efb0fd2b6e4bf5c1b67aa9
+/Users/wayne/Project/git/alr/alr_environment/alr_environment.gpr
+20250205180818 af7adece4d92d3cc4a53157daacd63fe
+/Users/wayne/Project/git/alr/alr_environment/ada_lib/ada_lib.gpr
+20250206152109 4cd5863d17935f35a2d49b47e22e6b6e
 [BOUND OBJECT FILES]
-/Users/wayne/Project/git/alr/applications/debug_options.o
-/Users/wayne/Project/git/alr/applications/vendor/github.com/gnoga/deps/simple_components/generic_set.o
-/Users/wayne/Project/git/alr/applications/vendor/github.com/gnoga/deps/simple_components/generic_discrete_set.o
-/Users/wayne/Project/git/alr/applications/vendor/github.com/gnoga/deps/simple_components/generic_unbounded_array.o
-/Users/wayne/Project/git/alr/applications/vendor/github.com/gnoga/deps/simple_components/generic_unbounded_ptr_array.o
-/Users/wayne/Project/git/alr/applications/vendor/github.com/gnoga/deps/simple_components/object.o
-/Users/wayne/Project/git/alr/applications/vendor/github.com/gnoga/deps/simple_components/object-handle.o
-/Users/wayne/Project/git/alr/applications/vendor/github.com/gnoga/deps/simple_components/object-handle-generic_unbounded_array.o
-/Users/wayne/Project/git/alr/applications/vendor/github.com/gnoga/deps/simple_components/stack_storage.o
-/Users/wayne/Project/git/alr/applications/vendor/github.com/gnoga/deps/simple_components/strings_edit.o
-/Users/wayne/Project/git/alr/applications/vendor/github.com/gnoga/deps/simple_components/strings_edit-base64.o
-/Users/wayne/Project/git/alr/applications/vendor/github.com/gnoga/deps/simple_components/strings_edit-fields.o
-/Users/wayne/Project/git/alr/applications/vendor/github.com/gnoga/deps/simple_components/strings_edit-integer_edit.o
-/Users/wayne/Project/git/alr/applications/vendor/github.com/gnoga/deps/simple_components/strings_edit-integers.o
-/Users/wayne/Project/git/alr/applications/vendor/github.com/gnoga/deps/simple_components/gnat-sockets-server.o
-/Users/wayne/Project/git/alr/applications/vendor/github.com/gnoga/deps/simple_components/gnat-sockets-connection_state_machine.o
-/Users/wayne/Project/git/alr/applications/vendor/github.com/gnoga/deps/simple_components/gnat-sockets-connection_state_machine-big_endian.o
-/Users/wayne/Project/git/alr/applications/vendor/github.com/gnoga/deps/simple_components/gnat-sockets-connection_state_machine-big_endian-unsigneds.o
-/Users/wayne/Project/git/alr/applications/vendor/github.com/gnoga/deps/simple_components/gnat-sockets-connection_state_machine-expected_sequence.o
-/Users/wayne/Project/git/alr/applications/vendor/github.com/gnoga/deps/simple_components/gnat-sockets-connection_state_machine-terminated_strings.o
-/Users/wayne/Project/git/alr/applications/vendor/github.com/gnoga/deps/simple_components/strings_edit-float_edit.o
-/Users/wayne/Project/git/alr/applications/vendor/github.com/gnoga/deps/simple_components/strings_edit-floats.o
-/Users/wayne/Project/git/alr/applications/vendor/github.com/gnoga/deps/simple_components/strings_edit-quoted.o
-/Users/wayne/Project/git/alr/applications/vendor/github.com/gnoga/deps/simple_components/strings_edit-utf8.o
-/Users/wayne/Project/git/alr/applications/vendor/github.com/gnoga/deps/simple_components/strings_edit-utf8-handling.o
-/Users/wayne/Project/git/alr/applications/vendor/github.com/gnoga/deps/simple_components/tables.o
-/Users/wayne/Project/git/alr/applications/vendor/github.com/gnoga/deps/simple_components/tables-names.o
-/Users/wayne/Project/git/alr/applications/vendor/github.com/gnoga/deps/simple_components/gnat-sockets-connection_state_machine-http_server.o
-/Users/wayne/Project/git/alr/applications/video/camera/driver/obj/development/camera_driver.o
+/Users/wayne/Project/git/alr/alr_environment/debug_options.o
+/Users/wayne/Project/git/alr/alr_environment/applications/video/camera/driver/obj/development/camera_driver.o
 [GENERATED SOURCE FILES]
 b__camera_driver.ads
 b__camera_driver.adb
 b__camera_driver.ali
 [RESULTING OPTIONS]
--L/Users/wayne/Project/git/alr/applications/video/camera/driver/obj/development/
--L/Users/wayne/Project/git/alr/applications/video/camera/driver/obj/development/
--L/Users/wayne/Project/git/alr/applications/ada_lib/lib/
--L/Users/wayne/Project/git/alr/applications/
--L/Users/wayne/Project/git/alr/applications/video/camera/driver/alire/cache/dependencies/gnatcoll_23.0.0_29478a20/lib/gnatcoll/static/
--L/Users/wayne/Project/git/alr/applications/video/camera/driver/alire/cache/dependencies/libgpr_23.0.0_34e332b9/gpr/lib/production/static/
--L/Users/wayne/Project/git/alr/applications/video/camera/driver/alire/cache/dependencies/xmlada_23.0.0_70494123/unicode/lib/static/
--L/Users/wayne/Project/git/alr/applications/video/camera/driver/alire/cache/dependencies/xmlada_23.0.0_70494123/sax/lib/static/
--L/Users/wayne/Project/git/alr/applications/video/camera/driver/alire/cache/dependencies/xmlada_23.0.0_70494123/input_sources/lib/static/
--L/Users/wayne/Project/git/alr/applications/video/camera/driver/alire/cache/dependencies/xmlada_23.0.0_70494123/dom/lib/static/
--L/Users/wayne/Project/git/alr/applications/video/camera/driver/alire/cache/dependencies/xmlada_23.0.0_70494123/schema/lib/static/
--L/Users/wayne/Project/git/alr/applications/vendor/github.com/gnoga/lib/
--L/Users/wayne/Project/git/alr/applications/vendor/github.com/gnoga/deps/simple_components/
--L/Users/wayne/Project/git/alr/applications/vendor/github.com/gnoga/deps/simple_components/xpm/
--L/Users/wayne/Project/git/alr/applications/video/camera/lib/lib/
--L/Users/wayne/Project/git/alr/applications/aunit/lib/
--L/Users/wayne/Project/git/alr/applications/video/lib/lib/
--L/Users/wayne/Project/git/alr/applications/video/camera/driver/lib/lib/
--L/Users/wayne/Project/git/alr/applications/ada_lib/ada_lib_testing/lib/
--L/users/wayne/.config/alire/cache/dependencies/gnat_native_12.2.1_77267eb1/lib/gcc/x86_64-apple-darwin19.6.0/12.2.0/adalib/
+-L/Users/wayne/Project/git/alr/alr_environment/applications/video/camera/driver/obj/development/
+-L/Users/wayne/Project/git/alr/alr_environment/applications/video/camera/driver/obj/development/
+-L/Users/wayne/Project/git/alr/alr_environment/ada_lib/lib/
+-L/Users/wayne/Project/git/alr/alr_environment/
+-L/Users/wayne/.local/share/alire/builds/gnatcoll_23.0.0_29478a20/fea7301fb26384135574583f19a974bcd8572e0b6a317c0b13a579b2d5a9f507/lib/gnatcoll/static/
+-L/Users/wayne/.local/share/alire/builds/libgpr_23.0.0_34e332b9/22ca5c8d76c9b287e5ad2e686d3dc94dff8f4d0655b0bfea381006c16ac1ef1f/gpr/lib/production/static/
+-L/Users/wayne/.local/share/alire/builds/xmlada_23.0.0_70494123/7685b004ba9e13dfb39ba81bd42e62276ffb55bd21008ff7c90930fdbb7785a3/unicode/lib/static/
+-L/Users/wayne/.local/share/alire/builds/xmlada_23.0.0_70494123/7685b004ba9e13dfb39ba81bd42e62276ffb55bd21008ff7c90930fdbb7785a3/sax/lib/static/
+-L/Users/wayne/.local/share/alire/builds/xmlada_23.0.0_70494123/7685b004ba9e13dfb39ba81bd42e62276ffb55bd21008ff7c90930fdbb7785a3/input_sources/lib/static/
+-L/Users/wayne/.local/share/alire/builds/xmlada_23.0.0_70494123/7685b004ba9e13dfb39ba81bd42e62276ffb55bd21008ff7c90930fdbb7785a3/dom/lib/static/
+-L/Users/wayne/.local/share/alire/builds/xmlada_23.0.0_70494123/7685b004ba9e13dfb39ba81bd42e62276ffb55bd21008ff7c90930fdbb7785a3/schema/lib/static/
+-L/Users/wayne/Project/git/alr/alr_environment/applications/video/camera/lib/lib/
+-L/Users/wayne/Project/git/alr/alr_environment/ada_lib/ada_lib_gnoga/lib/
+-L/Users/wayne/Project/git/alr/alr_environment/vendor/github.com/gnoga/lib/
+-L/Users/wayne/Project/git/alr/alr_environment/vendor/github.com/gnoga/deps/simple_components/
+-L/Users/wayne/Project/git/alr/alr_environment/vendor/github.com/gnoga/deps/simple_components/xpm/
+-L/Users/wayne/Project/git/alr/alr_environment/aunit/lib/
+-L/Users/wayne/Project/git/alr/alr_environment/applications/video/lib/lib/
+-L/Users/wayne/Project/git/alr/alr_environment/ada_lib/ada_lib_tests/obj/
+-L/Users/wayne/Project/git/alr/alr_environment/applications/video/camera/test_lib/lib/
+-L/Users/wayne/Project/git/alr/alr_environment/applications/video/camera/driver/lib/lib/
+-L/opt/gcc-14.2.0-3-aarch64/lib/gcc/aarch64-apple-darwin23/14.2.0/adalib/
 -static
-/users/wayne/.config/alire/cache/dependencies/gnat_native_12.2.1_77267eb1/lib/gcc/x86_64-apple-darwin19.6.0/12.2.0/adalib/libgnarl.a
-/users/wayne/.config/alire/cache/dependencies/gnat_native_12.2.1_77267eb1/lib/gcc/x86_64-apple-darwin19.6.0/12.2.0/adalib/libgnat.a
--lm
+/opt/gcc-14.2.0-3-aarch64/lib/gcc/aarch64-apple-darwin23/14.2.0/adalib/libgnarl.a
+/opt/gcc-14.2.0-3-aarch64/lib/gcc/aarch64-apple-darwin23/14.2.0/adalib/libgnat.a

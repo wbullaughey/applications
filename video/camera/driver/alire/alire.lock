@@ -1,4 +1,4 @@
-# THIS IS A MACHINE-GENERATED FILE. DO NOT EDIT MANUALLY.
+# THIS FILE IS GENERATED. DO NOT EDIT.
 
 [solution]
 [solution.context]
@@ -11,16 +11,34 @@ transitivity = "direct"
 versions = "*"
 [solution.state.link]
 lockfiled = true
-path = "../../../ada_lib"
+path = "../../../../ada_lib"
 [[solution.state]]
-crate = "ada_lib_testing"
+crate = "ada_lib_gnoga"
+fulfilment = "linked"
+pinned = false
+transitivity = "direct"
+versions = "~0.1.0-dev"
+[solution.state.link]
+lockfiled = true
+path = "../../../../ada_lib/ada_lib_gnoga"
+[[solution.state]]
+crate = "ada_lib_tests"
 fulfilment = "linked"
 pinned = false
 transitivity = "direct"
 versions = "*"
 [solution.state.link]
 lockfiled = true
-path = "../../../ada_lib/ada_lib_testing"
+path = "../../../../ada_lib/ada_lib_tests"
+[[solution.state]]
+crate = "alr_environment"
+fulfilment = "linked"
+pinned = false
+transitivity = "direct"
+versions = "~0.1.0-dev"
+[solution.state.link]
+lockfiled = true
+path = "../../../.."
 [[solution.state]]
 crate = "applications"
 fulfilment = "linked"
@@ -38,7 +56,7 @@ transitivity = "direct"
 versions = "*"
 [solution.state.link]
 lockfiled = true
-path = "../../../aunit"
+path = "../../../../aunit"
 [[solution.state]]
 crate = "camera_lib"
 fulfilment = "linked"
@@ -48,6 +66,15 @@ versions = "*"
 [solution.state.link]
 lockfiled = true
 path = "../lib"
+[[solution.state]]
+crate = "camera_test_lib"
+fulfilment = "linked"
+pinned = false
+transitivity = "direct"
+versions = "*"
+[solution.state.link]
+lockfiled = true
+path = "../test_lib"
 [[solution.state]]
 crate = "driver_lib"
 fulfilment = "linked"
@@ -61,47 +88,30 @@ path = "lib"
 crate = "gnat"
 fulfilment = "solved"
 pinned = false
-shared = true
 transitivity = "indirect"
 versions = "(/=2020) & (>=11)"
 [solution.state.release]
-auto-gpr-with = false
-description = "The GNAT Ada compiler - Native"
-licenses = "GPL-3.0-or-later AND GPL-3.0-or-later WITH GCC-exception-3.1"
+description = "GNAT is a compiler for the Ada programming language"
 maintainers = [
-"chouteau@adacore.com",
+"alejandro@mosteo.com",
 ]
 maintainers-logins = [
-"Fabien-Chouteau",
+"mosteo",
 ]
-name = "gnat_native"
+name = "gnat_external"
+notes = "Detected at /opt/gcc-14.2.0-3-aarch64/bin/gnat"
 provides = [
-"gnat=12.2.1",
+"gnat=14.2.0",
 ]
-version = "12.2.1"
-[solution.state.release.configuration]
-auto_gpr_with = true
-disabled = true
-generate_ada = true
-generate_c = true
-generate_gpr = true
-output_dir = "config"
-[solution.state.release.environment]
-[solution.state.release.environment.PATH]
-prepend = "${CRATE_ROOT}/bin"
+version = "14.2.0"
 [solution.state.release.origin]
-binary = true
-hashes = [
-"sha256:77267eb19842059c10f6eaf417b75d0483c0f977fb2a2cba0fb1d785fc5bfb78",
-]
-url = "https://github.com/alire-project/GNAT-FSF-builds/releases/download/gnat-12.2.0-1/gnat-x86_64-darwin-12.2.0-1.tar.gz"
+url = "external:path /opt/gcc-14.2.0-3-aarch64/bin/gnat"
 [[solution.state]]
 crate = "gnatcoll"
 fulfilment = "solved"
 pinned = false
-shared = false
 transitivity = "indirect"
-versions = "*"
+versions = "^23.0.0"
 [solution.state.release]
 authors = [
 "AdaCore",
@@ -171,15 +181,14 @@ crate = "gnoga"
 fulfilment = "linked"
 pinned = false
 transitivity = "direct"
-versions = "*"
+versions = "~0.1.0-dev"
 [solution.state.link]
 lockfiled = true
-path = "../../../vendor/github.com/gnoga"
+path = "../../../../vendor/github.com/gnoga"
 [[solution.state]]
 crate = "libgpr"
 fulfilment = "solved"
 pinned = false
-shared = false
 transitivity = "indirect"
 versions = "~23.0.0"
 [solution.state.release]
@@ -227,15 +236,6 @@ url = "https://github.com/AdaCore/gprbuild/archive/v23.0.0/gprbuild-23.0.0.zip"
 gnat = "/=2020"
 xmlada = "~23.0.0"
 [[solution.state]]
-crate = "test_lib"
-fulfilment = "linked"
-pinned = false
-transitivity = "direct"
-versions = "*"
-[solution.state.link]
-lockfiled = true
-path = "../test_lib"
-[[solution.state]]
 crate = "video_lib"
 fulfilment = "linked"
 pinned = false
@@ -248,7 +248,6 @@ path = "../../lib"
 crate = "xmlada"
 fulfilment = "solved"
 pinned = false
-shared = false
 transitivity = "indirect"
 versions = "~23.0.0"
 [solution.state.release]

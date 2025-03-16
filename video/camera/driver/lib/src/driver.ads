@@ -1,4 +1,4 @@
-﻿with Ada_Lib.Command_Line_Iterator;
+﻿--with Ada_Lib.Command_Line_Iterator;
 with Ada_Lib.Options.Actual;
 with Ada_Lib.Strings.Unlimited;
 with Ada_Lib.Trace;
@@ -9,7 +9,7 @@ package Driver is
 
    type Driver_Options_Type (
          Testing                 : Boolean) is limited new Ada_Lib.Options.
-                                    Nested_Options_Type with record
+                                    Actual.Nested_Options_Type with record
       Camera_Directory           : Ada_Lib.Strings.Unlimited.String_Type;
       Camera_Options             : Ada_Lib.Strings.Unlimited.String_Type;
       Driver_Debug               : Boolean := False;
@@ -36,8 +36,8 @@ package Driver is
    overriding
    function Process_Option (  -- process one option
      Options                    : in out Driver_Options_Type;
-     Iterator                   : in out Ada_Lib.Command_Line_Iterator.
-                                          Abstract_Package.Abstract_Iterator_Type'class;
+      Iterator                   : in out Ada_Lib.Options.
+                                          Command_Line_Iterator_Interface'class;
       Option                     : in     Ada_Lib.Options.
                                              Option_Type'class
    ) return Boolean
@@ -46,9 +46,8 @@ package Driver is
    overriding
    procedure Trace_Parse (
       Options                    : in out Driver_Options_Type;
-      Iterator                   : in out Ada_Lib.Command_Line_Iterator.
-                                       Abstract_Package.
-                                          Abstract_Iterator_Type'class);
+      Iterator                   : in out Ada_Lib.Options.
+                                          Command_Line_Iterator_Interface'class);
 
    type Program_Options_Type     is limited new Ada_Lib.Options.Actual.
                                     Program_Options_Type with record
@@ -64,8 +63,8 @@ package Driver is
    overriding
    function Process_Option (  -- process one option
      Options                    : in out Program_Options_Type;
-     Iterator                   : in out Ada_Lib.Command_Line_Iterator.
-                                          Abstract_Package.Abstract_Iterator_Type'class;
+      Iterator                   : in out Ada_Lib.Options.
+                                          Command_Line_Iterator_Interface'class;
       Option                     : in     Ada_Lib.Options.
                                              Option_Type'class
    ) return Boolean

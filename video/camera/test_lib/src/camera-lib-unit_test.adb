@@ -248,7 +248,8 @@ package body Camera.Lib.Unit_Test is
 
       end case;
 
-     Ada_Lib.Options.AUnit_Lib.Aunit_Program_Options_Type (Options).Program_Help (Help_Mode);
+     Ada_Lib.Options.AUnit_Lib.Aunit_Program_Options_Type (Options).
+         Program_Help (Help_Mode);
      Log_Out_Checked (Help_Recursed, Debug_Options or Trace_Options);
 
    end Program_Help;

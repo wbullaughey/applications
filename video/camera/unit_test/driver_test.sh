@@ -104,6 +104,11 @@ case "$MODE" in
       exit
       ;;
 
+   *)
+      trace invalid mode $MODE
+      exit
+      ;;
+
 esac
 trace APPLICATION $APPLICATION
 

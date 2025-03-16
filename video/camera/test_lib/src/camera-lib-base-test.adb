@@ -168,10 +168,10 @@ package body Camera.Lib.Base.Test is
       type Ports_Type            is array (Positive range <>) of GNAT.Sockets.Port_Type;
       type Ports_Access          is access constant Ports_Type;
 
-      Options                    : Standard.Camera.Lib.Unit_Test.
-                                    Unit_Test_Program_Options_Type'class
-                                       renames Standard.Camera.Lib.Unit_Test.
-                                          Get_Camera_Unit_Test_Constant_Options.all;
+--    Options                    : Standard.Camera.Lib.Unit_Test.
+--                                  Unit_Test_Program_Options_Type'class
+--                                     renames Standard.Camera.Lib.Unit_Test.
+--                                        Get_Camera_Unit_Test_Constant_Options.all;
       Local_Test                 : Test_Type renames Test_Type (Test);
       ALPTOP_Ports                : aliased constant Ports_Type := (
                                        554, 1935
@@ -424,10 +424,10 @@ package body Camera.Lib.Base.Test is
       Test                       : in out AUnit.Test_Cases.Test_Case'class) is
    ---------------------------------------------------------------
 
-      Options                    : Standard.Camera.Lib.Unit_Test.
-                                    Unit_Test_Program_Options_Type'class
-                                       renames Standard.Camera.Lib.Unit_Test.
-                                          Get_Camera_Unit_Test_Constant_Options.all;
+--    Options                    : Standard.Camera.Lib.Unit_Test.
+--                                  Unit_Test_Program_Options_Type'class
+--                                     renames Standard.Camera.Lib.Unit_Test.
+--                                        Get_Camera_Unit_Test_Constant_Options.all;
       First_Unit                 : constant GNAT.Sockets.Inet_Addr_Comp_Type := 2;
 --    IP_Address                 : GNAT.Sockets.Inet_Addr_V4_Type :=
 --                                  (192, 168, 1, 0);

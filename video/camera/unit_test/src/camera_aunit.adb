@@ -42,9 +42,9 @@ begin
          end if;
 
          Ada_Lib.OS.Immediate_Halt (if Ada_Lib.Unit_Test.Did_Fail then
-            Ada_Lib.OS.Application_Error
-         else
-            Ada_Lib.OS.No_Error);
+               Ada_Lib.OS.Application_Error
+            else
+               Ada_Lib.OS.No_Error);
       else
          Ada_Lib.OS.Immediate_Halt (Ada_Lib.OS.Application_Error);
       end if;

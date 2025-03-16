@@ -2,6 +2,7 @@
 --with Ada.Directories;
 --with Ada.Strings.Fixed;
 with Ada.Text_IO;use Ada.Text_IO;
+--with Ada_Lib.Command_Line_Iterator;
 with Ada_Lib.Help;
 --with Ada_Lib.Options.Unit_Test;
 with Ada_Lib.OS.Run;
@@ -13,7 +14,7 @@ with Command_Name;
 package body Driver is
 
    use Ada_Lib.Strings.Unlimited;
-   use type Ada_Lib.OS.Exit_Code_Type;
+   use type Ada_Lib.OS.OS_Exit_Code_Type;
 
 -- subtype String_Type           is String_Type;
 --
@@ -57,26 +58,25 @@ package body Driver is
 --                                  Ada_Lib.Options.Options_Type :=
 --                                     Ada_Lib.Options.Create_Options (
 --                                        "lr");
-   Parameters                    : constant Parameters_Type := (
-                                    False    => (
-                                       With_Parameters      =>
-                                          Ada_Lib.Options.
-                                             Create_Options (Camera_Option &
-                                                Directory_Option & "Rstu"),
-                                       Without_Parameters   =>
-                                          Ada_Lib.Options.
-                                             Create_Options ("lr")
-                                    ),
-                                    True    => (
-                                       With_Parameters      =>
-                                          Ada_Lib.Options.
-                                             Create_Options (Camera_Option &
-                                                Directory_Option & "Rtu"),
-                                       Without_Parameters   =>
-                                          Ada_Lib.Options.
-                                             Create_Options ("l")
-                                    )
-                                 );
+   Parameters  : constant Parameters_Type := (
+                  False    => (
+                     With_Parameters      =>
+                        Ada_Lib.Options.Create_Options (Camera_Option &
+                           Directory_Option & "Rstu",Ada_Lib.Options.Unmodified),
+                           Without_Parameters   =>
+                              Ada_Lib.Options.
+                                 Create_Options ("lr", Ada_Lib.Options.Unmodified)
+                        ),
+                        True    => (
+                           With_Parameters      =>
+                              Ada_Lib.Options.
+                                 Create_Options (Camera_Option &
+                                    Directory_Option & "Rtu", Ada_Lib.Options.Unmodified),
+                           Without_Parameters   =>
+                              Ada_Lib.Options.
+                                 Create_Options ("l", Ada_Lib.Options.Unmodified)
+                        )
+                     );
    Protected_Options             : Driver_Options_Class_Access := Null;
    Queue                         : Queue_Type;
 
@@ -109,7 +109,7 @@ package body Driver is
 
       ------------------------------------------------------
       function Error_Message (
-         Result                  : in     Ada_Lib.OS.Exit_Code_Type
+         Result                  : in     Ada_Lib.OS.OS_Exit_Code_Type
       ) return String is
       ------------------------------------------------------
 
@@ -127,7 +127,7 @@ package body Driver is
 
       if Process_Line = Null then
          declare
-            Result               : constant Ada_Lib.OS.Exit_Code_Type :=
+            Result               : constant Ada_Lib.OS.OS_Exit_Code_Type :=
                                     Ada_Lib.OS.Run.Spawn (
                                        Camera_Program, Parameters);
          begin
@@ -144,7 +144,7 @@ package body Driver is
 
          Log_Here (Debug, Quote ("scratch name", Scratch_Name));
          declare
-            Result               : constant Ada_Lib.OS.Exit_Code_Type :=
+            Result               : constant Ada_Lib.OS.OS_Exit_Code_Type :=
                                     Ada_Lib.OS.Run.Spawn (Camera_Program,
                                        Parameters, Scratch_Name);
          begin
@@ -198,7 +198,7 @@ package body Driver is
    begin
       Log_Here (Debug_Options or Trace_Options, "from " & From);
       return Driver_Options_Class_Access (
-         Ada_Lib.Options.Get_Modifiable_Options);
+         Ada_Lib.Options.Get_Ada_Lib_Modifiable_Options);
    end Get_Modifiable_Options;
 
    ---------------------------------------------------------------
@@ -239,7 +239,7 @@ package body Driver is
             Selected_Parameters.Without_Parameters.all);
 
       return Log_Out (
-         Ada_Lib.Options.Nested_Options_Type (Options).Initialize,
+         Ada_Lib.Options.Actual.Nested_Options_Type (Options).Initialize,
          Debug_Options or Trace_Options);
 
    end Initialize;
@@ -321,9 +321,9 @@ package body Driver is
    ---------------------------------------------------------------
    overriding
    function Process_Option (  -- process one option
-     Options                    : in out Driver_Options_Type;
-     Iterator                   : in out Ada_Lib.Command_Line_Iterator.
-                                          Abstract_Package.Abstract_Iterator_Type'class;
+     Options                     : in out Driver_Options_Type;
+      Iterator                   : in out Ada_Lib.Options.
+                                          Command_Line_Iterator_Interface'class;
       Option                     : in     Ada_Lib.Options.
                                              Option_Type'class
    ) return Boolean is
@@ -426,7 +426,7 @@ package body Driver is
          return Log_Out (True, Debug_Options or Trace_Options, Option.Image &
             " handled");
       else
-         return Log_Out (Ada_Lib.Options.Nested_Options_Type (
+         return Log_Out (Ada_Lib.Options.Actual.Nested_Options_Type (
             Options).Process_Option (Iterator, Option), Debug or Trace_Options,
             "not handled");
       end if;
@@ -442,11 +442,10 @@ package body Driver is
    ---------------------------------------------------------------
    overriding
    function Process_Option (  -- process one option
-     Options                    : in out Program_Options_Type;
-     Iterator                   : in out Ada_Lib.Command_Line_Iterator.
-                                          Abstract_Package.Abstract_Iterator_Type'class;
-      Option                     : in     Ada_Lib.Options.
-                                             Option_Type'class
+      Options     : in out Program_Options_Type;
+      Iterator    : in out Ada_Lib.Options.
+                              Command_Line_Iterator_Interface'class;
+      Option      : in     Ada_Lib.Options.Option_Type'class
    ) return Boolean is
    ---------------------------------------------------------------
 
@@ -471,7 +470,7 @@ package body Driver is
    begin
       Log_In (Debug_Options or Trace_Options, "help mode " & Help_Mode'img &
          Quote (" component", Component));
-      Ada_Lib.Options.Nested_Options_Type (Options).Program_Help (Help_Mode);
+      Ada_Lib.Options.Actual.Nested_Options_Type (Options).Program_Help (Help_Mode);
 
       case Help_Mode is
 
@@ -636,8 +635,9 @@ package body Driver is
    end Trace_Parse;
 
 begin
---Debug_Options := True;
---Trace_Options := True;
+Debug_Options := True;
+Elaborate := True;
+Trace_Options := True;
    Include_Program := True;
    Include_Task := True;
    Log_Here (Debug_Options or Trace_Options or Elaborate);
