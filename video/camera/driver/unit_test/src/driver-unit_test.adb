@@ -1,7 +1,8 @@
 ﻿with Ada.Text_IO;use Ada.Text_IO;
+with Ada_Lib.Command_Line_Iterator;
 with Ada_Lib.Help;
-with Ada_Lib.Options;
 with Ada_Lib.Options.Runstring;
+with Ada_Lib.Options.Unit_Test;
 with Ada_Lib.Strings.Unlimited;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
 with Ada_Lib.Unit_Test.Reporter;
@@ -29,7 +30,8 @@ package body Driver.Unit_Test is
    Options_With_Parameters       : aliased constant
                                     Ada_Lib.Options.Options_Type :=
                                        Ada_Lib.Options.Create_Options (
-                                          Trace_Option);
+                                          "", -- renived Trace_Option,
+                                          Ada_Lib.Options.Unmodified);
    Options_Without_Parameters    : aliased constant
                                     Ada_Lib.Options.Options_Type :=
                                        Ada_Lib.Options.Null_Options;
@@ -64,6 +66,17 @@ package body Driver.Unit_Test is
    end Get_Modifiable_Options;
 
    ---------------------------------------------------------------
+   function Get_Readonly_Options (
+      From                       : in  String := Ada_Lib.Trace.Here
+   ) return Driver_Unit_Test_Option_Constant_Class_Access is
+   ---------------------------------------------------------------
+
+   begin
+      Log_Here (Debug_Options or Trace_Options, "from " & From);
+      return Protected_Options'access;
+   end Get_Readonly_Options;
+
+   ---------------------------------------------------------------
    function Initialize
    return Boolean is
    ---------------------------------------------------------------
@@ -80,8 +93,8 @@ package body Driver.Unit_Test is
 --    Protected_Options.Unit_Test := True;
       Ada_Lib.Options.Set_Ada_Lib_Options (Protected_Options'access);
 
-      Ada_Lib.Options.Unit_Test.Unit_Test_Options :=
-         Protected_Options'unchecked_access;
+--    Ada_Lib.Options.Unit_Test.Unit_Test_Options :=
+--       Protected_Options'unchecked_access;
 
       Set_Protected_Options (Protected_Options.Driver_Options'access);
       Protected_Options.Driver_Options.Camera_Directory.Construct (
@@ -89,7 +102,7 @@ package body Driver.Unit_Test is
 
       return Log_Out (
          Protected_Options.Driver_Options.Initialize and then
-         Ada_Lib.Options.Unit_Test.Unit_Test_Program_Options_Type (
+         Camera.Lib.Unit_Test.Unit_Test_Program_Options_Type (
             Protected_Options).Initialize and then
          Protected_Options.Process (
             Include_Options      => True,
@@ -121,9 +134,9 @@ package body Driver.Unit_Test is
    ---------------------------------------------------------------
    overriding
    function Process_Option (  -- process one option
-     Options                    : in out Driver_Unit_Test_Options_Type;
-     Iterator                   : in out Ada_Lib.Command_Line_Iterator.
-                                          Abstract_Package.Abstract_Iterator_Type'class;
+     Options                     : in out Driver_Unit_Test_Options_Type;
+      Iterator                   : in out Ada_Lib.Options.
+                                    Command_Line_Iterator_Interface'class;
       Option                     : in     Ada_Lib.Options.
                                              Option_Type'class
    ) return Boolean is
@@ -187,13 +200,15 @@ package body Driver.Unit_Test is
 
          end case;
       else
-         return Log_Out (Options.Driver_Options.Process_Option (Iterator, Option) or else
-            Ada_Lib.Options.Unit_Test.Unit_Test_Program_Options_Type (
+         return Log_Out (Options.Driver_Options.Process_Option (
+            Iterator, Option) or else
+            Camera.Lib.Unit_Test.Unit_Test_Program_Options_Type (
                Options).Process_Option (Iterator, Option),
             Debug_Options or Trace_Options, "other " & Option.Image);
       end if;
 
-      Log_Out (Debug_Options or Trace_Options, " option" & Option.Image & " handled");
+      Log_Out (Debug_Options or Trace_Options,
+         " option" & Option.Image & " handled");
       return True;
    end Process_Option;
 
@@ -209,7 +224,7 @@ package body Driver.Unit_Test is
    begin
       Log_In (Debug_Options or Trace_Options, "help mode " & Help_Mode'img);
       Options.Driver_Options.Program_Help (Help_Mode);
-      Ada_Lib.Options.Unit_Test.Unit_Test_Program_Options_Type (
+      Camera.Lib.Unit_Test.Unit_Test_Program_Options_Type (
          Options).Program_Help (Help_Mode);
 
       case Help_Mode is

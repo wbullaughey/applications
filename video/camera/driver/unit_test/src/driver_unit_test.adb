@@ -1,7 +1,7 @@
 with Ada.Text_IO; use Ada.Text_IO;
 --with Ada_Lib.Options;
 with Ada_Lib.OS;
-with Ada_lib.Timer;
+--with Ada_lib.Timer;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
 with Ada_Lib.Trace_Tasks;
 with Command_Name;
@@ -9,7 +9,8 @@ with Driver.Unit_Test;
 
 procedure Driver_Unit_Test is
 
-   Debug                : Boolean renames Options.Main_Debug;
+   Debug    : Boolean renames Driver.Unit_Test.Get_Readonly_Options.
+               Driver_Options.Main_Debug;
 
 begin
    if not Driver.Unit_Test.Initialize then
@@ -30,7 +31,7 @@ begin
 
    end;
 
-   Ada_lib.Timer.Stop;
+-- Ada_lib.Timer.Stop;
    Log_Here (Debug, "timer stopped, stop trace tasks");
 
    Ada_lib.Trace_Tasks.Stop;

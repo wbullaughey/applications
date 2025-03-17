@@ -14,6 +14,7 @@ with Command_Name;
 package body Driver is
 
    use Ada_Lib.Strings.Unlimited;
+   use type Ada_Lib.Options.Options_Type;
    use type Ada_Lib.OS.OS_Exit_Code_Type;
 
 -- subtype String_Type           is String_Type;
@@ -58,25 +59,33 @@ package body Driver is
 --                                  Ada_Lib.Options.Options_Type :=
 --                                     Ada_Lib.Options.Create_Options (
 --                                        "lr");
+   Option_Modifier               : constant Character := '=';
    Parameters  : constant Parameters_Type := (
-                  False    => (
+                  False    => (     -- driver
+                     With_Parameters      =>
+                        new Ada_Lib.Options.Options_Type'(
+                           Ada_Lib.Options.Create_Options (Camera_Option &
+                              Directory_Option & "s",Ada_Lib.Options.Unmodified) &
+                           Ada_Lib.Options.Create_Options (Camera_Option &
+                              Directory_Option & "Ru", Option_Modifier)
+                        ),
+                     Without_Parameters   =>
+                        new Ada_Lib.Options.Options_Type'(
+                           Ada_Lib.Options.Create_Options ("r",
+                              Ada_Lib.Options.Unmodified) &
+                           Ada_Lib.Options.Create_Options (Camera_Option &
+                              Directory_Option & "l", Option_Modifier)
+                        )
+                  ),
+                  True    => (      -- unit test
                      With_Parameters      =>
                         Ada_Lib.Options.Create_Options (Camera_Option &
-                           Directory_Option & "Rstu",Ada_Lib.Options.Unmodified),
-                           Without_Parameters   =>
-                              Ada_Lib.Options.
-                                 Create_Options ("lr", Ada_Lib.Options.Unmodified)
-                        ),
-                        True    => (
-                           With_Parameters      =>
-                              Ada_Lib.Options.
-                                 Create_Options (Camera_Option &
-                                    Directory_Option & "Rtu", Ada_Lib.Options.Unmodified),
-                           Without_Parameters   =>
-                              Ada_Lib.Options.
-                                 Create_Options ("l", Ada_Lib.Options.Unmodified)
-                        )
-                     );
+                           Directory_Option & "tu", Option_Modifier),
+                     Without_Parameters   =>
+                        Ada_Lib.Options.
+                           Create_Options ("l", Option_Modifier)
+                  )
+               );
    Protected_Options             : Driver_Options_Class_Access := Null;
    Queue                         : Queue_Type;
 
@@ -635,9 +644,9 @@ package body Driver is
    end Trace_Parse;
 
 begin
-Debug_Options := True;
-Elaborate := True;
-Trace_Options := True;
+--Debug_Options := True;
+--Elaborate := True;
+--Trace_Options := True;
    Include_Program := True;
    Include_Task := True;
    Log_Here (Debug_Options or Trace_Options or Elaborate);

@@ -1,9 +1,8 @@
-﻿with Ada_Lib.Command_Line_Iterator;
-with Ada_Lib.Options.Unit_Test;
-with Ada_Lib.Unit_Test;
+﻿with Ada_Lib.Unit_Test;
 with Ada_Lib.Trace;
 with Ada_Lib.Unit_Test.Test_Cases;
 with AUnit.Test_Suites;
+with Camera.Lib.Unit_Test;
 
 package Driver.Unit_Test is
 
@@ -14,9 +13,8 @@ package Driver.Unit_Test is
    type Driver_Test_Access       is access Driver_Test_Type;
    type Driver_Test_Class_Access is access Driver_Test_Type'class;
 
-   type Driver_Unit_Test_Options_Type
-                                 is limited new Ada_Lib.Options.Unit_Test.
-                                    Unit_Test_Program_Options_Type (True) with record
+   type Driver_Unit_Test_Options_Type is limited new Camera.Lib.Unit_Test.
+         Unit_Test_Program_Options_Type with record
 --    Camera_Options             : Ada_Lib.Strings.Unlimited.String_Type;
       Driver_Options             : aliased Driver_Options_Type (True);
 --    Unit_Test_Options          : aliased Ada_Lib.Options.Unit_Test.
@@ -36,8 +34,8 @@ package Driver.Unit_Test is
    overriding
    function Process_Option (  -- process one option
      Options                    : in out Driver_Unit_Test_Options_Type;
-     Iterator                   : in out Ada_Lib.Command_Line_Iterator.
-                                          Abstract_Package.Abstract_Iterator_Type'class;
+      Iterator                   : in out Ada_Lib.Options.
+                                    Command_Line_Iterator_Interface'class;
       Option                     : in     Ada_Lib.Options.
                                              Option_Type'class
    ) return Boolean
@@ -46,6 +44,10 @@ package Driver.Unit_Test is
    function Get_Modifiable_Options (
       From                       : in  String := Ada_Lib.Trace.Here
    ) return Driver_Unit_Test_Option_Class_Access;
+
+   function Get_Readonly_Options (
+      From                       : in  String := Ada_Lib.Trace.Here
+   ) return Driver_Unit_Test_Option_Constant_Class_Access;
 
    overriding
    function Name (
