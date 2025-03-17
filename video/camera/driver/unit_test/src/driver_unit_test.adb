@@ -9,6 +9,7 @@ with Driver.Unit_Test;
 
 procedure Driver_Unit_Test is
 
+   Debug                : Boolean renames Options.Main_Debug;
 
 begin
    if not Driver.Unit_Test.Initialize then

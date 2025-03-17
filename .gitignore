@@ -11,6 +11,7 @@ vendor/
 *.txt
 *.stderr
 *.stdout
+*.lst
 suites
 GNAT-*
 *-save

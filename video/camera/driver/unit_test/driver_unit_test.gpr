@@ -7,8 +7,8 @@ with "camera_lib.gpr";
 with "config/driver_unit_test_config.gpr";
 with "default_config.gpr";
 with "gnoga.gpr";
-with "../../../../../local.gpr";
-with "test_lib.gpr";
+with "local.gpr";
+--with "test_lib.gpr";
 with "video_lib.gpr";
 
 project Driver_Unit_Test is
@@ -27,9 +27,9 @@ project Driver_Unit_Test is
       for Switches ("Ada") use ("-Es"); --  Symbolic traceback
    end Binder;
 
-   package Linker is
-      for Default_Switches ("Ada") use Local.Linker_Switches;
-   end Linker;
+-- package Linker is
+--    for Default_Switches ("Ada") use Local.Linker_Switches;
+-- end Linker;
 
    package Install is
       for Artifacts (".") use ("share");
