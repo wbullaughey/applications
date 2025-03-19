@@ -235,7 +235,7 @@ package body Driver is
       Log_In (Debug_Options or Trace_Options, "testing " & Options.Testing'img &
          " with parameters " & Ada_Lib.Options.Image (
             Selected_Parameters.With_Parameters.all) &
-         " without parameters" & Ada_Lib.Options.Image (
+         " without parameters " & Ada_Lib.Options.Image (
             Selected_Parameters.Without_Parameters.all) &
          " Initialized " & Options.Initialized'img &
          " from " & From);

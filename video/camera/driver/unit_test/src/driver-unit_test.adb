@@ -389,7 +389,7 @@ package body Driver.Unit_Test is
      end Run_Suite;
 
 begin
---Debug := True;
+Debug := True;
 --Trace_Options := True;
    Log_Here (Debug_Options or Trace_Options or Elaborate);
 end Driver.Unit_Test;
