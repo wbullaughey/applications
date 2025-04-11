@@ -1,3 +1,5 @@
 source ~/.zshrc
-echo OS_VERSION /$OS_VERSION/
-alr build -- -v -s -k -gnatE --create-map-file
+export BUILD_MODE=$1
+echo BUILD_MODE $BUILD_MODE
+
+../../../global_build.sh $BUILD_MODE

@@ -12,7 +12,7 @@ echo APPLICATION = $APPLICATION
 #ls $BIN_DIRECTORY
 
 cd $BIN_DIRECTORY
-echo pwd
+echo CURRENT_DIRECTORY $CURRENT_DIRECTORY | tee $OUTPUT
 pwd
 
 for (( ;; ))
@@ -39,6 +39,31 @@ case "$SUITE" in
 
    "help")
       export COMMAND="$APPLICATION $OPTIONS -h "
+      echo "command: $COMMAND"  | tee $OUTPUT
+      $COMMAND 2>&1 | tee -a $OUTPUT
+      exit
+      ;;
+
+   "help_test")
+      export TEST_OPTIONS="-h -l -P -r -v -x -@c -@d -@i -@l -@m -@p -@P -@S -@t -@n2 -@u -@x \
+         -1 aAbcCdmopqsSt \
+         -a abcCehiIlmMoOpPrRsStT@c@d@D@e@E@l@o@s@t \
+         -d aopt \
+         -e xyz \
+         -g aego \
+         -G amo \
+         -s suite \
+         -S suites
+         -t aopt \
+         -T acCdhilmorRsStT@d@T@t \
+         -U aAglprstT \
+         -w 99 \
+         =D subdirectory \
+         -@R 123 \
+         -=R routine \
+         -u suite \
+         -=X directory"
+      export COMMAND="$APPLICATION $OPTIONS $TEST_OPTIONS"
       echo "command: $COMMAND"  | tee $OUTPUT
       $COMMAND 2>&1 | tee -a $OUTPUT
       exit

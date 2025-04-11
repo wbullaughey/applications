@@ -2,7 +2,7 @@
 export OUTPUT=list-camera_driver.txt
 export CURRENT_DIRECTORY=`pwd`
 export TARGET_SUBDIRECTORY=`realpath "$CURRENT_DIRECTORY/../unit_test"`
-export OPTIONS="-r -D $TARGET_SUBDIRECTORY"
+export OPTIONS="-r -=D $TARGET_SUBDIRECTORY"
 export PARAMETERS=("$@")
 echo PARAMETERS: $PARAMETERS
 echo OUPUT=$OUTPUT
@@ -139,7 +139,7 @@ trace "routine $ROUTINE"
 remove_1
 parameters  # process leading options
 
-export VERBOSE="-v -X -v"
+export VERBOSE="-v -=X -v"
 case "$ROUTINE" in
 
    all)

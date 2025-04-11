@@ -1,0 +1,96 @@
+OUPUT=list-camera.txt
+TRACE: parameters function /help/
+TRACE: option help
+TRACE: FIRST h
+TRACE: PARAMETERS help
+TRACE: MODE help
+TRACE: shifted
+TRACE: parameters function //
+camera_control
+
+
+camera_control command line options:
+    -?                  : this message                  (Ada_Lib)
+    -a <trace options>  : Ada_Lib library trace options (Ada_Lib)
+    -c <directory>      : current directory             (Camera Lib)
+    -E                  : simulate camera               (Camera Lib)
+    -G <trace options>  : GNOGA traces                  (GNOGA library)
+    -h                  : this message                  (Ada_Lib)
+    -l                  : local camera                  (Camera Lib)
+    -P                  : pause                         (Ada_Lib)
+    -r                  : remote camera                 (Camera Lib)
+    -T <trace options>  : trace options                 (Camera.Lib.Options)
+    -v                  : verbose                       (Ada_Lib)
+    -V <trace options>  : trace options                 (Video Lib)
+    -w <port number>    : Web server port               (GNOGA library)
+    -@c                 : trace test condition          (Ada_Lib)
+    -@i                 : indent trace                  (Ada_Lib)
+    -@p                 : include program in trace      (Ada_Lib)
+    -@t                 : include task in trace         (Ada_Lib)
+    -@T <trace options> : trace options                 (Camera Lib)
+    -@x                 : exclude time in trace         (Ada_Lib)
+
+
+camera_control trace options -T)
+      a               all
+      m               main program options
+      r               runtime options
+
+CAC ada_lib trace library options (-a)
+      a               all
+      b               database subscribe
+      c               Ada_Lib.Command_Line Trace
+      C               Ada_Lib.Configuration Trace
+      e               Event
+      h               Help
+      i               interrupt
+      I               Ada_Lib.interface
+      l               lock
+      m               timer
+      M               mail
+      o               os
+      O               Ada_Lib.Options
+      p               parser
+      P               database post
+      r               run remote, database connect
+      R               Ada_Lib.Options.Runstring.Debug
+      s               socket
+      S               socket Stream
+      t               Ada_Lib.Trace
+      T               Ada_Lib.Trace_Tasks
+      @c              Template Compile
+      @d              Template Detail
+      @D              Ada_Lib.Directory trace
+      @e              Template Evaluate
+      @E              Template Expand
+      @l              Template Load
+      @o              Trace_Options
+      @s              Strings
+      @t              Ada_Lib.Text
+Ada_Lib.Options.GNOGA library trace options (-G)
+      a               all
+      m               GNOGA.Ada_Lib.Trace
+      o               GNOGA options
+
+
+Camera Lib trace options (-@T)
+      a               all
+      b               base.debug
+      c               camera configuration
+      C               camera commands
+      g               Widgets.Generic_Table
+      l               camera Library
+      L               camera library options
+      m               Main Window
+      s               Trace simulator
+      S               configuration state
+      T               Windows.Top
+      V               Trace Video widgets
+      wa              Adjust Window
+      wc              Control Window
+      wC              Configured Window
+
+Video Lib trace options (-V)
+      a               all
+      l               library debug
+      o               options debug

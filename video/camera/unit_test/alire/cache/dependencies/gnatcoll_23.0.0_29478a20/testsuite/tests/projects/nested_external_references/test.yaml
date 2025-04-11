@@ -1,5 +1,0 @@
-description: >
-  Check support for treating nested external
-  references as Scenario Variables.
-data:
-    - "a.gpr"

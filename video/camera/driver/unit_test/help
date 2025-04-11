@@ -1,0 +1,146 @@
+command: ./driver_unit_test  -h
+
+driver_unit_test command line options:
+    -1 <trace options>             : Camera Lib unit test                (Camera.Lib.Unit_Test)
+    -?                             : this message                        (Ada_Lib)
+    -a <trace options>             : Ada_Lib library trace options       (Ada_Lib)
+    -d <Trace Options>             : driver trace options                (driver_unit_test)
+    -e <routine>                   : routine to test.                    (test_ada_lib)
+    -g <trace options>             : GNOGA Unit Test traces              (Ada_Lib.GNOGA)
+    -G <trace options>             : GNOGA traces                        (GNOGA library)
+    -h                             : this message                        (Ada_Lib)
+    -l                             : list output from camera app         (driver_unit_test)
+    -P                             : pause                               (Ada_Lib)
+    -r                             : remote camera                       (driver_unit_test)
+    -s <suite to test>             : select test suite to run.           (test_ada_lib)
+    -S <suites>                    : enable default disabled suites.     (test_ada_lib)
+    -t <trace options>             : ada_lib trace options               (Ada_Lib Unit Test)
+    -T <trace options>             : driver unit test trace options      (driver_unit_test)
+    -U <unit test trace Ada_Lib.>  : select trace                        (test_ada_lib)
+    -v                             : verbose                             (Ada_Lib)
+    -w <port number>               : Web server port                     (GNOGA library)
+    -x                             : exit on tests complete              (test_ada_lib)
+    -@c                            : trace test condition                (Ada_Lib)
+    -@d                            : driver suites                       (test_ada_lib)
+    -=D <subdirectory>             : subdirectory to run camera app from (driver_unit_test)
+    -@i                            : indent trace                        (Ada_Lib)
+    -@l                            : List test suites                    (test_ada_lib)
+    -@m                            : manual operations.                  (test_ada_lib)
+    -@n <number of random seeds>   : number seeds.                       (test_ada_lib)
+    -@p                            : include program in trace            (Ada_Lib)
+    -@P                            : Print test suites.                  (test_ada_lib)
+    -@R <seed>                     : set random seed                     (test_ada_lib)
+    -=R <routine>                  : routine to run, multiple allowed    (driver_unit_test)
+    -@S                            : report random seed                  (test_ada_lib)
+    -@t                            : include task in trace               (Ada_Lib)
+    -@u                            : use random seed                     (test_ada_lib)
+    -=u <suite>                    : suite to run, multiple allowed      (driver_unit_test)
+    -@x                            : exclude time in trace               (Ada_Lib)
+    -=X <options>                  : options to pass                     (driver_unit_test)
+
+
+driver trace options (-d
+      a               all
+      o               program options trace
+      p               program trace
+      t               driver trace
+Camera Lib Unit Test trace options (1)
+      a               all
+      A               Widgets.Adjust unit test trace
+      b               Base Command_Tests
+      c               Widgets.Control unit_test trace
+      C               Widgets.Configured unit test trace
+      d               library unit test trace
+      m               main unit test trace
+      o               unit_test options
+      p               program trace
+      q               camera queue
+      s               Configuration.Camera.State unit_test options
+      S               Configuration.Camera.Setup unit_test options
+      t               unit_test trace
+
+./driver_unit_test trace options (-t)
+      a               all
+      c               configuration
+      C               command line iterator
+      d               directory compare and copy
+      h               help test
+      i               Socket_IO.Clent trace
+      l               Lock Test
+      m               Mail Test
+      o               Ada_Lib.Options.AUnit_Lib options
+      r               suites
+      R               Test program trace
+      s               Socket Stream Test
+      S               Database server Test
+      t               Template Test
+      T               Timer Test
+      @d              Debug Test
+      @T              Debug Tests
+      @t              Debug Test routines
+
+Ada_Lib.Options.GNOGA unit test trace options (-g)
+      a               all
+      e               Ada_Lib.GNOGA.Unit_Test.Event.Debig
+      g               Ada_Lib.GNOGA.Debug (main window)
+      o               Ada_Lib.GNOGA.Unit_Test.Options.Debug_Options
+
+Ada_Lib.Options.GNOGA library trace options (-G)
+      a               all
+      m               GNOGA.Ada_Lib.Trace
+      o               GNOGA options
+
+CAC ada_lib trace library options (-a)
+      a               all
+      b               database subscribe
+      c               Ada_Lib.Command_Line Trace
+      C               Ada_Lib.Configuration Trace
+      e               Event
+      h               Help
+      i               interrupt
+      I               Ada_Lib.interface
+      l               lock
+      m               timer
+      M               mail
+      o               os
+      O               Ada_Lib.Options
+      p               parser
+      P               database post
+      r               run remote, database connect
+      R               Ada_Lib.Options.Runstring.Debug
+      s               socket
+      S               socket Stream
+      t               Ada_Lib.Trace
+      T               Ada_Lib.Trace_Tasks
+      @c              Template Compile
+      @d              Template Detail
+      @D              Ada_Lib.Directory trace
+      @e              Template Evaluate
+      @E              Template Expand
+      @l              Template Load
+      @o              Trace_Options
+      @s              Strings
+      @t              Ada_Lib.Text
+Ada_Lib unit test library trace options (-U)
+      a               all
+      A               all unit tests
+      g               Ada_Lib.GNOGA.Unit_Test.Debug
+      l               Ada_Lib.Unit_Test.Debug Library
+      p               test programs
+      r               Runtime_Options
+      s               Trace Set_Up Tear_Down
+      t               Ada_Lib.Test.Debug
+      T               Ada_Lib.Trace.Debug_Trace
+
+Enable suites disabled by default (-S)
+      a               enable all
+      d               database server
+      t               text
+
+
+driver_unit_test trace options (-T)
+      a               all
+      A               AUnit
+      m               Main Window
+      o               unit_test options
+      t               driver test trace

@@ -1,6 +1,7 @@
 --with Ada.Directories;
 with Ada.Text_IO; use Ada.Text_IO;
 with Ada.Directories;
+with Ada_Lib.Help;
 with Ada_Lib.Options;
 with Ada_Lib.OS;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
@@ -26,16 +27,27 @@ begin
          Protected_Options'unchecked_access));
 
    Protected_Options.Driver_Options.Camera_Directory.Construct (
-      Ada.Directories.Current_Directory);
+      Ada.Directories.Current_Directory & "/..");
 
    if Protected_Options.Initialize then
       if Protected_Options.Process (
             Include_Options      => True,
-            Include_Non_Options  => True) then
-         Log_In (Debug);
+            Include_Non_Options  => True,
+            Modifiers            => Ada_Lib.Help.Modifiers &
+                                       Driver.Option_Modifier) then
+         Log_In (Debug, Quote ("Camera_Directory",
+            Protected_Options.Driver_Options.Camera_Directory));
+
          Put_Line (Command_Name);
-         Driver.Queue_Tests;
-         Driver.Run_Selection;
+         if Ada_Lib.Help_Test then
+            Put_Line ("help test " & (if Ada_Lib.Exception_Occured then
+                  "failed"
+               else
+                  "completed"));
+         else
+            Driver.Queue_Tests;
+            Driver.Run_Selection;
+         end if;
    --    Ada_lib.Timer.Stop;
          Log_Here (Debug, "timer stopped, stop trace tasks");
 

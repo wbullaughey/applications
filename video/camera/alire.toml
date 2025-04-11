@@ -15,6 +15,12 @@ ada_lib = "*"
 ada_lib  = { path = "../../../ada_lib" }
 
 [[depends-on]]
+ada_lib_gnoga = "*"
+
+[[pins]]
+ada_lib_gnoga  = { path = "../../../ada_lib/ada_lib_gnoga" }
+
+[[depends-on]]
 camera_lib = "*"
 
 [[pins]]

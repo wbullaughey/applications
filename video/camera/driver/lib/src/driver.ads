@@ -96,6 +96,8 @@ package Driver is
    procedure Set_Protected_Options (
       Options                    : in Driver_Options_Class_Access);
 
+   Option_Modifier               : constant Character := '=';
+
 private
 
    overriding

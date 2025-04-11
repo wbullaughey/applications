@@ -196,7 +196,13 @@ package body Driver.Unit_Test is
               end;
 
               when others =>
-                 raise Failed with "Has_Option incorrectly passed" & Option.Image;
+                  declare
+                     Message  : constant String :=
+                                 "Has_Option incorrectly passed " & Option.Image;
+                  begin
+                     Log_Exception (Trace_Options or Debug_Options, Message);
+                     raise Failed with Message;
+                  end;
 
          end case;
       else
@@ -233,11 +239,12 @@ package body Driver.Unit_Test is
 --       Ada_Lib.Help.Add_Option ('l', "", "list output from camera app",
 --          Component);
 --       Ada_Lib.Help.Add_Option ('r', "", "remote camera", Component);
-         Ada_Lib.Help.Add_Option ('T', "", "driver unit test trace options");
+         Ada_Lib.Help.Add_Option (Trace_Option, "trace options",
+            "driver unit test trace options", Component);
 
       when Ada_Lib.Options.Traces =>
          New_Line;
-         Put_Line (Command_Name & " trace options (-T)");
+         Put_Line (Command_Name & " trace options (-" & Trace_Option &")");
          Put_Line ("      a               all");
          Put_Line ("      A               AUnit");
          Put_Line ("      m               Main Window");
@@ -389,7 +396,7 @@ package body Driver.Unit_Test is
      end Run_Suite;
 
 begin
-Debug := True;
+--Debug := True;
 --Trace_Options := True;
    Log_Here (Debug_Options or Trace_Options or Elaborate);
 end Driver.Unit_Test;

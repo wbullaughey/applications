@@ -17,14 +17,12 @@ package body Video.Lib is
    Debug_Option                  : constant Character := 'V';
    Options_Debug                 : Boolean := False;
    Options_With_Parameters       : aliased constant
-                                    Ada_Lib.Options.
-                                       Options_Type :=
-                                          Ada_Lib.Options.Null_Options;
+                                    Ada_Lib.Options.Options_Type :=
+                                       Ada_Lib.Options.Create_Options (
+                                          "V", Ada_Lib.Options.Unmodified);
    Options_Without_Parameters    : aliased constant
-                                    Ada_Lib.Options.
-                                       Options_Type :=
-                                          Ada_Lib.Options.Create_Options (
-                                             "alos", Ada_Lib.Options.Unmodified);
+                                    Ada_Lib.Options.Options_Type :=
+                                       Ada_Lib.Options.Null_Options;
 
    ---------------------------------------------------------------
    function Address_Kind (
@@ -165,7 +163,7 @@ package body Video.Lib is
 --       Put_Line ("      c               Configuration.State debug");
          Put_Line ("      l               library debug");
          Put_Line ("      o               options debug");
-         Put_Line ("      s               Trace simulator");
+--       Put_Line ("      s               Trace simulator");
 
       end case;
 

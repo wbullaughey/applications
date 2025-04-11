@@ -49,41 +49,43 @@ package body Driver is
 
    Debug                         : Boolean := False;
    Debug_Options                 : Boolean := False;
-   Camera_Option                 : constant Character := 'X';
+   Driver_Directory              : constant Character := 'X';
    Directory_Option              : constant Character := 'D';
--- Options_With_Parameters       : aliased constant
---                                  Ada_Lib.Options.Options_Type :=
---                                     Ada_Lib.Options.Create_Options (
---                                        Camera_Option & Directory_Option & "Rstu");
--- Options_Without_Parameters    : aliased constant
---                                  Ada_Lib.Options.Options_Type :=
---                                     Ada_Lib.Options.Create_Options (
---                                        "lr");
-   Option_Modifier               : constant Character := '=';
+   Driver_Test_Trace_Option      : constant Character := 'd';
+   Driver_Trace_Option           : constant Character := 't';
    Parameters  : constant Parameters_Type := (
                   False    => (     -- driver
                      With_Parameters      =>
                         new Ada_Lib.Options.Options_Type'(
-                           Ada_Lib.Options.Create_Options (Camera_Option &
-                              Directory_Option & "s",Ada_Lib.Options.Unmodified) &
-                           Ada_Lib.Options.Create_Options (Camera_Option &
-                              Directory_Option & "Ru", Option_Modifier)
+                           Ada_Lib.Options.Create_Options (Driver_Directory &
+                              Directory_Option & "Ru", Option_Modifier) &
+                           Ada_Lib.Options.Create_Options (
+                              "s",Ada_Lib.Options.Unmodified) &
+                           Ada_Lib.Options.Create_Options (Driver_Trace_Option &
+                              "op", Ada_Lib.Options.Unmodified)
                         ),
                      Without_Parameters   =>
                         new Ada_Lib.Options.Options_Type'(
-                           Ada_Lib.Options.Create_Options ("r",
+                           Ada_Lib.Options.Create_Options ("lr",
                               Ada_Lib.Options.Unmodified) &
-                           Ada_Lib.Options.Create_Options (Camera_Option &
-                              Directory_Option & "l", Option_Modifier)
+                           Ada_Lib.Options.Create_Options ("l", Option_Modifier)
                         )
                   ),
                   True    => (      -- unit test
                      With_Parameters      =>
-                        Ada_Lib.Options.Create_Options (Camera_Option &
-                           Directory_Option & "tu", Option_Modifier),
+                        new Ada_Lib.Options.Options_Type'(
+                           Ada_Lib.Options.Create_Options (
+                              Driver_Test_Trace_Option,
+                              Ada_Lib.Options.Unmodified) &
+                           Ada_Lib.Options.Create_Options (Driver_Directory &
+                              Directory_Option & "u", Option_Modifier)
+                        ),
                      Without_Parameters   =>
-                        Ada_Lib.Options.
-                           Create_Options ("l", Option_Modifier)
+                        new Ada_Lib.Options.Options_Type'(
+                           Ada_Lib.Options.Create_Options ("lr",
+                              Ada_Lib.Options.Unmodified) &
+                           Ada_Lib.Options.Create_Options ("l", Option_Modifier)
+                        )
                   )
                );
    Protected_Options             : Driver_Options_Class_Access := Null;
@@ -109,10 +111,10 @@ package body Driver is
 --    use Ada.Text_IO;
 --    use Ada.Strings.Fixed;
 
-      Current_Directory          : constant String :=
+      Camera_Directory           : constant String :=
                                     Protected_Options.Camera_Directory.Coerce;
       Camera_Program             : constant String :=
-                                    Current_Directory & "/bin/camera_aunit";
+                                    Camera_Directory & "/unit_test/bin/camera_aunit";
       Scratch_File               : Ada_Lib.OS.File_Descriptor;
       Scratch_Name               : Ada_Lib.OS.Temporary_File_Name;
 
@@ -130,7 +132,7 @@ package body Driver is
       ------------------------------------------------------
 
    begin
-      Log_In (Debug, Quote (" Current_Directory", Current_Directory) &
+      Log_In (Debug, Quote (" Camera_Directory", Camera_Directory) &
          Quote (" Camera_Program", Camera_Program) &
          Quote (" Parameters", Parameters));
 
@@ -357,9 +359,6 @@ package body Driver is
                   when 'l' =>
                      Options.List_Output := True;
 
-                  when 'R' =>
-                     Options.Routine.Construct (Iterator.Get_Parameter);
-
                   when 'r' =>
                      Options.Remote_Camera := True;
 
@@ -367,7 +366,8 @@ package body Driver is
                      Options.Suite.Construct (Iterator.Get_Parameter);
                      Log_Here (Debug_Options, Quote ("suite", Options.Suite));
 
-                  when 't' =>
+                  when  Driver_Trace_Option |
+                        Driver_Test_Trace_Option =>
                     declare
                        Parameter
                                 : constant String := Iterator.Get_Parameter;
@@ -400,10 +400,30 @@ package body Driver is
                        end loop;
                     end;
 
-                 when 'u' =>
+                  when others =>
+                     declare
+                        Message  : constant String :=
+                                    "Has_Option incorrectly passed " &
+                                    Option.Image;
+                     begin
+                        Log_Exception (Debug_Options or Trace_Options, Message);
+                        raise Failed with Message;
+                     end;
+               end case;
+
+            when Ada_Lib.Options.Modified =>
+               case Option.Option is
+
+                  when Directory_Option =>
+                     Options.Camera_Directory.Construct (Iterator.Get_Parameter);
+
+                  when 'R' =>
+                     Options.Routine.Construct (Iterator.Get_Parameter);
+
+                  when 'u' =>
                      Options.Suite.Construct (Iterator.Get_Parameter);
 
-                 when Camera_Option =>    -- X
+                  when Driver_Directory =>    -- X
                      declare
                         Argument : constant String :=
                                        Iterator.Get_Argument;
@@ -419,16 +439,25 @@ package body Driver is
                            Protected_Options.Camera_Options));
                      end;
 
-                 when others =>
-                    raise Failed with "Has_Option incorrectly passed " & Option.Image;
-
+                  when others =>
+                     declare
+                        Message  : constant String :=
+                                    "Has_Option incorrectly passed " &
+                                    Option.Image;
+                     begin
+                        Log_Exception (Debug_Options or Trace_Options, Message);
+                        raise Failed with Message;
+                     end;
                end case;
 
-            when Ada_Lib.Options.Modified =>
-               raise Failed with "Has_Option incorrectly passed " & Option.Image;
-
             when Ada_Lib.Options.Nil_Option =>
-               raise Failed with "nil option";
+               declare
+                  Message  : constant String := "nil option";
+
+               begin
+                  Log_Exception (Debug_Options or Trace_Options, Message);
+                  raise Failed with Message;
+               end;
 
          end case;
 
@@ -442,9 +471,9 @@ package body Driver is
 
    exception
       when Fault: others =>
-         Trace_Exception (Debug, Fault);
-         Ada_Lib.OS.Exception_Halt (Fault);
-         return False;
+            Trace_Exception (Debug, Fault);
+            Ada_Lib.OS.Exception_Halt (Fault);
+            return False;
 
    end Process_Option;
 
@@ -485,23 +514,34 @@ package body Driver is
 
       when Ada_Lib.Options.Program =>
          Ada_Lib.Help.Add_Option (Directory_Option, "subdirectory",
-            "subdirectory to run camera app from", Component);
+            "subdirectory to run camera app from", Component, Option_Modifier);
          Ada_Lib.Help.Add_Option ('l', "", "list output from camera app",
             Component);
-         Ada_Lib.Help.Add_Option ('R', "routine",
-            "routine to run, multiple allowed", Component);
          Ada_Lib.Help.Add_Option ('r', "",
             "remote camera", Component);
-         Ada_Lib.Help.Add_Option ('t', "", "driver trace options",
-            Component);
+         Ada_Lib.Help.Add_Option ('R', "routine",
+            "routine to run, multiple allowed", Component, Option_Modifier);
+
          Ada_Lib.Help.Add_Option ('u', "suite",
-            "suite to run, multiple allowed", Component);
-         Ada_Lib.Help.Add_Option (Camera_Option, "options", "options to pass",
-            Component);
+            "suite to run, multiple allowed", Component, Option_Modifier);
+
+         Ada_Lib.Help.Add_Option (
+            (if Options.Testing then
+               Driver_Test_Trace_Option
+            else
+               Driver_Trace_Option
+            ), "Trace Options", "driver trace options", Component);
+         Ada_Lib.Help.Add_Option (Driver_Directory, "options", "options to pass",
+            Component, Option_Modifier);
 
       when Ada_Lib.Options.Traces =>
          New_Line;
-         Put_Line ("driver trace options (-t)");
+         Put_Line ("driver trace options (-" &
+            (if Options.Testing then
+               Driver_Test_Trace_Option
+            else
+               Driver_Trace_Option
+            ));
          Put_Line ("      a               all");
          Put_Line ("      o               program options trace");
          Put_Line ("      p               program trace");
@@ -585,16 +625,16 @@ package body Driver is
 --       if Element.Suite.Length = 0 or else  -- test all suites
 --             Suite = Element.Suite then
             declare
-               Options           : constant String :=
-                                    "-c " & Protected_Options.
-                                             Camera_Directory.Coerce &
-                                    (if Protected_Options.Remote_Camera then
-                                       " -r "
-                                    else
-                                       "") &
-                                    " -s " & Element.Suite.Coerce &
-                                    " -e " & Element.Routine.Coerce &
-                                    " " & Protected_Options.Camera_Options.Coerce;
+               Options  : constant String :=
+                           "-" & Option_Modifier & Directory_Option & " " &
+                           Protected_Options.Camera_Directory.Coerce &
+                           (if Protected_Options.Remote_Camera then
+                              " -r "
+                           else
+                              "") &
+                           " -s " & Element.Suite.Coerce &
+                           " -e " & Element.Routine.Coerce &
+                           " " & Protected_Options.Camera_Options.Coerce;
             begin
                Log_Here (Debug, Quote ("run string", Options));
 

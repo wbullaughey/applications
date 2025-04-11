@@ -121,7 +121,7 @@ package body Camera.Lib.Unit_Test is
       Ada_Lib.Options.Runstring.Without_Parameters,
          Options_Without_Parameters);
       return Log_Out_Checked (Initialize_Recursed,
---       Options.Camera_Options.Initialize and then
+         Options.Camera_Options.Initialize and then
 --       Options.AUnit_Options.Initialize and then
 --       Options.GNOGA_Unit_Test_Options.Initialize and then
 --       Options.Unit_Test.Initialize and then
@@ -187,11 +187,17 @@ package body Camera.Lib.Unit_Test is
             Options_Without_Parameters) then
          case Option.Option is
 
-            when Trace_Option =>    -- T
+            when Trace_Option =>    -- 1
                Options.Trace_Parse (Iterator);
 
             when others =>
-               raise Failed with "Has_Option incorrectly passed" & Option.Image;
+               declare
+                  Message  : constant String :=
+                              "Has_Option incorrectly passed " & Option.Image;
+               begin
+                  Log_Exception (Trace_Options or Debug_Options, Message);
+                  raise Failed with Message;
+               end;
 
          end case;
 
@@ -199,8 +205,7 @@ package body Camera.Lib.Unit_Test is
             " option" & Option.Image & " handled");
       else
          return Log_Out (
---          Options.AUnit_Options.Process_Option (Iterator, Option) or else
---          Options.Unit_Test.Process_Option (Iterator, Option) or else
+            Options.Camera_Options.Process_Option (Iterator, Option) or else
             Ada_Lib.Options.AUnit_Lib.Aunit_Program_Options_Type (Options).Process_Option (Iterator, Option),
             Debug_Options or Trace_Options,
             "other " & Option.Image);
@@ -218,7 +223,7 @@ package body Camera.Lib.Unit_Test is
    begin
       Log_In_Checked (Help_Recursed, Debug_Options or Trace_Options,
          "help mode " & Help_Mode'img);
---    Options.AUnit_Options.Program_Help (Help_Mode);
+      Options.Camera_Options.Program_Help (Help_Mode);
 --    Options.Unit_Test.Program_Help (Help_Mode);
 
       case Help_Mode is
@@ -624,8 +629,8 @@ not_implemented;
 --             Widget_Trace := True;
 
             when others =>
-               Options.Bad_Option (Quote ("unexpected Camera_Library test trace option",
-                  Trace));
+               Options.Bad_Option (Quote (
+                  "unexpected Camera_Library test trace option", Trace));
 
          end case;
       end loop;

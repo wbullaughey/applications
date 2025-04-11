@@ -3,7 +3,7 @@
 with Ada.Text_IO;use Ada.Text_IO;
 --with Ada_Lib.Command_Line_Iterator;
 with Ada_Lib.Help;
---with Ada_Lib.Options.Actual;
+with Ada_Lib.Options;
 --with Ada_Lib.Options.GNOGA;
 --with ADA_LIB.Strings.Unlimited;
 --with Ada_Lib.Test;
@@ -29,17 +29,20 @@ with Command_Name;
 package body Camera.Lib.Options is
 
    use type Ada_Lib.Options.Interface_Options_Constant_Class_Access;
+   use type Ada_Lib.Options.Options_Type;
 
--- Configuration_Option          : constant Character := 'c';
--- Template_Option               : constant Character := 't';
    Trace_Option                  : constant Character := 'T';
    Options_With_Parameters       : aliased constant
                                     Ada_Lib.Options.Options_Type :=
-                                       Ada_Lib.Options.Null_Options;
+                                       Ada_Lib.Options.Create_Options (
+                                          Trace_Option, Ada_Lib.Options.Unmodified);
    Options_Without_Parameters    : aliased constant
                                     Ada_Lib.Options.Options_Type :=
-                                       Ada_Lib.Options.Create_Options (
-                                          "amr", Ada_Lib.Options.Unmodified);
+                                       Ada_Lib.Options.Null_Options;
+--                                     Ada_Lib.Options.Create_Options (
+--                                        "m", Ada_Lib.Options.Unmodified) &
+--                                     Ada_Lib.Options.Create_Options (
+--                                        'q', Ada_Lib.Help.Modifier);
 -- Protected_Options             : Ada_Lib.Options.Actual.
 --                                  Program_Options_Class_Access := Null;
 
@@ -165,8 +168,13 @@ package body Camera.Lib.Options is
                end;
 
             when others =>
-               Log_Exception (Debug_Options or Trace_Options);
-               raise Failed with "Has_Option incorrectly passed" & Option.Image;
+               declare
+                  Message  : constant String :=
+                              "Has_Option incorrectly passed " & Option.Image;
+               begin
+                  Log_Exception (Trace_Options or Debug_Options, Message);
+                  raise Failed with Message;
+               end;
 
          end case;
       else
@@ -197,7 +205,7 @@ package body Camera.Lib.Options is
 
       when Ada_Lib.Options.Program =>
          Ada_Lib.Help.Add_Option (Trace_Option,
-            "trace options", Component);
+            "trace options", "trace options", Component);
 
       when Ada_Lib.Options.Traces =>
          New_Line;

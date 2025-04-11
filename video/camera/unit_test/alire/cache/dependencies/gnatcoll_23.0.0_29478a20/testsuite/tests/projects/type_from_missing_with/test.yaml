@@ -1,8 +1,0 @@
-description: >
-  Fail gracefully when variable type is form an unknown
-  project and there are missing withed projects.
-data:
-    - "p.gpr"
-control:
-    - [XFAIL, "env.valgrind",
-       "Known memory leak: see S912-005"]

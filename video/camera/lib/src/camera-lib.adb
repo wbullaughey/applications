@@ -26,19 +26,26 @@ with Windows.Top;
 package body Camera.Lib is
 
    use type Configuration.State.Location_Type;
+   use type Ada_Lib.Options.Options_Type;
 -- use type Ada_Lib.Options.Interface_Options_Constant_Class_Access;
 
-   Trace_Option                  : constant Character := 't';
+   Trace_Option                  : constant Character := 'T';
+   Trace_Prefix                  : constant Character := 'w';
+   Display_Trace_Option          : constant String := Ada_Lib.Help.Modifier &
+                                    Trace_Option;
    Options_With_Parameters       : aliased constant
                                     Ada_Lib.Options.Options_Type :=
                                        Ada_Lib.Options.Create_Options (
-                                          "cp" & Trace_Option,
-                                       Ada_Lib.Options.Unmodified);
+                                          "cp", Ada_Lib.Options.Unmodified) &
+                                       Ada_Lib.Options.Create_Options (
+                                          Trace_Option, Ada_Lib.Help.Modifier);
    Options_Without_Parameters    : aliased constant
                                     Ada_Lib.Options.Options_Type :=
                                        Ada_Lib.Options.Create_Options (
-                                          "Elr",
-                                          Ada_Lib.Options.Unmodified);
+                                          "El",
+                                          Ada_Lib.Options.Unmodified) &
+                                       Ada_Lib.Options.Create_Options (
+                                          'r', Ada_Lib.Options.Unmodified);
    Recursed                      : Boolean := False;
 
    -------------------------------------------------------------------------
@@ -196,24 +203,25 @@ package body Camera.Lib is
                Options.Directory.Construct (Iterator.Get_Parameter);
 
             when 'l' =>
-               if Options_Type (Options).Location =
-                     Configuration.State.Remote then
-                  Options.Bad_Option ("Remote option (r) and Local remote (l) are incompatable");
+               if    Options.Location = Configuration.State.Remote and then
+                     not Ada_Lib.Help_Test then
+                  Options.Bad_Option (
+                     "Remote option (r) and Local remote (l) are incompatable");
                end if;
-               Options_Type (Options).Location :=
-                  Configuration.State.Local;
+               Options.Location := Configuration.State.Local;
 
             when 'r' =>    -- remote camera
-               if Options.Simulate then
-                  Options.Bad_Option ("Remote option (r) and Simulate (E) are incompatable");
+               if    Options.Simulate and then
+                     not Ada_Lib.Help_Test then
+                  Options.Bad_Option (
+                     "Remote option (r) and Simulate (E) are incompatable");
                end if;
-               Options_Type (Options).Location :=
-                  Configuration.State.Remote;
+               Options.Location := Configuration.State.Remote;
 --log_here ("remote " & Image (Options.Remote'address));
 
             when 'E' =>    -- simulate Standard.Camera
-               if Options_Type (Options).Location =
-                     Configuration.State.Remote then
+               if    Options.Location = Configuration.State.Remote and then
+                     not Ada_Lib.Help_Test then
                   Options.Bad_Option ("Remote option (r) and Simulate (E) are incompatable");
                end if;
                Options.Simulate := True;
@@ -222,8 +230,13 @@ package body Camera.Lib is
                Options.Trace_Parse (Iterator);
 
             when others =>
-               raise Failed with "Has_Option incorrectly passed" & Option.Image;
-
+               declare
+                  Message  : constant String :=
+                              "Has_Option incorrectly passed " & Option.Image;
+               begin
+                  Log_Exception (Trace_Options or Debug_Options, Message);
+                  raise Failed with Message;
+               end;
          end case;
 
          return Log_Out (True, Debug_Options or Trace_Options,
@@ -262,14 +275,16 @@ package body Camera.Lib is
          Ada_Lib.Help.Add_Option ('l', "", "local camera", Component);
          Ada_Lib.Help.Add_Option ('r', "", "remote camera", Component);
          Ada_Lib.Help.Add_Option ('E', "", "simulate camera", Component);
-         Ada_Lib.Help.Add_Option (Trace_Option, "trace options", "trace options", Component);
+         Ada_Lib.Help.Add_Option (Trace_Option, "trace options", "trace options",
+            Component, Ada_Lib.Help.Modifier);
 --       Ada_Lib.Help.Add_Option ('u', "camera URL", "URL", Component);
          New_Line;
 
       when Ada_Lib.Options.Traces =>
          New_Line;
 
-         Put_Line (Component & " trace options (-" & Trace_Option & ")");
+         Put_Line (Component & " trace options (-" &
+            Display_Trace_Option & ")");
          Put_Line ("      a               all");
          Put_Line ("      b               base.debug");
          Put_Line ("      c               camera configuration");
@@ -281,11 +296,11 @@ package body Camera.Lib is
          Put_Line ("      s               Trace simulator");
          Put_Line ("      S               configuration state");
          Put_Line ("      T               Windows.Top");
-         Put_Line ("      v               Trace Video communications");
+--       Put_Line ("      v               Trace Video communications");
          Put_Line ("      V               Trace Video widgets");
-         Put_Line ("      wa              Adjust Window");
-         Put_Line ("      wc              Control Window");
-         Put_Line ("      wC              Configured Window");
+         Put_Line ("      " & Trace_Prefix & "a              Adjust Window");
+         Put_Line ("      " & Trace_Prefix & "c              Control Window");
+         Put_Line ("      " & Trace_Prefix & "C              Configured Window");
 
       end case;
 
@@ -301,7 +316,7 @@ package body Camera.Lib is
                                  Command_Line_Iterator_Interface'class) is
    ----------------------------------------------------------------------------
 
-      type Suboption_Type        is (Plain, Widget);
+      type Suboption_Type        is (Plain, Modified);
 
       Parameter                  : constant String := Iterator.Get_Parameter;
       Suboption                  : Suboption_Type := Plain;
@@ -368,17 +383,17 @@ package body Camera.Lib is
                   when 'V' =>
                      Widgets.Video.Debug := True;
 
-                  when 'w' =>
-                     Suboption := Widget;
+                  when Trace_Prefix =>
+                     Suboption := Modified;
 
                   when others =>
                      Options.Bad_Option (Quote (
                         "unexpected trace option", Trace) &
-                        " for '" & Trace_Option & "'");
+                        " for '" & Display_Trace_Option & "'");
 
                end case;
 
-         when Widget =>
+         when Modified =>
                case Trace is
 
                   when 'a' =>
@@ -392,9 +407,10 @@ package body Camera.Lib is
 
                   when others =>
                      Options.Bad_Option (Quote (
-                        "unexpected trace option", Trace) &
-                        " suboption " & Suboption'img &
-                        " for '" & Trace_Option & "'");
+                        "unexpected trace option",
+                        Trace) &
+                     " suboption " & Suboption'img &
+                     " for '" & Display_Trace_Option & "'");
 
                end case;
                Suboption := Plain;
