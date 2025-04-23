@@ -1,7 +1,7 @@
+with Ada_Lib.Options.Actual;
 with Ada_Lib.Options.AUnit_Lib;
 with Ada_Lib.GNOGA.Unit_Test; -- .Base;
 --with Ada_Lib.Options.GNOGA;
-with Ada_Lib.Options.Unit_Test;
 with Ada_Lib.Trace;
 with Ada_Lib.Unit_Test.Test_Cases;
 --with AUnit.Ada_Lib.Options;
@@ -129,7 +129,7 @@ package Camera.Lib.Unit_Test is
                                              Option_Type'class
    ) return Boolean
    with Pre => Options.Initialized;
---             not Ada_Lib.Options.Have_Options;
+--             not Ada_Lib.Options.Actual.Have_Ada_Lib_Program_Options;
 
    procedure Run_Suite (
      Options                    : in   Unit_Test_Program_Options_Type);
@@ -140,7 +140,7 @@ package Camera.Lib.Unit_Test is
       Iterator    : in out Ada_Lib.Options.
                      Command_Line_Iterator_Interface'class
    ) with Pre => Options.Initialized and then
-                 Ada_Lib.Options.Have_Options;
+                 Ada_Lib.Options.Actual.Have_Ada_Lib_Program_Options;
 
    type Test_Suite is new AUnit.Test_Suites.Test_Suite with null record;
 
@@ -167,6 +167,6 @@ private
       Options                    : in     Unit_Test_Program_Options_Type;  -- only used for dispatch
       Help_Mode                  : in     ADA_LIB.Options.Help_Mode_Type
    ) with Pre => Options.Initialized and then
-                 Ada_Lib.Options.Have_Options;
+                 Ada_Lib.Options.Actual.Have_Ada_Lib_Program_Options;
 
 end Camera.Lib.Unit_Test;

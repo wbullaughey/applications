@@ -61,7 +61,7 @@ package Driver.Unit_Test is
 private
 
    function Create_Suite return AUnit.Test_Suites.Access_Test_Suite
-   with Pre => Ada_Lib.Options.Have_Options;
+   with Pre => Ada_Lib.Options.Actual.Have_Program_Options;
 
    overriding
    procedure Program_Help (

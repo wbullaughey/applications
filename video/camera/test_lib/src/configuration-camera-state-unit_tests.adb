@@ -1,6 +1,6 @@
 with Ada.Exceptions;
 with Ada_Lib.GNOGA;
-with Ada_Lib.Options;
+with Ada_Lib.Options.Actual;
 with Ada_Lib.Strings;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
 with Ada_Lib.Unit_Test.Test_Cases;
@@ -14,7 +14,7 @@ package body Configuration.Camera.State.Unit_Tests is
 
    use type Ada_Lib.Strings.String_Access;
 -- use type Standard.Camera.Lib.Unit_Test.Options_Constant_Class_Test_Access;
-   use type Ada_Lib.Options.Interface_Options_Constant_Class_Access;
+-- use type Ada_Lib.Options.Interface_Options_Constant_Class_Access;
 
    type Connection_Data_Type     is new Ada_Lib.GNOGA.Connection_Data_Type
                                     with null record;
@@ -45,7 +45,7 @@ package body Configuration.Camera.State.Unit_Tests is
 
    procedure Test_Load (
       Test                       : in out AUnit.Test_Cases.Test_Case'class
-   ) with Pre => Ada_Lib.Options.Get_Ada_Lib_Read_Only_Options /= Null;
+   ) with Pre => Ada_Lib.Options.Actual.Have_Ada_Lib_Program_Options;
 
    procedure Test_Values (
       Test                       : in out AUnit.Test_Cases.Test_Case'class

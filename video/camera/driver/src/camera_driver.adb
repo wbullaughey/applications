@@ -22,7 +22,7 @@ procedure Camera_Driver is
                                     Driver_Options.Main_Debug;
 
 begin
-   Ada_Lib.Options.Set_Ada_Lib_Options (
+   Ada_Lib.Options.Actual.Set_Ada_Lib_Program_Options (
       Ada_Lib.Options.Interface_Options_Class_Access'(
          Protected_Options'unchecked_access));
 
@@ -56,7 +56,11 @@ begin
             Ada_Lib.Trace_Tasks.Report;
          end if;
          Log_Out (Debug);
-         ADA_LIB.OS.Immediate_Halt (Ada_Lib.OS.No_Error);
+         ADA_LIB.OS.Immediate_Halt (
+            if Ada_Lib.Exception_Occured then
+               Ada_Lib.OS.Exception_Exit
+            else
+               Ada_Lib.OS.No_Error);
       else
          ADA_LIB.OS.Immediate_Halt (Ada_Lib.OS.Application_Error,
             "Process Options failed");

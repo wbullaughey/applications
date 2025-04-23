@@ -46,6 +46,12 @@ package Camera.Lib is
    type Options_Constant_Class_Access
                                  is access constant Options_Type'class;
 
+   function Get_Camera_Modifiable_Options
+   return Options_Class_Access;
+
+   function Get_Camera_Readonly_Options
+   return Options_Constant_Class_Access;
+
    overriding
    function Initialize (
       Options               : in out Options_Type;

@@ -103,11 +103,11 @@ package body Driver.Unit_Test is
       return Log_Out (
          Protected_Options.Driver_Options.Initialize and then
          Camera.Lib.Unit_Test.Unit_Test_Program_Options_Type (
-            Protected_Options).Initialize and then
-         Protected_Options.Process (
-            Include_Options      => True,
-            Include_Non_Options  => False,
-            Modifiers            => Ada_Lib.Help.Modifiers),
+            Protected_Options).Initialize, -- and then
+--       Protected_Options.Process (
+--          Include_Options      => True,
+--          Include_Non_Options  => False,
+--          Modifiers            => Ada_Lib.Help.Modifiers),
          Debug_Options or Trace_Options,
          "Initialized " & Protected_Options.Initialized'img);
 

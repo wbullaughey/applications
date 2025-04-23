@@ -28,8 +28,8 @@ with Command_Name;
 
 package body Camera.Lib.Options is
 
-   use type Ada_Lib.Options.Interface_Options_Constant_Class_Access;
-   use type Ada_Lib.Options.Options_Type;
+-- use type Ada_Lib.Options.Interface_Options_Constant_Class_Access;
+-- use type Ada_Lib.Options.Options_Type;
 
    Trace_Option                  : constant Character := 'T';
    Options_With_Parameters       : aliased constant
@@ -52,27 +52,28 @@ package body Camera.Lib.Options is
    -------------------------------------------------------------------------
 
    begin
-      return Get_Camera_Read_Only_Options.Camera_Library.Directory.Coerce;
+      result Get_Camera_Unit_Test_Constant_Options.Camera_Options.Directory;
    end Current_Directory;
 
    -------------------------------------------------------------------------
    function Get_Camera_Modifyable_Options
-   return Program_Options_Access is
+   return Ada_Lib.Options.Actual.Verification_Options_Class_Access is
    -------------------------------------------------------------------------
 
    begin
       return Program_Options_Access (
-         Ada_Lib.Options.Get_Ada_Lib_Modifiable_Options);
+         Ada_Lib.Options.Actual.Get_Ada_Lib_Modifiable_Program_Options);
    end Get_Camera_Modifyable_Options;
 
    -------------------------------------------------------------------------
    function Get_Camera_Read_Only_Options
-   return Program_Options_Constant_Class_Access is
+   return Ada_Lib.Options.Actual.Verification_Options_Constant_Class_Access is
    -------------------------------------------------------------------------
 
    begin
-      return Program_Options_Constant_Class_Access (
-         Ada_Lib.Options.Get_Ada_Lib_Read_Only_Options);
+log_here ("unit testing " & Ada_Lib.Unit_Testing'img);
+      return (if Ada_Lib.Unit_Testing then
+         Ada_Lib.Options.Actual.Verification_Options_Constant_Class_Access);
    end Get_Camera_Read_Only_Options;
 
    -------------------------------------------------------------------------
@@ -81,7 +82,7 @@ package body Camera.Lib.Options is
    -------------------------------------------------------------------------
 
    begin
-      return Ada_lib.Options.Get_Ada_Lib_Read_Only_Options /= Null;
+      return Ada_Lib.Options.Actual.Have_Ada_Lib_Program_Options;
    end Have_Options;
 
    -------------------------------------------------------------------------

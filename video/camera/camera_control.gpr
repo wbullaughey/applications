@@ -8,7 +8,7 @@ with "video_lib.gpr";
 project Camera_Control is
 
    for Source_Dirs use ("src/", "config/");
-   for Object_Dir use "obj/" & ALR_Environment.Mode;
+   for Object_Dir use "obj/" & ALR_Environment.Build_Mode;
    for Create_Missing_Dirs use "True";
    for Exec_Dir use "bin";
    for Main use ("camera_control.adb");
@@ -32,4 +32,15 @@ project Camera_Control is
       for Artifacts (".") use ("share");
    end Install;
 
+   package Builder is
+      case ALR_Environment.Build_Mode is
+
+         when "execute" =>
+            for Executable ("camera_control.adb") use "camera_control";
+
+         when "help_test" =>
+            for Executable ("camera_control.adb") use "help_test";
+
+      end case;
+   end Builder;
 end Camera_Control;

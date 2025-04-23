@@ -1,6 +1,7 @@
 source ~/.zshrc
-#which gprbuild
-pwd
-alr build -- -v -s -k -gnatE # --create-map-file
+export BUILD_MODE=$1
+export DIRECTORY=`pwd`
+echo BUILD_MODE $BUILD_MODE BUILD_PROFILE $ADA_APPLICATION_PROFILE ADA_OS_INCLUDE $ADA_OS_INCLUDE
 
-# -f force recompile all sources
+../../../../global_build.sh $BUILD_MODE $ADA_APPLICATION_PROFILE $DIRECTORY
+

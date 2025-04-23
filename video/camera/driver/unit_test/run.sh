@@ -1,17 +1,16 @@
 #!/bin/bash
 export BIN_DIRECTORY=bin  # ../../../camera/unit_test/bin
-export APPLICATION=./driver_unit_test
+export APPLICATION=$BIN_DIRECTORY/driver_unit_test
 export CURRENT_DIRECTORY=`pwd`
 export OUTPUT="$CURRENT_DIRECTORY/list-driver_unit.txt"
 echo OUTPUT = $OUTPUT
 echo command line $* | tee $OUTPUT
 
 echo BIN_DIRECTORY = $BIN_DIRECTORY
-echo APPLICATION = $APPLICATION
 #echo bin directory
 #ls $BIN_DIRECTORY
 
-cd $BIN_DIRECTORY
+#cd $BIN_DIRECTORY
 echo CURRENT_DIRECTORY $CURRENT_DIRECTORY | tee $OUTPUT
 pwd
 
@@ -45,6 +44,7 @@ case "$SUITE" in
       ;;
 
    "help_test")
+      export APPLICATION=bin/help_test
       export TEST_OPTIONS="-h -l -P -r -v -x -@c -@d -@i -@l -@m -@p -@P -@S -@t -@n2 -@u -@x \
          -1 aAbcCdmopqsSt \
          -a abcCehiIlmMoOpPrRsStT@c@d@D@e@E@l@o@s@t \
@@ -62,10 +62,37 @@ case "$SUITE" in
          -@R 123 \
          -=R routine \
          -u suite \
-         -=X directory"
+         -=X directory \
+         -1 aAbcCdmopqsSt \
+         -a abcCehiIlmMoOpPrRsStT@c@d@D@e@E@l@o@s@t \
+         -c directory \
+         -d aopt \
+         -e \
+         -g aego \
+         -G amo \
+         -s suite \
+         -S adt \
+         -t acCdhilmorRsStT@d@T@t \
+         -T aAmot \
+         -U aAglprstT \
+         -V alo \
+         -w port \
+         -@D suites \
+         -@n seeds \
+         -@R routine \
+         -@T abcCglLmsSTVwawcwC \
+         -=D directory \
+         -=u suite \
+         " 2>&1 | tee -a $OUTPUT
       export COMMAND="$APPLICATION $OPTIONS $TEST_OPTIONS"
-      echo "command: $COMMAND"  | tee $OUTPUT
-      $COMMAND 2>&1 | tee -a $OUTPUT
+      echo "command: $COMMAND" 2>&1 | tee -a $OUTPUT
+      $COMMAND  >> $OUTPUT 2>&1
+      EXIT_CODE=$?
+      cat $OUTPUT
+echo "exit code $EXIT_CODE" 2>&1 | tee -a $OUTPUT
+      if [[ $EXIT_CODE -ne 0 ]]; then
+         echo "help_test failed for driver unit test" 2>&1 | tee -a $OUTPUT
+      fi
       exit
       ;;
 
@@ -83,6 +110,7 @@ case "$SUITE" in
       export COMMAND="-s $SUITE "
       ;;
 esac
+echo APPLICATION = $APPLICATION
 
 export ROUTINE=$1   #  test routine name
 shift 1

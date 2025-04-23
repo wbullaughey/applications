@@ -3,7 +3,7 @@ with Ada.Text_IO; use Ada.Text_IO;
 with Ada.Unchecked_Deallocation;
 --with Ada_Lib.Address;
 with Ada_Lib.Configuration;
-with Ada_Lib.Options;
+with Ada_Lib.Options.Actual;
 with Ada_Lib.Parser;
 with ADA_LIB.Strings.Unlimited; use Ada_Lib.Strings; use Ada_Lib.Strings.Unlimited;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
@@ -99,7 +99,7 @@ package body Configuration.Camera.Setup is
       Setup_Path     : Ada_Lib.Strings.Unlimited.String_Type
                      renames Standard.Camera.Lib.Options.
                         Program_Options_Constant_Class_Access (
-                           Ada_Lib.Options.Get_Ada_Lib_Read_Only_Options).
+                           Ada_Lib.Options.Actual.Get_Ada_Lib_Read_Only_Program_Options).
                               Setup_Path;
 
    begin

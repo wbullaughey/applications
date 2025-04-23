@@ -26,7 +26,7 @@ procedure Camera_Control is
 
 begin
    Put_Line (Command_Name);
-   Ada_Lib.Options.Set_Ada_Lib_Options (
+   Ada_Lib.Options.Actual.Set_Ada_Lib_Program_Options (
       Ada_Lib.Options.Interface_Options_Type (Options)'unchecked_access);
    if Options.Initialize then
       Log_In (Debug);
@@ -66,7 +66,10 @@ begin
       Put_Line ("could not initialize");
    end if;
    Log_Out (Debug);
-   ADA_LIB.OS.Immediate_Halt (Ada_Lib.OS.No_Error);
+   ADA_LIB.OS.Immediate_Halt (if Ada_Lib.Exception_Occured then
+         Ada_Lib.OS.Exception_Exit
+      else
+         Ada_Lib.OS.No_Error);
 
 exception
    when Fault: others=>

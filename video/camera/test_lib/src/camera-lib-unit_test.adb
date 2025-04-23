@@ -2,7 +2,7 @@ with Ada.Exceptions;
 with Ada.Text_IO;use Ada.Text_IO;
 with Ada_Lib.Help;
 --with Ada_Lib.Options.AUnit.Ada_Lib_Tests;
---with Ada_Lib.Options.Unit_Test;
+with Ada_Lib.Options.Unit_Test;
 with Ada_Lib.Options.Runstring;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
 with Ada_Lib.Unit_Test.Reporter;
@@ -66,7 +66,7 @@ package body Camera.Lib.Unit_Test is
    begin
       Log_Here (Debug, "from " & From);
       return Unit_Test_Options_Constant_Class_Access (
-         Ada_Lib.Options.Get_Ada_Lib_Read_Only_Options);
+         Ada_Lib.Options.Actual.Get_Ada_Lib_Read_Only_Program_Options);
    end Get_Camera_Unit_Test_Constant_Options;
    ----------------------------------------------------------------------------
 --   ---------------------------------------------------------------
@@ -483,19 +483,28 @@ not_implemented;
       Log_In (Debug or Trace_Set_Up);
       Ada_Lib.GNOGA.Set_Connection_Data (
          Ada_Lib.GNOGA.Connection_Data_Class_Access (Connection_Data));
+log_here;
       Connection_Data.Initialize;
+log_here;
+log_here ("location " & Options.Camera_Options.Location'img);
+log_here;
       State.Load (
          Options.Camera_Options.Location, State_Test_Path); -- need to load state 1st
+log_here;
       Test.Setup.Load (State, Setup_Test_Path);
+log_here;
       Ada_Lib.GNOGA.Unit_Test.GNOGA_Tests_Type(Test).Set_Up;
+log_here;
 
          if not Test.Initialize_GNOGA then
+log_here;
             Main.Run (
                Directory            => Camera.Lib.Options.Current_Directory,
                Port                 => Options.GNOGA_Options.HTTP_Port,
                Verbose              => True,
                Wait_For_Completion  => False);
          end if;
+log_here;
 
       Log_Out (Debug or Trace_Set_Up);
 

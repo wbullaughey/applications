@@ -44,11 +44,11 @@ package Camera.Lib.Options is
    with Pre => Have_Options;
 
    function Get_Camera_Modifyable_Options
-   return Program_Options_Access
+   return Ada_Lib.Options.Actual.Verification_Options_Class_Access
    with Pre => Have_Options;
 
    function Get_Camera_Read_Only_Options
-   return Program_Options_Constant_Class_Access
+   return  Ada_Lib.Options.Actual.Verification_Options_Constant_Class_Access
    with Pre => Have_Options;
 
    function Have_Options

@@ -16,4 +16,5 @@ suites
 GNAT-*
 *-save
 camera_aunit
+help_test
 

@@ -1,7 +1,7 @@
 with Ada.Exceptions;
 with Ada.Text_IO; use Ada.Text_IO;
 with Ada_Lib.Help;
-with Ada_Lib.Options;
+with Ada_Lib.Options.Actual;
 with Ada_Lib.OS;
 --with Ada_lib.Timer;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
@@ -21,34 +21,46 @@ begin
 --Debug := True;
 --Trace_Tests := True;
    Put_Line (Command_Name);
-   Ada_Lib.Options.Set_Ada_Lib_Options (
-      Ada_Lib.Options.Interface_Options_Type (Options)'unchecked_access);
+   Ada_Lib.Options.Actual.Set_Ada_Lib_Program_Options (
+      Ada_Lib.Options.Actual.Program_Options_Type (
+         Options)'unchecked_access);
    if Options.Initialize then
       Log_In (Debug);
       if Options.Process (
          Include_Options      => True,
          Include_Non_Options  => False,
          Modifiers            => Ada_Lib.Help.Modifiers) then
-         Ada_lib.Trace_Tasks.Start ("main");
-
-         Log_Here (Debug, "start run suite");
-         Camera.Lib.Unit_Test.Run_Suite (Options);
-         Log_Here (Debug, "returned from run suite");
-         Camera.Command_Queue.Stop_Task;
-         Ada_lib.Trace_Tasks.Stop;
-         Log_Here (Debug, "timer stopped");
-         if not Ada_Lib.Trace_Tasks.All_Stopped then
-            Ada_Lib.Trace_Tasks.Report;
+         Options.Post_Process;
+         if Ada_Lib.Help_Test then
+            Put_Line ("help test " & (if Ada_Lib.Exception_Occured then
+                  "failed"
+               else
+                  "completed"));
+            Ada_Lib.OS.Immediate_Halt (if Ada_Lib.Exception_Occured then
+               Ada_Lib.OS.Assertion_Exit
+            else
+               Ada_Lib.OS.No_Error);
+         else  -- not Help_test
+            Log_Here (Debug, "start run suite");
+            Ada_lib.Trace_Tasks.Start ("main");
+            Camera.Lib.Unit_Test.Run_Suite (Options);
+            Log_Here (Debug, "returned from run suite");
+            Camera.Command_Queue.Stop_Task;
+            Ada_lib.Trace_Tasks.Stop;
+            Log_Here (Debug, "timer stopped");
+            if not Ada_Lib.Trace_Tasks.All_Stopped then
+               Ada_Lib.Trace_Tasks.Report;
+            end if;
          end if;
 
          Ada_Lib.OS.Immediate_Halt (if Ada_Lib.Unit_Test.Did_Fail then
                Ada_Lib.OS.Application_Error
             else
                Ada_Lib.OS.No_Error);
-      else
+      else  -- Options.Process false
          Ada_Lib.OS.Immediate_Halt (Ada_Lib.OS.Application_Error);
       end if;
-   else
+   else     -- Initialize failed
       Put_Line ("could not initialize options");
    end if;
 

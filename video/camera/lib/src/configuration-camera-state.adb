@@ -2,7 +2,7 @@ with Ada.Exceptions;
 with Ada.Unchecked_Deallocation;
 with Ada_Lib.Configuration;
 with Ada_Lib.Directory;
-with Ada_Lib.Options;
+with Ada_Lib.Options.Actual;
 --with Ada_Lib.Parser;
 with Ada_Lib.Socket_IO;
 with Ada_Lib.Strings.Unlimited; use Ada_Lib.Strings; use Ada_Lib.Strings.Unlimited;
@@ -124,7 +124,7 @@ package body Configuration.Camera.State is
       State_Path                 : Ada_Lib.Strings.Unlimited.String_Type
                                     renames Standard.Camera.Lib.Options.
                                        Program_Options_Constant_Class_Access (
-                                          Ada_Lib.Options.Get_Ada_Lib_Read_Only_Options).
+                                          Ada_Lib.Options.Actual.Get_Ada_Lib_Read_Only_Program_Options).
                                              Setup_Path;
 
    begin
@@ -228,6 +228,9 @@ package body Configuration.Camera.State is
       Name                       : in     String) is
    ----------------------------------------------------------------
 
+begin
+log_here;
+declare
       Config                     : Ada_Lib.Configuration.Configuration_Type;
       Current_Directory          : constant String :=
                                     Standard.Camera.Lib.Options.Current_Directory;
@@ -309,6 +312,7 @@ package body Configuration.Camera.State is
          Trace_Exception (Debug, Fault);
          raise;
 
+end;
    end Load;
    ----------------------------------------------------------------
    overriding
@@ -333,7 +337,7 @@ package body Configuration.Camera.State is
    end Unload;
 
 begin
---Debug := True;
+Debug := True;
 --Trace_Options := True;
    Log_Here (Debug or Trace_Options or Elaborate);
 

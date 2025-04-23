@@ -1,27 +1,33 @@
 command: ./driver_unit_test  -h
 
+
+
 driver_unit_test command line options:
     -1 <trace options>             : Camera Lib unit test                (Camera.Lib.Unit_Test)
     -?                             : this message                        (Ada_Lib)
     -a <trace options>             : Ada_Lib library trace options       (Ada_Lib)
+    -c <directory>                 : current directory                   (Camera Lib)
     -d <Trace Options>             : driver trace options                (driver_unit_test)
     -e <routine>                   : routine to test.                    (test_ada_lib)
+    -E                             : simulate camera                     (Camera Lib)
     -g <trace options>             : GNOGA Unit Test traces              (Ada_Lib.GNOGA)
     -G <trace options>             : GNOGA traces                        (GNOGA library)
     -h                             : this message                        (Ada_Lib)
+    -l                             : local camera                        (Camera Lib)
     -l                             : list output from camera app         (driver_unit_test)
     -P                             : pause                               (Ada_Lib)
-    -r                             : remote camera                       (driver_unit_test)
+    -r                             : remote camera                       (Camera Lib)
     -s <suite to test>             : select test suite to run.           (test_ada_lib)
-    -S <suites>                    : enable default disabled suites.     (test_ada_lib)
     -t <trace options>             : ada_lib trace options               (Ada_Lib Unit Test)
     -T <trace options>             : driver unit test trace options      (driver_unit_test)
     -U <unit test trace Ada_Lib.>  : select trace                        (test_ada_lib)
     -v                             : verbose                             (Ada_Lib)
+    -V <trace options>             : trace options                       (Video Lib)
     -w <port number>               : Web server port                     (GNOGA library)
     -x                             : exit on tests complete              (test_ada_lib)
     -@c                            : trace test condition                (Ada_Lib)
     -@d                            : driver suites                       (test_ada_lib)
+    -@D <suites>                   : enable default disabled suites.     (test_ada_lib)
     -=D <subdirectory>             : subdirectory to run camera app from (driver_unit_test)
     -@i                            : indent trace                        (Ada_Lib)
     -@l                            : List test suites                    (test_ada_lib)
@@ -33,6 +39,7 @@ driver_unit_test command line options:
     -=R <routine>                  : routine to run, multiple allowed    (driver_unit_test)
     -@S                            : report random seed                  (test_ada_lib)
     -@t                            : include task in trace               (Ada_Lib)
+    -@T <trace options>            : trace options                       (Camera Lib)
     -@u                            : use random seed                     (test_ada_lib)
     -=u <suite>                    : suite to run, multiple allowed      (driver_unit_test)
     -@x                            : exclude time in trace               (Ada_Lib)
@@ -44,6 +51,28 @@ driver trace options (-d
       o               program options trace
       p               program trace
       t               driver trace
+
+Camera Lib trace options (-@T)
+      a               all
+      b               base.debug
+      c               camera configuration
+      C               camera commands
+      g               Widgets.Generic_Table
+      l               camera Library
+      L               camera library options
+      m               Main Window
+      s               Trace simulator
+      S               configuration state
+      T               Windows.Top
+      V               Trace Video widgets
+      wa              Adjust Window
+      wc              Control Window
+      wC              Configured Window
+
+Video Lib trace options (-V)
+      a               all
+      l               library debug
+      o               options debug
 Camera Lib Unit Test trace options (1)
       a               all
       A               Widgets.Adjust unit test trace

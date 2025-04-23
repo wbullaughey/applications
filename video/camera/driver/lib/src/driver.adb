@@ -66,8 +66,6 @@ package body Driver is
                         ),
                      Without_Parameters   =>
                         new Ada_Lib.Options.Options_Type'(
-                           Ada_Lib.Options.Create_Options ("lr",
-                              Ada_Lib.Options.Unmodified) &
                            Ada_Lib.Options.Create_Options ("l", Option_Modifier)
                         )
                   ),
@@ -82,8 +80,6 @@ package body Driver is
                         ),
                      Without_Parameters   =>
                         new Ada_Lib.Options.Options_Type'(
-                           Ada_Lib.Options.Create_Options ("lr",
-                              Ada_Lib.Options.Unmodified) &
                            Ada_Lib.Options.Create_Options ("l", Option_Modifier)
                         )
                   )
@@ -114,7 +110,7 @@ package body Driver is
       Camera_Directory           : constant String :=
                                     Protected_Options.Camera_Directory.Coerce;
       Camera_Program             : constant String :=
-                                    Camera_Directory & "/unit_test/bin/camera_aunit";
+                                    Camera_Directory & "/bin/camera_aunit";
       Scratch_File               : Ada_Lib.OS.File_Descriptor;
       Scratch_Name               : Ada_Lib.OS.Temporary_File_Name;
 
@@ -209,7 +205,7 @@ package body Driver is
    begin
       Log_Here (Debug_Options or Trace_Options, "from " & From);
       return Driver_Options_Class_Access (
-         Ada_Lib.Options.Get_Ada_Lib_Modifiable_Options);
+         Ada_Lib.Options.Actual.Get_Ada_Lib_Modifiable_Program_Options);
    end Get_Modifiable_Options;
 
    ---------------------------------------------------------------
@@ -517,8 +513,8 @@ package body Driver is
             "subdirectory to run camera app from", Component, Option_Modifier);
          Ada_Lib.Help.Add_Option ('l', "", "list output from camera app",
             Component);
-         Ada_Lib.Help.Add_Option ('r', "",
-            "remote camera", Component);
+--       Ada_Lib.Help.Add_Option ('r', "",
+--          "remote camera", Component);
          Ada_Lib.Help.Add_Option ('R', "routine",
             "routine to run, multiple allowed", Component, Option_Modifier);
 

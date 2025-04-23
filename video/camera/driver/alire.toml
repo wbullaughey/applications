@@ -61,3 +61,5 @@ applications  = { path = "../../.." }
 
 
 
+[[depends-on]]
+gnatcoll = "^23.0.0"

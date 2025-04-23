@@ -3,7 +3,7 @@ with Ada.Text_IO;use Ada.Text_IO;
 with Ada_Lib.Help;
 --with Ada_Lib.Options;
 with ADA_LIB.OS;
---with Ada_Lib.Options.Actual;
+with Ada_Lib.Options.Actual;
 with Ada_Lib.Options.Runstring;
 with Ada_Lib.Socket_IO;
 with Ada_Lib.Strings;
@@ -49,13 +49,35 @@ package body Camera.Lib is
    Recursed                      : Boolean := False;
 
    -------------------------------------------------------------------------
-   function Camera_Options
+   function Get_Camera_Modifiable_Options
+   return Options_Class_Access is
+   -------------------------------------------------------------------------
+
+      Options  : constant Ada_Lib.Options.Actual.
+                  Verification_Options_Class_Access :=
+                     Ada_Lib.Options.Actual.
+                        Get_Ada_Lib_Modifiable_Verification_Options;
+   begin
+      if Debug then
+         Tag_History (Options.all'tag);
+      end if;
+      return (case Ada_Lib.Unit_Testing is
+
+         when False =>
+
+         when True =>
+      return Options_Constant_Class_Access (
+         Ada_Lib.Options.Actual.Get_Ada_Lib_Read_Only_Nested_Options);
+   end Camera_Options;
+
+   -------------------------------------------------------------------------
+   function Get_Camera_Readonly_Options
    return Options_Constant_Class_Access is
    -------------------------------------------------------------------------
 
    begin
       return Options_Constant_Class_Access (
-         Ada_Lib.Options.Get_Ada_Lib_Read_Only_Options);
+         Ada_Lib.Options.Actual.Get_Ada_Lib_Read_Only_Nested_Options);
    end Camera_Options;
 
    -------------------------------------------------------------------------

@@ -31,8 +31,7 @@ package body Video.Lib is
    ---------------------------------------------------------------
 
    begin
-      return (case Options_Constant_Class_Access (
-         Ada_Lib.Options.Get_Ada_Lib_Read_Only_Options).Location is
+      return (case Options.Location is
          when Configuration.State.Remote =>
             Configuration.URL,
 

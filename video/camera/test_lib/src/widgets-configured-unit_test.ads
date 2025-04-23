@@ -1,10 +1,10 @@
-with Ada_Lib.Options;
+with Ada_Lib.Options.Actual;
 with AUnit.Test_Suites;
 
 package Widgets.Configured.Unit_Test is
 
    function Suite return AUnit.Test_Suites.Access_Test_Suite
-   with Pre => Ada_Lib.Options.Have_Options;
+   with Pre => Ada_Lib.Options.Actual.Have_Ada_Lib_Program_Options;
 
    Debug                         : Boolean := False;
 end Widgets.Configured.Unit_Test;

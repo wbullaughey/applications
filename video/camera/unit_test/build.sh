@@ -1,3 +1,8 @@
 source ~/.zshrc
-echo OS_VERSION /$OS_VERSION/
-alr -v build -- -s -k -gnatE # --create-map-file -v before build for verbose
+export BUILD_MODE=$1
+export UNIT_TEST=TRUE
+export DIRECTORY=`pwd`
+echo BUILD_MODE $BUILD_MODE UNIT_TEST $UNIT_TEST BUILD_PROFILE $ADA_APPLICATION_PROFILE ADA_OS_INCLUDE $ADA_OS_INCLUDE
+
+../../../../global_build.sh $BUILD_MODE $UNIT_TEST $ADA_APPLICATION_PROFILE $DIRECTORY
+
