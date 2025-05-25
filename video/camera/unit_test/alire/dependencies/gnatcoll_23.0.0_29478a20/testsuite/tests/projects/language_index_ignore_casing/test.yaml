@@ -1,6 +1,0 @@
-description: >
-  Ignore index case sensitivity when querying attributes
-  whit index set to a language of the project.
-data:
-    - "p.gpr"
-

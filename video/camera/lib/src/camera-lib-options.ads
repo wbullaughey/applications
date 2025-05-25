@@ -1,5 +1,5 @@
 with ADA_LIB.Command_Line_Iterator;
-with ADA_LIB.Options.GNOGA;
+with GNOGA_Options;
 with Ada_Lib.Options.Actual;
 with ADA_LIB.Strings.Unlimited;
 --with ADA_LIB.Trace;
@@ -12,7 +12,7 @@ package Camera.Lib.Options is
    Failed                        : Exception;
 
 -- use type Ada_Lib.Options.Interface_Options_Constant_Class_Access;
-   use type Ada_Lib.Options.Actual.Program_Options_Class_Access;
+-- use type Ada_Lib.Options.Actual.Program_Options_Class_Access;
 
    subtype Runtime_Iterator_Type is Ada_Lib.Command_Line_Iterator.
                                     Abstract_Package.Abstract_Iterator_Type;
@@ -29,7 +29,7 @@ package Camera.Lib.Options is
       Setup_Path                 : Ada_Lib.Strings.Unlimited.String_Type;
       State_Path                 : Ada_Lib.Strings.Unlimited.String_Type;
       Debug                      : Boolean := False;
-      GNOGA                      : Ada_Lib.Options.GNOGA.GNOGA_Options_Type;
+      GNOGA                      : GNOGA_Options.GNOGA_Options_Type;
       Template                   : Ada_Lib.Strings.Unlimited.String_Type;
    end record;
 
@@ -43,16 +43,13 @@ package Camera.Lib.Options is
    return String
    with Pre => Have_Options;
 
-   function Get_Camera_Modifyable_Options
-   return Ada_Lib.Options.Actual.Verification_Options_Class_Access
-   with Pre => Have_Options;
-
-   function Get_Camera_Read_Only_Options
-   return  Ada_Lib.Options.Actual.Verification_Options_Constant_Class_Access
-   with Pre => Have_Options;
-
-   function Have_Options
-   return Boolean;
+-- function Get_Camera_Modifyable_Options
+-- return Options_Class_Access
+-- with Pre => Have_Options;
+--
+-- function Get_Camera_Read_Only_Options
+-- return  Ada_Lib.Options.Actual.Verification_Options_Constant_Class_Access
+-- with Pre => Have_Options;
 
    overriding
    function Initialize (

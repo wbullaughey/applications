@@ -1,6 +1,6 @@
 with "alr_environment.gpr";
 with "ada_lib.gpr";
-with "ada_lib_gnoga.gpr";
+with "gnoga_ada_lib.gpr";
 --with "aunit.gpr";
 with "gnoga.gpr";
 with "config/camera_lib_config.gpr";

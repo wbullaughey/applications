@@ -1,4 +1,5 @@
 with ADA_LIB.Trace; use ADA_LIB.Trace;
+with GNOGA.Ada_Lib;
 --with Main;
 --with Widgets.Adjust;
 --with Widgets.Configured;

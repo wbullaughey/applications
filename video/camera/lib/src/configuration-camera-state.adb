@@ -28,7 +28,7 @@ package body Configuration.Camera.State is
 
       Connection_Data            : Base.Connection_Data_Type renames
                                     Base.Connection_Data_Type (
-                                       Ada_Lib.GNOGA.Get_Connection_Data.all);
+                                       Standard.GNOGA.Ada_Lib.Get_Connection_Data.all);
       State                      : State_Type renames Connection_Data.State;
 
    begin
@@ -54,7 +54,7 @@ package body Configuration.Camera.State is
 
       Connection_Data            : Base.Connection_Data_Type renames
                                     Base.Connection_Data_Type (
-                                       Ada_Lib.GNOGA.Get_Connection_Data.all);
+                                       Standard.GNOGA.Ada_Lib.Get_Connection_Data.all);
       State                      : State_Type renames Connection_Data.State;
 
    begin
@@ -70,7 +70,7 @@ package body Configuration.Camera.State is
 
       Connection_Data            : Base.Connection_Data_Type renames
                                     Base.Connection_Data_Type (
-                                       Ada_Lib.GNOGA.Get_Connection_Data.all);
+                                       Standard.GNOGA.Ada_Lib.Get_Connection_Data.all);
       State                      : Configuration.Camera.State.State_Type renames
                                     Connection_Data.State;
       Image_Name                 : constant String :=
@@ -337,7 +337,7 @@ end;
    end Unload;
 
 begin
-Debug := True;
+--Debug := True;
 --Trace_Options := True;
    Log_Here (Debug or Trace_Options or Elaborate);
 

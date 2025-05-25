@@ -5,7 +5,7 @@ export CURRENT_DIRECTORY=`pwd`
 export PARAMETERS=("$@")
 echo PARAMETERS: $PARAMETERS 2>&1 | tee -a $OUTPUT
 echo OUPUT=$OUTPUT 2>&1 | tee $OUTPUT
-export TRACE=1
+export TRACE=0
 
 trace() {
    if (( $TRACE > 0 )) then

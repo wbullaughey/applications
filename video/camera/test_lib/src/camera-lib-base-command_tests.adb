@@ -1,4 +1,4 @@
-with Ada_Lib.GNOGA;
+with GNOGA.Ada_Lib;
 with Ada_Lib.Unit_Test;
 with AUnit.Assertions; use AUnit.Assertions;
 with AUnit.Test_Cases;
@@ -250,8 +250,8 @@ package body Camera.Lib.Base.Command_Tests is
                                  new Standard.Base.Connection_Data_Type;
    begin
       Log_In (Debug or Trace_Set_Up);
-      Ada_Lib.GNOGA.Set_Connection_Data (
-         Ada_Lib.GNOGA.Connection_Data_Class_Access (Connection_Data));
+      GNOGA.Ada_Lib.Set_Connection_Data (
+         GNOGA.Ada_Lib.Connection_Data_Class_Access (Connection_Data));
       Connection_Data.Initialize;
       Camera.Lib.Unit_Test.Camera_Test_Type (Test).Set_Up;
 

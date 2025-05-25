@@ -54,21 +54,16 @@ package body Camera.Lib is
    -------------------------------------------------------------------------
 
       Options  : constant Ada_Lib.Options.Actual.
-                  Verification_Options_Class_Access :=
+                  Nested_Options_Class_Access :=
                      Ada_Lib.Options.Actual.
-                        Get_Ada_Lib_Modifiable_Verification_Options;
+                        Get_Ada_Lib_Modifiable_Nested_Options;
    begin
       if Debug then
          Tag_History (Options.all'tag);
       end if;
-      return (case Ada_Lib.Unit_Testing is
 
-         when False =>
-
-         when True =>
-      return Options_Constant_Class_Access (
-         Ada_Lib.Options.Actual.Get_Ada_Lib_Read_Only_Nested_Options);
-   end Camera_Options;
+      return Options_Class_Access (Options);
+   end Get_Camera_Modifiable_Options;
 
    -------------------------------------------------------------------------
    function Get_Camera_Readonly_Options
@@ -78,7 +73,16 @@ package body Camera.Lib is
    begin
       return Options_Constant_Class_Access (
          Ada_Lib.Options.Actual.Get_Ada_Lib_Read_Only_Nested_Options);
-   end Camera_Options;
+   end Get_Camera_Readonly_Options;
+
+   -------------------------------------------------------------------------
+   function Have_Options
+   return Boolean is
+   -------------------------------------------------------------------------
+
+   begin
+      return Ada_Lib.Options.Actual.Have_Ada_Lib_Program_Options;
+   end Have_Options;
 
    -------------------------------------------------------------------------
    overriding

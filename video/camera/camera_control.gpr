@@ -1,6 +1,6 @@
 with "alr_environment.gpr";
 with "camera_lib.gpr";
-with "config/camera_config.gpr";
+with "config/camera_control_config.gpr";
 with "default_config.gpr";
 with "gnoga.gpr";
 with "video_lib.gpr";

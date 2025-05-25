@@ -1,41 +1,24 @@
 name = "camera_control"
-description = "camera driver application"
+description = ""
 version = "0.1.0-dev"
 
-authors = ["Wayne Bullaughey"]
-maintainers = ["Wayne Bullaughey <wlb122@verizon.net>"]
-maintainers-logins = ["wbullaughey"]
+authors = ["Your Name"]
+maintainers = ["Your Name <example@example.com>"]
+maintainers-logins = ["github-username"]
+licenses = "MIT OR Apache-2.0 WITH LLVM-exception"
+website = ""
+tags = []
 
 executables = ["camera_control"]
 
 [[depends-on]]
-ada_lib = "*"
+alr_environment = "~0.1.0-dev"
 
 [[pins]]
-ada_lib  = { path = "../../../ada_lib" }
+alr_environment = { path='../../..' }
 
 [[depends-on]]
-ada_lib_gnoga = "*"
+camera_lib = "~0.1.0-dev"
 
 [[pins]]
-ada_lib_gnoga  = { path = "../../../ada_lib/ada_lib_gnoga" }
-
-[[depends-on]]
-camera_lib = "*"
-
-[[pins]]
-camera_lib  = { path = "lib" }
-
-[[depends-on]]
-video_lib = "*"
-
-[[pins]]
-video_lib  = { path = "../lib" }
-
-[[depends-on]]
-gnoga = "*"
-
-[[pins]]
-gnoga  = { path = "../../../vendor/github.com/gnoga" }
-
-
+camera_lib = { path='lib' }

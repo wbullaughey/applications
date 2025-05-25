@@ -1,6 +1,6 @@
 with Ada.Exceptions;
 with Ada_Lib.Directory.Compare_Files;
-with Ada_Lib.GNOGA;
+with GNOGA.Ada_Lib;
 --with Ada_Lib.Options;
 with Ada_Lib.Strings.Unlimited; use Ada_Lib.Strings.Unlimited;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
@@ -138,7 +138,7 @@ package body Configuration.Camera.Setup.Unit_Tests is
 --
 --   begin
 --      Log_In (Debug);
-----    Ada_Lib.GNOGA.Clear_Connection_Data;
+----    Standard.GNOGA.Ada_Lib.Clear_Connection_Data;
 --      Ada_Lib.Unit_Test.Test_Cases.Test_Case_Type (Test).Tear_Down;
 --      Log_Out (Debug);
 --   end Tear_Down;
@@ -150,7 +150,7 @@ package body Configuration.Camera.Setup.Unit_Tests is
 
       Connection_Data            : Base.Connection_Data_Type renames
                                     Base.Connection_Data_Type (
-                                       Ada_Lib.GNOGA.Get_Connection_Data.all);
+                                       Standard.GNOGA.Ada_Lib.Get_Connection_Data.all);
       Local_Test                 : Configuration_Tests_Type renames
                                     Configuration_Tests_Type (Test);
       Options                    : Standard.Camera.Lib.Unit_Test.
@@ -186,7 +186,7 @@ package body Configuration.Camera.Setup.Unit_Tests is
 
       Connection_Data            : Base.Connection_Data_Type renames
                                     Base.Connection_Data_Type (
-                                       Ada_Lib.GNOGA.Get_Connection_Data.all);
+                                       Standard.GNOGA.Ada_Lib.Get_Connection_Data.all);
       Configuration_ID           : constant Configuration_ID_Type := 3;
       Expected_Setup             : constant String :=
                                     "expected_updated_test_setup.cfg";
@@ -267,7 +267,7 @@ package body Configuration.Camera.Setup.Unit_Tests is
 
       Connection_Data            : Base.Connection_Data_Type renames
                                     Base.Connection_Data_Type (
-                                       Ada_Lib.GNOGA.Get_Connection_Data.all);
+                                       Standard.GNOGA.Ada_Lib.Get_Connection_Data.all);
       Expected_Number_Columns    : constant := 3;
       Expected_Number_Rows       : constant := 4;
       Expected_Number_Configurations

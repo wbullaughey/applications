@@ -4,7 +4,7 @@ with Ada.Text_IO;use Ada.Text_IO;
 --with Ada_Lib.Command_Line_Iterator;
 with Ada_Lib.Help;
 with Ada_Lib.Options;
---with Ada_Lib.Options.GNOGA;
+--with GNOGA_Options;
 --with ADA_LIB.Strings.Unlimited;
 --with Ada_Lib.Test;
 with ADA_LIB.OS;
@@ -52,38 +52,29 @@ package body Camera.Lib.Options is
    -------------------------------------------------------------------------
 
    begin
-      result Get_Camera_Unit_Test_Constant_Options.Camera_Options.Directory;
+      return Get_Camera_Readonly_Options.Directory.Coerce;
    end Current_Directory;
 
-   -------------------------------------------------------------------------
-   function Get_Camera_Modifyable_Options
-   return Ada_Lib.Options.Actual.Verification_Options_Class_Access is
-   -------------------------------------------------------------------------
-
-   begin
-      return Program_Options_Access (
-         Ada_Lib.Options.Actual.Get_Ada_Lib_Modifiable_Program_Options);
-   end Get_Camera_Modifyable_Options;
-
-   -------------------------------------------------------------------------
-   function Get_Camera_Read_Only_Options
-   return Ada_Lib.Options.Actual.Verification_Options_Constant_Class_Access is
-   -------------------------------------------------------------------------
-
-   begin
-log_here ("unit testing " & Ada_Lib.Unit_Testing'img);
-      return (if Ada_Lib.Unit_Testing then
-         Ada_Lib.Options.Actual.Verification_Options_Constant_Class_Access);
-   end Get_Camera_Read_Only_Options;
-
-   -------------------------------------------------------------------------
-   function Have_Options
-   return Boolean is
-   -------------------------------------------------------------------------
-
-   begin
-      return Ada_Lib.Options.Actual.Have_Ada_Lib_Program_Options;
-   end Have_Options;
+--   -------------------------------------------------------------------------
+--   function Get_Camera_Modifyable_Options
+--   return Ada_Lib.Options.Actual.Verification_Options_Class_Access is
+--   -------------------------------------------------------------------------
+--
+--   begin
+--      return Program_Options_Access (
+--         Get_Modifiable_Program_Options);
+--   end Get_Camera_Modifyable_Options;
+--
+--   -------------------------------------------------------------------------
+--   function Get_Camera_Read_Only_Options
+--   return Ada_Lib.Options.Actual.Verification_Options_Constant_Class_Access is
+--   -------------------------------------------------------------------------
+--
+--   begin
+--log_here ("unit testing " & Ada_Lib.Unit_Testing'img);
+--      return (if Ada_Lib.Unit_Testing then
+--         Ada_Lib.Options.Actual.Verification_Options_Constant_Class_Access);
+--   end Get_Camera_Read_Only_Options;
 
    -------------------------------------------------------------------------
    overriding

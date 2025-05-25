@@ -1,7 +1,8 @@
-with Ada_Lib.GNOGA;
+--with Ada_Lib.GNOGA;
 with ADA_LIB.Strings.Unlimited;
 with Ada_Lib.Trace;
 with Configuration.State;
+with GNOGA.Ada_Lib;
 
 package Configuration.Camera.State is
 
@@ -27,7 +28,7 @@ package Configuration.Camera.State is
    function Check_Column (
       Column                     : in     Column_Type
    ) return Boolean
-   with Pre => Ada_Lib.GNOGA.Has_Connection_Data;
+   with Pre => GNOGA.Ada_Lib.Has_Connection_Data;
 
    function Check_Image (
       Column                     : in     Column_Type;
@@ -37,7 +38,7 @@ package Configuration.Camera.State is
    function Check_Row (
       Row                        : in     Row_Type
    ) return Boolean
-   with Pre => Ada_Lib.GNOGA.Has_Connection_Data;
+   with Pre => GNOGA.Ada_Lib.Has_Connection_Data;
 
    procedure Dump (
       State                      : in     State_Type;

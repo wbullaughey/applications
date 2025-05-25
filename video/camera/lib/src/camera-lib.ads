@@ -47,10 +47,15 @@ package Camera.Lib is
                                  is access constant Options_Type'class;
 
    function Get_Camera_Modifiable_Options
-   return Options_Class_Access;
+   return Options_Class_Access
+   with Pre => Have_Options;
 
    function Get_Camera_Readonly_Options
-   return Options_Constant_Class_Access;
+   return Options_Constant_Class_Access
+   with Pre => Have_Options;
+
+   function Have_Options
+   return Boolean;
 
    overriding
    function Initialize (
@@ -86,8 +91,8 @@ package Camera.Lib is
       Camera_Address             : in     Address_Type;
       Port_Number                : in     Port_Type);
 
-   function Camera_Options
-   return Options_Constant_Class_Access;
+-- function Camera_Options
+-- return Options_Constant_Class_Access;
 
    function Hex is new Hex_IO.Modular_Hex (Value_Type);
 

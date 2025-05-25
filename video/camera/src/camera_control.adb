@@ -1,7 +1,7 @@
 --with Ada.Command_Line;
 with Ada.Text_IO; use Ada.Text_IO;
-with ADA_LIB.GNOGA;
-with Ada_Lib.Options;
+--with ADA_LIB.GNOGA;
+with Ada_Lib.Options.Actual;
 with ADA_LIB.OS;
 with ADA_LIB.Trace; use ADA_LIB.Trace;
 with Ada_Lib.Trace_Tasks;
@@ -13,6 +13,7 @@ with Configuration.Camera.State;
 --with Configuration.State;
 with Emulator;
 --with GNOGA.Application;
+with GNOGA.Ada_Lib;
 with Main;
 --with Video.Lib;
 
@@ -27,12 +28,16 @@ procedure Camera_Control is
 begin
    Put_Line (Command_Name);
    Ada_Lib.Options.Actual.Set_Ada_Lib_Program_Options (
-      Ada_Lib.Options.Interface_Options_Type (Options)'unchecked_access);
+      Options'unchecked_access);
+   Ada_Lib.Options.Actual.Set_Ada_Lib_Nested_Options (
+      Ada_Lib.Options.Actual.Nested_Options_Type (
+         Options.Camera_Library)'unchecked_access);
+
    if Options.Initialize then
       Log_In (Debug);
       Connection_Data.Initialize;
-      Ada_Lib.GNOGA.Set_Connection_Data (
-         Ada_Lib.GNOGA.Connection_Data_Class_Access (Connection_Data));
+      GNOGA.Ada_Lib.Set_Connection_Data (
+         GNOGA.Ada_Lib.Connection_Data_Class_Access (Connection_Data));
       if Ada_Lib.Help_Test then
          Put_Line ("help test " & (if Ada_Lib.Exception_Occured then
                "failed"

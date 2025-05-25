@@ -1,7 +1,8 @@
 with Ada_Lib.Event;
-with Ada_Lib.GNOGA;
+--with Ada_Lib.GNOGA;
 with Camera.Commands;
 with Configuration.Camera.State;
+with GNOGA.Ada_Lib;
 with Gnoga.Gui.Element.Common;
 with Gnoga.Gui.Plugin.jQueryUI.Widget;
 with Gnoga.Gui.Plugin.Message_Boxes;
@@ -19,7 +20,7 @@ package Base is
    type Mouse_Click_Action_Type  is (Any_Scroll, Horizontal_Scroll,
                                        No_Action, No_Change, Vertical_Scroll);
 
-   type Connection_Data_Type     is new Ada_Lib.GNOGA.Connection_Data_Type with
+   type Connection_Data_Type     is new GNOGA.Ada_Lib.Connection_Data_Type with
                                     record
       Camera                     : Standard.Camera.Commands.Camera_Class_Access :=
                                     Null;

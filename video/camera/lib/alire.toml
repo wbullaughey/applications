@@ -1,32 +1,46 @@
 name = "camera_lib"
-description = "library for camera application"
+description = ""
 version = "0.1.0-dev"
 
-authors = ["Wayne Bullaughey"]
-maintainers = ["Wayne Bullaughey <wlb122@verizon.net>"]
-maintainers-logins = ["wbullaughey"]
+authors = ["Your Name"]
+maintainers = ["Your Name <example@example.com>"]
+maintainers-logins = ["github-username"]
+licenses = "MIT OR Apache-2.0 WITH LLVM-exception"
+website = ""
+tags = []
 
 [[depends-on]]
-ada_lib = "*"
+alr_environment = "~0.1.0-dev"
+
 [[pins]]
-ada_lib  = { path = "../../../../ada_lib" }
+alr_environment = { path='../../../..' }
 
 [[depends-on]]
-gnoga = "*"
+ada_lib = "~0.1.0-dev"
 
 [[pins]]
-gnoga  = { path = "../../../../vendor/github.com/gnoga" }
+ada_lib = { path='../../../../ada_lib' }
 
 [[depends-on]]
-video_lib = "*"
+gnoga = "~0.1.0-dev"
 
 [[pins]]
-video_lib  = { path = "../../lib" }
+gnoga = { path='../../../../vendor/github.com/gnoga' }
 
 [[depends-on]]
-aunit = "*"
+video_lib = "~0.1.0-dev"
 
 [[pins]]
-aunit  = { path = "../../../../aunit" }
+video_lib = { path='../../lib' }
 
+[[depends-on]]
+gnoga_ada_lib = "~0.1.0-dev"
 
+[[pins]]
+gnoga_ada_lib = { path='../../../../gnoga_ada_lib' }
+
+[[depends-on]]
+aunit = "~0.1.0-dev"
+
+[[pins]]
+aunit = { path='../../../../aunit' }

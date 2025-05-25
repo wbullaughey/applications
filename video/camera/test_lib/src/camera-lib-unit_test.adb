@@ -14,6 +14,7 @@ with Camera.Lib.Base.Command_Tests;
 with Camera.Lib.Options;
 with Configuration.Camera.Setup.Unit_Tests;
 with Configuration.Camera.State.Unit_Tests;
+with GNOGA.Ada_Lib;
 with Gnoga.Application.Multi_Connect;
 with Main.Unit_Test;
 --with Runtime_Options;
@@ -295,7 +296,8 @@ package body Camera.Lib.Unit_Test is
    ---------------------------------------------------------------
 
    begin
-      Log_In (Debug, "options class " & Tag_Name (Camera_Options'tag));
+      Log_In (Debug); -- , "options class " & Tag_Name (
+--       AUnit.Options.AUnit_Options'class (Options)'tag));
 not_implemented;
 --      if Ada_Lib.Options.Unit_Test.Unit_Test_Program_Options_Type (Options).Mode =
 --            Ada_Lib.Options.Run_Tests then
@@ -428,8 +430,8 @@ not_implemented;
       Log_In (Debug or Trace_Set_Up, "load " & Load'img &
          " brand " & Test.Brand'img &
          " location " & Test.Location'img);
-      Ada_Lib.GNOGA.Set_Connection_Data (
-         Ada_Lib.GNOGA.Connection_Data_Class_Access (Connection_Data));
+      GNOGA.Ada_Lib.Set_Connection_Data (
+         GNOGA.Ada_Lib.Connection_Data_Class_Access (Connection_Data));
 
 --     if Options.If_Emulation then
 --        Not_Implemented;
@@ -481,8 +483,8 @@ not_implemented;
                                     Connection_Data.State;
    begin
       Log_In (Debug or Trace_Set_Up);
-      Ada_Lib.GNOGA.Set_Connection_Data (
-         Ada_Lib.GNOGA.Connection_Data_Class_Access (Connection_Data));
+      GNOGA.Ada_Lib.Set_Connection_Data (
+         GNOGA.Ada_Lib.Connection_Data_Class_Access (Connection_Data));
 log_here;
       Connection_Data.Initialize;
 log_here;
@@ -551,7 +553,7 @@ log_here;
 
       Connection_Data            : Standard.Base.Connection_Data_Type renames
                                     Standard.Base.Connection_Data_Type (
-                                       Ada_Lib.GNOGA.Get_Connection_Data.all);
+                                       GNOGA.Ada_Lib.Get_Connection_Data.all);
       State                      : Configuration.Camera.State.State_Type renames
                                     Connection_Data.State;
    begin

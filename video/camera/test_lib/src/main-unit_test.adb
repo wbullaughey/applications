@@ -9,6 +9,7 @@ with Camera.Lib.Options;
 with Camera.Lib.Unit_Test;
 with Configuration.Camera.Setup; use Configuration.Camera.Setup;
 with Configuration.Camera.State;
+with GNOGA.Ada_Lib;
 
 package body Main.Unit_Test is
 
@@ -66,7 +67,7 @@ package body Main.Unit_Test is
 
       Main_Data                  : Main_Data_Type renames
                                     Base.Connection_Data_Type (
-                                       Ada_Lib.GNOGA.Get_Connection_Data.all).
+                                       GNOGA.Ada_Lib.Get_Connection_Data.all).
                                           Main_Data.all;
       View                       : View_Type renames Main_Data.View;
       Docker                     : Docker_Type renames View.Docker;
@@ -131,7 +132,7 @@ package body Main.Unit_Test is
       declare
          Connection_Data         : Base.Connection_Data_Type renames
                                     Base.Connection_Data_Type (
-                                       Ada_Lib.GNOGA.Get_Connection_Data.all);
+                                       GNOGA.Ada_Lib.Get_Connection_Data.all);
          State                   : Configuration.Camera.State.State_Type renames
                                     Connection_Data.State;
       begin
@@ -170,13 +171,13 @@ package body Main.Unit_Test is
 
       Connection_Data            : Base.Connection_Data_Type renames
                                     Base.Connection_Data_Type (
-                                       Ada_Lib.GNOGA.Get_Connection_Data.all);
+                                       GNOGA.Ada_Lib.Get_Connection_Data.all);
       State                      : Configuration.Camera.State.State_Type renames
                                     Connection_Data.State;
    begin
       Log_In (Debug);
       Ada_Lib.GNOGA.Unit_Test.GNOGA_Tests_Type (Test).Tear_Down;
-      Ada_Lib.GNOGA.Clear_Connection_Data;
+      GNOGA.Ada_Lib.Clear_Connection_Data;
       State.Unload;
       Log_Out (Debug);
    end Tear_Down;

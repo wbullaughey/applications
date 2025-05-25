@@ -1,6 +1,6 @@
 with Ada.Exceptions;
 with Ada_Lib.Configuration;
-with Ada_Lib.GNOGA;
+with GNOGA.Ada_Lib;
 with Ada_Lib.Timer;
 with ADA_LIB.Trace; use ADA_LIB.Trace;
 with Ada_Lib.Unit_Test;
@@ -64,7 +64,7 @@ package body Widgets.Control.Unit_Test is
 
       Connection_Data            : Base.Connection_Data_Type renames
                                     Base.Connection_Data_Type (
-                                       Ada_Lib.GNOGA.Get_Connection_Data.all);
+                                       Standard.GNOGA.Ada_Lib.Get_Connection_Data.all);
       Control_Card               : constant Control_Card_Access :=
                                     Connection_Data.Get_Control_Card;
    begin
@@ -110,7 +110,7 @@ package body Widgets.Control.Unit_Test is
 
       Connection_Data            : Base.Connection_Data_Type renames
                                     Base.Connection_Data_Type (
-                                       Ada_Lib.GNOGA.Get_Connection_Data.all);
+                                       Standard.GNOGA.Ada_Lib.Get_Connection_Data.all);
       Options                    : Standard.Camera.Lib.Unit_Test.
                                     Unit_Test_Program_Options_Type'class
                                        renames Standard.Camera.Lib.Unit_Test.
@@ -188,7 +188,7 @@ package body Widgets.Control.Unit_Test is
 --                                 Test_Type'class (Test);
             Connection_Data      : constant Base.Connection_Data_Access :=
                                     Base.Connection_Data_Access (
-                                       Ada_Lib.GNOGA.Get_Connection_Data);
+                                       Standard.GNOGA.Ada_Lib.Get_Connection_Data);
             Cards                : constant Main.Cards_Access_Type :=
                                     Connection_Data.Get_Cards;
             Tabs                 : constant Gnoga.Gui.View.Card.

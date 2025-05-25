@@ -1,14 +1,3 @@
-OUPUT=list-camera.txt
-TRACE: parameters function /help/
-TRACE: option help
-TRACE: FIRST h
-TRACE: PARAMETERS help
-TRACE: MODE help
-TRACE: shifted
-TRACE: parameters function //
-camera_control
-
-
 camera_control command line options:
     -?                  : this message                  (Ada_Lib)
     -a <trace options>  : Ada_Lib library trace options (Ada_Lib)
@@ -67,7 +56,7 @@ CAC ada_lib trace library options (-a)
       @o              Trace_Options
       @s              Strings
       @t              Ada_Lib.Text
-Ada_Lib.Options.GNOGA library trace options (-G)
+GNOGA_Options library trace options (-G)
       a               all
       m               GNOGA.Ada_Lib.Trace
       o               GNOGA options

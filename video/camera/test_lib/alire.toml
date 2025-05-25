@@ -1,33 +1,31 @@
 name = "camera_test_lib"
-description = "camera unit test library"
+description = ""
 version = "0.1.0-dev"
 
-authors = ["Wayne Bullaughey"]
-maintainers = ["Wayne Bullaughey <wlb122@verizon.net>"]
-maintainers-logins = ["wbullaughey"]
+authors = ["Your Name"]
+maintainers = ["Your Name <example@example.com>"]
+maintainers-logins = ["github-username"]
+licenses = "MIT OR Apache-2.0 WITH LLVM-exception"
+website = ""
+tags = []
 
 [[depends-on]]
-camera_lib = "*"
+alr_environment = "~0.1.0-dev"
 
 [[pins]]
-camera_lib  = { path = "../lib" }
+alr_environment = { path='../../../..' }
 
 [[depends-on]]
-ada_lib = "*"
+camera_lib = "~0.1.0-dev"
 
 [[pins]]
-ada_lib  = { path = "../../../../ada_lib" }
+camera_lib = { path='../lib' }
+
+[[pins]]
+gnoga_ada_lib = { path='../../../../gnoga_ada_lib' }
 
 [[depends-on]]
-aunit = "*"
+ada_lib_test_lib = "~0.1.0-dev"
 
 [[pins]]
-aunit  = { path = "../../../../aunit" }
-
-[[depends-on]]
-ada_lib_tests = "*"
-
-[[pins]]
-ada_lib_tests  = { path = "../../../../ada_lib/ada_lib_tests" }
-
-
+ada_lib_test_lib = { path='../../../../ada_lib/ada_lib_test_lib' }

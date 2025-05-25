@@ -1,54 +1,49 @@
 name = "camera_tests"
-description = "aunit tests for camera"
+description = ""
 version = "0.1.0-dev"
 
-authors = ["Wayne Bullaughey"]
-maintainers = ["Wayne Bullaughey <wlb122@verizon.net>"]
-maintainers-logins = ["wbullaughey"]
+authors = ["Your Name"]
+maintainers = ["Your Name <example@example.com>"]
+maintainers-logins = ["github-username"]
+licenses = "MIT OR Apache-2.0 WITH LLVM-exception"
+website = ""
+tags = []
 
-executables = ["camera_aunit"]
+executables = ["camera_tests"]
+
 
 [[depends-on]]
-camera_lib = "*"
+alr_environment = "~0.1.0-dev"
 
 [[pins]]
-camera_lib  = { path = "../lib" }
+alr_environment = { path='../../../..' }
 
 [[depends-on]]
-camera_test_lib = "*"
+ada_lib = "~0.1.0-dev"
 
 [[pins]]
-camera_test_lib  = { path = "../test_lib" }
+ada_lib = { path='../../../../ada_lib' }
 
 [[depends-on]]
-video_lib = "*"
+gnoga = "~0.1.0-dev"
 
 [[pins]]
-video_lib  = { path = "../../lib" }
+gnoga = { path='../../../../vendor/github.com/gnoga' }
 
 [[depends-on]]
-ada_lib = "*"
+aunit = "~0.1.0-dev"
 
 [[pins]]
-ada_lib  = { path = "../../../../ada_lib" }
+aunit = { path='../../../../aunit' }
 
 [[depends-on]]
-aunit = "*"
+camera_lib = "~0.1.0-dev"
 
 [[pins]]
-aunit  = { path = "../../../../aunit" }
+camera_lib = { path='../lib' }
 
 [[depends-on]]
-ada_lib_tests = "*"
+camera_test_lib = "~0.1.0-dev"
 
 [[pins]]
-ada_lib_tests  = { path = "../../../../ada_lib/ada_lib_tests" }
-
-[[depends-on]]
-gnoga = "*"
-
-[[pins]]
-gnoga  = { path = "../../../../vendor/github.com/gnoga" }
-
-[[depends-on]]
-gnatcoll = "^23.0.0"
+camera_test_lib = { path='../test_lib' }

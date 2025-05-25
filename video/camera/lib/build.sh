@@ -1,4 +1,9 @@
 source ~/.zshrc
-alr build -- -gnatE 
+export BUILD_MODE=$1
+export DIRECTORY=`pwd`
+echo echo $0 BUILD_MODE $BUILD_MODE \
+   BUILD_PROFILE $ADA_APPLICATION_PROFILE \
+   ADA_OS_INCLUDE $ADA_OS_INCLUDE \
+   DIRECTORY $DIRECTORY
 
-# -f force recompile all sources
+../../../../global_build.sh $BUILD_MODE camera_lib $ADA_APPLICATION_PROFILE library

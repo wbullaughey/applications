@@ -1,5 +1,5 @@
 --with Ada_Lib.Directory;
-with Ada_Lib.GNOGA;
+--with Ada_Lib.GNOGA;
 with ADA_LIB.Trace; use ADA_LIB.Trace;
 with Base;
 --with Camera.Lib;
@@ -23,7 +23,7 @@ package body Widgets.Control is
 
       Connection_Data            : Base.Connection_Data_Type renames
                                     Base.Connection_Data_Type (
-                                       Ada_Lib.GNOGA.Get_Connection_Data.all);
+                                       Standard.GNOGA.Ada_Lib.Get_Connection_Data.all);
       Top_Name                   : constant String := (if ID'length = 0 then
                                        ""
                                     else

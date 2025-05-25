@@ -1,7 +1,7 @@
 with Ada_Lib.Options.Actual;
 with Ada_Lib.Options.AUnit_Lib;
 with Ada_Lib.GNOGA.Unit_Test; -- .Base;
---with Ada_Lib.Options.GNOGA;
+--with GNOGA_Options;
 with Ada_Lib.Trace;
 with Ada_Lib.Unit_Test.Test_Cases;
 --with AUnit.Ada_Lib.Options;
@@ -92,7 +92,7 @@ package Camera.Lib.Unit_Test is
                                     Not_Ada_Lib_Unit_Test) with record
          -- camera unit tests only can be run one test per invokation
       Camera_Options             : aliased Standard.Camera.Lib.Options_Type;
---    GNOGA_Options              : Ada_Lib.Options.GNOGA.GNOGA_Options_Type;
+--    GNOGA_Options              : GNOGA_Options.GNOGA_Options_Type;
 --    GNOGA_Unit_Test_Options    : Ada_Lib.GNOGA.Unit_Test.
 --                                  GNOGA_Unit_Test_Options_Type;F
       Main_Debug                 : Boolean := False;
