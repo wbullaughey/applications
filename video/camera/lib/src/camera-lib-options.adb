@@ -100,12 +100,7 @@ package body Camera.Lib.Options is
       return Log_Out (
          Options.GNOGA.Initialize and then
          Options.Camera_Library.Initialize and then
-         Ada_Lib.Options.Actual.Program_Options_Type (Options).Initialize and then
-         Options.Process (
-            Include_Options      => True,
-            Include_Non_Options  => False,
-            Modifiers            => String'(
-               1 => Ada_Lib.Help.Modifier)),
+         Ada_Lib.Options.Actual.Program_Options_Type (Options).Initialize,
          Debug_Options or Trace_Options);
    end Initialize;
 

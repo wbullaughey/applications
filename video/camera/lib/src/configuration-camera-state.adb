@@ -228,9 +228,6 @@ package body Configuration.Camera.State is
       Name                       : in     String) is
    ----------------------------------------------------------------
 
-begin
-log_here;
-declare
       Config                     : Ada_Lib.Configuration.Configuration_Type;
       Current_Directory          : constant String :=
                                     Standard.Camera.Lib.Options.Current_Directory;
@@ -312,7 +309,6 @@ declare
          Trace_Exception (Debug, Fault);
          raise;
 
-end;
    end Load;
    ----------------------------------------------------------------
    overriding

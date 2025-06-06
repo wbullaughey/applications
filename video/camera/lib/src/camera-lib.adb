@@ -219,7 +219,8 @@ package body Camera.Lib is
    ----------------------------------------------------------------------------
 
    begin
-      Log_In (Trace_Options or Debug_Options, Option.Image);
+      Log_In (Trace_Options or Debug_Options, Option.Image &
+         " help test " & Ada_Lib.Help_Test'img);
 
       if Ada_Lib.Options.Has_Option (Option, Options_With_Parameters,
             Options_Without_Parameters) then
@@ -240,7 +241,8 @@ package body Camera.Lib is
                if    Options.Simulate and then
                      not Ada_Lib.Help_Test then
                   Options.Bad_Option (
-                     "Remote option (r) and Simulate (E) are incompatable");
+                     "Remote option (r) and Simulate (E) are incompatable at " &
+                     Here);
                end if;
                Options.Location := Configuration.State.Remote;
 --log_here ("remote " & Image (Options.Remote'address));
@@ -248,7 +250,9 @@ package body Camera.Lib is
             when 'E' =>    -- simulate Standard.Camera
                if    Options.Location = Configuration.State.Remote and then
                      not Ada_Lib.Help_Test then
-                  Options.Bad_Option ("Remote option (r) and Simulate (E) are incompatable");
+                  Options.Bad_Option (
+                     "Remote option (r) and Simulate (E) are incompatable at " &
+                     Here);
                end if;
                Options.Simulate := True;
 

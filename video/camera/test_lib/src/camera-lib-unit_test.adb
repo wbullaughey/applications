@@ -484,29 +484,20 @@ not_implemented;
    begin
       Log_In (Debug or Trace_Set_Up);
       GNOGA.Ada_Lib.Set_Connection_Data (
-         GNOGA.Ada_Lib.Connection_Data_Class_Access (Connection_Data));
-log_here;
+         Gnoga.Ada_Lib.Connection_Data_Class_Access (Connection_Data));
       Connection_Data.Initialize;
-log_here;
-log_here ("location " & Options.Camera_Options.Location'img);
-log_here;
       State.Load (
          Options.Camera_Options.Location, State_Test_Path); -- need to load state 1st
-log_here;
       Test.Setup.Load (State, Setup_Test_Path);
-log_here;
       Ada_Lib.GNOGA.Unit_Test.GNOGA_Tests_Type(Test).Set_Up;
-log_here;
 
          if not Test.Initialize_GNOGA then
-log_here;
             Main.Run (
                Directory            => Camera.Lib.Options.Current_Directory,
                Port                 => Options.GNOGA_Options.HTTP_Port,
                Verbose              => True,
                Wait_For_Completion  => False);
          end if;
-log_here;
 
       Log_Out (Debug or Trace_Set_Up);
 
@@ -658,4 +649,3 @@ begin
    Log_Here (Debug or Trace_Options);
 -- Options := Protected_Options'access;
 end Camera.Lib.Unit_Test;
-

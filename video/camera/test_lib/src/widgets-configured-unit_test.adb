@@ -2,7 +2,7 @@ with Ada.Exceptions;
 --with Ada_Lib.Configuration;
 with Ada_Lib.Directory.Compare_Files;
 with Ada_Lib.Timer;
-with Ada_Lib.GNOGA;
+--with Ada_Lib.GNOGA;
 --with Ada_Lib.Options;
 with ADA_LIB.Trace; use ADA_LIB.Trace;
 --with Ada_Lib.Timer;
@@ -22,8 +22,8 @@ with Main;
 
 package body Widgets.Configured.Unit_Test is
 
-   use type Configuration_ID_Type;
-   use type Preset_ID_Type;
+-- use type Configuration_ID_Type;
+-- use type Preset_ID_Type;
 -- use type Gnoga.Gui.Plugin.Message_Boxes.Message_Box_Result;
    use type Gnoga.Gui.View.Pointer_To_View_Base_Class;
 
@@ -806,7 +806,7 @@ package body Widgets.Configured.Unit_Test is
          Event.Initialize (
             Wait           => 0.25,
             Description    => "accept button");
-         Event.Test_Case := Accept_Form;
+--       Event.Test_Case := Accept_Form;
 
 --       Event.Set (Offset => 0.25);
          delay 0.5;     -- wait for button to be pushed
@@ -858,7 +858,7 @@ package body Widgets.Configured.Unit_Test is
          Event.Initialize (
             Wait           => 0.25,
             Description    => "cancel button");
-         Event.Test_Case := Cancel_Form;
+--       Event.Test_Case := Cancel_Form;
 --       Button_Push_Event.Wait_For_Event;
          delay 0.5;
       end;
@@ -1183,7 +1183,7 @@ package body Widgets.Configured.Unit_Test is
          Event.Initialize (
             Wait           => 0.25,
             Description    => "update button");
-         Event.Test_Case := Update_Label;
+--       Event.Test_Case := Update_Label;
          delay 0.5;     -- wait for focus to leave label
       end;
       declare

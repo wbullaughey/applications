@@ -1,5 +1,5 @@
 with Ada.Exceptions;
-with Ada_Lib.GNOGA;
+--with Ada_Lib.GNOGA;
 with Ada_Lib.Options.Actual;
 with Ada_Lib.Strings;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
@@ -177,6 +177,7 @@ package body Configuration.Camera.State.Unit_Tests is
    ---------------------------------------------------------------
    procedure Test_Values (
       Test                       : in out AUnit.Test_Cases.Test_Case'class) is
+   pragma Unreferenced (Test);
    ---------------------------------------------------------------
 
       Connection_Data            : Base.Connection_Data_Type renames

@@ -30,6 +30,7 @@ begin
          Include_Options      => True,
          Include_Non_Options  => False,
          Modifiers            => Ada_Lib.Help.Modifiers) then
+
          Options.Post_Process;
          if Ada_Lib.Help_Test then
             Put_Line ("help test " & (if Ada_Lib.Exception_Occured then

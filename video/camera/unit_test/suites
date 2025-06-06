@@ -1,5 +1,3 @@
-camera aunit
-Command bin/camera_aunit  -@l
 camera_aunit
 Adjust_Card Test_Mouse_Move
 Commands Test_Get_Zoom
