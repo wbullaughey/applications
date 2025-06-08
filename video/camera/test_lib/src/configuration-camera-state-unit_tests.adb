@@ -238,7 +238,7 @@ package body Configuration.Camera.State.Unit_Tests is
    begin
       Log_In (Debug, "location " & Options.Camera_Options.Location'img);
       State.Load (Options.Camera_Options.Location, Test_State);
-      Log_Here (Debug, "set " & State.Loaded'img & " Number_Columns " &
+      Log_Here (Debug, "set " & State.Is_Loaded'img & " Number_Columns " &
          " address " & Image (State.Number_Columns'address) &
          " bits " & State.Number_Columns'size'img);
 Hex_IO.Dump_32 (State.Number_Columns'address, 32, 1, "number columns");

@@ -96,7 +96,8 @@ package Configuration.Camera.State is
       State                      : in out State_Type;
       Location                   : in     Configuration.State.Location_Type;
       Name                       : in     String
-   ) with Pre => not State.Is_Loaded;
+   ) with Pre => not State.Is_Loaded,
+          Post => State.Is_Loaded;
 
    overriding
    procedure Unload (

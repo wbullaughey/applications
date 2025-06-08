@@ -44,16 +44,6 @@ package body Configuration.State is
    end Get_Host_Port;
 
    ----------------------------------------------------------------
-   function Is_Loaded (
-      State                      : in     State_Type
-   ) return Boolean is
-   ----------------------------------------------------------------
-
-   begin
-      return State.Loaded;
-   end Is_Loaded;
-
-   ----------------------------------------------------------------
    procedure Load (
       State                      : in out State_Type;
       Config                     : in     Ada_Lib.Configuration.Configuration_Type;
@@ -253,7 +243,7 @@ package body Configuration.State is
    end Unload;
 
 begin
---Debug := True;
+Debug := True;
    Log_Here (Debug or Elaborate);
 
 end Configuration.State;

@@ -6,7 +6,7 @@ package Configuration.Camera.Setup is
 
    Failed                        : exception;
 
-   type Configuration_Type       is new Base_Type with record
+   type Configuration_Type       is new Root_State_Type with record
       Configuration_ID           : Configuration_ID_Type;
       Label                      : Ada_Lib.Strings.Unlimited.String_Type;
       Preset_ID                  : Preset_ID_Type := Preset_Not_Set;
@@ -16,10 +16,10 @@ package Configuration.Camera.Setup is
       Configuration              : in     Configuration_Type;
       From                       : in     String := Ada_Lib.Trace.Here);
 
-   type Preset_Type              is new Base_Type with record
+   type Preset_Type              is new Root_State_Type with record
       Column                     : Column_Type := Column_Not_Set;
-      Row                        : Row_Type := Row_Not_Set;
       Preset_ID                  : Preset_ID_Type := Preset_Not_Set;
+      Row                        : Row_Type := Row_Not_Set;
    end record;
 
    procedure Dump (
@@ -44,9 +44,8 @@ package Configuration.Camera.Setup is
 
    type Presets_Access           is access Presets_Type;
 
-   type Setup_Type               is tagged record
+   type Setup_Type               is new Root_Setup_Type with record
       Configurations             : Configurations_Access := Null;
-      Loaded                     : Boolean := False;
       Modified                   : Boolean := False;
       Path                       : Ada_Lib.Strings.Unlimited.String_Type;
       Presets                    : Presets_Access := Null;
@@ -97,9 +96,9 @@ package Configuration.Camera.Setup is
    ) return Boolean
    with Pre => Setup.Is_Loaded;
 
-   function Is_Loaded (
-      Setup                      : in     Setup_Type
-   ) return Boolean;
+-- function Is_Loaded (
+--    Setup                      : in     Setup_Type
+-- ) return Boolean;
 
    procedure Load  (
       Setup                      : in out Setup_Type;
@@ -174,18 +173,16 @@ package Configuration.Camera.Setup is
 
    Global_Camera_Setup           : Setup_Access := Null;
    Null_Configuration            : constant Configuration_Type := (
+                                    Initial_Root_State with
       Configuration_ID  => Configuration_Not_Set,
       Label             => Ada_Lib.Strings.Unlimited.Null_String,
-      Preset_ID         => Preset_Not_Set,
-      Loaded            => False,
-      Updated           => False);
+      Preset_ID         => Preset_Not_Set);
 
    Null_Preset                      : constant Preset_Type := (
+                                    Initial_Root_State with
       Column            => Column_Not_Set,
       Preset_ID         => Preset_Not_Set,
-      Row               => Row_Not_Set,
-      Loaded            => False,
-      Updated           => False);
+      Row               => Row_Not_Set);
 
 
 end Configuration.Camera.Setup;

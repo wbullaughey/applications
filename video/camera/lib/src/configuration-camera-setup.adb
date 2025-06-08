@@ -222,16 +222,16 @@ package body Configuration.Camera.Setup is
       end;
    end Has_Preset;
 
-   ----------------------------------------------------------------
-   function Is_Loaded (
-      Setup                      : in     Setup_Type
-   ) return Boolean is
-   ----------------------------------------------------------------
-
-   begin
-      return Log_Here (Setup.Loaded, Debug,
-         "loaded " & Setup.Loaded'img);
-   end Is_Loaded;
+-- ----------------------------------------------------------------
+-- function Is_Loaded (
+--    Setup                      : in     Setup_Type
+-- ) return Boolean is
+-- ----------------------------------------------------------------
+--
+-- begin
+--    return Log_Here (Setup.Loaded, Debug,
+--       "loaded " & Setup.Loaded'img);
+-- end Is_Loaded;
 
    ----------------------------------------------------------------
    procedure Load (
@@ -298,11 +298,10 @@ package body Configuration.Camera.Setup is
                   end if;
 
                   Setup.Presets (Preset_ID) := Preset_Type'(
+                        Initial_Root_State with
                      Column      => Column,
                      Row         => Row,
-                     Preset_ID   => Preset_ID,
-                     Loaded      => True,
-                     Updated     => False);
+                     Preset_ID   => Preset_ID);
                end;
             else
                Log_Here (Debug, "preset id" & Preset_ID'img);
@@ -351,11 +350,10 @@ package body Configuration.Camera.Setup is
                         " not configured for configuration" & Configuration_ID'img;
                   end if;
                   Setup.Configurations (Configuration_ID) := (
+                     Initial_Root_State with
                      Configuration_ID  => Configuration_ID,
                      Label             => Ada_Lib.Strings.Unlimited.Coerce (Label),
-                     Preset_ID         => Preset_ID,
-                     Loaded            => True,
-                     Updated           => False);
+                     Preset_ID         => Preset_ID);
                end;
             end if;
          end;
@@ -617,7 +615,7 @@ package body Configuration.Camera.Setup is
    end Update_Preset;
 
 begin
---Debug := True;
+Debug := True;
    Log_Here (Debug or Elaborate);
 
 end Configuration.Camera.Setup;

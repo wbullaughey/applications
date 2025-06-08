@@ -18,14 +18,17 @@ procedure Camera_AUnit is
    Debug                : Boolean renames Options.Main_Debug;
 
 begin
---Debug := True;
+Debug := True;
 --Trace_Tests := True;
+   Log_In (Debug);
    Put_Line (Command_Name);
+   Ada_Lib.Options.Actual.Set_Ada_Lib_Nested_Options (
+      Ada_Lib.Options.Actual.Nested_Options_Type (
+         Options.Camera_Options)'unchecked_access);
    Ada_Lib.Options.Actual.Set_Ada_Lib_Program_Options (
       Ada_Lib.Options.Actual.Program_Options_Type (
          Options)'unchecked_access);
    if Options.Initialize then
-      Log_In (Debug);
       if Options.Process (
          Include_Options      => True,
          Include_Non_Options  => False,
@@ -37,6 +40,7 @@ begin
                   "failed"
                else
                   "completed"));
+            Log_Out (Debug);
             Ada_Lib.OS.Immediate_Halt (if Ada_Lib.Exception_Occured then
                Ada_Lib.OS.Assertion_Exit
             else
@@ -54,15 +58,18 @@ begin
             end if;
          end if;
 
+         Log_Out (Debug);
          Ada_Lib.OS.Immediate_Halt (if Ada_Lib.Unit_Test.Did_Fail then
                Ada_Lib.OS.Application_Error
             else
                Ada_Lib.OS.No_Error);
       else  -- Options.Process false
+         Log_Out (Debug);
          Ada_Lib.OS.Immediate_Halt (Ada_Lib.OS.Application_Error);
       end if;
    else     -- Initialize failed
       Put_Line ("could not initialize options");
+      Log_Out (Debug);
    end if;
 
 exception

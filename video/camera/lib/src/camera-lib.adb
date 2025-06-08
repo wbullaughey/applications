@@ -42,7 +42,7 @@ package body Camera.Lib is
    Options_Without_Parameters    : aliased constant
                                     Ada_Lib.Options.Options_Type :=
                                        Ada_Lib.Options.Create_Options (
-                                          "El",
+                                          "E",  -- local is default
                                           Ada_Lib.Options.Unmodified) &
                                        Ada_Lib.Options.Create_Options (
                                           'r', Ada_Lib.Options.Unmodified);
@@ -229,13 +229,17 @@ package body Camera.Lib is
             when 'c' =>
                Options.Directory.Construct (Iterator.Get_Parameter);
 
-            when 'l' =>
-               if    Options.Location = Configuration.State.Remote and then
-                     not Ada_Lib.Help_Test then
-                  Options.Bad_Option (
-                     "Remote option (r) and Local remote (l) are incompatable");
-               end if;
-               Options.Location := Configuration.State.Local;
+--          when 'l' =>    -- default is local
+--             if    Options.Location = Configuration.State.Remote and then
+--                   not Ada_Lib.Help_Test then
+--                Options.Bad_Option (
+--                   "Remote option (r) and Local remote (l) are incompatable");
+--             end if;
+--             Options.Location := Configuration.State.Local;
+
+            when 'p' =>
+               Options.Port_Number := Ada_Lib.Socket_IO.Port_Type (
+                  Iterator.Get_Integer);
 
             when 'r' =>    -- remote camera
                if    Options.Simulate and then
@@ -302,7 +306,10 @@ package body Camera.Lib is
          Log_Here (Debug_Options or Trace_Options, Quote ("Component", Component));
 
          Ada_Lib.Help.Add_Option ('c', "directory", "current directory", Component);
-         Ada_Lib.Help.Add_Option ('l', "", "local camera", Component);
+--       Ada_Lib.Help.Add_Option ('l', "", "local camera", Component);
+         -- local is default
+         Ada_Lib.Help.Add_Option ('p', "port option",
+            "port option", Component);
          Ada_Lib.Help.Add_Option ('r', "", "remote camera", Component);
          Ada_Lib.Help.Add_Option ('E', "", "simulate camera", Component);
          Ada_Lib.Help.Add_Option (Trace_Option, "trace options", "trace options",
@@ -331,6 +338,7 @@ package body Camera.Lib is
          Put_Line ("      " & Trace_Prefix & "a              Adjust Window");
          Put_Line ("      " & Trace_Prefix & "c              Control Window");
          Put_Line ("      " & Trace_Prefix & "C              Configured Window");
+         Put_Line ("      " & Trace_Prefix & "s              configuration");
 
       end case;
 
@@ -367,6 +375,7 @@ package body Camera.Lib is
                      Camera.Commands.Debug := True;
                      Configuration.Camera.Debug := True;
                      Configuration.State.Debug := True;
+                     Configuration.Debug := True;
                      Debug_Options := True;
                      Debug := True;
                      Emulator.Debug := True;
@@ -435,6 +444,9 @@ package body Camera.Lib is
                   when 'C' =>
                      Widgets.Configured.Debug := True;
 
+                  when 's' =>
+                     Configuration.Debug := True;
+
                   when others =>
                      Options.Bad_Option (Quote (
                         "unexpected trace option",
@@ -450,7 +462,7 @@ package body Camera.Lib is
 
 begin
 --Elaborate := True;
---Trace_Options := True;
+Trace_Options := True;
 --Debug := True;
 --Debug_Options := True;
    Log_Here (Debug or Debug_Options or Elaborate or Trace_Options);

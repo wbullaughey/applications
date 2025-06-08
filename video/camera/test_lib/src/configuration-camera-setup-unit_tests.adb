@@ -286,61 +286,53 @@ package body Configuration.Camera.Setup.Unit_Tests is
                                     Preset_ID_Type'first ..
                                     Expected_Last_Presets) of Preset_Type;
 
-      Expected_Prsets            : constant Expected_Preset_Type :=
+      Expected_Prsets            : constant Expected_Preset_Type := (
                                     Expected_Preset_Type'(
                                        0  => (
+                                          Initial_Root_State with
                                           Column      => 2,
                                           Row         => 2,
-                                          Preset_ID   => 0,
-                                          Loaded      => True,
-                                          Updated     => False),
+                                          Preset_ID   => 0),
                                        1  => (
+                                          Initial_Root_State with
                                           Column      => 1,
                                           Row         => 1,
-                                          Preset_ID   => 1,
-                                          Loaded      => True,
-                                          Updated     => False),
+                                          Preset_ID   => 0),
                                        3  => (
+                                          Initial_Root_State with
                                           Column      => 3,
                                           Row         => 1,
-                                          Preset_ID   => 3,
-                                          Loaded      => True,
-                                          Updated     => False),
+                                          Preset_ID   => 0),
                                        5 =>  (
+                                          Initial_Root_State with
                                           Column      => 2,
                                           Row         => 1,
-                                          Preset_ID   => 5,
-                                          Loaded      => True,
-                                          Updated     => False),
-                                       others => Null_Preset );
+                                          Preset_ID   => 0),
+                                       others => Null_Preset));
       Number_Configurations      : constant Configuration_ID_Type :=
                                     State.Number_Configurations;
       Expected_Configurations    : constant Configurations_Type (
                                     1 .. Number_Configurations) := (
                                        1 => (
+                                          Initial_Root_State with
                                           Configuration_ID  => 1,
                                           Label             => Coerce ("Preset 5"),
-                                          Preset_ID         => 5,
-                                          Loaded            => True,
-                                          Updated           => False),
+                                          Preset_ID         => 5),
                                        2 => (
+                                          Initial_Root_State with
                                           Configuration_ID  => 2,
                                           Label             => Coerce ("Preset 3"),
-                                          Preset_ID         => 3,
-                                          Loaded            => True,
-                                          Updated           => False),
+                                          Preset_ID         => 5),
                                        3 => (
+                                          Initial_Root_State with
                                           Configuration_ID  => 3,
                                           Label             => Coerce ("Preset 1"),
-                                          Preset_ID         => 1,
-                                          Loaded            => True,
-                                          Updated           => False),
+                                          Preset_ID         => 5),
                                        4 => (
+                                          Initial_Root_State with
                                           Configuration_ID  => 4,
                                           Label             => Coerce ("Preset 0"),
-                                          Preset_ID         => 0,
-                                          Loaded            => True,
-                                          Updated           => False),
+                                          Preset_ID         => 5),
                                        others => Null_Configuration);
 
    begin

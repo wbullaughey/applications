@@ -293,9 +293,9 @@ package body Configuration.Camera.State is
       end loop;
 
       Config.Close;
-      State.Loaded := True;
+      State.Set_Loaded (True);
 --Hex_IO.Dump_32 (State.Number_Columns'address, 32, 1, "number columns");
-      Log_Out (Debug);
+      Log_Out (Debug, "loaded " & State.Is_Loaded'img);
 
    exception
 
@@ -317,9 +317,9 @@ package body Configuration.Camera.State is
    ----------------------------------------------------------------
 
    begin
-      Log_In (Debug, "state set " & State.Loaded'img);
+      Log_In (Debug, "state set " & State.Is_Loaded'img);
       if State.Is_Loaded then
-         State.Loaded := False;
+         State.Set_Loaded (False);
          Free (State.Images);
       end if;
       Log_Out (Debug);
@@ -333,7 +333,7 @@ package body Configuration.Camera.State is
    end Unload;
 
 begin
---Debug := True;
+Debug := True;
 --Trace_Options := True;
    Log_Here (Debug or Trace_Options or Elaborate);
 

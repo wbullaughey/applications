@@ -764,7 +764,7 @@ package body Widgets.Configured.Unit_Test is
       Log_In (Debug);
       Standard.GNOGA.Ada_Lib.Clear_Connection_Data;
 
-      if Test.Setup.Loaded then
+      if Test.Setup.Is_Loaded then
          Test.Setup.Unload (State, Save_Changes => False);
       end if;
       Camera.Lib.Unit_Test.Camera_Window_Test_Type (Test).Tear_Down;

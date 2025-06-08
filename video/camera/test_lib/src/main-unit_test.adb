@@ -222,6 +222,6 @@ begin
    if Trace_Tests then
       Debug := Trace_Tests;
    end if;
---Debug := True;
+Debug := True;
    Log_Here (Elaborate or Trace_Options);
 end Main.Unit_Test;

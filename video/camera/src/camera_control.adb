@@ -32,6 +32,9 @@ begin
    Ada_Lib.Options.Actual.Set_Ada_Lib_Nested_Options (
       Ada_Lib.Options.Actual.Nested_Options_Type (
          Options.Camera_Library)'unchecked_access);
+   Ada_Lib.Options.Actual.Set_Ada_Lib_Program_Options (
+      Ada_Lib.Options.Actual.Program_Options_Type (
+         Options)'unchecked_access);
 
    if Options.Initialize then
       Log_In (Debug);
