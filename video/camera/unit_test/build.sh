@@ -1,9 +1,9 @@
 source ~/.zshrc
-export BUILD_MODE=$1
-export DIRECTORY=`pwd`
-echo "options $0 BUILD_MODE $BUILD_MODE \
-   BUILD_PROFILE $ADA_APPLICATION_PROFILE \
-   ADA_OS_INCLUDE $ADA_OS_INCLUDE \
-   DIRECTORY $DIRECTORY"
+export WHICH=$1
+#export ADAFLAGS=-gnatv
+#export DEBUG_OPTIONS="-vv -d"
 
-../../../../global_build.sh $BUILD_MODE camera_tests $ADA_APPLICATION_PROFILE program
+echo WHICH $WHICH BUILD_PROFILE $ADA_APPLICATION_PROFILE \
+   ADA_OS_INCLUDE $ADA_OS_INCLUDE
+
+../../../../global_build.sh $WHICH $ADA_APPLICATION_PROFILE program

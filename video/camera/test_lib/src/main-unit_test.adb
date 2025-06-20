@@ -7,9 +7,9 @@ with AUnit.Test_Cases;
 with Base;
 with Camera.Lib.Options;
 with Camera.Lib.Unit_Test;
-with Configuration.Camera.Setup; use Configuration.Camera.Setup;
+--with Configuration.Camera.Setup; use Configuration.Camera.Setup;
 with Configuration.Camera.State;
-with GNOGA.Ada_Lib;
+with GNOGA_Ada_Lib;
 
 package body Main.Unit_Test is
 
@@ -30,11 +30,11 @@ package body Main.Unit_Test is
    procedure Register_Tests (
       Test                       : in out Test_Type);
 
-   overriding
-   procedure Set_Up (
-      Test                       : in out Test_Type
-   ) with Pre => not Test.Verify_Set_Up,
-          Post => Test.Verify_Set_Up;
+-- overriding
+-- procedure Set_Up (
+--    Test                       : in out Test_Type
+-- ) with Pre => not Test.Verify_Set_Up,
+--        Post => Test.Verify_Set_Up;
 
    overriding
    procedure Tear_Down (
@@ -53,8 +53,8 @@ package body Main.Unit_Test is
    procedure Callback (
       Event                      : in out Button_Push_Event_Type);
 
-   Setup_Path                    : constant String := "main_test_setup.cfg";
-   State_Path                    : constant String := "main_test_state.cfg";
+-- Setup_Path                    : constant String := "main_test_setup.cfg";
+-- State_Path                    : constant String := "main_test_state.cfg";
    Suite_Name                    : constant String := "Main";
 
 
@@ -67,7 +67,7 @@ package body Main.Unit_Test is
 
       Main_Data                  : Main_Data_Type renames
                                     Base.Connection_Data_Type (
-                                       GNOGA.Ada_Lib.Get_Connection_Data.all).
+                                       GNOGA_Ada_Lib.Get_Connection_Data.all).
                                           Main_Data.all;
       View                       : View_Type renames Main_Data.View;
       Docker                     : Docker_Type renames View.Docker;
@@ -114,34 +114,34 @@ package body Main.Unit_Test is
 
    end Register_Tests;
 
-   ---------------------------------------------------------------
-   overriding
-   procedure Set_Up (
-      Test                       : in out Test_Type) is
-   ---------------------------------------------------------------
-
-      Options                    : Standard.Camera.Lib.Unit_Test.
-                                    Unit_Test_Program_Options_Type'class
-                                       renames Standard.Camera.Lib.Unit_Test.
-                                          Get_Camera_Unit_Test_Constant_Options.all;
-
-   begin
-      Log_In (Debug or Trace_Set_Up);
-      Camera.Lib.Unit_Test.Camera_Window_Test_Type (Test).Set_Up;
-         -- allocate connection data
-      declare
-         Connection_Data         : Base.Connection_Data_Type renames
-                                    Base.Connection_Data_Type (
-                                       GNOGA.Ada_Lib.Get_Connection_Data.all);
-         State                   : Configuration.Camera.State.State_Type renames
-                                    Connection_Data.State;
-      begin
-         State.Load (Options.Camera_Options.Location, State_Path);
-         -- need to load state 1st
-         Test.Setup.Load (State, Setup_Path);
-      end;
-      Log_Out (Debug or Trace_Set_Up);
-   end Set_Up;
+-- ---------------------------------------------------------------
+-- overriding
+-- procedure Set_Up (
+--    Test                       : in out Test_Type) is
+-- ---------------------------------------------------------------
+--
+--    Options                    : Standard.Camera.Lib.Unit_Test.
+--                                  Unit_Test_Program_Options_Type'class
+--                                     renames Standard.Camera.Lib.Unit_Test.
+--                                        Get_Camera_Unit_Test_Constant_Options.all;
+--
+-- begin
+--    Log_In (Debug or Trace_Set_Up);
+--    Camera.Lib.Unit_Test.Camera_Window_Test_Type (Test).Set_Up;
+--       -- allocate connection data
+--    declare
+--       Connection_Data         : Base.Connection_Data_Type renames
+--                                  Base.Connection_Data_Type (
+--                                     GNOGA_Ada_Lib.Get_Connection_Data.all);
+--       State                   : Configuration.Camera.State.State_Type renames
+--                                  Connection_Data.State;
+--    begin
+--       State.Load (Options.Camera_Options.Location, State_Path);
+--       -- need to load state 1st
+--       Test.Setup.Load (State, Setup_Path);
+--    end;
+--    Log_Out (Debug or Trace_Set_Up);
+-- end Set_Up;
 
    ---------------------------------------------------------------
    function Suite return AUnit.Test_Suites.Access_Test_Suite is
@@ -171,13 +171,13 @@ package body Main.Unit_Test is
 
       Connection_Data            : Base.Connection_Data_Type renames
                                     Base.Connection_Data_Type (
-                                       GNOGA.Ada_Lib.Get_Connection_Data.all);
+                                       GNOGA_Ada_Lib.Get_Connection_Data.all);
       State                      : Configuration.Camera.State.State_Type renames
                                     Connection_Data.State;
    begin
       Log_In (Debug);
       Ada_Lib.GNOGA.Unit_Test.GNOGA_Tests_Type (Test).Tear_Down;
-      GNOGA.Ada_Lib.Clear_Connection_Data;
+      GNOGA_Ada_Lib.Clear_Connection_Data;
       State.Unload;
       Log_Out (Debug);
    end Tear_Down;
@@ -202,7 +202,8 @@ package body Main.Unit_Test is
 --       Button_Press_Event.Connection_Data :=
 --          Base.Connection_Data_Access (Local_Test.Connection_Data);
 
-         Button_Press_Event.Set_Wait (2.0);  -- leave time for web page to display
+         Button_Press_Event.Set_Wait (2.0, "halt wait");
+            -- leave time for web page to display
 
          Run (
             Directory            => Camera.Lib.Options.Current_Directory,
@@ -222,6 +223,6 @@ begin
    if Trace_Tests then
       Debug := Trace_Tests;
    end if;
-Debug := True;
+--Debug := True;
    Log_Here (Elaborate or Trace_Options);
 end Main.Unit_Test;

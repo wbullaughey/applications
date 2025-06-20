@@ -10,6 +10,7 @@ with Ada_Lib.Strings;
 with ADA_LIB.Trace; use Ada_Lib.Trace;
 with Base;
 with Camera.Commands;
+with Camera.Lib.Base;
 --with Configuration.Camera.State;
 with Configuration.Camera;
 with Configuration.State;
@@ -229,14 +230,6 @@ package body Camera.Lib is
             when 'c' =>
                Options.Directory.Construct (Iterator.Get_Parameter);
 
---          when 'l' =>    -- default is local
---             if    Options.Location = Configuration.State.Remote and then
---                   not Ada_Lib.Help_Test then
---                Options.Bad_Option (
---                   "Remote option (r) and Local remote (l) are incompatable");
---             end if;
---             Options.Location := Configuration.State.Local;
-
             when 'p' =>
                Options.Port_Number := Ada_Lib.Socket_IO.Port_Type (
                   Iterator.Get_Integer);
@@ -306,8 +299,6 @@ package body Camera.Lib is
          Log_Here (Debug_Options or Trace_Options, Quote ("Component", Component));
 
          Ada_Lib.Help.Add_Option ('c', "directory", "current directory", Component);
---       Ada_Lib.Help.Add_Option ('l', "", "local camera", Component);
-         -- local is default
          Ada_Lib.Help.Add_Option ('p', "port option",
             "port option", Component);
          Ada_Lib.Help.Add_Option ('r', "", "remote camera", Component);
@@ -323,7 +314,8 @@ package body Camera.Lib is
          Put_Line (Component & " trace options (-" &
             Display_Trace_Option & ")");
          Put_Line ("      a               all");
-         Put_Line ("      b               base.debug");
+         Put_Line ("      b               Base.debug");
+         Put_Line ("      B               Camera.Lib.Base.debug");
          Put_Line ("      c               camera configuration");
          Put_Line ("      C               camera commands");
          Put_Line ("      g               Widgets.Generic_Table");
@@ -373,6 +365,7 @@ package body Camera.Lib is
                   when 'a' =>
                      Base.Debug := True;
                      Camera.Commands.Debug := True;
+                     Camera.Lib.Base.Debug := True;
                      Configuration.Camera.Debug := True;
                      Configuration.State.Debug := True;
                      Configuration.Debug := True;
@@ -388,6 +381,9 @@ package body Camera.Lib is
 
                   when 'b' =>
                      Base.Debug := True;
+
+                  when 'B' =>
+                     Camera.Lib.Base.Debug := True;
 
                   when 'c' =>
                      Configuration.Camera.Debug := True;
@@ -462,7 +458,7 @@ package body Camera.Lib is
 
 begin
 --Elaborate := True;
-Trace_Options := True;
+--Trace_Options := True;
 --Debug := True;
 --Debug_Options := True;
    Log_Here (Debug or Debug_Options or Elaborate or Trace_Options);

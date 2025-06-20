@@ -23,15 +23,20 @@ package Camera.Lib.Unit_Test is
 
    -- use for tests with camera but no web pages
    type Camera_Test_Type (
-      Brand                      :Standard.Camera.Lib.Brand_Type) is abstract new
-                                    Ada_Lib.Unit_Test.Test_Cases.
-                                       Test_Case_Type with record
-      Camera                     : Standard.Camera.Commands.
-                                    Camera_Class_Access := Null;
-      Camera_Address             : Address_Constant_Access := Null;
-      Port_Number                : Port_Type;
-      Location                   : Configuration.State.Location_Type;
-      Setup                      : Configuration.Camera.Setup.Setup_Type;
+      Brand             : Standard.Camera.Lib.Brand_Type) is
+                           abstract new Ada_Lib.Unit_Test.
+                              Test_Cases.Test_Case_Type with record
+      Camera            : Standard.Camera.Commands.
+                           Camera_Class_Access := Null;
+      Camera_Address    : Address_Constant_Access := Null;
+      Initialize_GNOGA  : Boolean := True;
+      Load_State        : Boolean := True;
+      Location          : Configuration.State.Location_Type;
+      Port_Number       : Port_Type := Standard.Camera.Commands.PTZ_Optics.Port;
+      Setup             : Configuration.Camera.Setup.Setup_Type;
+      Setup_Path        : access constant String := Null;
+      State_Path        : access constant String := Null;
+
       case Brand is
          when Standard.Camera.Lib.ALPTOP_Camera =>
             ALPTOP                : aliased Standard.Camera.LIB.ALPTOP.ALPTOP_Type;
@@ -49,14 +54,19 @@ package Camera.Lib.Unit_Test is
    type Camera_Test_Access       is access Camera_Test_Type;
    type Camera_Test_Constant_Access
                                  is access constant Camera_Test_Type;
+
+   procedure Dump (
+      Test                       : in     Camera_Test_Type;
+      Trace                      : in     Boolean);
+
    overriding
    procedure Set_Up (
       Test                       : in out Camera_Test_Type
    ) with Post => Test.Verify_Set_Up;
 
-   procedure Set_Up_Optional_Load (
-      Test                       : in out Camera_Test_Type;
-      Load                       : in     Boolean);
+-- procedure Set_Up_Optional_Load (
+--    Test                       : in out Camera_Test_Type;
+--    Load                       : in     Boolean);
 
    overriding
    procedure Tear_Down (
@@ -155,9 +165,8 @@ package Camera.Lib.Unit_Test is
       Results                    : in out AUnit.Test_Results.Result'Class;
       Outcome                    :    out AUnit.Status);
 
+   Camera_Commands_Debug         : Boolean := False;
    Debug                         : Boolean := False;
-   Debug_Options                 : Boolean := False;
-   Main_Debug                    : Boolean := False;
    Unit_Test_Options             : Unit_Test_Options_Constant_Class_Access := Null;
 
 private

@@ -243,7 +243,7 @@ package body Configuration.State is
    end Unload;
 
 begin
-Debug := True;
+--Debug := True;
    Log_Here (Debug or Elaborate);
 
 end Configuration.State;

@@ -1,5 +1,5 @@
 with Ada.Exceptions;
-with GNOGA.Ada_Lib;
+with GNOGA_Ada_Lib;
 with Ada_Lib.Timer;
 with Ada_Lib.Unit_Test;
 with AUnit.Assertions; use AUnit.Assertions;
@@ -113,7 +113,7 @@ package body Widgets.Adjust.Unit_Test is
 --      declare
 --         Connection_Data            : Base.Connection_Data_Type renames
 --                                       Base.Connection_Data_Type (
---                                          GNOGA.Ada_Lib.Get_Connection_Data.all);
+--                                          GNOGA_Ada_Lib.Get_Connection_Data.all);
 --         Options                    : Camera.Lib.Unit_Test.
 --                                       Unit_Test_Program_Options_Type'class
 --                                          renames Camera.Lib.Unit_Test.
@@ -164,7 +164,7 @@ package body Widgets.Adjust.Unit_Test is
 --
 --   begin
 --      Log_In (Debug);
-----    GNOGA.Ada_Lib.Clear_Connection_Data;
+----    GNOGA_Ada_Lib.Clear_Connection_Data;
 --      Camera.Lib.Unit_Test.Camera_Window_Test_Type (Test).Tear_Down ;
 --      Log_Out (Debug);
 --   end Tear_Down;
@@ -179,7 +179,7 @@ package body Widgets.Adjust.Unit_Test is
 
       Connection_Data   : constant Base.Connection_Data_Access :=
                               Base.Connection_Data_Access (
-                                 GNOGA.Ada_Lib.Get_Connection_Data);
+                                 GNOGA_Ada_Lib.Get_Connection_Data);
       Camera            : Standard.Camera.Commands.Camera_Class_Access renames
                            Connection_Data.Camera;
       Event             : Move_Package.Mouse_Move_Event_Type;
@@ -260,7 +260,7 @@ package body Widgets.Adjust.Unit_Test is
 
          Connection_Data            : Base.Connection_Data_Type renames
                                        Base.Connection_Data_Type (
-                                          GNOGA.Ada_Lib.Get_Connection_Data.all);
+                                          GNOGA_Ada_Lib.Get_Connection_Data.all);
          Adjust_Card                : constant Adjust_Card_Access :=
                                        Connection_Data.Main_Data.Get_Adjust_Card;
          Cell                       : constant Generic_Cell_Package.

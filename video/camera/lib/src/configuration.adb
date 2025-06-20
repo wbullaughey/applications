@@ -50,7 +50,7 @@ package body Configuration is
    end Set_Loaded;
 
 begin
-Debug := True;
+--Debug := True;
    Log_Here (Debug or Elaborate);
 end Configuration;
 

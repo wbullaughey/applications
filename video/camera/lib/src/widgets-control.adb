@@ -5,7 +5,7 @@ with Base;
 --with Camera.Lib;
 with Configuration.Camera.Setup;
 with Configuration.Camera.State;
-with GNOGA.ADA_LIB;
+with GNOGA_Ada_Lib;
 with Gnoga.Gui.View;
 with Main;
 --with Video.Lib;
@@ -23,7 +23,7 @@ package body Widgets.Control is
 
       Connection_Data            : Base.Connection_Data_Type renames
                                     Base.Connection_Data_Type (
-                                       Standard.GNOGA.Ada_Lib.Get_Connection_Data.all);
+                                       GNOGA_Ada_Lib.Get_Connection_Data.all);
       Top_Name                   : constant String := (if ID'length = 0 then
                                        ""
                                     else
@@ -145,7 +145,7 @@ not_implemented;
       exception
          when Fault : others =>
             Trace_Exception (Debug, Fault);
-            GNOGA.Ada_Lib.Report_Exception (Main_Data.Main_Window.all,
+            GNOGA_Ada_Lib.Report_Exception (Main_Data.Main_Window.all,
                Fault, "call preset failed");
 
       end Image_Click_Handler;

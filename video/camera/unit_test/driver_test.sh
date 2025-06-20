@@ -5,52 +5,55 @@ export TARGET_SUBDIRECTORY=`realpath "$CURRENT_DIRECTORY/../unit_test"`
 export OPTIONS="-r -=D $TARGET_SUBDIRECTORY"
 export PARAMETERS=("$@")
 echo PARAMETERS: $PARAMETERS
+export PROGRAM=bin/camera_aunit
 echo OUPUT=$OUTPUT
 echo test with driver 2>&1 | tee $OUTPUT
-export TRACE=1
+export DO_TRACE=1
 
-trace() {
-   if (( $TRACE > 0 )) then
-      echo "TRACE: $*" 2>&1 | tee -a $OUTPUT
+function output() {
+echo output parameters $* 2>&1 TRACE.txt
+   TRACE=$1
+   shift 1
+   echo "output TRACE $TRACE DO_TRACE $DO_TRACE APPEND TRACE $APPEND_OUTPUT" \
+         2>&1 | tee -a TRACE.txt
+   case $TRACE in
+
+      "LIST")
+         ;;
+
+      "TRACE")
+         if [ "$DO_TRACE" -eq 0 ]; then
+            return
+         fi
+   esac
+   echo $* 2>&1 | tee $APPEND_OUTPUT $OUTPUT
+   export APPEND_OUTPUT=-a  # append from now on
+}
+
+function run() {
+   output TRACE run PROGRAM $PROGRAM OPTIONS $OPTIONS COMMAND $COMMAND
+
+   export EXECUTE="$PROGRAM $OPTIONS $COMMAND"
+   output TRACE EXECUTE $EXECUTE
+   ${=EXECUTE} 2>&1 | tee $APPEND_OUTPUT $OUTPUT
+   exit;
+}
+
+output TRACE camera_tests PARAMETERS $PARAMETERS
+
+for PARAMETER in $*; do    # put all '-' options into OPTIONS
+   export FIRST=${PARAMETER:0:1}
+   if [[ "$FIRST" = "-" ]]; then
+     output TRACE option: $PARAMETER
+     export OPTIONS="$OPTIONS $PARAMETER"
+     shift 1
+   else
+      break;
    fi
-}
+done
 
-remove_1() {
-   PARAMETERS=("${PARAMETERS[@]:1}")
-   trace shifted $PARAMETERS
-}
+output TRACE first parameter $1
 
-parameters() {
-   trace parameters function /$PARAMETERS/
-   for PARAMETER ("$PARAMETERS[@]"); do
-      trace option $PARAMETER
-      export FIRST=${PARAMETER:0:1}
-      trace FIRST $FIRST
-      case $FIRST in
-         "-")
-           trace option: $PARAMETER
-           export OPTIONS="$OPTIONS $PARAMETER"
-           trace OPTIONS $OPTIONS
-           remove_1
-           ;;
-
-         "@")
-           trace option: $PARAMETER
-           export OPTIONS="$OPTIONS -X${PARAMETER[@]:1}"
-           trace OPTIONS $OPTIONS
-           remove_1
-           ;;
-
-         *)
-            break;
-           ;;
-      esac
-   done
-}
-
-parameters  # process leading options
-
-trace PARAMETERS $PARAMETERS
 
 case $PARAMETERS[1] in
 

@@ -109,7 +109,7 @@ package body Widgets.Configured is
 
       Connection_Data            : Base.Connection_Data_Type renames
                                     Base.Connection_Data_Type (
-                                       Standard.GNOGA.Ada_Lib.Get_Connection_Data.all);
+                                       GNOGA_Ada_Lib.Get_Connection_Data.all);
       State                      : Configuration.Camera.State.State_Type renames
                                     Connection_Data.State;
       Number_Configurations      : constant
@@ -211,7 +211,7 @@ package body Widgets.Configured is
       procedure Row_Package_Update (
          Cell                 : in     Cell_Class_Access;
          Coordinate           : in     Row_Type
-      )  with Pre =>GNOGA.Ada_Lib.Has_Connection_Data;
+      )  with Pre =>GNOGA_Ada_Lib.Has_Connection_Data;
 
       procedure Select_Handler (
          Object                  : in out Gnoga.Gui.Base.Base_Type'Class;
@@ -224,7 +224,7 @@ package body Widgets.Configured is
          Configured_Card            : in out Configured_Card_Type;
          Configuration_ID           : in     Configuration_ID_Type;
          Preset_Cell                : in out Preset_Package.Cell_Type'class
-      ) with Pre => GNOGA.Ada_Lib.Has_Connection_Data;
+      ) with Pre => GNOGA_Ada_Lib.Has_Connection_Data;
 
       ----------------------------------------------------------------
       procedure Allocate_Column (
@@ -250,7 +250,7 @@ package body Widgets.Configured is
 
          Connection_Data         : Base.Connection_Data_Type renames
                                     Base.Connection_Data_Type (
-                                       Standard.GNOGA.Ada_Lib.Get_Connection_Data.all);
+                                       GNOGA_Ada_Lib.Get_Connection_Data.all);
          Value                   : constant String :=
                                     Gnoga.GUI.Element.Common.Button_Type (
                                        Button).Text;
@@ -285,7 +285,7 @@ package body Widgets.Configured is
 
          Connection_Data      : Base.Connection_Data_Type renames
                                  Base.Connection_Data_Type (
-                                    Standard.GNOGA.Ada_Lib.Get_Connection_Data.all);
+                                    GNOGA_Ada_Lib.Get_Connection_Data.all);
          State                : Configuration.Camera.State.State_Type renames
                                     Connection_Data.State;
       begin
@@ -678,7 +678,7 @@ not_implemented;
 
          Connection_Data      : Base.Connection_Data_Type renames
                                  Base.Connection_Data_Type (
-                                    Standard.GNOGA.Ada_Lib.Get_Connection_Data.all);
+                                    GNOGA_Ada_Lib.Get_Connection_Data.all);
          State                : Configuration.Camera.State.State_Type renames
                                  Connection_Data.State;
       begin
@@ -694,7 +694,7 @@ not_implemented;
 
          Connection_Data         : Base.Connection_Data_Type renames
                                     Base.Connection_Data_Type (
-                                       Standard.GNOGA.Ada_Lib.Get_Connection_Data.all);
+                                       GNOGA_Ada_Lib.Get_Connection_Data.all);
          Cell                    : constant Preset_Package.Cell_Class_Access :=
                                     Preset_Package.Cell_Class_Access (
                                        Object.Parent);
@@ -730,7 +730,7 @@ not_implemented;
 
          Connection_Data         : Base.Connection_Data_Type renames
                                     Base.Connection_Data_Type (
-                                       Standard.GNOGA.Ada_Lib.Get_Connection_Data.all);
+                                       GNOGA_Ada_Lib.Get_Connection_Data.all);
          Configured_Card         : Configured_Card_Type renames
                                     Connection_Data.Get_Configured_Card.all;
          Cell                    : constant Preset_Package.Cell_Class_Access :=
@@ -775,7 +775,7 @@ not_implemented;
                Coordinate        : in     Coordinate_Type);
 
          procedure Update_Coordinate
-         with Pre => GNOGA.Ada_Lib.Has_Connection_Data;
+         with Pre => GNOGA_Ada_Lib.Has_Connection_Data;
 
          -------------------------------------------------------------
          function Column_Cell_Coordinate(
@@ -1059,7 +1059,7 @@ not_implemented;
 
          Connection_Data            : Base.Connection_Data_Type renames
                                        Base.Connection_Data_Type (
-                                          Standard.GNOGA.Ada_Lib.Get_Connection_Data.all);
+                                          GNOGA_Ada_Lib.Get_Connection_Data.all);
          Raw_Value                  : constant String :=
                                        Preset_Cell.Preset_ID_Field.Value;
          New_Preset_ID              : constant Preset_ID_Type :=

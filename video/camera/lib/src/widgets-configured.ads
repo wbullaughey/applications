@@ -2,7 +2,7 @@
 with Ada_Lib.Strings.Unlimited;
 with ADA_LIB.Trace;
 --with Configuration.Camera.State;
-with GNOGA.Ada_lib;
+with GNOGA_Ada_Lib;
 with Gnoga.Gui.Base;
 with Gnoga.Gui.Element.Common;
 with Gnoga.Gui.Element.Form;
@@ -100,7 +100,7 @@ package Widgets.Configured is
       procedure Column_Package_Update (
          Cell                 : in     Cell_Class_Access;
          Coordinate           : in     Configuration.Camera.Column_Type
-      ) with Pre =>GNOGA.Ada_Lib.Has_Connection_Data;
+      ) with Pre =>GNOGA_Ada_Lib.Has_Connection_Data;
 
       overriding
       procedure Create_Cell (
@@ -114,7 +114,7 @@ package Widgets.Configured is
          Table_Column            : in     Preset_Column_Index_Type;
          Table_Row               : in     Configuration.Camera.
                                              Configuration_ID_Type
-      ) with Pre => GNOGA.Ada_Lib.Has_Connection_Data;
+      ) with Pre => GNOGA_Ada_Lib.Has_Connection_Data;
 
       procedure Dump (
          Cell                    : in     Cell_Type;
@@ -220,7 +220,7 @@ package Widgets.Configured is
       Configured_Card            : in out Configured_Card_Type;
       Main_Window                : in out Gnoga.GUI.Window.Window_Type'Class;
       Cards                      : in out Gnoga.Gui.View.View_Base_Type'Class
-   ) with Pre => GNOGA.Ada_Lib.Has_Connection_Data;
+   ) with Pre => GNOGA_Ada_Lib.Has_Connection_Data;
 
    overriding
    function Get_Form (

@@ -1,4 +1,4 @@
-with GNOGA.Ada_Lib;
+with GNOGA_Ada_Lib;
 with Ada_Lib.Unit_Test;
 with AUnit.Assertions; use AUnit.Assertions;
 with AUnit.Test_Cases;
@@ -17,7 +17,8 @@ package body Camera.Lib.Base.Command_Tests is
 
    type Test_Type (
       Brand                      : Brand_Type) is new Camera.Lib.Unit_Test.
-                                    Camera_Test_Type (Brand) with record
+                                    Camera_Test_Type (
+                                       Brand       => Brand) with record
       Manual                     : Boolean := False;
    end record;
 
@@ -250,8 +251,8 @@ package body Camera.Lib.Base.Command_Tests is
                                  new Standard.Base.Connection_Data_Type;
    begin
       Log_In (Debug or Trace_Set_Up);
-      GNOGA.Ada_Lib.Set_Connection_Data (
-         GNOGA.Ada_Lib.Connection_Data_Class_Access (Connection_Data));
+      GNOGA_Ada_Lib.Set_Connection_Data (
+         GNOGA_Ada_Lib.Connection_Data_Class_Access (Connection_Data));
       Connection_Data.Initialize;
       Camera.Lib.Unit_Test.Camera_Test_Type (Test).Set_Up;
 

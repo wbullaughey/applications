@@ -13,10 +13,9 @@ package body Camera.Commands.Unit_Test is
 
    use type Interfaces.Integer_16;
 
-   type Test_Type                is new Standard.Camera.Lib.Unit_Test.
-                                    Camera_Test_Type (
-                                       Brand => Camera.Lib.PTZ_Optics_Camera)
-                                          with null record;
+   type Test_Type is new
+                     Standard.Camera.Lib.Unit_Test.Camera_Test_Type (
+         Brand       => Camera.Lib.PTZ_Optics_Camera) with null record;
 
    type Test_Access is access Test_Type;
 
@@ -55,9 +54,9 @@ package body Camera.Commands.Unit_Test is
    procedure Test_Set_Zoom (
       Test                       : in out AUnit.Test_Cases.Test_Case'class);
 
-   Suite_Name                    : constant String := "Commands";
-   Test_Preset                   : constant := Camera.Commands.PTZ_Optics.
-                                    Last_Preset;
+   Debug       : Boolean renames Camera.Lib.Unit_Test.Camera_Commands_Debug;
+   Suite_Name  : constant String := "Commands";
+   Test_Preset : constant := Camera.Commands.PTZ_Optics.Last_Preset;
 
    ---------------------------------------------------------------
    procedure Check_Coordinates (
@@ -68,10 +67,13 @@ package body Camera.Commands.Unit_Test is
    ---------------------------------------------------------------
 
    begin
+      Log_In (Debug, "pan got " & Got_Pan'img & " tilt " & Got_Tilt'img &
+         " expected pan " & Expected_Pan'img & " tilt " & Expected_Tilt'img);
       Assert (Got_Pan = Expected_Pan, "got wrong pan" & Got_Pan'img &
          " expected pan" & Expected_Pan'img);
       Assert (Got_Tilt = Expected_Tilt, "got wrong tilt" & Got_Tilt'img &
          " expected tilt" & Expected_Tilt'img);
+      Log_Out (Debug);
    end Check_Coordinates;
 
    ---------------------------------------------------------------
@@ -145,9 +147,9 @@ package body Camera.Commands.Unit_Test is
    function Suite return AUnit.Test_Suites.Access_Test_Suite is
    ---------------------------------------------------------------
 
-      Test_Suite                 : constant AUnit.Test_Suites.Access_Test_Suite :=
-                                    new AUnit.Test_Suites.Test_Suite;
-      Test                       : constant Test_Access := new Test_Type;
+      Test_Suite  : constant AUnit.Test_Suites.Access_Test_Suite :=
+                     new AUnit.Test_Suites.Test_Suite;
+      Test        : constant Test_Access := new Test_Type;
 
    begin
       Log_In (Debug);
@@ -208,27 +210,77 @@ package body Camera.Commands.Unit_Test is
       Test                       : in out AUnit.Test_Cases.Test_Case'class) is
    ----------------------------------------------------------------
 
-      Local_Test                 : Test_Type'class renames Test_Type'class (Test);
-      Final_Pan         : Camera.Commands.Absolute_Type;
-      Final_Tilt        : Camera.Commands.Absolute_Type;
-      Pan_Offset        : constant := 100;
-      Test_Pan           : Camera.Commands.Absolute_Type;
-      Test_Tilt           : Camera.Commands.Absolute_Type;
-      Tilt_Offset        : constant := -100;
+   -- moves camera around 4 steps until back to original location
+
+      type Step_Index_Type    is range 1 .. 4;
+
+      type Step_Type          is record
+         Pan                  : Camera.Commands.Relative_Type;
+         Tilt                 : Camera.Commands.Relative_Type;
+      end record;
+
+      Number_Steps            : constant := 4;
+      Offset                  : constant := 100;
+      Local_Test              : Test_Type'class renames Test_Type'class (Test);
+      Final_Pan               : Camera.Commands.Absolute_Type;
+      Final_Tilt              : Camera.Commands.Absolute_Type;
+      Step                    : Natural := 0;
+      Test_Pan                : Camera.Commands.Absolute_Type;
+      Test_Tilt               : Camera.Commands.Absolute_Type;
+      Offsets                 : constant array (Step_Index_Type) of Step_Type := (
+                                 (
+                                    Pan   => Offset,
+                                    Tilt  => 0
+                                 ),
+                                 (
+                                    Pan   => 0,
+                                    Tilt  => -Offset
+                                 ),
+                                 (
+                                    Pan   => -Offset,
+                                    Tilt  => 0
+                                 ),
+                                 (
+                                    Pan   => 0,
+                                    Tilt  => Offset
+                                 )
+                              );
+
 
    begin
       Log_In (Debug);
-      -- use Test_Preset as reference
-      Local_Test.Camera.Set_Preset (Test_Preset);
+      -- start from Test_Preset as reference
+      -- move 4 steps return to Test_Prset
+      Local_Test.Camera.Set_Preset (Test_Preset);     -- normally same as preset 0
       -- get coordinats of test preset
       Local_Test.Camera.Get_Absolute (Test_Pan, Test_Tilt);
+      Log_Here (Debug, "test pan " & Test_Pan'img & " tilt " & Test_Tilt'img);
+
+      for Offset of Offsets loop
+         Step := Step + 1;
       -- set relative
-      Local_Test.Camera.Position_Relative (Pan_Offset, Tilt_Offset);
-      -- get coordinates of new location
+         Local_Test.Camera.Position_Relative (
+            Offset.Pan, Offset.Tilt);
+         delay 0.2;
+         if Debug then
+            declare
+               Pan               : Camera.Commands.Absolute_Type;
+               Tilt              : Camera.Commands.Absolute_Type;
+
+            begin
+               Local_Test.Camera.Get_Absolute (Pan, Tilt);
+               Log_Here ("step" & Step'img &
+                  " pan " & Pan'img & " offset " & Offset.Pan'img &
+                  " tilt " & Tilt'img & " offset " & Offset.Tilt'img);
+            end;
+         end if;
+      end loop;
+
+      -- get coordinates of final location
       Local_Test.Camera.Get_Absolute (Final_Pan, Final_Tilt);
       -- verify it got coordinates that were set
-      Check_Coordinates (Final_Pan, Test_Pan + Pan_Offset,
-         Final_Tilt, Test_Tilt + Tilt_Offset);
+      Log_Here (Debug, "final pan " & Final_Pan'img & " tilt " & Final_Tilt'img);
+      Check_Coordinates (Final_Pan, Test_Pan , Final_Tilt, Test_Tilt);
       -- set it back to reference
       Local_Test.Camera.Set_Preset (Test_Preset);
       -- git its coordinats

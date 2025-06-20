@@ -3,7 +3,6 @@ with Ada.Directories;
 with Ada.IO_Exceptions;
 with Ada.Text_IO; use  Ada.Text_IO;
 with Ada_Lib.Help;
-with GNOGA.Ada_Lib.Base;
 with Ada_Lib.Options;
 with Ada_Lib.OS;
 with ADA_LIB.Trace; use ADA_LIB.Trace;
@@ -13,7 +12,7 @@ with Camera.Commands;
 with Camera.Lib;
 with Configuration.Camera.State;
 with GNAT.Sockets;
-with Gnoga.Ada_Lib;
+with GNOGA_Ada_Lib.Base;
 with Gnoga.Application.Multi_Connect;
 with Gnoga.Types.Colors;
 with Camera.Lib.Base;
@@ -39,7 +38,7 @@ package body Main is
       Main_Window                : in out Gnoga.Gui.Window.Window_Type'Class;
       Connection                 : access Gnoga.Application.Multi_Connect.
                                              Connection_Holder_Type
-   ) with Pre => GNOGA.Ada_Lib.Has_Connection_Data;
+   ) with Pre => GNOGA_Ada_Lib.Has_Connection_Data;
 
    --  Application event handlers
 -- procedure On_Exit (
@@ -339,7 +338,7 @@ package body Main is
 
       Connection_Data            : Base.Connection_Data_Type renames
                                     Base.Connection_Data_Type (
-                                       Standard.GNOGA.Ada_Lib.Get_Connection_Data.all);
+                                       GNOGA_Ada_Lib.Get_Connection_Data.all);
       State                      : Configuration.Camera.State.State_Type
                                     renames Connection_Data.State;
    begin
@@ -494,8 +493,8 @@ package body Main is
 --       Panel.Visible (True);
       end;
 
---    GNOGA.Ada_Lib.Base.Set_Base (new Main_Base_Type);
-      Standard.GNOGA.Ada_Lib.Base.Set_Main_Created (True);
+--    GNOGA_Ada_Lib.Base.Set_Base (new Main_Base_Type);
+      GNOGA_Ada_Lib.Base.Set_Main_Created (True);
 -- pause ("end of on_connect");
       Log_Out (Debug);
 
@@ -551,7 +550,7 @@ package body Main is
 
       Connection_Data            : Base.Connection_Data_Type renames
                                     Base.Connection_Data_Type (
-                                       Standard.GNOGA.Ada_Lib.Get_Connection_Data.all);
+                                       GNOGA_Ada_Lib.Get_Connection_Data.all);
       State                      : Configuration.Camera.State.State_Type renames
                                     Connection_Data.State;
       Port_Number                : constant Ada_Lib.Socket_IO.Port_Type :=
@@ -586,7 +585,7 @@ package body Main is
 
       Connection_Data            : Base.Connection_Data_Type renames
                                     Base.Connection_Data_Type (
-                                       Standard.GNOGA.Ada_Lib.Get_Connection_Data.all);
+                                       GNOGA_Ada_Lib.Get_Connection_Data.all);
       State                      : Configuration.Camera.State.State_Type renames
                                     Connection_Data.State;
       Camera_CSS                 : constant String := State.CSS_Path.Coerce;
@@ -618,7 +617,7 @@ package body Main is
          Ada.Directories.Set_Directory (Directory);
       end if;
       GNOGA.Application.Open_URL;
-      Standard.GNOGA.Ada_Lib.Base.Initialize_GNOGA (
+      GNOGA_Ada_Lib.Base.Initialize_GNOGA (
          Application_Title    => "Camera",
          Handler              => On_Connect'Unrestricted_Access,
          Handler_Path         => "default",
@@ -629,7 +628,7 @@ package body Main is
 
 --    if Wait_For_Completion then
 --       Log_Here (Debug, "wait for completion");
---       Standard.GNOGA.Ada_Lib.Base.Message_Loop_Signal.Wait;
+--       GNOGA_Ada_Lib.Base.Message_Loop_Signal.Wait;
 --    end if;
 
       Log_Out (Debug);

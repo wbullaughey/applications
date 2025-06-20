@@ -146,7 +146,7 @@ package body Widgets.Configured.Unit_Test is
                                    Test_Type'class (Test);
       Connection_Data            : constant Base.Connection_Data_Access :=
                                     Base.Connection_Data_Access (
-                                       Standard.GNOGA.Ada_Lib.Get_Connection_Data);
+                                       GNOGA_Ada_Lib.Get_Connection_Data);
       Cards                      : constant Main.Cards_Access_Type :=
                                     Connection_Data.Get_Cards;
       Original_Configuration     : constant Configuration_Type'class :=
@@ -276,7 +276,7 @@ package body Widgets.Configured.Unit_Test is
                                    Test_Type'class (Test);
       Connection_Data            : constant Base.Connection_Data_Access :=
                                     Base.Connection_Data_Access (
-                                       Standard.GNOGA.Ada_Lib.Get_Connection_Data);
+                                       GNOGA_Ada_Lib.Get_Connection_Data);
       Cards                      : constant Main.Cards_Access_Type :=
                                     Connection_Data.Get_Cards;
       Original_Configuration     : constant Configuration_Type'class :=
@@ -471,7 +471,7 @@ package body Widgets.Configured.Unit_Test is
 
       Connection_Data         : constant Standard.Base.Connection_Data_Access :=
                                  Standard.Base.Connection_Data_Access (
-                                    Standard.GNOGA.Ada_Lib.Get_Connection_Data);
+                                    GNOGA_Ada_Lib.Get_Connection_Data);
       Configured_Card         : constant Configured_Card_Access :=
                                  Connection_Data.Get_Configured_Card;
    begin
@@ -703,13 +703,13 @@ package body Widgets.Configured.Unit_Test is
 --                                          Options.all;
 --      Connection_Data            : Base.Connection_Data_Type renames
 --                                    Base.Connection_Data_Type (
---                                       Standard.GNOGA.Ada_Lib.Get_Connection_Data.all);
+--                                       GNOGA_Ada_Lib.Get_Connection_Data.all);
 --      State                      : Configuration.Camera.State.State_Type renames
 --                                    Connection_Data.State;
 --   begin
 --      Log_In (Debug or Trace_Set_Up, "test tag " & Tag_Name (Test_Type'class (Test)'tag));
-----    Standard.GNOGA.Ada_Lib.Set_Connection_Data ( -- moved to parent
-----       Standard.GNOGA.Ada_Lib.Connection_Data_Class_Access (Connection_Data));
+----    GNOGA_Ada_Lib.Set_Connection_Data ( -- moved to parent
+----       GNOGA_Ada_Lib.Connection_Data_Class_Access (Connection_Data));
 ----    State.Load (
 ----       Options.Camera_Options.Location, State_Test_Path); -- need to load state 1st
 ----    Test.Setup.Load (State, Setup_Test_Path);
@@ -757,12 +757,12 @@ package body Widgets.Configured.Unit_Test is
 
       Connection_Data            : Base.Connection_Data_Type renames
                                     Base.Connection_Data_Type (
-                                       Standard.GNOGA.Ada_Lib.Get_Connection_Data.all);
+                                       GNOGA_Ada_Lib.Get_Connection_Data.all);
       State                      : Configuration.Camera.State.State_Type renames
                                     Connection_Data.State;
    begin
       Log_In (Debug);
-      Standard.GNOGA.Ada_Lib.Clear_Connection_Data;
+      GNOGA_Ada_Lib.Clear_Connection_Data;
 
       if Test.Setup.Is_Loaded then
          Test.Setup.Unload (State, Save_Changes => False);
@@ -781,7 +781,7 @@ package body Widgets.Configured.Unit_Test is
 --                                 Test_Type'class (Test);
       Connection_Data            : constant Base.Connection_Data_Access :=
                                     Base.Connection_Data_Access (
-                                       Standard.GNOGA.Ada_Lib.Get_Connection_Data);
+                                       GNOGA_Ada_Lib.Get_Connection_Data);
       Cards                      : constant Main.Cards_Access_Type :=
                                     Connection_Data.Get_Cards;
       Tabs                       : constant Gnoga.Gui.View.Card.Pointer_To_Tab_Class :=
@@ -833,7 +833,7 @@ package body Widgets.Configured.Unit_Test is
 --                                 Test_Type'class (Test);
       Connection_Data            : constant Base.Connection_Data_Access :=
                                     Base.Connection_Data_Access (
-                                       Standard.GNOGA.Ada_Lib.Get_Connection_Data);
+                                       GNOGA_Ada_Lib.Get_Connection_Data);
       Cards                      : constant Main.Cards_Access_Type :=
                                     Connection_Data.Get_Cards;
       Tabs                       : constant Gnoga.Gui.View.Card.Pointer_To_Tab_Class :=
@@ -877,7 +877,7 @@ package body Widgets.Configured.Unit_Test is
                                    Test_Type'class (Test);
       Connection_Data            : constant Base.Connection_Data_Access :=
                                     Base.Connection_Data_Access (
-                                       Standard.GNOGA.Ada_Lib.Get_Connection_Data);
+                                       GNOGA_Ada_Lib.Get_Connection_Data);
        Cards                      : constant Main.Cards_Access_Type :=
                                     Connection_Data.Get_Cards;
       State                      : Configuration.Camera.State.State_Type renames
@@ -1026,7 +1026,7 @@ package body Widgets.Configured.Unit_Test is
 --                                 Test_Type'class (Test);
       Connection_Data            : constant Base.Connection_Data_Access :=
                                     Base.Connection_Data_Access (
-                                       Standard.GNOGA.Ada_Lib.Get_Connection_Data);
+                                       GNOGA_Ada_Lib.Get_Connection_Data);
       Cards                      : constant Main.Cards_Access_Type :=
                                     Connection_Data.Get_Cards;
       Modified_Configuration_ID  : constant := 2;
@@ -1082,7 +1082,7 @@ package body Widgets.Configured.Unit_Test is
                                    Test_Type'class (Test);
       Connection_Data            : constant Base.Connection_Data_Access :=
                                     Base.Connection_Data_Access (
-                                       Standard.GNOGA.Ada_Lib.Get_Connection_Data);
+                                       GNOGA_Ada_Lib.Get_Connection_Data);
       Cards                      : constant Main.Cards_Access_Type :=
                                     Connection_Data.Get_Cards;
       Modified_Configuration_ID  : constant := 2;
@@ -1156,7 +1156,7 @@ package body Widgets.Configured.Unit_Test is
                                    Test_Type'class (Test);
       Connection_Data            : constant Base.Connection_Data_Access :=
                                     Base.Connection_Data_Access (
-                                       Standard.GNOGA.Ada_Lib.Get_Connection_Data);
+                                       GNOGA_Ada_Lib.Get_Connection_Data);
       Cards                      : constant Main.Cards_Access_Type :=
                                     Connection_Data.Get_Cards;
       State                      : Configuration.Camera.State.State_Type renames
@@ -1226,7 +1226,7 @@ package body Widgets.Configured.Unit_Test is
                                    Test_Type'class (Test);
       Connection_Data            : constant Base.Connection_Data_Access :=
                                     Base.Connection_Data_Access (
-                                       Standard.GNOGA.Ada_Lib.Get_Connection_Data);
+                                       GNOGA_Ada_Lib.Get_Connection_Data);
       Cards                      : constant Main.Cards_Access_Type :=
                                     Connection_Data.Get_Cards;
       Expected_Preset_ID         : constant := 5;

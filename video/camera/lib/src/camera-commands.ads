@@ -15,8 +15,8 @@ package Camera.Commands is
    subtype Property_Type         is Data_Type range 0 .. 255; -- 2**8;
    subtype Relative_Type         is Video.Lib.Relative_Type range -2**15 .. 2**15;
 
-   type Camera_Type              is abstract new Standard.Camera.Lib.Base.Base_Camera_Type with
-                                    null record;
+   type Camera_Type              is abstract new Standard.Camera.Lib.Base.
+                                    Base_Camera_Type with null record;
 
    type Camera_Class_Access      is access all Camera_Type'class;
 

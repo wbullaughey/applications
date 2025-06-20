@@ -53,6 +53,9 @@ package body Camera.Commands is
 
       Last_Pan                   : Absolute_Type := Absolute_Type'last;
       Last_Tilt                  : Absolute_Type := Absolute_Type'last;
+      Max_Pan_Delta              : constant := 2;
+      Max_Tilt_Delta             : constant := 2;
+      Tries                      : Natural := 0;
 
    begin
       Log_In (Debug);
@@ -96,20 +99,21 @@ package body Camera.Commands is
             Tilt := Conversion;
 
             if Last_Pan /= Absolute_Type'last then
+               Tries := Tries + 1;
                declare
-                  Delta_Pan            : constant Integer := abs (
-                                          Integer (Last_Pan) - Integer (Pan));
-                  Delta_Tilt            : constant Integer := abs (
-                                          Integer (Last_Tilt) - Integer (Tilt));
-                  Delta_Message        : constant String :=
-                                          " delta pan" & Delta_Pan'img &
-                                          " delta tilt" & Delta_Tilt'img;
+                  Delta_Pan         : constant Integer := abs (
+                                       Integer (Last_Pan) - Integer (Pan));
+                  Delta_Tilt        : constant Integer := abs (
+                                       Integer (Last_Tilt) - Integer (Tilt));
+                  Delta_Message     : constant String := "try" & Tries'img &
+                                       " delta pan " & Delta_Pan'img &
+                                       " delta tilt " & Delta_Tilt'img;
 
                begin
-                  Log_Here (Debug, "Pan" & Pan'img & " Tilt" & Tilt'img &
-                     Delta_Message);
-                  if    Delta_Pan < 2 and then
-                        Delta_Tilt < 2 then
+                  Log_Here (Debug, "Pan " & Pan'img & " Tilt " & Tilt'img &
+                     " " & Delta_Message);
+                  if    Delta_Pan <= Max_Pan_Delta and then
+                        Delta_Tilt <= Max_Tilt_Delta then
                      Log_Out (Debug);
                      return;
                   elsif Ada_Lib.Time.Now > Timeout then
@@ -127,6 +131,7 @@ package body Camera.Commands is
 
             Last_Pan := Pan;
             Last_Tilt := Tilt;
+            delay 0.1;
          end;
       end loop;
    end Get_Absolute;
@@ -208,7 +213,7 @@ package body Camera.Commands is
    ---------------------------------------------------------------
 
    begin
-      Log_In (Debug, "pan" & Pan'img & " tilt" & Tilt'img);
+      Log_In (Debug, "pan " & Pan'img & " tilt " & Tilt'img);
       Camera.Process_Command (Standard.Camera.Lib.Base.Position_Relative,
          Options     => (
             (

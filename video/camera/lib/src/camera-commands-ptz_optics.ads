@@ -7,7 +7,7 @@ package Camera.Commands.PTZ_Optics is
 
    type PTZ_Optics_Type is new Standard.Camera.Commands.Camera_Type with null record;
 
-   Last_Preset                   : constant := 127;
+   Last_Preset                   : constant := 127;   -- standard set to same as preset 0
    Port                          : constant := 5678;
    Powerup_Preset                : constant Configuration.Camera.Preset_ID_Type := 0;
 

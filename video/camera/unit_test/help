@@ -1,3 +1,7 @@
+camera_aunit
+
+
+
 camera_aunit command line options:
     -1 <trace options>             : Camera Lib unit test            (Camera.Lib.Unit_Test)
     -?                             : this message                    (Ada_Lib)
@@ -8,7 +12,7 @@ camera_aunit command line options:
     -g <trace options>             : GNOGA Unit Test traces          (Ada_Lib.GNOGA)
     -G <trace options>             : GNOGA traces                    (GNOGA library)
     -h                             : this message                    (Ada_Lib)
-    -l                             : local camera                    (Camera Lib)
+    -p <port option>               : port option                     (Camera Lib)
     -P                             : pause                           (Ada_Lib)
     -r                             : remote camera                   (Camera Lib)
     -s <suite to test>             : select test suite to run.       (test_ada_lib)
@@ -37,7 +41,8 @@ camera_aunit command line options:
 
 Camera Lib trace options (-@T)
       a               all
-      b               base.debug
+      b               Base.debug
+      B               Camera.Lib.Base.debug
       c               camera configuration
       C               camera commands
       g               Widgets.Generic_Table
@@ -51,6 +56,7 @@ Camera Lib trace options (-@T)
       wa              Adjust Window
       wc              Control Window
       wC              Configured Window
+      ws              configuration
 
 Video Lib trace options (-V)
       a               all
@@ -70,9 +76,11 @@ Camera Lib Unit Test trace options (1)
       s               Configuration.Camera.State unit_test options
       S               Configuration.Camera.Setup unit_test options
       t               unit_test trace
+      @c              Camera Command trace
 
-bin/camera_aunit trace options (-t)
+Ada_Lib.Options.AUnit_Lib.Program_Help trace options (-t)
       a               all
+      A               AUnit debug
       c               configuration
       C               command line iterator
       d               directory compare and copy
@@ -87,19 +95,20 @@ bin/camera_aunit trace options (-t)
       S               Database server Test
       t               Template Test
       T               Timer Test
+      @c              Camera Commands Unit Test
       @d              Debug Test
       @T              Debug Tests
       @t              Debug Test routines
 
-Ada_Lib.Options.GNOGA unit test trace options (-g)
+GNOGA_Options unit test trace options (-g)
       a               all
       e               Ada_Lib.GNOGA.Unit_Test.Event.Debig
-      g               Ada_Lib.GNOGA.Debug (main window)
+      g               GNOGA_Options.Debug (main window)
       o               Ada_Lib.GNOGA.Unit_Test.Options.Debug_Options
 
-Ada_Lib.Options.GNOGA library trace options (-G)
+GNOGA_Options library trace options (-G)
       a               all
-      m               GNOGA.Ada_Lib.Trace
+      m               GNOGA_Ada_Lib.Trace
       o               GNOGA options
 
 CAC ada_lib trace library options (-a)
@@ -149,4 +158,3 @@ Enable suites disabled by default (-S)
       d               database server
       t               text
 
-Exit_Code NO_ERROR for camera_aunit message: '' from ada_lib-options-actual.adb:228

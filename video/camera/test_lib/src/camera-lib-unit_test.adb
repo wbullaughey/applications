@@ -14,7 +14,7 @@ with Camera.Lib.Base.Command_Tests;
 with Camera.Lib.Options;
 with Configuration.Camera.Setup.Unit_Tests;
 with Configuration.Camera.State.Unit_Tests;
-with GNOGA.Ada_Lib;
+with GNOGA_Ada_Lib;
 with Gnoga.Application.Multi_Connect;
 with Main.Unit_Test;
 --with Runtime_Options;
@@ -26,6 +26,7 @@ package body Camera.Lib.Unit_Test is
 
    use type Ada_Lib.Options.Mode_Type;
 
+   Trace_Modifier                : constant Character := '@';
    Trace_Option                  : constant Character := '1';
    Options_With_Parameters       : aliased constant
                                     Standard.Ada_Lib.Options.
@@ -57,6 +58,26 @@ package body Camera.Lib.Unit_Test is
    begin
       Log_Here (Debug);
    end Add_Test;
+
+   ----------------------------------------------------------------------------
+   procedure Dump (
+      Test                       : in     Camera_Test_Type;
+      Trace                      : in     Boolean) is
+   ----------------------------------------------------------------------------
+
+--    use Ada.Text_IO;
+
+   begin
+      if Trace then
+         Put_Line ("brand " & Test.Brand'img);
+         Put_Line ("Initialize_GNOGA " & Test.Initialize_GNOGA'img &
+            " Load_State " & Test.Load_State'img &
+            " Location " & Test.Location'img &
+            " Port_Number " & Test.Port_Number'img &
+            Quote ("Setup_Path", Test.Setup_Path) &
+            Quote ("State_Path", Test.State_Path));
+      end if;
+   end Dump;
 
    ----------------------------------------------------------------------------
    function Get_Camera_Unit_Test_Constant_Options (
@@ -250,6 +271,7 @@ package body Camera.Lib.Unit_Test is
          Put_Line ("      s               Configuration.Camera.State unit_test options");
          Put_Line ("      S               Configuration.Camera.Setup unit_test options");
          Put_Line ("      t               unit_test trace");
+         Put_Line ("      @c              Camera Command trace");
          New_Line;
 
       end case;
@@ -408,16 +430,6 @@ not_implemented;
       Test                       : in out Camera_Test_Type) is
 ---------------------------------------------------------------
 
-  begin
-     Test.Set_Up_Optional_Load (True);
-  end Set_Up;
-
-   ---------------------------------------------------------------
-   procedure Set_Up_Optional_Load (
-      Test                       : in out Camera_Test_Type;
-      Load                       : in     Boolean) is
-   ---------------------------------------------------------------
-
       Connection_Data            : constant Standard.Base.Connection_Data_Access :=
                                     new Standard.Base.Connection_Data_Type;
       Options                    : Standard.Camera.Lib.Unit_Test.
@@ -427,11 +439,11 @@ not_implemented;
       State                      : Configuration.Camera.State.State_Type renames
                                     Connection_Data.State;
   begin
-      Log_In (Debug or Trace_Set_Up, "load " & Load'img &
+      Log_In (Debug or Trace_Set_Up, "load " & Test.Load_State'img &
          " brand " & Test.Brand'img &
          " location " & Test.Location'img);
-      GNOGA.Ada_Lib.Set_Connection_Data (
-         GNOGA.Ada_Lib.Connection_Data_Class_Access (Connection_Data));
+      GNOGA_Ada_Lib.Set_Connection_Data (
+         GNOGA_Ada_Lib.Connection_Data_Class_Access (Connection_Data));
 
 --     if Options.If_Emulation then
 --        Not_Implemented;
@@ -441,7 +453,7 @@ not_implemented;
 
       Ada_Lib.Unit_Test.Test_Cases.Test_Case_Type (Test).Set_Up;
 
-     if Load then
+     if Test.Load_State then
         State.Load (Options.Camera_Options.Location, Camera_State_Path);
         Test.Camera_Address := State.Video_Address;
         Test.Port_Number := State.Video_Port;
@@ -465,7 +477,7 @@ not_implemented;
   exception
      when Fault: others =>
         Test.Set_Up_Exception (Fault);
-   end Set_Up_Optional_Load;
+   end Set_Up;
 
    ---------------------------------------------------------------
    overriding
@@ -483,8 +495,8 @@ not_implemented;
                                     Connection_Data.State;
    begin
       Log_In (Debug or Trace_Set_Up);
-      GNOGA.Ada_Lib.Set_Connection_Data (
-         Gnoga.Ada_Lib.Connection_Data_Class_Access (Connection_Data));
+      GNOGA_Ada_Lib.Set_Connection_Data (
+         GNOGA_Ada_Lib.Connection_Data_Class_Access (Connection_Data));
       Connection_Data.Initialize;
       State.Load (
          Options.Camera_Options.Location, State_Test_Path); -- need to load state 1st
@@ -544,7 +556,7 @@ not_implemented;
 
       Connection_Data            : Standard.Base.Connection_Data_Type renames
                                     Standard.Base.Connection_Data_Type (
-                                       GNOGA.Ada_Lib.Get_Connection_Data.all);
+                                       GNOGA_Ada_Lib.Get_Connection_Data.all);
       State                      : Configuration.Camera.State.State_Type renames
                                     Connection_Data.State;
    begin
@@ -567,72 +579,91 @@ not_implemented;
                                  Command_Line_Iterator_Interface'class) is
    ----------------------------------------------------------------------------
 
+      Extended                   : Boolean := False;
       Parameter                  : constant String := Iterator.Get_Parameter;
---    Widget_Trace               : Boolean := False;
 
    begin
       Log (Debug_Options or Trace_Options, Here, " process parameter  " & Quote (Parameter));
 
       for Trace of Parameter loop
-         Log_Here (Trace_Options or Debug_Options, Quote ("Trace", Trace));
-         case Trace is
+         Log_Here (Trace_Options or Debug, Quote ("trace", Trace) &
+            " extended " & Extended'img);
+         case Extended is
 
-            when 'a' =>
-               Camera.Command_Queue.Debug := True;
-               Standard.Camera.Lib.Base.Command_Tests.Debug := True;
-               Standard.Configuration.Camera.Setup.Unit_Tests.Debug := True;
-               Standard.Configuration.Camera.State.Unit_Tests.Debug := True;
-               Debug := True;
-               Debug_Options := True;
-               Main.Unit_Test.Debug := True;
-               Options.Main_Debug := True;
-               Options.Debug := True;
-               Widgets.Adjust.Unit_Test.Debug := True;
-               Widgets.Control.Unit_Test.Debug := True;
-               Widgets.Configured.Unit_Test.Debug := True;
+            when False =>
+               case Trace is
 
-            when 'A' =>
-               Widgets.Adjust.Unit_Test.Debug := True;
+                  when 'a' =>
+                     Camera.Command_Queue.Debug := True;
+                     Camera_Commands_Debug := True;
+                     Standard.Camera.Lib.Base.Command_Tests.Debug := True;
+                     Standard.Configuration.Camera.Setup.Unit_Tests.Debug := True;
+                     Standard.Configuration.Camera.State.Unit_Tests.Debug := True;
+                     Debug := True;
+                     Debug_Options := True;
+                     Main.Unit_Test.Debug := True;
+                     Options.Main_Debug := True;
+                     Options.Debug := True;
+                     Widgets.Adjust.Unit_Test.Debug := True;
+                     Widgets.Control.Unit_Test.Debug := True;
+                     Widgets.Configured.Unit_Test.Debug := True;
 
-            when 'b' =>
-               Standard.Camera.Lib.Base.Command_Tests.Debug := True;
+                  when 'A' =>
+                     Widgets.Adjust.Unit_Test.Debug := True;
 
-            when 'c' =>
-               Widgets.Control.Unit_Test.Debug := True;
+                  when 'b' =>
+                     Standard.Camera.Lib.Base.Command_Tests.Debug := True;
 
-            when 'C' =>
-               Widgets.Configured.Unit_Test.Debug := True;
+                  when 'c' =>
+                     Widgets.Control.Unit_Test.Debug := True;
 
-            when 'd' =>
-               Debug := True;
+                  when 'C' =>
+                     Widgets.Configured.Unit_Test.Debug := True;
 
-            when 'm' =>    -- Main unit tests
-               Main.Unit_Test.Debug := True;
+                  when 'd' =>
+                     Debug := True;
 
-            when 'o' =>    -- options
-               Debug_Options := True;
+                  when 'm' =>    -- Main unit tests
+                     Main.Unit_Test.Debug := True;
 
-            when 'p' =>    -- program trace
-               Options.Main_Debug := True;
+                  when 'o' =>    -- options
+                     Debug_Options := True;
 
-            when 'q' =>    -- camera queue
-               Camera.Command_Queue.Debug := True;
+                  when 'p' =>    -- program trace
+                     Options.Main_Debug := True;
 
-            when 's' =>
-               Standard.Configuration.Camera.State.Unit_Tests.Debug := True;
+                  when 'q' =>    -- camera queue
+                     Camera.Command_Queue.Debug := True;
 
-            when 'S' =>
-               Standard.Configuration.Camera.Setup.Unit_Tests.Debug := True;
+                  when 's' =>
+                     Standard.Configuration.Camera.State.Unit_Tests.Debug := True;
 
-            when 't' =>
-               Debug := True;
+                  when 'S' =>
+                     Standard.Configuration.Camera.Setup.Unit_Tests.Debug := True;
 
---          when 'w' =>
---             Widget_Trace := True;
+                  when 't' =>
+                     Debug := True;
 
-            when others =>
-               Options.Bad_Option (Quote (
-                  "unexpected Camera_Library test trace option", Trace));
+                  when Trace_Modifier =>
+                     Extended := True;
+
+                  when others =>
+                     Options.Bad_Option (Quote (
+                        "unexpected Camera_Library test trace option", Trace));
+
+               end case;
+
+            when True =>
+               case Trace is
+
+                  when 'c' =>
+                     Camera_Commands_Debug := True;
+
+                  when others =>
+                     Options.Bad_Trace_Option (Trace_Option, Trace, Trace_Modifier);
+
+               end case;
+               Extended := False;
 
          end case;
       end loop;

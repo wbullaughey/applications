@@ -1,5 +1,5 @@
 with ADA_LIB.Trace; use ADA_LIB.Trace;
---with GNOGA.ADA_LIB;
+--with GNOGA_Ada_Lib;
 --with Main;
 
 package body Widgets.Video is

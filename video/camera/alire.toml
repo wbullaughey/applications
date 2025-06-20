@@ -22,3 +22,17 @@ camera_lib = "~0.1.0-dev"
 
 [[pins]]
 camera_lib = { path='lib' }
+
+[[depends-on]]
+gnoga = "~0.1.0-dev"
+
+[[pins]]
+gnoga = { path='../../../vendor/github.com/gnoga' }
+
+[[depends-on]]
+gnoga_ada_lib = "~0.1.0-dev"
+
+[[pins]]
+gnoga_ada_lib = { path='../../../gnoga_ada_lib' }
+
+

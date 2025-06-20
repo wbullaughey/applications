@@ -179,6 +179,7 @@ package Camera.Lib.Base is
       Command                    : in     Buffer_Type;
       Options                    : in     Options_Type);
 
+   Debug                         : Boolean := False;
    Power_On_Preset               : constant := 0;
    Null_Option                   : constant Options_Type;
 

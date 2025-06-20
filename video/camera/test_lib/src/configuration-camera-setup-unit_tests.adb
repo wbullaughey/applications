@@ -1,6 +1,6 @@
 with Ada.Exceptions;
 with Ada_Lib.Directory.Compare_Files;
-with GNOGA.Ada_Lib;
+with GNOGA_Ada_Lib;
 --with Ada_Lib.Options;
 with Ada_Lib.Strings.Unlimited; use Ada_Lib.Strings.Unlimited;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
@@ -29,10 +29,10 @@ package body Configuration.Camera.Setup.Unit_Tests is
    procedure Register_Tests (
       Test                       : in out Configuration_Tests_Type);
 
-   overriding
-   procedure Set_Up (
-      Test                       : in out Configuration_Tests_Type
-   ) with Post => Test.Verify_Set_Up;
+-- overriding
+-- procedure Set_Up (
+--    Test                       : in out Configuration_Tests_Type
+-- ) with Post => Test.Verify_Set_Up;
 
 -- overriding
 -- procedure Tear_Down (
@@ -91,36 +91,37 @@ package body Configuration.Camera.Setup.Unit_Tests is
 
    end Register_Tests;
 
-   ---------------------------------------------------------------
-   overriding
-   procedure Set_Up (
-      Test                    : in out Configuration_Tests_Type) is
-   ---------------------------------------------------------------
-
-   begin
-      Log_In (Debug or Trace_Set_Up);
-      Test.Set_Up_Optional_Load (False);
-      Log_Out (Debug or Trace_Set_Up);
-
-   exception
-      when Fault: others =>
-         Trace_Exception (Debug, Fault);
-         Assert (False, "exception message " & Ada.Exceptions.Exception_Message (Fault));
-
-   end Set_Up;
+-- ---------------------------------------------------------------
+-- overriding
+-- procedure Set_Up (
+--    Test                    : in out Configuration_Tests_Type) is
+-- ---------------------------------------------------------------
+--
+-- begin
+--    Log_In (Debug or Trace_Set_Up);
+--    Test.Set_Up_Optional_Load (False);
+--    Log_Out (Debug or Trace_Set_Up);
+--
+-- exception
+--    when Fault: others =>
+--       Trace_Exception (Debug, Fault);
+--       Assert (False, "exception message " & Ada.Exceptions.Exception_Message (Fault));
+--
+-- end Set_Up;
 
    ---------------------------------------------------------------
    function Suite return AUnit.Test_Suites.Access_Test_Suite is
    ---------------------------------------------------------------
 
-      Options                    : Standard.Camera.Lib.Unit_Test.
-                                    Unit_Test_Program_Options_Type'class
-                                       renames Standard.Camera.Lib.Unit_Test.
-                                          Get_Camera_Unit_Test_Constant_Options.all;
-      Test_Suite              : constant AUnit.Test_Suites.Access_Test_Suite :=
-                                 new AUnit.Test_Suites.Test_Suite;
-      Tests                   : constant Configuration_Tests_Access :=
-                                 new Configuration_Tests_Type (Options.Camera_Options.Brand);
+      Options     : Standard.Camera.Lib.Unit_Test.
+                     Unit_Test_Program_Options_Type'class
+                        renames Standard.Camera.Lib.Unit_Test.
+                           Get_Camera_Unit_Test_Constant_Options.all;
+      Test_Suite  : constant AUnit.Test_Suites.Access_Test_Suite :=
+                     new AUnit.Test_Suites.Test_Suite;
+      Tests       : constant Configuration_Tests_Access :=
+                     new Configuration_Tests_Type (
+                        Brand       => Options.Camera_Options.Brand);
 
    begin
       Log_In (Debug);
@@ -138,7 +139,7 @@ package body Configuration.Camera.Setup.Unit_Tests is
 --
 --   begin
 --      Log_In (Debug);
-----    Standard.GNOGA.Ada_Lib.Clear_Connection_Data;
+----    GNOGA_Ada_Lib.Clear_Connection_Data;
 --      Ada_Lib.Unit_Test.Test_Cases.Test_Case_Type (Test).Tear_Down;
 --      Log_Out (Debug);
 --   end Tear_Down;
@@ -150,7 +151,7 @@ package body Configuration.Camera.Setup.Unit_Tests is
 
       Connection_Data            : Base.Connection_Data_Type renames
                                     Base.Connection_Data_Type (
-                                       Standard.GNOGA.Ada_Lib.Get_Connection_Data.all);
+                                       GNOGA_Ada_Lib.Get_Connection_Data.all);
       Local_Test                 : Configuration_Tests_Type renames
                                     Configuration_Tests_Type (Test);
       Options                    : Standard.Camera.Lib.Unit_Test.
@@ -186,7 +187,7 @@ package body Configuration.Camera.Setup.Unit_Tests is
 
       Connection_Data            : Base.Connection_Data_Type renames
                                     Base.Connection_Data_Type (
-                                       Standard.GNOGA.Ada_Lib.Get_Connection_Data.all);
+                                       GNOGA_Ada_Lib.Get_Connection_Data.all);
       Configuration_ID           : constant Configuration_ID_Type := 3;
       Expected_Setup             : constant String :=
                                     "expected_updated_test_setup.cfg";
@@ -267,7 +268,7 @@ package body Configuration.Camera.Setup.Unit_Tests is
 
       Connection_Data            : Base.Connection_Data_Type renames
                                     Base.Connection_Data_Type (
-                                       Standard.GNOGA.Ada_Lib.Get_Connection_Data.all);
+                                       GNOGA_Ada_Lib.Get_Connection_Data.all);
       Expected_Number_Columns    : constant := 3;
       Expected_Number_Rows       : constant := 4;
       Expected_Number_Configurations

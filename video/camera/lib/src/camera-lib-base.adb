@@ -1,4 +1,4 @@
---with ada.text_io;
+with Ada.Text_IO; use Ada.Text_IO;
 with Ada_Lib.Time;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
 with Hex_IO;
@@ -51,7 +51,7 @@ package body Camera.Lib.Base is
       end loop;
 
       if Debug then
-         Hex_IO.Dump_8 (Buffer'address, Buffer'size, 32);
+         Hex_IO.Dump_8 (Buffer'address, Buffer'size, 32, "from " & Here);
       end if;
 
    end Apply_Parameters;
@@ -104,10 +104,24 @@ package body Camera.Lib.Base is
       Response_Timeout           : in     Duration) is
    ---------------------------------------------------------------
 
+      ------------------------------------------------------------
+      procedure Failure (
+         Message                 : in     String) is
+      ------------------------------------------------------------
+
+      begin
+         Log_Exception (Debug, Failed, Message);
+         raise Failed with Message;
+      end Failure;
+
+      ------------------------------------------------------------
+
       Ack_Length                 : constant Index_Type :=
                                     Base_Camera_Type'class (Camera).Get_Ack_Length;
-      Got_Ack                    : Boolean := False;
-      Length                     : Index_Type := Response_Length;
+      End_Read                   : Index_Type;
+--    Got_Ack                    : Boolean := False;
+      Read_Length                : Index_Type := Ack_Length;   -- min read length
+      Start_Read                 : Index_Type := Response'first;
       Timeout                    : constant Ada_Lib.Time.Time_Type :=
                                     Ada_Lib.Time.Now + Response_Timeout;
    begin
@@ -115,66 +129,107 @@ package body Camera.Lib.Base is
          " ack length" & Ack_Length'img &
          " Expect_Response " & Expect_Response'img &
          " Response_Length" & Response_Length'img &
+         " response first" & Response'first'img &
          " Response_Timeout " & Response_Timeout'img &
          " timeout " & Ada_Lib.Time.Image (Timeout));
-      Camera.Socket.Read (Response (Response'first .. Ack_Length), Response_Timeout);
-      if Debug then
-         Video.Lib.Dump ("response", Response (Response'first .. Ack_Length),
-            Natural (Ack_Length));
-      end if;
 
-      if Response (Ack_Length) = 16#FF# then -- end of Ack
-         Log_Here (Debug, "got ack");
-         Got_Ack := True;
-      elsif Expect_Ack then
-         Log_Exception (Debug, "missing Ack");
-         raise Failed with "missing Ack";
-      else                       -- did not get an ack
-         Length := Length - Ack_Length;
-      end if;
+      loop  -- look for multiple acks
+         End_Read := Start_Read + Read_Length - 1;
 
-      if Expect_Response then
-         declare
-            End_Read          : constant Index_Type := Response_Length +
-                                 (if Got_Ack then
-                                    Ack_Length
-                                 else
-                                    0);
-         begin
-            Log_Here (Debug, " End_Read" & End_Read'img);
+         Log_Here (Debug, "Start_Read" & Start_Read'img &
+            " end read" & End_Read'img &
+            " Read_Length" & Read_Length'img);
 
-            Camera.Socket.Read (Response (Ack_Length + 1 .. End_Read),
-               Response_Timeout);
-            if Debug then
-               Video.Lib.Dump ("response", Response ((if Got_Ack then
-                     Ack_Length + 1
-                  else
-                     Response'first)
-                   .. End_Read),
-                  Natural (Response_Length));
-            end if;
+         Camera.Socket.Read (Response (Start_Read .. End_Read));
+         if Debug then
+            Video.Lib.Dump ("response", Response (Start_Read .. End_Read),
+               Natural (Ack_Length));
+         end if;
 
-            if Response (End_Read) /= 16#FF# then
-               Log_Exception (Debug, "missing FF at end of response");
-               raise FAiled with "missing FF at end of response";
-            end if;
+         case Response (Start_Read) and 16#F0# is
 
-            if Got_Ack then     -- move response up to head
-               declare
-                  Put         : Index_Type := Response'first;
-               begin
-                  for Index in Ack_Length + 1 .. End_Read loop
-                     Response (Put) := Response (Index);
-                     Put := Put + 1;
-                  end loop;
-               end;
-            end if;
-            if Debug then
-               Video.Lib.Dump ("response", Response, Natural (Response_Length));
-            end if;
-         end;
-      end if;
+            when 16#90# =>    -- ack, completion or error
+               case Response (Start_Read + 1) and 16#F0# is
+
+                  when 16#40# => -- Ack
+                     if Response (End_Read) = 16#FF# then -- end of Ack
+                        Log_Here (Debug, "got ack");
+                        if not Expect_Response then
+                           exit;
+                        end if;
+                        Start_Read := Response'first;
+                        Read_Length := Ack_Length;   -- min read length
+                     -- else not ack, set up to read remainder
+                     end if;
+
+                  when 16#50# => -- Completion
+                     if not Expect_Response then
+                        Log_Exception (Debug, "unexpected response");
+                        raise Failed with "unexpected response";
+                     end if;
+                     -- read the rest of the completion
+                     Start_Read := Start_Read + Ack_Length;
+                     Read_Length := Response_Length - Ack_Length;
+                     End_Read := Start_Read + Read_Length - 1;
+                     Camera.Socket.Read (Response (Start_Read .. End_Read));
+                     if Debug then
+                        Video.Lib.Dump ("response", Response (Response'first ..
+                           End_Read), Natural (Ack_Length));
+                     end if;
+                     exit;
+
+                  when 16#60# => -- Error
+                     -- read rest of error message
+                     Start_Read := Start_Read + Ack_Length;
+                     Read_Length := 1;
+                     End_Read := Start_Read + Read_Length - 1;
+                     Camera.Socket.Read (Response (Start_Read .. End_Read));
+                     if Debug then
+                        Video.Lib.Dump ("response", Response (Response'first ..
+                           End_Read), Natural (Ack_Length));
+                     end if;
+                     Log_Here (Debug, "error code" & Response (3)'img);
+                     case Response (3) is
+
+                        when 2 =>      -- bad format
+                           Put_Line ("camera bad format error");
+
+                        when 3 =>
+                           Put_Line ("multile socet command");
+
+                        when 4 =>   -- command canceled
+                           Put_Line ("type 4 command canceled");
+
+                        when 5 =>
+                           Put_Line ("type 5 command canceled");
+
+                        when others =>
+                           Failure ("unexpected error code" &
+                              Response (3)'img);
+
+                     end case;
+                     exit;
+
+                  when others =>    -- unexpected
+                     Failure ("unexpected resonse" &
+                        Response (Start_Read + 1)'img);
+
+               end case;
+
+            when others =>          -- unexpected
+               Put_Line ("" &
+                  Response (Start_Read)'img);
+               Failure ("unexpected command header " &
+                  Response (Start_Read)'img);
+         end case;
+      end loop;
       Log_Out (Debug);
+
+   exception
+      when Fault : others =>
+         Trace_Exception (Fault, Here);
+         raise;
+
    end Get_Response;
 
    ---------------------------------------------------------------

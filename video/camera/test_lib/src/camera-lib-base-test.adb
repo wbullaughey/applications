@@ -20,8 +20,9 @@ package body Camera.Lib.Base.Test is
    use type Index_Type;
 
    type Test_Type (
-      Brand             : Brand_Type) is new
-                           Camera.Lib.Unit_Test.Camera_Test_Type (Brand) with null record;
+      Brand       : Brand_Type) is new
+                     Camera.Lib.Unit_Test.Camera_Test_Type (
+                        Brand) with null record;
 
 --    Camera            : Base.Base_Camera_Class_Access := Null;
 --    case Brand is
@@ -350,7 +351,7 @@ package body Camera.Lib.Base.Test is
       Test_Suite                 : constant AUnit.Test_Suites.Access_Test_Suite :=
                                     new AUnit.Test_Suites.Test_Suite;
       Test                       : constant Test_Access := new Test_Type (
-                                    Options.Camera_Options.Brand);
+                                    Brand       => Options.Camera_Options.Brand);
 
    begin
       Log_In (Debug, "brand " & Options.Camera_Options.Brand'img);

@@ -1,6 +1,7 @@
 --with Ada.Command_Line;
 with Ada.Text_IO; use Ada.Text_IO;
 --with ADA_LIB.GNOGA;
+with Ada_Lib.Help;
 with Ada_Lib.Options.Actual;
 with ADA_LIB.OS;
 with ADA_LIB.Trace; use ADA_LIB.Trace;
@@ -13,7 +14,7 @@ with Configuration.Camera.State;
 --with Configuration.State;
 with Emulator;
 --with GNOGA.Application;
-with GNOGA.Ada_Lib;
+with GNOGA_Ada_Lib;
 with Main;
 --with Video.Lib;
 
@@ -32,44 +33,51 @@ begin
    Ada_Lib.Options.Actual.Set_Ada_Lib_Nested_Options (
       Ada_Lib.Options.Actual.Nested_Options_Type (
          Options.Camera_Library)'unchecked_access);
-   Ada_Lib.Options.Actual.Set_Ada_Lib_Program_Options (
-      Ada_Lib.Options.Actual.Program_Options_Type (
-         Options)'unchecked_access);
 
    if Options.Initialize then
-      Log_In (Debug);
+      Log_In (Debug, "Help_Test " & Ada_Lib.Help_Test'img);
       Connection_Data.Initialize;
-      GNOGA.Ada_Lib.Set_Connection_Data (
-         GNOGA.Ada_Lib.Connection_Data_Class_Access (Connection_Data));
-      if Ada_Lib.Help_Test then
-         Put_Line ("help test " & (if Ada_Lib.Exception_Occured then
-               "failed"
-            else
-               "completed"));
-      else
-         Connection_Data.State.Load (
-            Location => Options.Camera_Library.Location,
-            Name     => Configuration.Camera.State.File_Path);
-         Camera_Setup.Load (Connection_Data.State,
-            Configuration.Camera.Setup.File_Path);
-         Log_Here (Debug);
+      GNOGA_Ada_Lib.Set_Connection_Data (
+         GNOGA_Ada_Lib.Connection_Data_Class_Access (Connection_Data));
+      if Options.Process (
+         Include_Options      => True,
+         Include_Non_Options  => False,
+         Modifiers            => Ada_Lib.Help.Modifiers) then
 
-         if Options.Camera_Library.Simulate then
-            Emulator.Create;
+         Options.Post_Process;
+         if Ada_Lib.Help_Test then
+            Put_Line ("help test " & (if Ada_Lib.Exception_Occured then
+                  "failed"
+               else
+                  "completed"));
+         else
+            Connection_Data.State.Load (
+               Location => Options.Camera_Library.Location,
+               Name     => Configuration.Camera.State.File_Path);
+            Camera_Setup.Load (Connection_Data.State,
+               Configuration.Camera.Setup.File_Path);
+            Log_Here (Debug);
+
+            if Options.Camera_Library.Simulate then
+               Emulator.Create;
+            end if;
+
+            Ada_Lib.Trace_Tasks.Start ("Main");
+            Log_Here (Debug);
+
+            Main.Run (
+               Directory            => Camera.Lib.Options.Current_Directory,
+               Port                 => Options.GNOGA.HTTP_Port,
+               Verbose              => Options.Verbose,
+               Wait_For_Completion  => True);
+
+            Log_Here (Debug);
          end if;
-
-         Ada_Lib.Trace_Tasks.Start ("Main");
-         Log_Here (Debug);
-
-         Main.Run (
-            Directory            => Camera.Lib.Options.Current_Directory,
-            Port                 => Options.GNOGA.HTTP_Port,
-            Verbose              => Options.Verbose,
-            Wait_For_Completion  => True);
-
-         Log_Here (Debug);
+         Base.Halt;
+      else  -- Options.Process false
+         Log_Out (Debug);
+         Ada_Lib.OS.Immediate_Halt (Ada_Lib.OS.Application_Error);
       end if;
-      Base.Halt;
    else
       Put_Line ("could not initialize");
    end if;

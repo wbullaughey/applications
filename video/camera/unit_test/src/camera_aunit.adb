@@ -18,7 +18,7 @@ procedure Camera_AUnit is
    Debug                : Boolean renames Options.Main_Debug;
 
 begin
-Debug := True;
+--Debug := True;
 --Trace_Tests := True;
    Log_In (Debug);
    Put_Line (Command_Name);

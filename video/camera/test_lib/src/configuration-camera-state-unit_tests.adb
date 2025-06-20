@@ -16,12 +16,12 @@ package body Configuration.Camera.State.Unit_Tests is
 -- use type Standard.Camera.Lib.Unit_Test.Options_Constant_Class_Test_Access;
 -- use type Ada_Lib.Options.Interface_Options_Constant_Class_Access;
 
-   type Connection_Data_Type     is new Standard.GNOGA.Ada_Lib.Connection_Data_Type
+   type Connection_Data_Type     is new GNOGA_Ada_Lib.Connection_Data_Type
                                     with null record;
    type Configuration_Tests_Type (
       Brand    : Standard.Camera.Lib.Brand_Type) is new
-                  Standard.Camera.Lib.Unit_Test.
-                     Camera_Test_Type (Brand) with null record;
+                  Standard.Camera.Lib.Unit_Test.Camera_Test_Type (
+                     Brand       => Brand) with null record;
 
    type Configuration_Tests_Access is access Configuration_Tests_Type;
 
@@ -49,7 +49,7 @@ package body Configuration.Camera.State.Unit_Tests is
 
    procedure Test_Values (
       Test                       : in out AUnit.Test_Cases.Test_Case'class
-   ) with Pre => GNOGA.Ada_Lib.Has_Connection_Data;
+   ) with Pre => GNOGA_Ada_Lib.Has_Connection_Data;
 
    Suite_Name                    : constant String := "State";
 
@@ -97,7 +97,7 @@ package body Configuration.Camera.State.Unit_Tests is
 
    begin
       Log_In (Debug or Trace_Set_Up);
-      Standard.GNOGA.Ada_Lib.Set_Connection_Data (new Connection_Data_Type);
+      GNOGA_Ada_Lib.Set_Connection_Data (new Connection_Data_Type);
       Standard.Camera.Lib.Unit_Test.Camera_Test_Type (Test).Set_Up ;
       Log_Out (Debug or Trace_Set_Up);
 
@@ -138,7 +138,7 @@ package body Configuration.Camera.State.Unit_Tests is
 
    begin
       Log_In (Debug);
-      Standard.GNOGA.Ada_Lib.Clear_Connection_Data;
+      GNOGA_Ada_Lib.Clear_Connection_Data;
       Ada_Lib.Unit_Test.Test_Cases.Test_Case_Type (Test).Tear_Down;
       Log_Out (Debug);
    end Tear_Down;
@@ -151,7 +151,7 @@ package body Configuration.Camera.State.Unit_Tests is
 
       Connection_Data            : Base.Connection_Data_Type renames
                                     Base.Connection_Data_Type (
-                                       Standard.GNOGA.Ada_Lib.Get_Connection_Data.all);
+                                       GNOGA_Ada_Lib.Get_Connection_Data.all);
 --    Local_Test                 : Configuration_Tests_Type renames
 --                                  Configuration_Tests_Type (Test);
       Options                    : Standard.Camera.Lib.Unit_Test.
@@ -182,7 +182,7 @@ package body Configuration.Camera.State.Unit_Tests is
 
       Connection_Data            : Base.Connection_Data_Type renames
                                     Base.Connection_Data_Type (
-                                       Standard.GNOGA.Ada_Lib.Get_Connection_Data.all);
+                                       GNOGA_Ada_Lib.Get_Connection_Data.all);
       Expected_Number_Columns    : constant := 3;
       Expected_Number_Rows       : constant := 4;
       Expected_Number_Configurations

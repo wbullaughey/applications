@@ -2,6 +2,7 @@ with "alr_environment.gpr";
 with "camera_lib.gpr";
 with "config/camera_test_lib_config.gpr";
 with "default_config.gpr";
+with "gnoga.gpr";
 --with "Video_Lib_Unit_Test";
 
 project Camera_Test_Lib is
