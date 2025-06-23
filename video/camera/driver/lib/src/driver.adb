@@ -205,7 +205,7 @@ package body Driver is
    begin
       Log_Here (Debug_Options or Trace_Options, "from " & From);
       return Driver_Options_Class_Access (
-         Ada_Lib.Options.Actual.Get_Ada_Lib_Modifiable_Program_Options);
+         Ada_Lib.Options.Actual.Get_Ada_Lib_Modifiable_Nested_Options);
    end Get_Modifiable_Options;
 
    ---------------------------------------------------------------

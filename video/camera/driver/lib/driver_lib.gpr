@@ -1,5 +1,5 @@
 with "ada_lib.gpr";
-with "ada_lib_tests.gpr";
+with "ada_lib_test_lib.gpr";
 with "alr_environment.gpr";
 with "aunit.gpr";
 with "camera_lib.gpr";

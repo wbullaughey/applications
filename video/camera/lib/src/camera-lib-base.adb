@@ -110,7 +110,7 @@ package body Camera.Lib.Base is
       ------------------------------------------------------------
 
       begin
-         Log_Exception (Debug, Failed, Message);
+         Log_Exception (Debug, Message);
          raise Failed with Message;
       end Failure;
 
@@ -149,9 +149,9 @@ package body Camera.Lib.Base is
          case Response (Start_Read) and 16#F0# is
 
             when 16#90# =>    -- ack, completion or error
-               case Response (Start_Read + 1) and 16#F0# is
+               case Response (Start_Read + 1) is
 
-                  when 16#40# => -- Ack
+                  when 16#40# | 16#41# | 16#42# | 16#51# | 16#52# => -- Ack
                      if Response (End_Read) = 16#FF# then -- end of Ack
                         Log_Here (Debug, "got ack");
                         if not Expect_Response then
@@ -163,6 +163,7 @@ package body Camera.Lib.Base is
                      end if;
 
                   when 16#50# => -- Completion
+
                      if not Expect_Response then
                         Log_Exception (Debug, "unexpected response");
                         raise Failed with "unexpected response";

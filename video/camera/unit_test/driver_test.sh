@@ -1,59 +1,14 @@
 #!/bin/zsh
 export OUTPUT=list-camera_driver.txt
-export CURRENT_DIRECTORY=`pwd`
-export TARGET_SUBDIRECTORY=`realpath "$CURRENT_DIRECTORY/../unit_test"`
-export OPTIONS="-r -=D $TARGET_SUBDIRECTORY"
-export PARAMETERS=("$@")
-echo PARAMETERS: $PARAMETERS
 export PROGRAM=bin/camera_aunit
-echo OUPUT=$OUTPUT
-echo test with driver 2>&1 | tee $OUTPUT
 export DO_TRACE=1
 
-function output() {
-echo output parameters $* 2>&1 TRACE.txt
-   TRACE=$1
-   shift 1
-   echo "output TRACE $TRACE DO_TRACE $DO_TRACE APPEND TRACE $APPEND_OUTPUT" \
-         2>&1 | tee -a TRACE.txt
-   case $TRACE in
+source ../../../../routines.sh
+export TARGET_SUBDIRECTORY=`realpath "$CURRENT_DIRECTORY/../unit_test"`
+export OPTIONS="-=D $TARGET_SUBDIRECTORY"
 
-      "LIST")
-         ;;
-
-      "TRACE")
-         if [ "$DO_TRACE" -eq 0 ]; then
-            return
-         fi
-   esac
-   echo $* 2>&1 | tee $APPEND_OUTPUT $OUTPUT
-   export APPEND_OUTPUT=-a  # append from now on
-}
-
-function run() {
-   output TRACE run PROGRAM $PROGRAM OPTIONS $OPTIONS COMMAND $COMMAND
-
-   export EXECUTE="$PROGRAM $OPTIONS $COMMAND"
-   output TRACE EXECUTE $EXECUTE
-   ${=EXECUTE} 2>&1 | tee $APPEND_OUTPUT $OUTPUT
-   exit;
-}
-
-output TRACE camera_tests PARAMETERS $PARAMETERS
-
-for PARAMETER in $*; do    # put all '-' options into OPTIONS
-   export FIRST=${PARAMETER:0:1}
-   if [[ "$FIRST" = "-" ]]; then
-     output TRACE option: $PARAMETER
-     export OPTIONS="$OPTIONS $PARAMETER"
-     shift 1
-   else
-      break;
-   fi
-done
-
-output TRACE first parameter $1
-
+output TRACE OPTIONS $OPTIONS CURRENT_DIRECTORY $CURRENT_DIRECTORY \
+   TARGET_SUBDIRECTORY $TARGET_SUBDIRECTORY
 
 case $PARAMETERS[1] in
 
@@ -83,7 +38,7 @@ case $PARAMETERS[1] in
 esac
 
 export MODE="${PARAMETERS[1]}"
-trace MODE $MODE
+output TRACE MODE $MODE
 remove_1
 parameters  # process leading options
 case "$MODE" in
@@ -102,24 +57,24 @@ case "$MODE" in
       ;;
 
    "")
-      trace missing mode
+      output TRACE missing mode
       echo missing mode | tee -a $OUTPUT
       exit
       ;;
 
    *)
-      trace invalid mode $MODE
+      output TRACE invalid mode $MODE
       exit
       ;;
 
 esac
-trace APPLICATION $APPLICATION
+output TRACE APPLICATION $APPLICATION
 
 export SUITE="${PARAMETERS[1]}"
-echo "suite $SUITE"
+output TRACE "suite $SUITE"
 remove_1
 parameters  # process leading options
-trace "suite: $SUITE"
+output TRACE "suite: $SUITE"
 case "$SUITE" in
 
    "")
@@ -137,7 +92,7 @@ case "$SUITE" in
 esac
 
 export ROUTINE="${PARAMETERS[1]}"
-trace "routine $ROUTINE"
+output TRACE "routine $ROUTINE"
 
 remove_1
 parameters  # process leading options
@@ -160,9 +115,9 @@ esac
 
 parameters  # process leading options
 
-trace final OPTIONS $OPTIONS
+output TRACE final OPTIONS $OPTIONS
 export COMMAND="../driver/bin/camera_driver $OPTIONS $VERBOSE"
-trace "comand: $COMMAND" 2>&1
+output TRACE "comand: $COMMAND" 2>&1
 rm GNAT-*
 echo run command
 eval $COMMAND 2>&1 | tee -a $OUTPUT

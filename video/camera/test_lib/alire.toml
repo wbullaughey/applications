@@ -22,7 +22,7 @@ camera_lib = "~0.1.0-dev"
 camera_lib = { path='../lib' }
 
 [[pins]]
-gnoga_ada_lib = { path='../../../../gnoga_ada_lib' }
+gnoga_ada_lib = { path='../../../../gnoga_lib/gnoga_ada_lib' }
 
 [[depends-on]]
 ada_lib_test_lib = "~0.1.0-dev"

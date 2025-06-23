@@ -1,8 +1,7 @@
 #!/bin/zsh
 export APPLICATION=camera_driver
 export OUTPUT=list-driver.txt
-export CURRENT_DIRECTORY=`pwd`
-export PARAMETERS=("$@")
+
 echo "run driver $*" 2>&1 | tee $OUTPUT
 echo PARAMETERS: $PARAMETERS 2>&1 | tee -a $OUTPUT
 echo OUPUT=$OUTPUT 2>&1 | tee -a $OUTPUT

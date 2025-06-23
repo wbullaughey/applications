@@ -33,6 +33,6 @@ gnoga = { path='../../../vendor/github.com/gnoga' }
 gnoga_ada_lib = "~0.1.0-dev"
 
 [[pins]]
-gnoga_ada_lib = { path='../../../gnoga_ada_lib' }
+gnoga_ada_lib = { path='../../../gnoga_lib/gnoga_ada_lib' }
 
 
