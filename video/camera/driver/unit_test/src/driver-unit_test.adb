@@ -1,6 +1,7 @@
 ﻿with Ada.Text_IO;use Ada.Text_IO;
-with Ada_Lib.Command_Line_Iterator;
+--with Ada_Lib.Command_Line_Iterator;
 with Ada_Lib.Help;
+with Ada_Lib.Options.Actual;
 with Ada_Lib.Options.Runstring;
 with Ada_Lib.Options.Unit_Test;
 with Ada_Lib.Strings.Unlimited;
@@ -91,7 +92,7 @@ package body Driver.Unit_Test is
          Options_Without_Parameters);
 
 --    Protected_Options.Unit_Test := True;
-      Ada_Lib.Options.Set_Ada_Lib_Options (Protected_Options'access);
+      Ada_Lib.Options.Actual.Set_Ada_Lib_Program_Options (Protected_Options'access);
 
 --    Ada_Lib.Options.Unit_Test.Unit_Test_Options :=
 --       Protected_Options'unchecked_access;

@@ -8,4 +8,4 @@ export WHICH=$1
 
 echo build WHICH $WHICH
 
-../../../../../global_build.sh $WHICH library
+../../../../../global_build.sh $WHICH program
