@@ -15,6 +15,13 @@ executables = ["camera_tests"]
 [[depends-on]]
 alr_environment = "~0.1.0-dev"
 
+[[depends-on]]
+gnatcoll = "^26.0.0"
+
+[[pins]]
+gnatcoll = { path='../../../../vendor/github.com/gnatcoll-core' }
+
+
 [[pins]]
 alr_environment = { path='../../../..' }
 
