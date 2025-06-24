@@ -1,3 +1,4 @@
+#!/bin/zsh
 source ~/.zshrc
 export WHICH=$1
 
