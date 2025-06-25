@@ -5,7 +5,7 @@ with Ada_Lib.Unit_Test;
 with AUnit.Assertions; use AUnit.Assertions;
 with AUnit.Test_Cases;
 --with Base;
-with Camera.Comma0nds.PTZ_Optics;
+with Camera.Commands.PTZ_Optics;
 with Camera.Lib.Unit_Test;
 with Interfaces;
 
