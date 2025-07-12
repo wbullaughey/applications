@@ -270,8 +270,8 @@ package body Widgets.Configured is
             Options     => (
                1 => (
                   Data           => Camera.Data_Type (Preset_ID),
-                  Start          => 6,
-                  Variable_Width => False
+                  Mode           => Camera.Lib.Base.Fixed,
+                  Start          => 6
                )
             ));
          Log_Out (Debug);

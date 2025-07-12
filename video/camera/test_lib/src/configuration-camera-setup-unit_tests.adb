@@ -8,6 +8,7 @@ with Ada_Lib.Unit_Test;
 with AUnit.Assertions; use AUnit.Assertions;
 with AUnit.Test_Cases;
 with Base;
+with Camera.Commands.PTZ_Optics;
 with Camera.Lib.Unit_Test;
 
 --with Configuration.State;
@@ -47,6 +48,7 @@ package body Configuration.Camera.Setup.Unit_Tests is
    procedure Test_Values (
       Test                       : in out AUnit.Test_Cases.Test_Case'class);
 
+   Camera_Description            : aliased constant String := "test camera";
    Suite_Name                    : constant String := "Setup";
 
    Test_Setup               : constant String :=
@@ -167,7 +169,8 @@ package body Configuration.Camera.Setup.Unit_Tests is
       Local_Test.Setup.Load (Connection_Data.State, Test_Setup);
       Local_Test.Camera_Address := State.Video_Address;
       Local_Test.Port_Number := State.Video_Port;
-      Local_Test.Camera := Local_Test.PTZ_Optics'unchecked_access;
+      Local_Test.Camera := new Standard.Camera.Commands.PTZ_Optics.
+         PTZ_Optics_Type (Camera_Description'access);
       Local_Test.Camera.Open (State.Video_Address.all, Local_Test.Port_Number);
       Log_Out (Debug);
 

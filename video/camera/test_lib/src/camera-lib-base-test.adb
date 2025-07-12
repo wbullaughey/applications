@@ -11,8 +11,8 @@ with Ada_Lib.Trace; use Ada_Lib.Trace;
 --with Ada_Lib.Unit_Test.Test_Cases;
 with GNAT.Sockets;
 with Hex_IO;
---with Camera.Commands.PTZ_Optics;
---with Camera.LIB.ALPTOP;
+with Camera.Commands.PTZ_Optics;
+with Camera.LIB.ALPTOP;
 with Camera.Lib.Unit_Test;
 
 package body Camera.Lib.Base.Test is
@@ -76,6 +76,7 @@ package body Camera.Lib.Base.Test is
 
 -- ALPTOP_IP_Address              : constant GNAT.Sockets.Inet_Addr_V4_Type :=
 --                                  (192, 168, 1, 240);
+   Camera_Description            : aliased constant String := "test camera";
 -- Port                          : constant GNAT.Sockets.Port_Type := 80;
 -- PTZ_Optics_Local_IP_Address   : GNAT.Sockets.Inet_Addr_Type;
 -- PTZ_Optics_Local_IP_Address   : constant GNAT.Sockets.Inet_Addr_V4_Type :=
@@ -224,7 +225,7 @@ package body Camera.Lib.Base.Test is
                   Options        => ( 1 => (
                      Data           => 3,            -- set recall to setting 3
                      Start          => 6,
-                     Variable_Width => False)),
+                     Mode => Fixed)),
                   Get_Ack        => Get_Ack,
                   Has_Response   => Has_Response,
                   Response_Length=> Response_Length);
@@ -359,13 +360,15 @@ package body Camera.Lib.Base.Test is
       case Options.Camera_Options.Brand is
 
          when ALPTOP_Camera =>
-            Test.Camera := Test.ALPTOP'access;
+            Test.Camera := new Standard.Camera.LIB.ALPTOP.ALPTOP_Type (
+               Camera_Description'access);
 
          when No_Camera =>
             raise Failed with "no camera brand selected";
 
          when PTZ_Optics_Camera =>
-            Test.Camera := Test.PTZ_Optics'access;
+            Test.Camera := new Standard.Camera.Commands.PTZ_Optics.
+               PTZ_Optics_Type (Camera_Description'access);
 
       end case;
       Log_Out (Debug);

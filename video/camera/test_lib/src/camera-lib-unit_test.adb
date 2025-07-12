@@ -26,6 +26,7 @@ package body Camera.Lib.Unit_Test is
 
    use type Ada_Lib.Options.Mode_Type;
 
+   Camera_Description            : aliased constant String := "test camera";
    Trace_Modifier                : constant Character := '@';
    Trace_Option                  : constant Character := '1';
    Options_With_Parameters       : aliased constant
@@ -58,6 +59,26 @@ package body Camera.Lib.Unit_Test is
    begin
       Log_Here (Debug);
    end Add_Test;
+
+   ----------------------------------------------------------------------------
+   procedure Check_Power (
+      Test                       : in     Camera_Test_Type) is
+   ----------------------------------------------------------------------------
+
+   begin
+      Log_In (Debug);
+      declare
+         Power_On                : constant Boolean := Test.Camera.Get_Power;
+
+      begin
+         Log_Here (Debug, "power on " & Power_On'img);
+
+         if not Power_On then
+            Test.Camera.Set_Power (True);
+         end if;
+         Log_Out (Debug);
+      end;
+   end Check_Power;
 
    ----------------------------------------------------------------------------
    procedure Dump (
@@ -458,20 +479,22 @@ not_implemented;
         Test.Camera_Address := State.Video_Address;
         Test.Port_Number := State.Video_Port;
 
-        case Test.Brand is
-
-           when Standard.Camera.Lib.ALPTOP_Camera =>
-               not_implemented;
-
-           when Standard.Camera.LIB.PTZ_Optics_Camera =>
-               Test.Camera := Test.PTZ_Optics'unchecked_access;
-               Test.Camera.Open (State.Video_Address.all, Test.Port_Number);
-
-           when Standard.Camera.Lib.No_Camera =>
-              raise Failed with "no camera set";
-
-        end case;
      end if;
+     case Test.Brand is
+
+        when Standard.Camera.Lib.ALPTOP_Camera =>
+            not_implemented;
+
+        when Standard.Camera.LIB.PTZ_Optics_Camera =>
+            Test.Camera := new Standard.Camera.Commands.PTZ_Optics.
+               PTZ_Optics_Type (Camera_Description'access);
+
+            Test.Camera.Open (State.Video_Address.all, Test.Port_Number);
+
+        when Standard.Camera.Lib.No_Camera =>
+           raise Failed with "no camera set";
+
+     end case;
      Log_Out (Debug or Trace_Set_Up);
 
   exception

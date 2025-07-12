@@ -1,4 +1,5 @@
 with Ada_Lib.Socket_IO.Client;
+with Ada_Lib.Strings;
 with Configuration.Camera;
 with GNAT.Sockets;
 
@@ -28,21 +29,27 @@ package Camera.Lib.Base is
       Memory_Set,
       Memory_Reset,
       Power,
+      Power_Inquire,
       Zoom_Direct,
-      Zoom_Full,
-      Zoom_Inquire
+      Zoom_Inquire,
+      Zoom_Stop,
+      Zoom_Tele_Standard,
+      Zoom_Tele_Variable,
+      Zoom_Wide_Standard,
+      Zoom_Wide_Variable
    );
 
+   type Options_Mode_Type        is (Add, Fixed, Variable);
    type Option_Type (
-      Variable_Width             : Boolean := False) is record
+      Mode                       : Options_Mode_Type := Fixed) is record
       Start                      : Index_Type;
 
-      case Variable_Width is
+      case Mode is
 
-         when False =>
+         when Add | Fixed =>
             Data                 : Data_Type;
 
-         when True =>
+         when Variable =>
             Value                : Value_Type;
             Width                : Index_Type;
 
@@ -60,7 +67,10 @@ package Camera.Lib.Base is
       Response_Length            : Index_Type;
    end record;
 
-   type Base_Camera_Type         is abstract new General_Camera_Type with private;
+   type Base_Camera_Type (
+      Description                : Ada_Lib.Strings.String_Constant_Access
+   ) is abstract new General_Camera_Type with private;
+
    type Base_Camera_Class_Access is access all Base_Camera_Type'class;
 
    procedure Acked (
@@ -68,6 +78,10 @@ package Camera.Lib.Base is
       Response                   : in     Buffer_Type;
       Value                      :    out Natural;
       Next_Buffer_Index          :    out Index_Type) is abstract;
+
+   procedure Dump_Input_Buffer (
+      Camera                     : in out Base_Camera_Type;
+      From                       : in     String := Ada_Lib.Trace.Here);
 
 -- procedure Cell_Preset (
 --    Camera                     : in out Base_Camera_Type;
@@ -89,6 +103,10 @@ package Camera.Lib.Base is
    ) return Index_Type is abstract;
 
    function Get_Default_Preset (
+      Camera                     : in     Base_Camera_Type
+   ) return Configuration.Camera.Preset_ID_Type is abstract;
+
+   function Get_Maximum_Preset (
       Camera                     : in     Base_Camera_Type
    ) return Configuration.Camera.Preset_ID_Type is abstract;
 
@@ -142,13 +160,17 @@ package Camera.Lib.Base is
    procedure Process_Command (
       Camera                     : in out Base_Camera_Type;
       Command                    : in     Commands_Type;
-      Options                    : in     Options_Type);
+      Options                    : in     Options_Type;
+      Timeout_Time               : in     Duration := 0.0);
+                                          -- when 0 use command default
 
    procedure Process_Command (
       Camera                     : in out Base_Camera_Type;
       Command                    : in     Commands_Type;
       Options                    : in     Options_Type;
-      Response                   :    out Maximum_Response_Type);
+      Response                   :    out Maximum_Response_Type;
+      Timeout_Time               : in     Duration := 0.0);
+                                          -- when 0 use command default
 
    procedure Process_Response (
       Camera                     : in     Base_Camera_Type;
@@ -180,16 +202,19 @@ package Camera.Lib.Base is
       Options                    : in     Options_Type);
 
    Debug                         : Boolean := False;
-   Power_On_Preset               : constant := 0;
+   List_Commands                 : Boolean := False;
    Null_Option                   : constant Options_Type;
+   Power_On_Preset               : constant := 0;
 
 private
 
-   Description                   : aliased constant String := "camera";
+-- Description                   : aliased constant String := "camera";
 
-   type Base_Camera_Type  is abstract new General_Camera_Type with record
+   type Base_Camera_Type (
+      Description                : Ada_Lib.Strings.String_Constant_Access
+   ) is abstract new General_Camera_Type with record
       Socket                     : Ada_Lib.Socket_IO.Client.Client_Socket_Type (
-                                    Description'access);
+                                     Description);
 --    Stream                     : Ada_Lib.Socket_IO.Stream_IO.Stream_Type;
    end record;
 
@@ -197,7 +222,7 @@ private
                                     ( others => (
                                        Data              => 0,
                                        Start             => 0,
-                                       Variable_Width    => False));
+                                       Mode              => Fixed));
 
 end Camera.Lib.Base;
 

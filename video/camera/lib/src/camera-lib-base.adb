@@ -1,6 +1,7 @@
 with Ada.Text_IO; use Ada.Text_IO;
 with Ada_Lib.Time;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
+with Camera.Commands.PTZ_Optics;
 with Hex_IO;
 with Video.Lib;
 
@@ -23,16 +24,20 @@ package body Camera.Lib.Base is
             Option               : Option_Type renames Options (Index);
 
          begin
-            Log_Here (Debug, "Index " & Index'img & " Start " & Option.Start'img &
-               " Variable_Width " & Option.Variable_Width'img);
+            Log_Here (Debug, "Index " & Index'img & " Start " & Option.Start'img);
 
-            case Option.Variable_Width is
+            case Option.Mode is
 
-               when False =>
+               when Add =>
+                  Buffer (Option.Start) := Buffer (Option.Start) + Option.Data;
+                  Log_Here (Debug, "buffer " &
+                     Video.Lib.Hex (Buffer (Option.Start)));
+
+               when Fixed =>
                   Log_Here (Debug, "data " & Video.Lib.Hex (Option.Data));
                   Buffer (Option.Start) := Option.Data;
 
-               when True =>
+               when Variable =>
                   declare
                      Buffer_Index: Index_Type := Option.Start + Option.Width - 1;
                      Value       : Value_Type := Option.Value;
@@ -69,6 +74,16 @@ package body Camera.Lib.Base is
       Apply_Parameters (Buffer, Options);
       Log_Out (Debug);
    end Apply_Parameters;
+
+   ---------------------------------------------------------------
+   procedure Dump_Input_Buffer (
+      Camera                     : in out Base_Camera_Type;
+      From                       : in     String := Here) is
+   ---------------------------------------------------------------
+
+   begin
+      Camera.Socket.Dump_Input_Buffer (From);
+   end Dump_Input_Buffer;
 
    ---------------------------------------------------------------
    procedure Camera_No_Found (
@@ -122,7 +137,7 @@ package body Camera.Lib.Base is
 --    Got_Ack                    : Boolean := False;
       Read_Length                : Index_Type := Ack_Length;   -- min read length
       Start_Read                 : Index_Type := Response'first;
-      Timeout                    : constant Ada_Lib.Time.Time_Type :=
+      Timeout                    : Ada_Lib.Time.Time_Type :=
                                     Ada_Lib.Time.Now + Response_Timeout;
    begin
       Log_In (Debug, "Expect_Ack " & Expect_Ack'img &
@@ -134,101 +149,135 @@ package body Camera.Lib.Base is
          " timeout " & Ada_Lib.Time.Image (Timeout));
 
       loop  -- look for multiple acks
-         End_Read := Start_Read + Read_Length - 1;
+         declare
+            Time_Left   : constant Duration := Timeout - Ada_Lib.Time.Now;
 
-         Log_Here (Debug, "Start_Read" & Start_Read'img &
-            " end read" & End_Read'img &
-            " Read_Length" & Read_Length'img);
+         begin
+            End_Read := Start_Read + Read_Length - 1;
 
-         Camera.Socket.Read (Response (Start_Read .. End_Read));
-         if Debug then
-            Video.Lib.Dump ("response", Response (Start_Read .. End_Read),
-               Natural (Ack_Length));
-         end if;
+            Log_Here (Debug, "Start_Read" & Start_Read'img &
+               " end read" & End_Read'img &
+               " Read_Length" & Read_Length'img &
+               " time left " & Time_Left'img);
 
-         case Response (Start_Read) and 16#F0# is
+            Camera.Socket.Read (Response (Start_Read .. End_Read), Time_Left);
+            if Debug then
+                  Video.Lib.Dump ("response", Response (Start_Read .. End_Read),
+                     Natural (Ack_Length));
+               end if;
 
-            when 16#90# =>    -- ack, completion or error
-               case Response (Start_Read + 1) is
+            case Response (Start_Read) and 16#F0# is
 
-                  when 16#40# | 16#41# | 16#42# | 16#51# | 16#52# => -- Ack
-                     if Response (End_Read) = 16#FF# then -- end of Ack
-                        Log_Here (Debug, "got ack");
-                        if not Expect_Response then
-                           exit;
+               when 16#90# =>    -- ack, completion or error
+                  case Response (Start_Read + 1) is
+
+                     when 16#40# | 16#41# | 16#42# => -- Ack
+                        if Response (End_Read) = 16#FF# then -- end of Ack
+                           Log_Here (Debug, "got ack");
+                           if not Expect_Response then
+                              exit;
+                           end if;
+                           -- is the response already in buffer
+                           declare
+                              Buffer_Count   : constant Index_Type :=
+                                                Camera.Socket.In_Buffer;
+                           begin
+                              Log_Here (Debug, "buffer count" &
+                                 Buffer_Count'img);
+
+                              if Buffer_Count = 0 then
+                                 Start_Read := Response'first;
+                              else
+                                       Start_Read := Start_Read + Ack_Length;
+                              end if;
+                           end;
+                           Read_Length := Ack_Length;   -- min read length
+
+                        -- else not ack, set up to read remainder
                         end if;
-                        Start_Read := Response'first;
-                        Read_Length := Ack_Length;   -- min read length
-                     -- else not ack, set up to read remainder
-                     end if;
 
-                  when 16#50# => -- Completion
+                     when 16#50# | 16#51# | 16#52#  => -- Completion
+                        if not Expect_Response then
+                           Log_Exception (Debug, "unexpected response");
+                           raise Failed with "unexpected response";
+                        end if;
+                        if Response (End_Read) = 16#FF# then -- end of Ack
+                           Log_Here (Debug, "got short completion");
+                        else
+                           -- read the rest of the completion
+                           Start_Read := Start_Read + Ack_Length;
+                           Read_Length := Response_Length - Ack_Length;
 
-                     if not Expect_Response then
-                        Log_Exception (Debug, "unexpected response");
-                        raise Failed with "unexpected response";
-                     end if;
-                     -- read the rest of the completion
-                     Start_Read := Start_Read + Ack_Length;
-                     Read_Length := Response_Length - Ack_Length;
-                     End_Read := Start_Read + Read_Length - 1;
-                     Camera.Socket.Read (Response (Start_Read .. End_Read));
-                     if Debug then
-                        Video.Lib.Dump ("response", Response (Response'first ..
-                           End_Read), Natural (Ack_Length));
-                     end if;
-                     exit;
+                           if Read_Length > 0 then
+                              End_Read := Start_Read + Read_Length - 1;
+                              Camera.Socket.Read (Response (Start_Read .. End_Read),
+                                 Time_Left);
+                              if Debug then
+                                 Video.Lib.Dump ("response",
+                                    Response, Natural (Response_Length));
+                              end if;
+                           end if;
+                        end if;
+                        exit;
 
-                  when 16#60# => -- Error
-                     -- read rest of error message
-                     Start_Read := Start_Read + Ack_Length;
-                     Read_Length := 1;
-                     End_Read := Start_Read + Read_Length - 1;
-                     Camera.Socket.Read (Response (Start_Read .. End_Read));
-                     if Debug then
-                        Video.Lib.Dump ("response", Response (Response'first ..
-                           End_Read), Natural (Ack_Length));
-                     end if;
-                     Log_Here (Debug, "error code" & Response (3)'img);
-                     case Response (3) is
+                     when 16#60# .. 16#6F# => -- Error
+                        -- read rest of error message
+                        Start_Read := Start_Read + Ack_Length;
+                        Read_Length := 1;
+                        End_Read := Start_Read + Read_Length - 1;
+                        Camera.Socket.Read (Response (Start_Read .. End_Read),
+                           Time_Left);
+                        if Debug then
+                           Video.Lib.Dump ("response", Response (Response'first ..
+                              End_Read), Natural (Ack_Length + 1));
+                        end if;
+                        Log_Here (Debug, "error code" & Response (3)'img);
+                        case Response (3) is
 
-                        when 2 =>      -- bad format
-                           Put_Line ("camera bad format error");
+                           when 2 =>      -- bad format
+                              Put_Line ("camera bad format error");
 
-                        when 3 =>
-                           Put_Line ("multile socet command");
+                           when 3 =>
+                              Put_Line ("multile socet command");
 
-                        when 4 =>   -- command canceled
-                           Put_Line ("type 4 command canceled");
+                           when 4 =>   -- command canceled
+                              Put_Line ("type 4 command canceled");
 
-                        when 5 =>
-                           Put_Line ("type 5 command canceled");
+                           when 5 =>
+                              Put_Line ("type 5 command canceled");
 
-                        when others =>
-                           Failure ("unexpected error code" &
-                              Response (3)'img);
+                           when 16#41# =>
+                              Put_Line ("type 41 command cannot be executed");
 
-                     end case;
-                     exit;
+                           when others =>
+                              Failure ("unexpected error code " &
+                                 Ada_Lib.Socket_IO.Hex (Response (3)));
 
-                  when others =>    -- unexpected
-                     Failure ("unexpected resonse" &
-                        Response (Start_Read + 1)'img);
+                        end case;
+                        exit;
 
-               end case;
+                     when others =>    -- unexpected
+                        Failure ("unexpected resonse" &
+                           Ada_Lib.Socket_IO.Hex (Response (Start_Read + 1)));
 
-            when others =>          -- unexpected
-               Put_Line ("" &
-                  Response (Start_Read)'img);
-               Failure ("unexpected command header " &
-                  Response (Start_Read)'img);
-         end case;
+                  end case;
+
+               when others =>          -- unexpected
+                  Put_Line ("" &
+                     Response (Start_Read)'img);
+                  Failure ("unexpected command header " &
+                     Ada_Lib.Socket_IO.Hex (Response (Start_Read + 1)));
+            end case;
+         end;
+
+         -- reset timout time
+         Timeout := Ada_Lib.Time.Now + Response_Timeout;
       end loop;
       Log_Out (Debug);
 
    exception
       when Fault : others =>
-         Trace_Exception (Fault, Here);
+         Log_Exception (Debug, Fault, "timeout in Get_Response Read");
          raise;
 
    end Get_Response;
@@ -288,7 +337,9 @@ package body Camera.Lib.Base is
 
    begin
       Log_In (Debug, "Address " & Address.Image & " port" & Port'img);
-      Camera.Socket.Connect (Address, Port);
+      Camera.Socket.Connect (Address, Port,
+         Default_Read_Timeout    => Standard.Camera.Commands.PTZ_Optics.Default_Read_Timeout,
+         Default_Write_Timeout   => Standard.Camera.Commands.PTZ_Optics.Default_Write_Timeout);
       Log_Out (Debug);
 
    exception
@@ -302,7 +353,9 @@ package body Camera.Lib.Base is
    procedure Process_Command (
       Camera                     : in out Base_Camera_Type;
       Command                    : in     Commands_Type;
-      Options                    : in     Options_Type) is
+      Options                    : in     Options_Type;
+      Timeout_Time               : in     Duration := 0.0) is
+                                          -- when 0 use command default
    ---------------------------------------------------------------
 
       Response                   : Maximum_Response_Type;
@@ -310,7 +363,7 @@ package body Camera.Lib.Base is
    begin
       Log_In (Debug, "command " & Command'img);
       Base_Camera_Type'class (Camera).Process_Command (Command, Options,
-         Response); -- default with no value returned
+         Response, Timeout_Time); -- default with no value returned
       Log_Out (Debug);
    end Process_Command;
 
@@ -319,17 +372,22 @@ package body Camera.Lib.Base is
       Camera                     : in out Base_Camera_Type;
       Command                    : in     Commands_Type;
       Options                    : in     Options_Type;
-      Response                   :    out Maximum_Response_Type) is
+      Response                   :    out Maximum_Response_Type;
+      Timeout_Time               : in     Duration := 0.0) is
+                                          -- when 0 use command default
    ---------------------------------------------------------------
 
-      Get_Ack                    : Boolean;
-      Response_Length            : Index_Type;
-      Has_Response               : Boolean;
-      Timeout                    : constant Duration :=
-                                    Base_Camera_Type'class (Camera).
-                                       Get_Timeout (Command);
+      Get_Ack           : Boolean;
+      Response_Length   : Index_Type;
+      Has_Response      : Boolean;
+      Timeout           : constant Duration := (if Timeout_Time = 0.0 then
+                              Base_Camera_Type'class (Camera).Get_Timeout (
+                                 Command)
+                           else
+                              Timeout_Time);
    begin
-      Log_In (Debug, "command " & Command'img &
+      Log_In (Debug or List_Commands, "command " & Command'img &
+         " Timeout_Time " & Timeout_Time'img &
          " timeout " & Timeout'img);
       Base_Camera_Type'class (Camera).Send_Command (Command, Options,
          Get_Ack, Has_Response, Response_Length);
@@ -345,11 +403,11 @@ package body Camera.Lib.Base is
             Response'first .. Response_Length));
       end if;
 
-      Log_Out (Debug);
+      Log_Out (Debug or List_Commands);
 
    exception
       when Fault : others =>
-         Trace_Exception (Fault, Here);
+         Log_Exception (Debug, Fault, "in Process_Command");
          raise;
 
    end Process_Command;

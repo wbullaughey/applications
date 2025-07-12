@@ -68,6 +68,17 @@ package body Camera.LIB.ALPTOP is
 
    ----------------------------------------------------------------------------
    overriding
+   function Get_Maximum_Preset (
+      Camera                     : in     ALPTOP_Type
+   ) return Configuration.Camera.Preset_ID_Type is
+   ----------------------------------------------------------------------------
+
+   begin
+      return 127;
+   end Get_Maximum_Preset;
+
+   ----------------------------------------------------------------------------
+   overriding
    function Get_Timeout (
       Camera                     : in     ALPTOP_Type;
       Command                    : in     Standard.Camera.Lib.Base.Commands_Type

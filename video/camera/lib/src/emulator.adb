@@ -168,25 +168,25 @@ hex_io.dump_8 (command'address, command'size, 32);
                                  (
                                     Data           => 16#90#,
                                     Start          => 1,
-                                    Variable_Width => False
+                                    Mode => Camera.lib.base.fixed
                                  ),(
                                     Data           => 16#50#,
                                     Start          => 2,
-                                    Variable_Width => False
+                                    Mode => Camera.lib.base.fixed
                                  ),(
                                     Start          => 3,
                                     Value          => Pan,
-                                    Variable_Width => True,
+                                    Mode => Camera.lib.base.variable,
                                     Width          => 4
                                  ),(
                                     Start          => 7,
                                     Value          => Tilt,
-                                    Variable_Width => True,
+                                    Mode => Camera.lib.base.variable,
                                     Width          => 4
                                  ),(
                                     Data           => 16#FF#,
                                     Start          => Length,
-                                    Variable_Width => False
+                                    Mode => Camera.lib.base.fixed
                                  )
                               );
                               Response    : Camera.Maximum_Response_Type;
