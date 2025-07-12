@@ -9,8 +9,8 @@ package body Camera.Commands.PTZ_Optics is
    use type Video.Lib.Index_Type;
 
    Default_Response_Timeout      : constant Duration := 0.5;
-   Position_Timeout              : constant Duration := 30.0;
-
+   Position_Timeout              : constant Duration := Default_Response_Timeout;
+   Power_Inquire_Timeout         : constant Duration := 120.0;
    Commands                      : constant Array (Standard.Camera.Lib.Base.
                                     Commands_Type) of Standard.Camera.Lib.Base.
                                        Command_Type := (
@@ -18,7 +18,7 @@ package body Camera.Commands.PTZ_Optics is
       Standard.Camera.Lib.Base.Manual_Focus         => ( 6, ( 16#81#,16#01#,16#04#,16#38#,16#03#,16#FF#, others => 0 ), True, Default_Response_Timeout, False, 0),
       Standard.Camera.Lib.Base.Position_Absolute    => ( 15, ( 16#81#,16#01#,16#06#,16#02#,
          16#00#, 16#00#, 16#00#, 16#00#, 16#00#, 16#00#, 16#00#, 16#00#, 16#00#, 16#00#,
-         16#FF#, others => 0), False, Position_Timeout, True, 3),
+         16#FF#, others => 0), False, Position_Timeout, False, 3),
       Standard.Camera.Lib.Base.Position_Down_Left   => ( 9, ( 16#81#,16#01#,16#06#,16#01#,16#00#,16#00#,16#01#,16#02#,16#FF#, others => 0 ), True, Default_Response_Timeout, False, 0),
       Standard.Camera.Lib.Base.Position_Down_Right  => ( 9, ( 16#81#,16#01#,16#06#,16#01#,16#00#,16#00#,16#02#,16#02#,16#FF#, others => 0 ), True, Default_Response_Timeout, False, 0),
       Standard.Camera.Lib.Base.Position_Down        => ( 9, ( 16#81#,16#01#,16#06#,16#01#,16#00#,16#00#,16#03#,16#02#,16#FF#, others => 0 ), True, Default_Response_Timeout, False, 0),
@@ -35,10 +35,15 @@ package body Camera.Commands.PTZ_Optics is
       Standard.Camera.Lib.Base.Memory_Recall        => ( 7, ( 16#81#,16#01#,16#04#,16#3F#,16#02#,16#02#,16#FF#, others => 0 ), True, Position_Timeout, False, 0),
       Standard.Camera.Lib.Base.Memory_Set           => ( 7, ( 16#81#,16#01#,16#04#,16#3F#,16#02#,16#01#,16#FF#, others => 0 ), True, Default_Response_Timeout, False, 0),
       Standard.Camera.Lib.Base.Memory_Reset         => ( 7, ( 16#81#,16#01#,16#04#,16#3F#,16#02#,16#00#,16#FF#, others => 0 ), True, Default_Response_Timeout, False, 0),
-      Standard.Camera.Lib.Base.Power                => ( 6, ( 16#81#,16#01#,16#04#,16#00#,16#00#,16#FF#, others => 0 ), False, Default_Response_Timeout, True, 4),
-      Standard.Camera.Lib.Base.Zoom_Direct          => ( 7, ( 16#81#,16#01#,16#04#,16#3F#,16#02#,16#00#,16#FF#, others => 0 ), True, Default_Response_Timeout, False, 0),
-      Standard.Camera.Lib.Base.Zoom_Full            => ( 7, ( 16#81#,16#01#,16#04#,16#3F#,16#02#,16#00#,16#FF#, others => 0 ), True, Position_Timeout, False, 0),
-      Standard.Camera.Lib.Base.Zoom_Inquire         => ( 5, ( 16#81#,16#09#,16#04#,16#47#,16#FF#, others => 0 ), False, Position_Timeout, True, 7)
+      Standard.Camera.Lib.Base.Power                => ( 6, ( 16#81#,16#01#,16#04#,16#00#,16#00#,16#FF#, others => 0 ), False, Default_Response_Timeout, true, 3),
+      Standard.Camera.Lib.Base.Power_Inquire        => ( 5, ( 16#81#,16#09#,16#04#,16#00#,16#FF#, others => 0 ), False, Power_Inquire_Timeout, True, 4),
+      Standard.Camera.Lib.Base.Zoom_Direct          => ( 9, ( 16#81#,16#01#,16#04#,16#47#,16#00#,16#00#,16#00#,16#00#,16#FF#, others => 0 ), True, Default_Response_Timeout, False, 0),
+      Standard.Camera.Lib.Base.Zoom_Stop            => ( 6, ( 16#81#,16#01#,16#04#,16#07#,16#00#,16#FF#, others => 0 ), True, Default_Response_Timeout, False, 0),
+      Standard.Camera.Lib.Base.Zoom_Inquire         => ( 5, ( 16#81#,16#09#,16#04#,16#47#,16#FF#, others => 0 ), False, Default_Response_Timeout, True, 7),
+      Standard.Camera.Lib.Base.Zoom_Tele_Standard   => ( 6, ( 16#81#,16#01#,16#04#,16#07#,16#02#,16#FF#, others => 0 ), True, Position_Timeout, False, 0),
+      Standard.Camera.Lib.Base.Zoom_Tele_Variable   => ( 6, ( 16#81#,16#01#,16#04#,16#07#,16#20#,16#FF#, others => 0 ), True, Position_Timeout, False, 0),
+      Standard.Camera.Lib.Base.Zoom_Wide_Standard   => ( 6, ( 16#81#,16#01#,16#04#,16#07#,16#03#,16#FF#, others => 0 ), True, Position_Timeout, False, 0),
+      Standard.Camera.Lib.Base.Zoom_Wide_Variable   => ( 6, ( 16#81#,16#01#,16#04#,16#07#,16#30#,16#FF#, others => 0 ), True, Position_Timeout, False, 0)
    );
 
    ----------------------------------------------------------------------------
@@ -104,6 +109,17 @@ package body Camera.Commands.PTZ_Optics is
    begin
       return Powerup_Preset;
    end Get_Default_Preset;
+
+   ----------------------------------------------------------------------------
+   overriding
+   function Get_Maximum_Preset (
+      Camera                     : in     PTZ_Optics_Type
+   ) return Configuration.Camera.Preset_ID_Type is
+   ----------------------------------------------------------------------------
+
+   begin
+      return Maximum_Preset;
+   end Get_Maximum_Preset;
 
    ----------------------------------------------------------------------------
    overriding

@@ -1,10 +1,16 @@
+with Ada_Lib.Strings;
 with Camera.Commands;
 with Camera.Lib.Base;
 with Configuration.Camera;
 
 package Camera.LIB.ALPTOP is
 
-   type ALPTOP_Type is new Standard.Camera.Commands.Camera_Type with null record;
+   type ALPTOP_Type(
+      Description                : Ada_Lib.Strings.String_Constant_Access
+   ) is new Standard.Camera.Commands.Camera_Type (
+      Description) with null record;
+
+private
 
    overriding
    procedure Acked (
@@ -33,6 +39,11 @@ package Camera.LIB.ALPTOP is
 
    overriding
    function Get_Default_Preset (
+      Camera                     : in     ALPTOP_Type
+   ) return Configuration.Camera.Preset_ID_Type;
+
+   overriding
+   function Get_Maximum_Preset (
       Camera                     : in     ALPTOP_Type
    ) return Configuration.Camera.Preset_ID_Type;
 

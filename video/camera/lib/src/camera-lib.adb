@@ -330,6 +330,7 @@ package body Camera.Lib is
          Put_Line ("      " & Trace_Prefix & "a              Adjust Window");
          Put_Line ("      " & Trace_Prefix & "c              Control Window");
          Put_Line ("      " & Trace_Prefix & "C              Configured Window");
+         Put_Line ("      " & Trace_Prefix & "l              List camera commands");
          Put_Line ("      " & Trace_Prefix & "s              configuration");
 
       end case;
@@ -363,9 +364,10 @@ package body Camera.Lib is
                case Trace is
 
                   when 'a' =>
-                     Base.Debug := True;
+                     Standard.Base.Debug := True;
                      Camera.Commands.Debug := True;
                      Camera.Lib.Base.Debug := True;
+                     Camera.Lib.Base.List_Commands := True;
                      Configuration.Camera.Debug := True;
                      Configuration.State.Debug := True;
                      Configuration.Debug := True;
@@ -380,7 +382,7 @@ package body Camera.Lib is
                      Widgets.Generic_Table.Debug := True;
 
                   when 'b' =>
-                     Base.Debug := True;
+                     Standard.Base.Debug := True;
 
                   when 'B' =>
                      Camera.Lib.Base.Debug := True;
@@ -434,11 +436,15 @@ package body Camera.Lib is
                   when 'a' =>
                      Widgets.Adjust.Debug := True;
 
+
                   when 'c' =>
                      Widgets.Control.Debug := True;
 
                   when 'C' =>
                      Widgets.Configured.Debug := True;
+
+                  when 'l' =>
+                     Camera.Lib.Base.List_Commands := True;
 
                   when 's' =>
                      Configuration.Debug := True;

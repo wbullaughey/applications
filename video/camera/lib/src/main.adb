@@ -5,6 +5,7 @@ with Ada.Text_IO; use  Ada.Text_IO;
 with Ada_Lib.Help;
 with Ada_Lib.Options;
 with Ada_Lib.OS;
+with Ada_Lib.Strings;
 with ADA_LIB.Trace; use ADA_LIB.Trace;
 with Ask;
 with Base;
@@ -45,7 +46,8 @@ package body Main is
 --    Object                     : in out Gnoga.Gui.Base.Base_Type'Class);
 
    procedure Open_Camera (
-      Camera                     :  out Standard.Camera.Commands.Camera_Class_Access);
+      Camera         :  out Standard.Camera.Commands.Camera_Class_Access;
+      Description    : in     Ada_Lib.Strings.String_Constant_Access);
 
 -- --  Setup another path in to the application for submitting results
 -- --  /result, see On_Connect_Handler in body of this procedure.
@@ -65,6 +67,7 @@ package body Main is
 -- Temporary_Connection_Data     : Connection_Data_Access;
    -- use to pass from On_Connect to Main
 
+   Description                   : aliased constant String := "main camera";
    Started                       : Boolean := False;
 
 -- ---------------------------------------------------------------
@@ -364,7 +367,7 @@ package body Main is
 
       begin
          if not Started then
-            Open_Camera (Connection_Data.Camera);
+            Open_Camera (Connection_Data.Camera, Description'access);
          end if;
 
 --       if Started then
@@ -544,8 +547,8 @@ package body Main is
 
    ---------------------------------------------------------------
    procedure Open_Camera (
-      Camera                     :  out Standard.Camera.Commands.
-                                          Camera_Class_Access) is
+      Camera         :  out Standard.Camera.Commands.Camera_Class_Access;
+      Description    : in     Ada_Lib.Strings.String_Constant_Access) is
    ---------------------------------------------------------------
 
       Connection_Data            : Base.Connection_Data_Type renames
@@ -563,7 +566,8 @@ package body Main is
          " port" & Port_Number'img);
 
       Camera := Standard.Camera.Commands.Camera_Class_Access'(
-         new Standard.Camera.Commands.PTZ_Optics.PTZ_Optics_Type);
+         new Standard.Camera.Commands.PTZ_Optics.PTZ_Optics_Type (
+            Description));
 
       Camera.Open (Camera_Address, Port_Number);
       Log_Out (Debug);

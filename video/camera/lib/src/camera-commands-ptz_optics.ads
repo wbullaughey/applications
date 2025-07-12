@@ -1,13 +1,22 @@
+with Ada_Lib.Strings;
 with Camera.Lib.Base;
 with Configuration.Camera;
 
 package Camera.Commands.PTZ_Optics is
 
+   Invalid_Command               : exception;
+
    subtype Ack_Type              is Buffer_Type (1 .. 3);
 
-   type PTZ_Optics_Type is new Standard.Camera.Commands.Camera_Type with null record;
+   type PTZ_Optics_Type(
+      Description                : Ada_Lib.Strings.String_Constant_Access
+   ) is new Standard.Camera.Commands.Camera_Type (
+      Description) with null record;
 
-   Last_Preset                   : constant := 127;   -- standard set to same as preset 0
+   Default_Read_Timeout          : constant Ada_Lib.Socket_IO.Timeout_Type := 0.2;
+   Default_Write_Timeout         : constant Ada_Lib.Socket_IO.Timeout_Type := 0.2;
+
+   Maximum_Preset                   : constant := 256;   -- standard set to same as preset 0
    Port                          : constant := 5678;
    Powerup_Preset                : constant Configuration.Camera.Preset_ID_Type := 0;
 
@@ -35,6 +44,11 @@ private
 
    overriding
    function Get_Default_Preset (
+      Camera                     : in     PTZ_Optics_Type
+   ) return Configuration.Camera.Preset_ID_Type;
+
+   overriding
+   function Get_Maximum_Preset (
       Camera                     : in     PTZ_Optics_Type
    ) return Configuration.Camera.Preset_ID_Type;
 

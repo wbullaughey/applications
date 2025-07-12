@@ -80,7 +80,7 @@ package body Camera.Command_Queue is
 
                   when Standard.Camera.Lib.Base.Position_Relative =>
                      Camera.Position_Relative (Parameters.Pan,
-                        Parameters.Tilt, Parameters.Pan_Speed,
+                        Parameters.Tilt, True, Parameters.Pan_Speed,
                         Parameters.Tilt_Speed);
 
                   when others =>

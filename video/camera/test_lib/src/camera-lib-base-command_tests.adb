@@ -1,4 +1,4 @@
-with GNOGA_Ada_Lib;
+with Ada.Exceptions;
 with Ada_Lib.Unit_Test;
 with AUnit.Assertions; use AUnit.Assertions;
 with AUnit.Test_Cases;
@@ -6,7 +6,10 @@ with AUnit.Test_Cases;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
 with Base;
 with Camera.Commands;
+with Camera.Commands.PTZ_Optics;
+with Camera.LIB.ALPTOP;
 with Camera.Lib.Unit_Test;
+with GNOGA_Ada_Lib;
 with Interfaces;
 with Video.Lib;
 
@@ -35,6 +38,11 @@ package body Camera.Lib.Base.Command_Tests is
    overriding
    procedure Set_Up (
       Test                       : in out Test_Type);
+
+   overriding
+   procedure Tear_Down (
+      Test                       : in out Test_Type
+   ) with post => Verify_Torn_Down (Test);
 
 -- procedure Test_Auto_Focus (
 --    Test                       : in out AUnit.Test_Cases.Test_Case'class);
@@ -93,12 +101,13 @@ package body Camera.Lib.Base.Command_Tests is
 -- procedure Test_Zoom_Direct (
 --    Test                       : in out AUnit.Test_Cases.Test_Case'class);
 --
--- procedure Test_Zoom_Full (
+-- procedure Test_Zoom_Tele (
 --    Test                       : in out AUnit.Test_Cases.Test_Case'class);
 
    procedure Wait (
       Length                     : in     Duration);
 
+   Camera_Description            : aliased constant String := "test camera";
    Suite_Name                    : constant String := "Video_Commands";
 
    ---------------------------------------------------------------
@@ -198,8 +207,8 @@ package body Camera.Lib.Base.Command_Tests is
 --       Routine_Name   => AUnit.Format ("Test_Zoom_Direct")));
 --
 --    Test.Add_Routine (AUnit.Test_Cases.Routine_Spec'(
---       Routine        => Test_Zoom_Full'access,
---       Routine_Name   => AUnit.Format ("Test_Zoom_Full")));
+--       Routine        => Test_Zoom_Tele'access,
+--       Routine_Name   => AUnit.Format ("Test_Zoom_Tele")));
 --
       Log_Out (Debug);
    end Register_Tests;
@@ -218,22 +227,22 @@ package body Camera.Lib.Base.Command_Tests is
 --             (
 --                Data           => 1,    -- pan slow speed
 --                Start          => 5,
---                Variable_Width => False
+--                Mode => Fixed
 --             ),
 --             (
 --                Data           => 1,    -- tlt slow speed
 --                Start          => 6,
---                Variable_Width => False
+--                Mode => Fixed
 --             ),
 --             (
 --                Start          => 7,
---                Variable_Width => True,
+--                Mode => Variable,
 --                Value          => Pan,
 --                Width          => 4
 --             ),
 --             (
 --                Start          => 11,
---                Variable_Width => True,
+--                Mode => Variable,
 --                Value          => Tilt,
 --                Width          => 4
 --             )
@@ -257,13 +266,22 @@ package body Camera.Lib.Base.Command_Tests is
       Camera.Lib.Unit_Test.Camera_Test_Type (Test).Set_Up;
 
       begin
-         Test.Camera.Set_Power (True);
+         Test.Check_Power;
       exception
          when Fault: others =>
-            Trace_Message_Exception (True, Fault,
+            Trace_Message_Exception (Debug or Trace_Set_Up, Fault,
                "ignore exception in Set_Up for Set_Power");
       end;
-      Test.Camera.Set_Preset (Test.Camera.Get_Default_Preset);
+
+      begin
+         Test.Camera.Set_Preset (Test.Camera.Get_Default_Preset);
+      exception
+         when Fault: Camera.Commands.Timeout =>
+            Log_Exception (Debug or Trace_Set_Up, Fault,
+               "timeout set preset");
+            raise;
+
+      end;
       Log_Out (Debug or Trace_Set_Up);
    end Set_Up;
 
@@ -287,18 +305,41 @@ package body Camera.Lib.Base.Command_Tests is
       case Brand is
 
          when ALPTOP_Camera =>
-            Test.Camera := Test.ALPTOP'access;
+            Test.Camera := new Standard.Camera.LIB.ALPTOP.ALPTOP_Type (
+               Camera_Description'access);
 
          when No_Camera =>
             raise Failed with "no camera brand selected";
 
          when PTZ_Optics_Camera =>
-            Test.Camera := Test.PTZ_Optics'access;
+            Test.Camera := new Standard.Camera.Commands.PTZ_Optics.
+               PTZ_Optics_Type (Camera_Description'access);
 
       end case;
       Log_Out (Debug);
       return Test_Suite;
    end Suite;
+
+   ---------------------------------------------------------------
+   overriding
+   procedure Tear_Down (
+      Test                       : in out Test_Type) is
+   ---------------------------------------------------------------
+
+   begin
+      Log_In (Debug);
+      Test.Camera.Set_Preset (Test.Camera.Get_Default_Preset);
+      -- normally same as preset 0
+      Camera.Lib.Unit_Test.Camera_Test_Type (Test).Tear_Down;
+      Log_Out (Debug);
+
+   exception
+      when Fault: others =>
+         Trace_Exception (Debug, Fault);
+         Assert (False, "exception message " &
+            Ada.Exceptions.Exception_Message (Fault));
+
+   end Tear_Down;
 
 -- ---------------------------------------------------------------
 -- procedure Test_Auto_Focus (
@@ -334,7 +375,6 @@ package body Camera.Lib.Base.Command_Tests is
       Pause (Local_Test.Manual,
          "set preset 0 watch for slow scan down for 10 seconds");
 
---    Send_Absolute_Position (Local_Test.Camera.all, 16#123#, 16#321#);
       Local_Test.Camera.Set_Absolute (16#123#, 16#321#);
       Assert (Ask_Pause (Local_Test.Manual,
             "verify that the image shifted"),
@@ -351,20 +391,18 @@ package body Camera.Lib.Base.Command_Tests is
 
    begin
       Log_In (Debug);
-      Pause (Local_Test.Manual,
-         "set preset 0 watch for slow scan down left for 10 seconds");
 
       Local_Test.Camera.Process_Command (Base.Position_Down_Left,
          Options     => (
                (
                   Data           => 1,    -- pan slow speed
                   Start          => 5,
-                  Variable_Width => False
+                  Mode => Fixed
                ),
                (
                   Data           => 1,    -- tlt slow speed
                   Start          => 6,
-                  Variable_Width => False
+                  Mode => Fixed
                )
             ));
 
@@ -383,12 +421,12 @@ package body Camera.Lib.Base.Command_Tests is
                (
                   Data           => 16#18#,    -- pan high speed
                   Start          => 5,
-                  Variable_Width => False
+                  Mode => Fixed
                ),
                (
                   Data           => 16#14#,    -- tilt hight speed
                   Start          => 6,
-                  Variable_Width => False
+                  Mode => Fixed
                )
             ));
 
@@ -412,19 +450,18 @@ package body Camera.Lib.Base.Command_Tests is
 
    begin
       Log_In (Debug);
-      Pause (Local_Test.Manual, "set preset 0");
 
       Local_Test.Camera.Process_Command (Base.Position_Down_Right,
          Options     => (
                (
                   Data           => 1,    -- pan slow speed
                   Start          => 5,
-                  Variable_Width => False
+                  Mode => Fixed
                ),
                (
                   Data           => 1,    -- tlt slow speed
                   Start          => 6,
-                  Variable_Width => False
+                  Mode => Fixed
                )
             ));
       Wait (2.0);
@@ -455,12 +492,12 @@ package body Camera.Lib.Base.Command_Tests is
                (
                   Data           => 1,    -- pan slow speed
                   Start          => 5,
-                  Variable_Width => False
+                  Mode => Fixed
                ),
                (
                   Data           => 1,    -- tlt slow speed
                   Start          => 6,
-                  Variable_Width => False
+                  Mode => Fixed
                )
             ));
 
@@ -471,12 +508,12 @@ package body Camera.Lib.Base.Command_Tests is
                (
                   Data           => 1,    -- pan slow speed
                   Start          => 5,
-                  Variable_Width => False
+                  Mode => Fixed
                ),
                (
                   Data           => 1,    -- tlt slow speed
                   Start          => 6,
-                  Variable_Width => False
+                  Mode => Fixed
                )
             ));
 
@@ -488,12 +525,12 @@ package body Camera.Lib.Base.Command_Tests is
                (
                   Data           => 1,    -- pan slow speed
                   Start          => 5,
-                  Variable_Width => False
+                  Mode => Fixed
                ),
                (
                   Data           => 1,    -- tlt slow speed
                   Start          => 6,
-                  Variable_Width => False
+                  Mode => Fixed
                )
             ));
 
@@ -504,12 +541,12 @@ package body Camera.Lib.Base.Command_Tests is
                (
                   Data           => 1,    -- pan slow speed
                   Start          => 5,
-                  Variable_Width => False
+                  Mode => Fixed
                ),
                (
                   Data           => 1,    -- tlt slow speed
                   Start          => 6,
-                  Variable_Width => False
+                  Mode => Fixed
                )
             ));
 
@@ -537,12 +574,12 @@ package body Camera.Lib.Base.Command_Tests is
                (
                   Data           => 1,    -- pan slow speed
                   Start          => 5,
-                  Variable_Width => False
+                  Mode => Fixed
                ),
                (
                   Data           => 1,    -- tlt slow speed
                   Start          => 6,
-                  Variable_Width => False
+                  Mode => Fixed
                )
             ));
       Wait (2.0);
@@ -552,12 +589,12 @@ package body Camera.Lib.Base.Command_Tests is
                (
                   Data           => 1,    -- pan slow speed
                   Start          => 5,
-                  Variable_Width => False
+                  Mode => Fixed
                ),
                (
                   Data           => 1,    -- tlt slow speed
                   Start          => 6,
-                  Variable_Width => False
+                  Mode => Fixed
                )
             ));
 
@@ -569,12 +606,12 @@ package body Camera.Lib.Base.Command_Tests is
                (
                   Data           => 16#0C#,    -- pan slow speed
                   Start          => 5,
-                  Variable_Width => False
+                  Mode => Fixed
                ),
                (
                   Data           => 16#10#,    -- tlt slow speed
                   Start          => 6,
-                  Variable_Width => False
+                  Mode => Fixed
                )
             ));
       Wait (1.5);
@@ -584,12 +621,12 @@ package body Camera.Lib.Base.Command_Tests is
                (
                   Data           => 1,    -- pan slow speed
                   Start          => 5,
-                  Variable_Width => False
+                  Mode => Fixed
                ),
                (
                   Data           => 1,    -- tlt slow speed
                   Start          => 6,
-                  Variable_Width => False
+                  Mode => Fixed
                )
             ));
 
@@ -702,12 +739,12 @@ package body Camera.Lib.Base.Command_Tests is
                (
                   Data           => 1,    -- pan slow speed
                   Start          => 5,
-                  Variable_Width => False
+                  Mode => Fixed
                ),
                (
                   Data           => 1,    -- tlt slow speed
                   Start          => 6,
-                  Variable_Width => False
+                  Mode => Fixed
                )
             ));
       Wait (2.0);
@@ -717,12 +754,12 @@ package body Camera.Lib.Base.Command_Tests is
                (
                   Data           => 1,    -- pan slow speed
                   Start          => 5,
-                  Variable_Width => False
+                  Mode => Fixed
                ),
                (
                   Data           => 1,    -- tlt slow speed
                   Start          => 6,
-                  Variable_Width => False
+                  Mode => Fixed
                )
             ));
 
@@ -734,12 +771,12 @@ package body Camera.Lib.Base.Command_Tests is
                (
                   Data           => 1,    -- pan slow speed
                   Start          => 5,
-                  Variable_Width => False
+                  Mode => Fixed
                ),
                (
                   Data           => 1,    -- tlt slow speed
                   Start          => 6,
-                  Variable_Width => False
+                  Mode => Fixed
                )
             ));
       Wait (1.5);
@@ -749,12 +786,12 @@ package body Camera.Lib.Base.Command_Tests is
                (
                   Data           => 1,    -- pan slow speed
                   Start          => 5,
-                  Variable_Width => False
+                  Mode => Fixed
                ),
                (
                   Data           => 1,    -- tlt slow speed
                   Start          => 6,
-                  Variable_Width => False
+                  Mode => Fixed
                )
             ));
 
@@ -778,12 +815,12 @@ package body Camera.Lib.Base.Command_Tests is
                (
                   Data           => 1,    -- pan slow speed
                   Start          => 5,
-                  Variable_Width => False
+                  Mode => Fixed
                ),
                (
                   Data           => 1,    -- tlt slow speed
                   Start          => 6,
-                  Variable_Width => False
+                  Mode => Fixed
                )
             ));
       Log_Out (Debug);
@@ -806,12 +843,12 @@ package body Camera.Lib.Base.Command_Tests is
                (
                   Data           => 1,    -- pan slow speed
                   Start          => 5,
-                  Variable_Width => False
+                  Mode => Fixed
                ),
                (
                   Data           => 1,    -- tlt slow speed
                   Start          => 6,
-                  Variable_Width => False
+                  Mode => Fixed
                )
             ));
 
@@ -822,12 +859,12 @@ package body Camera.Lib.Base.Command_Tests is
                (
                   Data           => 1,    -- pan slow speed
                   Start          => 5,
-                  Variable_Width => False
+                  Mode => Fixed
                ),
                (
                   Data           => 1,    -- tlt slow speed
                   Start          => 6,
-                  Variable_Width => False
+                  Mode => Fixed
                )
             ));
 
@@ -839,12 +876,12 @@ package body Camera.Lib.Base.Command_Tests is
                (
                   Data           => 16#0C#,    -- pan high speed
                   Start          => 5,
-                  Variable_Width => False
+                  Mode => Fixed
                ),
                (
                   Data           => 16#10#,    -- tilt high speed
                   Start          => 6,
-                  Variable_Width => False
+                  Mode => Fixed
                )
             ));
       Wait (1.5);
@@ -854,12 +891,12 @@ package body Camera.Lib.Base.Command_Tests is
                (
                   Data           => 1,    -- pan slow speed
                   Start          => 5,
-                  Variable_Width => False
+                  Mode => Fixed
                ),
                (
                   Data           => 1,    -- tlt slow speed
                   Start          => 6,
-                  Variable_Width => False
+                  Mode => Fixed
                )
             ));
 
@@ -885,12 +922,12 @@ package body Camera.Lib.Base.Command_Tests is
                (
                   Data           => 1,    -- pan slow speed
                   Start          => 5,
-                  Variable_Width => False
+                  Mode => Fixed
                ),
                (
                   Data           => 1,    -- tlt slow speed
                   Start          => 6,
-                  Variable_Width => False
+                  Mode => Fixed
                )
             ));
 
@@ -901,12 +938,12 @@ package body Camera.Lib.Base.Command_Tests is
                (
                   Data           => 1,    -- pan slow speed
                   Start          => 5,
-                  Variable_Width => False
+                  Mode => Fixed
                ),
                (
                   Data           => 1,    -- tlt slow speed
                   Start          => 6,
-                  Variable_Width => False
+                  Mode => Fixed
                )
             ));
 
@@ -932,12 +969,12 @@ package body Camera.Lib.Base.Command_Tests is
                (
                   Data           => 1,    -- pan slow speed
                   Start          => 5,
-                  Variable_Width => False
+                  Mode => Fixed
                ),
                (
                   Data           => 1,    -- tlt slow speed
                   Start          => 6,
-                  Variable_Width => False
+                  Mode => Fixed
                )
             ));
       Wait (1.5);
@@ -947,12 +984,12 @@ package body Camera.Lib.Base.Command_Tests is
                (
                   Data           => 1,    -- pan slow speed
                   Start          => 5,
-                  Variable_Width => False
+                  Mode => Fixed
                ),
                (
                   Data           => 1,    -- tlt slow speed
                   Start          => 6,
-                  Variable_Width => False
+                  Mode => Fixed
                )
             ));
 
@@ -993,7 +1030,7 @@ package body Camera.Lib.Base.Command_Tests is
 --             1 => (
 --                Data           => 3,   -- preset 3
 --                Start          => 6,
---                Variable_Width => False
+--                Mode => Fixed
 --             )
 --          ));
 
@@ -1026,7 +1063,7 @@ package body Camera.Lib.Base.Command_Tests is
                (
                   Data           => Test_Preset,
                   Start          => 6,
-                  Variable_Width => False
+                  Mode => Fixed
                )
             ));
 
@@ -1035,7 +1072,7 @@ package body Camera.Lib.Base.Command_Tests is
                (
                   Data           => 0,   -- preset 0
                   Start          => 6,
-                  Variable_Width => False
+                  Mode => Fixed
                )
             ));
 
@@ -1068,7 +1105,7 @@ package body Camera.Lib.Base.Command_Tests is
 -- end Test_Zoom_Direct;
 --
 -- ---------------------------------------------------------------
--- procedure Test_Zoom_Full (
+-- procedure Test_Zoom_Tele (
 --    Test                       : in out AUnit.Test_Cases.Test_Case'class) is
 -- pragma Unreferenced (Test);
 -- ---------------------------------------------------------------
@@ -1076,7 +1113,7 @@ package body Camera.Lib.Base.Command_Tests is
 -- begin
 --    Log_In (Debug);
 --    Log_Out (Debug);
--- end Test_Zoom_Full;
+-- end Test_Zoom_Tele;
 
    ---------------------------------------------------------------
    procedure Wait (

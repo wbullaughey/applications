@@ -10,7 +10,7 @@ with AUnit.Simple_Test_Cases;
 with AUnit.Test_Results;
 with AUnit.Test_Suites;
 with Camera.Commands;
-with Camera.LIB.ALPTOP;
+--with Camera.LIB.ALPTOP;
 with Camera.Commands.PTZ_Optics;
 with Configuration.Camera.Setup;
 with Configuration.State;
@@ -19,13 +19,13 @@ with Gnoga.GUI.Window;
 
 package Camera.Lib.Unit_Test is
 
-   Failed                        : exception;
+   Failed               : exception;
+
 
    -- use for tests with camera but no web pages
    type Camera_Test_Type (
-      Brand             : Standard.Camera.Lib.Brand_Type) is
-                           abstract new Ada_Lib.Unit_Test.
-                              Test_Cases.Test_Case_Type with record
+      Brand             : Standard.Camera.Lib.Brand_Type
+   ) is abstract new Ada_Lib.Unit_Test.Test_Cases.Test_Case_Type with record
       Camera            : Standard.Camera.Commands.
                            Camera_Class_Access := Null;
       Camera_Address    : Address_Constant_Access := Null;
@@ -37,23 +37,27 @@ package Camera.Lib.Unit_Test is
       Setup_Path        : access constant String := Null;
       State_Path        : access constant String := Null;
 
-      case Brand is
-         when Standard.Camera.Lib.ALPTOP_Camera =>
-            ALPTOP                : aliased Standard.Camera.LIB.ALPTOP.ALPTOP_Type;
-
-         when Standard.Camera.Lib.No_Camera=>
-            Null;
-
-         when Standard.Camera.LIB.PTZ_Optics_Camera =>
-            PTZ_Optics           : aliased Standard.Camera.Commands.
-                                    PTZ_Optics.PTZ_Optics_Type;
-
-      end case;
+--    case Brand is
+--       when Standard.Camera.Lib.ALPTOP_Camera =>
+--          ALPTOP      : aliased Standard.Camera.LIB.ALPTOP.ALPTOP_Type (
+--             Description    => Description'access);
+--
+--       when Standard.Camera.Lib.No_Camera=>
+--          Null;
+--
+--       when Standard.Camera.LIB.PTZ_Optics_Camera =>
+--          PTZ_Optics  : aliased       Description                : Ada_Lib.Strings.String_Constant_Access
+--;
+--
+--    end case;
    end record;
 
    type Camera_Test_Access       is access Camera_Test_Type;
    type Camera_Test_Constant_Access
                                  is access constant Camera_Test_Type;
+
+   procedure Check_Power (
+      Test                       : in     Camera_Test_Type);
 
    procedure Dump (
       Test                       : in     Camera_Test_Type;
@@ -63,10 +67,6 @@ package Camera.Lib.Unit_Test is
    procedure Set_Up (
       Test                       : in out Camera_Test_Type
    ) with Post => Test.Verify_Set_Up;
-
--- procedure Set_Up_Optional_Load (
---    Test                       : in out Camera_Test_Type;
---    Load                       : in     Boolean);
 
    overriding
    procedure Tear_Down (
