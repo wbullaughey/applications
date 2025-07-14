@@ -106,12 +106,15 @@ package body Camera.Lib.Base is
 
       ------------------------------------------------------------
       procedure Failure (
-         Message                 : in     String) is
+         Message        : in     String;
+         From           : in     String := Here) is
       ------------------------------------------------------------
 
+         Text           : constant String := Message & " from " & From;
+
       begin
-         Log_Exception (Debug, Message);
-         raise Failed with Message;
+         Log_Exception (Debug, Text);
+         raise Failed with Text;
       end Failure;
 
       ------------------------------------------------------------
@@ -179,7 +182,7 @@ package body Camera.Lib.Base is
                      end if;
                      exit;
 
-                  when 16#60# => -- Error
+                  when 16#60# .. 16#6F# => -- Error
                      -- read rest of error message
                      Start_Read := Start_Read + Ack_Length;
                      Read_Length := 1;
@@ -189,7 +192,7 @@ package body Camera.Lib.Base is
                         Video.Lib.Dump ("response", Response (Response'first ..
                            End_Read), Natural (Ack_Length));
                      end if;
-                     Log_Here (Debug, "error code" & Response (3)'img);
+                     Log_Here (Debug, "error code " & Hex (Response (3)));
                      case Response (3) is
 
                         when 2 =>      -- bad format
@@ -204,24 +207,27 @@ package body Camera.Lib.Base is
                         when 5 =>
                            Put_Line ("type 5 command canceled");
 
+                        when 16#41# =>
+                           Put_Line ("type 41 command cannot be executed");
+
                         when others =>
-                           Failure ("unexpected error code" &
-                              Response (3)'img);
+                           Failure ("unexpected error code " &
+                              Hex (Response (3)));
 
                      end case;
                      exit;
 
                   when others =>    -- unexpected
-                     Failure ("unexpected resonse" &
-                        Response (Start_Read + 1)'img);
+                     Failure ("unexpected resonse " &
+                        Hex (Response (Start_Read + 1)));
 
                end case;
 
             when others =>          -- unexpected
                Put_Line ("" &
-                  Response (Start_Read)'img);
+                  Hex (Response (Start_Read)));
                Failure ("unexpected command header " &
-                  Response (Start_Read)'img);
+                  Hex (Response (Start_Read)));
          end case;
       end loop;
       Log_Out (Debug);
