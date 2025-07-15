@@ -1,7 +1,0 @@
-[submodule "vendor/github.com/gnoga"]
-	path = vendor/github.com/gnoga
-	url = git@github.com:wbullaughey/gnoga
-[submodule "vendor/github.com/gpr"]
-   path = vendor/github.com/gpr
-   url = git@github.com:wbullaughey/gpr
-
