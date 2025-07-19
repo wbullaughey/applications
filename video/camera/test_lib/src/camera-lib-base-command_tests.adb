@@ -266,6 +266,7 @@ package body Camera.Lib.Base.Command_Tests is
       Camera.Lib.Unit_Test.Camera_Test_Type (Test).Set_Up;
 
       begin
+         Log_Here (Debug or Trace_Set_Up);
          Test.Check_Power;
       exception
          when Fault: others =>
@@ -274,6 +275,7 @@ package body Camera.Lib.Base.Command_Tests is
       end;
 
       begin
+         Log_Here (Debug or Trace_Set_Up);
          Test.Camera.Set_Preset (Test.Camera.Get_Default_Preset);
       exception
          when Fault: Camera.Commands.Timeout =>

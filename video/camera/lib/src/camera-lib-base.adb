@@ -123,12 +123,15 @@ package body Camera.Lib.Base is
 
       ------------------------------------------------------------
       procedure Failure (
-         Message                 : in     String) is
+         Message                 : in     String;
+         From                    : in     String := Here) is
       ------------------------------------------------------------
 
+         Text                    : constant String := Message &
+                                    " from " & From;
       begin
-         Log_Exception (Debug, Message);
-         raise Failed with Message;
+         Log_Exception (Debug, Text);
+         raise Failed with Text;
       end Failure;
 
       ------------------------------------------------------------
