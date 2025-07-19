@@ -1,10 +1,11 @@
+suites
+command: -@l
 camera_aunit
 Adjust_Card Test_Mouse_Move
-Commands Test_Get_Zoom
 Commands Test_Position_Relative
 Commands Test_Set_Absolute
 Commands Test_Set_Preset
-Commands Test_Set_Zoom
+Commands Test_Zoom
 Configured Test_Accept_Configured
 Configured Test_Cancel_Configured
 Configured Test_Create_Configured

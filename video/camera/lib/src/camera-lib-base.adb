@@ -123,12 +123,15 @@ package body Camera.Lib.Base is
 
       ------------------------------------------------------------
       procedure Failure (
-         Message                 : in     String) is
+         Message                 : in     String;
+         From                    : in     String := Here) is
       ------------------------------------------------------------
 
+         Text                    : constant String := Message &
+                                    " from " & From;
       begin
-         Log_Exception (Debug, Message);
-         raise Failed with Message;
+         Log_Exception (Debug, Text);
+         raise Failed with Text;
       end Failure;
 
       ------------------------------------------------------------
@@ -200,8 +203,7 @@ package body Camera.Lib.Base is
 
                      when 16#50# | 16#51# | 16#52#  => -- Completion
                         if not Expect_Response then
-                           Log_Exception (Debug, "unexpected response");
-                           raise Failed with "unexpected response";
+                           Failure ("unexpected response");
                         end if;
                         if Response (End_Read) = 16#FF# then -- end of Ack
                            Log_Here (Debug, "got short completion");
