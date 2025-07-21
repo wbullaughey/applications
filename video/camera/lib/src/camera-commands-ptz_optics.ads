@@ -6,7 +6,13 @@ package Camera.Commands.PTZ_Optics is
 
    Invalid_Command               : exception;
 
+   Minimum_Speed                 : constant := 16#1#;
+   Maximum_Speed                 : constant := 16#18#;
+
    subtype Ack_Type              is Buffer_Type (1 .. 3);
+   subtype Speed_Type            is Property_Type range Minimum_Speed .. Maximum_Speed;
+
+   use type Speed_Type;
 
    type PTZ_Optics_Type(
       Description                : Ada_Lib.Strings.String_Constant_Access
@@ -14,9 +20,11 @@ package Camera.Commands.PTZ_Optics is
       Description) with null record;
 
    Default_Read_Timeout          : constant Ada_Lib.Socket_IO.Timeout_Type := 0.2;
+   Default_Speed                 : constant Speed_Type := (Maximum_Speed -
+                                    Minimum_Speed) /2;
    Default_Write_Timeout         : constant Ada_Lib.Socket_IO.Timeout_Type := 0.2;
 
-   Maximum_Preset                   : constant := 256;   -- standard set to same as preset 0
+   Maximum_Preset                : constant := 256;   -- standard set to same as preset 0
    Port                          : constant := 5678;
    Powerup_Preset                : constant Configuration.Camera.Preset_ID_Type := 0;
 
@@ -51,6 +59,12 @@ private
    function Get_Maximum_Preset (
       Camera                     : in     PTZ_Optics_Type
    ) return Configuration.Camera.Preset_ID_Type;
+
+   overriding
+   function Get_Camera_Speed (
+      Camera                     : in     PTZ_Optics_Type;
+      Which                      : in     Which_Speed_Type := Select_Default_Speed
+   ) return Data_Type;
 
    overriding
    function Get_Timeout (

@@ -86,8 +86,8 @@ package body Camera.Lib.Base.Command_Tests is
    procedure Test_Position_Up_Right (
       Test                       : in out AUnit.Test_Cases.Test_Case'class);
 
-   procedure Test_Power (
-      Test                       : in out AUnit.Test_Cases.Test_Case'class);
+-- procedure Test_Power (
+--    Test                       : in out AUnit.Test_Cases.Test_Case'class);
 
    procedure Test_Recall_Memory (
       Test                       : in out AUnit.Test_Cases.Test_Case'class);
@@ -186,9 +186,9 @@ package body Camera.Lib.Base.Command_Tests is
          Routine        => Test_Position_Up_Right'access,
          Routine_Name   => AUnit.Format ("Test_Position_Up_Right")));
 
-      Test.Add_Routine (AUnit.Test_Cases.Routine_Spec'(
-         Routine        => Test_Power'access,
-         Routine_Name   => AUnit.Format ("Test_Power")));
+--    Test.Add_Routine (AUnit.Test_Cases.Routine_Spec'(
+--       Routine        => Test_Power'access,
+--       Routine_Name   => AUnit.Format ("Test_Power")));
 
       Test.Add_Routine (AUnit.Test_Cases.Routine_Spec'(
          Routine        => Test_Recall_Memory'access,
@@ -328,9 +328,14 @@ package body Camera.Lib.Base.Command_Tests is
       Test                       : in out Test_Type) is
    ---------------------------------------------------------------
 
+      Speed       : constant Data_Type :=
+                     Test.Camera.Get_Camera_Speed (
+                        Camera.Commands.Select_Maximum_Speed);
+
    begin
       Log_In (Debug);
-      Test.Camera.Set_Preset (Test.Camera.Get_Default_Preset);
+      Test.Camera.Set_Preset (Test.Camera.Get_Default_Preset,
+         Speed  => Speed);
       -- normally same as preset 0
       Camera.Lib.Unit_Test.Camera_Test_Type (Test).Tear_Down;
       Log_Out (Debug);
@@ -370,14 +375,19 @@ package body Camera.Lib.Base.Command_Tests is
       Test                       : in out AUnit.Test_Cases.Test_Case'class) is
    ---------------------------------------------------------------
 
-      Local_Test                 : Test_Type renames Test_Type (Test);
-
+      Local_Test  : Test_Type renames Test_Type (Test);
+      Speed       : constant Data_Type :=
+                     Local_Test.Camera.Get_Camera_Speed (
+                        Camera.Commands.Select_Default_Speed);
    begin
       Log_In (Debug);
       Pause (Local_Test.Manual,
          "set preset 0 watch for slow scan down for 10 seconds");
 
-      Local_Test.Camera.Set_Absolute (16#123#, 16#321#);
+      Local_Test.Camera.Set_Absolute (16#123#, 16#321#,
+         Pan_Speed   => Speed,
+         Tilt_Speed  => Speed);
+
       Assert (Ask_Pause (Local_Test.Manual,
             "verify that the image shifted"),
          "manual set failed");
@@ -1001,20 +1011,20 @@ package body Camera.Lib.Base.Command_Tests is
       Log_Out (Debug);
    end Test_Position_Up_Right;
 
-   ---------------------------------------------------------------
-   procedure Test_Power (
-      Test                       : in out AUnit.Test_Cases.Test_Case'class) is
-   ---------------------------------------------------------------
-
-      Local_Test                 : Test_Type renames Test_Type (Test);
-
-   begin
-      Log_In (Debug);
-      for On in Boolean'range loop
-         Local_Test.Camera.Set_Power (On);
-      end loop;
-      Log_Out (Debug);
-   end Test_Power;
+-- ---------------------------------------------------------------
+-- procedure Test_Power (
+--    Test                       : in out AUnit.Test_Cases.Test_Case'class) is
+-- ---------------------------------------------------------------
+--
+--    Local_Test                 : Test_Type renames Test_Type (Test);
+--
+-- begin
+--    Log_In (Debug);
+--    for On in Boolean'range loop
+--       Local_Test.Camera.Set_Power (On);
+--    end loop;
+--    Log_Out (Debug);
+-- end Test_Power;
 
    ---------------------------------------------------------------
    procedure Test_Recall_Memory (

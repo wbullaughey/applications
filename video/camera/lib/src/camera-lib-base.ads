@@ -30,6 +30,7 @@ package Camera.Lib.Base is
       Memory_Reset,
       Power,
       Power_Inquire,
+      Recall_Seed,
       Zoom_Direct,
       Zoom_Inquire,
       Zoom_Stop,

@@ -38,6 +38,13 @@ private
    ) return Index_Type;
 
    overriding
+   function Get_Camera_Speed (
+      Camera   : in     ALPTOP_Type;
+      Which    : in     Standard.Camera.Commands.Which_Speed_Type :=
+                           Standard.Camera.Commands.Select_Default_Speed
+   ) return Data_Type;
+
+   overriding
    function Get_Default_Preset (
       Camera                     : in     ALPTOP_Type
    ) return Configuration.Camera.Preset_ID_Type;

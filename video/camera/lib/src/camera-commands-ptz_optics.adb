@@ -5,7 +5,7 @@ with Hex_IO;
 
 package body Camera.Commands.PTZ_Optics is
 
-   use type Ada.Streams.Stream_Element;
+-- use type Ada.Streams.Stream_Element;
    use type Video.Lib.Index_Type;
 
    Default_Response_Timeout      : constant Duration := 0.5;
@@ -37,6 +37,7 @@ package body Camera.Commands.PTZ_Optics is
       Standard.Camera.Lib.Base.Memory_Reset         => ( 7, ( 16#81#,16#01#,16#04#,16#3F#,16#02#,16#00#,16#FF#, others => 0 ), True, Default_Response_Timeout, False, 0),
       Standard.Camera.Lib.Base.Power                => ( 6, ( 16#81#,16#01#,16#04#,16#00#,16#00#,16#FF#, others => 0 ), False, Default_Response_Timeout, true, 3),
       Standard.Camera.Lib.Base.Power_Inquire        => ( 5, ( 16#81#,16#09#,16#04#,16#00#,16#FF#, others => 0 ), False, Power_Inquire_Timeout, True, 4),
+      Standard.Camera.Lib.Base.Recall_Speed         => ( 7, ( 16#81#,16#01#,16#04#,16#3F#,16#02#,16#02#,16#FF#, others => 0 ), True, Default_Response_Timeout, False, 0),
       Standard.Camera.Lib.Base.Zoom_Direct          => ( 9, ( 16#81#,16#01#,16#04#,16#47#,16#00#,16#00#,16#00#,16#00#,16#FF#, others => 0 ), True, Default_Response_Timeout, False, 0),
       Standard.Camera.Lib.Base.Zoom_Stop            => ( 6, ( 16#81#,16#01#,16#04#,16#07#,16#00#,16#FF#, others => 0 ), True, Default_Response_Timeout, False, 0),
       Standard.Camera.Lib.Base.Zoom_Inquire         => ( 5, ( 16#81#,16#09#,16#04#,16#47#,16#FF#, others => 0 ), False, Default_Response_Timeout, True, 7),
@@ -98,6 +99,24 @@ package body Camera.Commands.PTZ_Optics is
    begin
       return 3;
    end Get_Ack_Length;
+
+   ----------------------------------------------------------------------------
+   overriding
+   function Get_Camera_Speed (
+      Camera            : in     PTZ_Optics_Type;
+      Which             : in     Which_Speed_Type := Select_Default_Speed
+   ) return Data_Type is
+   pragma Unreferenced (Camera); -- only used to select camera type
+   ----------------------------------------------------------------------------
+
+      Speeds            : constant array (Which_Speed_Type) of Speed_Type := (
+                           Select_Minimum_Speed => Minimum_Speed,
+                           Select_Default_Speed => Default_Speed,
+                           Select_Maximum_Speed => Maximum_Speed);
+
+   begin
+      return Speeds (Which);
+   end Get_Camera_Speed;
 
    ----------------------------------------------------------------------------
    overriding

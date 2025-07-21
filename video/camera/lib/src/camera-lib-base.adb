@@ -210,10 +210,6 @@ package body Camera.Lib.Base is
                               end if;
 
                         when 16#50# | 16#51# | 16#52#  => -- Completion
-                           if not Expect_Response then
-                              Failure ("unexpected response " &
-                                 Hex (Response_Subcode));
-                           end if;
                            if Response (End_Read) = 16#FF# then -- end of completion
                               Log_Here (Debug, "got short completion. " &
                                  " expect response " & Expect_Response'img);
@@ -222,6 +218,10 @@ package body Camera.Lib.Base is
                                  exit;
                               end if;
                            else
+                              if not Expect_Response then
+                                 Failure ("unexpected response " &
+                                    Hex (Response_Subcode));
+                              end if;
                               -- read the rest of the completion
                               Start_Read := Start_Read + Ack_Length;
                               Read_Length := Response_Length - Ack_Length;
@@ -236,8 +236,8 @@ package body Camera.Lib.Base is
                                           Response, Natural (Response_Length));
                                     end if;
                                  end if;
+                                 exit;
                               end if;
-                              exit;
 
                            when 16#60# .. 16#6F# => -- Error
                               declare

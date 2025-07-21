@@ -122,12 +122,16 @@ package body Camera.Commands.Unit_Test is
    ---------------------------------------------------------------
    overriding
    procedure Set_Up (
-      Test                       : in out Test_Type) is
+      Test           : in out Test_Type) is
    ---------------------------------------------------------------
 
+      Speed          : constant Data_Type :=
+                        Test.Camera.Get_Camera_Speed (
+                           Select_Maximum_Speed);
    begin
-      Log_In (Debug or Trace_Set_Up);
-      Test.Camera.Set_Preset (Test_Preset);     -- normally same as preset 0
+      Log_In (Debug or Trace_Set_Up, "speed ", Speed'img);
+      Test.Camera.Set_Preset (Test_Preset,
+         Speed => Speed);     -- normally same as preset 0
       Log_Out (Debug or Trace_Set_Up);
 
    exception
@@ -160,9 +164,14 @@ package body Camera.Commands.Unit_Test is
       Test                       : in out Test_Type) is
    ---------------------------------------------------------------
 
+      Speed          : constant Data_Type :=
+                        Test.Camera.Get_Camera_Speed (
+                           Select_Maximum_Speed);
    begin
+      Log_In (Debug or Trace_Set_Up, "speed ", Speed'img);
       Log_In (Debug);
-      Test.Camera.Set_Preset (Test_Preset);     -- normally same as preset 0
+      Test.Camera.Set_Preset (Test_Preset,     -- normally same as preset 0
+         Speed => Speed);
       Log_Out (Debug);
 
    exception

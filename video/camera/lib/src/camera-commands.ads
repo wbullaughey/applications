@@ -26,6 +26,11 @@ package Camera.Commands is
 
    type Camera_Class_Access      is access all Camera_Type'class;
 
+   type Which_Speed_Type         is (
+                                    Select_Minimum_Speed,
+                                    Select_Default_Speed,
+                                    Select_Maximum_Speed);
+
    type Zoom_Mode_Type          is (Minimum, Maximum);
 
    Wait_Until_Finished_Time     : constant := 60.0;
@@ -36,6 +41,11 @@ package Camera.Commands is
       Tilt                       :    out Absolute_Type;
       Stabalize_Time             : in     Ada_Lib.Time.Duration_Type :=
                                              Wait_Until_Finished_Time);
+
+   function Get_Camera_Speed (
+      Camera            : in     Camera_Type;
+      Which             : in     Which_Speed_Type := Select_Default_Speed
+   ) return Data_Type is abstract;
 
    function Get_Power (
       Camera                     : in out Camera_Type
@@ -79,7 +89,14 @@ package Camera.Commands is
    procedure Set_Preset (
       Camera                     : in out Camera_Type;
       Preset_ID                  : in     Configuration.Camera.Preset_ID_Type;
-      Wait_Until_Finished        : in     Boolean := True);
+      Wait_Until_Finished        : in     Boolean := True;
+      Speed                      : in     Property_Type := 1);
+
+   procedure Set_Preset_Speed (
+      Camera                     : in out Camera_Type;
+      Command                    : in    Standard.Camera.Lib.Base.Commands_Type;
+      Options                    : in    Standard.Camera.Lib.Base.Options_Type;
+      Speed                      : in    Property_Type);
 
    procedure Set_Variable_Zoom (
       Camera                     : in out Camera_Type;

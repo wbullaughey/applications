@@ -57,6 +57,20 @@ package body Camera.LIB.ALPTOP is
 
    ----------------------------------------------------------------------------
    overriding
+   function Get_Camera_Speed (
+      Camera   : in     ALPTOP_Type;
+      Which    : in     Standard.Camera.Commands.Which_Speed_Type :=
+                           Standard.Camera.Commands.Select_Default_Speed
+   ) return Data_Type is
+   ----------------------------------------------------------------------------
+
+   begin
+      Not_Implemented;
+      return 0;
+   end Get_Camera_Speed;
+
+   ----------------------------------------------------------------------------
+   overriding
    function Get_Default_Preset (
       Camera                     : in     ALPTOP_Type
    ) return Configuration.Camera.Preset_ID_Type is

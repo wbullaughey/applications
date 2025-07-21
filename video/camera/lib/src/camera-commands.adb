@@ -517,33 +517,47 @@ Pause_On_Flag ("exit Position_Relative", Here, TRue);
 
    ---------------------------------------------------------------
    procedure Set_Preset (
-      Camera                     : in out Camera_Type;
-      Preset_ID                  : in     Configuration.Camera.Preset_ID_Type;
-      Wait_Until_Finished        : in     Boolean := True) is
+      Camera                  : in out Camera_Type;
+      Preset_ID               : in     Configuration.Camera.Preset_ID_Type;
+      Wait_Until_Finished     : in     Boolean := True;
+      Speed                   : in     Property_Type := 1) is  -- 0 => default
    ---------------------------------------------------------------
 
    begin
       Log_In (Debug, "preset id" & Preset_ID'img &
+         " speed " & Speed'img &
          " wait " & Wait_Until_Finished'img);
-      Camera.Process_Command (Standard.Camera.Lib.Base.Memory_Recall,
-         Options     => ( 1 =>
-               (
-                  Data           => Data_Type (Preset_ID),
-                  Start          => 6,
-                  Mode           => Standard.Camera.Lib.Base.Fixed
-               )
-            ));
+      Camera.Set_Preset_Speed (Speed);
 
-      if Wait_Until_Finished then
-         delay Delay_After_Move;
-         declare
-            Pan                  : Absolute_Type;
-            Tilt                 : Absolute_Type;
-         begin
-            Camera.Get_Absolute (Pan, Tilt);
-            Log_Here (Debug, "pan " & Pan'img & " tilt " & Tilt'img);
-         end;
-      end if;
+      declare
+         Configure_Speed      : constant Property_Type := (
+                                 if Speed = 0 then
+                                    Camera.Get_Preset_Speed (
+                                       Select_Default_Speed)
+                                 else
+                                    Speed);
+      begin
+         Log_Here (Debug, "configure speed " & Configure_Speed'img);
+         Camera.Process_Command (Standard.Camera.Lib.Base.Memory_Recall,
+            Options     => ( 1 =>
+                  (
+                     Data           => Configure_Speed,
+                     Start          => 6,
+                     Mode           => Standard.Camera.Lib.Base.Fixed
+                  )
+               ));
+
+         if Wait_Until_Finished then
+            delay Delay_After_Move;
+            declare
+               Pan                  : Absolute_Type;
+               Tilt                 : Absolute_Type;
+            begin
+               Camera.Get_Absolute (Pan, Tilt);
+               Log_Here (Debug, "pan " & Pan'img & " tilt " & Tilt'img);
+            end;
+         end if;
+      end;
       Log_Out (Debug);
 
    exception
@@ -553,6 +567,28 @@ Pause_On_Flag ("exit Position_Relative", Here, TRue);
          raise;
 
    end Set_Preset;
+
+   ----------------------------------------------------------------------------
+   procedure Set_Preset_Speed (
+      Camera                     : in out PTZ_Optics_Type;
+      Command                    : in    Standard.Camera.Lib.Base.Commands_Type;
+      Options                    : in    Standard.Camera.Lib.Base.Options_Type;
+      Speed                      : in    Property_Type) is
+   ----------------------------------------------------------------------------
+
+   begin
+      Log_In (Debug, "speed " & Speed'img);
+      Camera.Process_Command (Command (Mode),
+         Options     => ( 1 =>
+               (
+                  Data           => Speed,
+                  Start          => 6,
+                  Mode           => Standard.Camera.Lib.Base.Fixed
+               )
+            ));
+
+      Log_Out (Debug);
+   end Set_Preset_Speed;
 
    ---------------------------------------------------------------
    procedure Set_Variable_Zoom (
