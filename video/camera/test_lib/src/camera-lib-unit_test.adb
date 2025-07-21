@@ -61,24 +61,21 @@ package body Camera.Lib.Unit_Test is
    end Add_Test;
 
    ----------------------------------------------------------------------------
-   procedure Check_Power (
+   procedure Check_Preset (
       Test                       : in     Camera_Test_Type) is
    ----------------------------------------------------------------------------
 
    begin
-      Log_In (Debug);
-      declare
-         Power_On                : constant Boolean := Test.Camera.Get_Power;
+      Log_In (Debug, "set preset");
+      Test.Camera.Set_Preset (Test.Camera.Get_Default_Preset);
+      Log_Out (Debug);
 
-      begin
-         Log_Here (Debug, "power on " & Power_On'img);
+   exception
+      when Fault: others =>
+         Log_Exception (Debug, Fault, "check preset");
+         raise;
 
-         if not Power_On then
-            Test.Camera.Set_Power (True);
-         end if;
-         Log_Out (Debug);
-      end;
-   end Check_Power;
+   end Check_Preset;
 
    ----------------------------------------------------------------------------
    procedure Dump (

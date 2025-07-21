@@ -265,14 +265,14 @@ package body Camera.Lib.Base.Command_Tests is
       Connection_Data.Initialize;
       Camera.Lib.Unit_Test.Camera_Test_Type (Test).Set_Up;
 
-      begin
-         Log_Here (Debug or Trace_Set_Up);
-         Test.Check_Power;
-      exception
-         when Fault: others =>
-            Trace_Message_Exception (Debug or Trace_Set_Up, Fault,
-               "ignore exception in Set_Up for Set_Power");
-      end;
+--    begin
+--       Log_Here (Debug or Trace_Set_Up);
+--       Test.Check_Preset;
+--    exception
+--       when Fault: others =>
+--          Trace_Message_Exception (Debug or Trace_Set_Up, Fault,
+--             "ignore exception in Set_Up for Set_Power");
+--    end;
 
       begin
          Log_Here (Debug or Trace_Set_Up);

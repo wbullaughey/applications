@@ -56,7 +56,7 @@ package Camera.Lib.Unit_Test is
    type Camera_Test_Constant_Access
                                  is access constant Camera_Test_Type;
 
-   procedure Check_Power (
+   procedure Check_Preset (
       Test                       : in     Camera_Test_Type);
 
    procedure Dump (
