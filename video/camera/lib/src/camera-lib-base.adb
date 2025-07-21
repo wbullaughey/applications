@@ -175,7 +175,7 @@ package body Camera.Lib.Base is
                Response_Code  : constant Data_Type := Response (Start_Read);
 
             begin
-               Log_Here (Debug, "Response_Code " & Response_Code'img);
+               Log_Here (Debug, "Response_Code " & Hex(Response_Code));
                case Response_Code and 16#F0# is
 
                   when 16#90# =>    -- ack, completion or error
@@ -211,7 +211,8 @@ package body Camera.Lib.Base is
 
                         when 16#50# | 16#51# | 16#52#  => -- Completion
                            if not Expect_Response then
-                              Failure ("unexpected response");
+                              Failure ("unexpected response " &
+                                 Hex (Response_Subcode));
                            end if;
                            if Response (End_Read) = 16#FF# then -- end of completion
                               Log_Here (Debug, "got short completion. " &
@@ -253,7 +254,7 @@ package body Camera.Lib.Base is
                                     Video.Lib.Dump ("response", Response (Response'first ..
                                        End_Read), Natural (Ack_Length + 1));
                                  end if;
-                                 Log_Here (Debug, "error code" & Response (3)'img);
+                                 Log_Here (Debug, "error code" & Hex (Response (3)));
                                  case Error_Code is
 
                                     when 2 =>      -- bad format
@@ -273,7 +274,7 @@ package body Camera.Lib.Base is
 
                                     when others =>
                                        Failure ("unexpected error code " &
-                                          Ada_Lib.Socket_IO.Hex (Error_Code));
+                                          Hex (Error_Code));
 
                                  end case;
                                  exit;
@@ -281,16 +282,15 @@ package body Camera.Lib.Base is
 
                            when others =>    -- unexpected
                               Failure ("unexpected resonse" &
-                                 Ada_Lib.Socket_IO.Hex (Response_Subcode));
+                                 Hex (Response_Subcode));
 
                         end case;
                      end;
 
                   when others =>          -- unexpected
-                     Put_Line ("" &
-                        Response_Code'img);
+                     Put_Line ("" & Hex (Response_Code));
                      Failure ("unexpected command header " &
-                        Ada_Lib.Socket_IO.Hex (Response_Code));
+                        Hex (Response_Code));
                end case;
             end;
          end;

@@ -31,6 +31,11 @@ package Camera is
       From                       : in     String := Ada_Lib.Trace.Here
    ) renames Ada_Lib.Socket_IO.Stream_IO.Dump;
 
+   function Hex (
+      Data                       : in     Data_Type;
+      Width                      : in   Positive := Data_Type'size / 4
+   ) return String renames Ada_Lib.Socket_IO.Hex;
+
    function Image (
       Value                      : in     Data_Type
    ) return String renames Video.Lib.Image;
