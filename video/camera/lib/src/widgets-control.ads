@@ -1,5 +1,6 @@
 --with Ada_Lib.Socket_IO;
 with Ada_Lib.Strings.Unlimited;
+with Camera;
 with Configuration.Camera; use Configuration.Camera;
 with Gnoga.Gui.Base;
 with Gnoga.Gui.Element.Common;
@@ -47,7 +48,7 @@ package Widgets.Control is
 
             when others =>
                Image                   : Gnoga.Gui.Element.Common.IMG_Type;
-               Preset                  : Preset_ID_Type;
+               Preset                  : Camera.Preset_ID_Type;
                Preset_Text             : Gnoga.Gui.Element.Common.P_Type;
                Image_Path              : Ada_Lib.Strings.Unlimited.String_Type;
 

@@ -73,7 +73,7 @@ package body Camera.LIB.ALPTOP is
    overriding
    function Get_Default_Preset (
       Camera                     : in     ALPTOP_Type
-   ) return Configuration.Camera.Preset_ID_Type is
+   ) return Preset_ID_Type is
    ----------------------------------------------------------------------------
 
    begin
@@ -84,7 +84,7 @@ package body Camera.LIB.ALPTOP is
    overriding
    function Get_Maximum_Preset (
       Camera                     : in     ALPTOP_Type
-   ) return Configuration.Camera.Preset_ID_Type is
+   ) return Preset_ID_Type is
    ----------------------------------------------------------------------------
 
    begin

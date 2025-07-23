@@ -161,7 +161,7 @@ package body Configuration.Camera.State is
    ----------------------------------------------------------------
    function Get_Number_Presets (
       State                      : in     State_Type
-   ) return Preset_ID_Type is
+   ) return Standard.Camera.Preset_ID_Type is
    ----------------------------------------------------------------
 
    begin
@@ -266,7 +266,7 @@ package body Configuration.Camera.State is
       State.Number_Configurations := Configuration_ID_Type (
          Config.Get_Integer ("configurations"));
       State.Last_Preset :=
-         Preset_ID_Type (Config.Get_Integer ("last preset")); -- presets start at 0
+         Standard.Camera.Preset_ID_Type (Config.Get_Integer ("last preset")); -- presets start at 0
       State.Number_Rows := Row_Type (Config.Get_Integer ("grid_rows"));
 
       Log_Here (Debug,

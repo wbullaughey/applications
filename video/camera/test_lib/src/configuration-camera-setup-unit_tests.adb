@@ -15,6 +15,8 @@ with Camera.Lib.Unit_Test;
 
 package body Configuration.Camera.Setup.Unit_Tests is
 
+   use type Standard.Camera.Preset_ID_Type;
+
    type Configuration_Tests_Type is new Standard.Camera.Lib.
                                     Unit_Test.Camera_Test_Type with
                                        null record;
@@ -286,8 +288,8 @@ package body Configuration.Camera.Setup.Unit_Tests is
 --                                     Column_Type range 1 .. Expected_Number_Columns) of
 --                                  Ada_Lib.Strings.String_Access;
 
-      type Expected_Preset_Type  is array (Preset_ID_Type range
-                                    Preset_ID_Type'first ..
+      type Expected_Preset_Type  is array (Standard.Camera.Preset_ID_Type range
+                                    Standard.Camera.Preset_ID_Type'first ..
                                     Expected_Last_Presets) of Preset_Type;
 
       Expected_Prsets            : constant Expected_Preset_Type := (
@@ -312,7 +314,7 @@ package body Configuration.Camera.Setup.Unit_Tests is
                                           Column      => 2,
                                           Row         => 1,
                                           Preset_ID   => 0),
-                                       others => Null_Preset));
+                                       others => Configuration.Camera.Get_Preset_Not_Set));
       Number_Configurations      : constant Configuration_ID_Type :=
                                     State.Number_Configurations;
       Expected_Configurations    : constant Configurations_Type (
@@ -347,7 +349,7 @@ package body Configuration.Camera.Setup.Unit_Tests is
       declare
          Number_Columns          : constant Column_Type :=
                                     State.Number_Columns;
-         Last_Preset             : constant Preset_ID_Type :=
+         Last_Preset             : constant Standard.Camera.Preset_ID_Type :=
                                     State.Last_Preset;
          Number_Rows             : constant Row_Type := State.Number_Rows;
 
@@ -409,7 +411,7 @@ package body Configuration.Camera.Setup.Unit_Tests is
                                  : Preset_Type renames
                                     Expected_Prsets (Preset_ID);
                Row_Column_Preset_Id
-                                 : constant Preset_ID_Type :=
+                                 : constant Standard.Camera.Preset_ID_Type :=
                                     Local_Test.Setup.Get_Preset_ID (
                                        Expected_Preset_Value.Row,
                                        Expected_Preset_Value.Column);

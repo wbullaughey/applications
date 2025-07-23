@@ -81,7 +81,7 @@ package Camera.Commands is
    -- sets camera to a preset
    procedure Set_Preset (
       Camera                     : in out Camera_Type;
-      Preset_ID                  : in     Property_Type;
+      Preset_ID                  : in     Preset_ID_Type;
       Wait_Until_Finished        : in     Boolean := True;
       Speed                      : in     Property_Type := 0);  -- 0 => default
 

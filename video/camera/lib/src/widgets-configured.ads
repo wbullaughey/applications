@@ -1,6 +1,7 @@
 --with Ada_Lib.GNOGA;
 with Ada_Lib.Strings.Unlimited;
 with ADA_LIB.Trace;
+with Camera;
 --with Configuration.Camera.State;
 with GNOGA_Ada_Lib;
 with Gnoga.Gui.Base;
@@ -71,8 +72,7 @@ package Widgets.Configured is
                Label             : Gnoga.Gui.Element.Form.Text_Type;
 
             when Preset_Field =>
-               Preset_ID         : Configuration.Camera.Preset_ID_Type :=
-                                     Configuration.Camera.Preset_Not_Set;
+               Preset_ID         : Camera.Preset_ID_Type;
                Preset_ID_Field   : Gnoga.Gui.Element.Form.Number_Type;
                Preset_Set        : Boolean := False;
 
@@ -94,7 +94,7 @@ package Widgets.Configured is
                                  is new Generic_Cell_Package.
                                     Update_Parameter_Type with record
 --       Label                   : Ada_Lib.Strings.Unlimited.String_Type;
-         Preset_ID               : Configuration.Camera.Preset_ID_Type;
+         Preset_ID               : Camera.Preset_ID_Type;
       end record;
 
       procedure Column_Package_Update (
@@ -241,7 +241,7 @@ package Widgets.Configured is
 --    Configured_Card            : in     Configured_Card_Type;
 --    Row_Index                  : in     Row_Index_Type;
 --    Configuration_ID           : in     Configuration.Camera.Configuration_ID_Type;
---    Preset_ID                  : in     Configuration.Camera.Preset_ID_Type;
+--    Preset_ID                  : in     Camera.Preset_ID_Type;
 --    Label                      : in     String;
 --    Control_Column             : in     Configuration.Camera.Column_Type;
 --    Control_Row                : in     Configuration.Camera.Row_Type);

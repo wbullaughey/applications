@@ -1,6 +1,7 @@
 --with Ada_Lib.GNOGA;
 with ADA_LIB.Strings.Unlimited;
 with Ada_Lib.Trace;
+with Camera;
 with Configuration.State;
 with GNOGA_Ada_Lib;
 
@@ -16,7 +17,7 @@ package Configuration.Camera.State is
       CSS_Path                   : ADA_LIB.Strings.Unlimited.String_Type;
       Default_Speed              : Speed_Type;
       Images                     : Images_Access := Null;
-      Last_Preset                : Preset_ID_Type;
+      Last_Preset                : Standard.Camera.Preset_ID_Type;
       Number_Columns             : Column_Type;
       Number_Configurations      : Configuration_ID_Type;
       Number_Rows                : Row_Type;
@@ -61,7 +62,7 @@ package Configuration.Camera.State is
 
    function Get_Number_Presets (
       State                      : in     State_Type
-   ) return Preset_ID_Type;
+   ) return Standard.Camera.Preset_ID_Type;
 
    function Get_Number_Rows (
       State                      : in     State_Type

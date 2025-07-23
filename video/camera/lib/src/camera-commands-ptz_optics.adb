@@ -8,9 +8,11 @@ package body Camera.Commands.PTZ_Optics is
 -- use type Ada.Streams.Stream_Element;
    use type Video.Lib.Index_Type;
 
+   Default_Preset                : constant := 0;
    Default_Response_Timeout      : constant Duration := 0.6;
    Position_Timeout              : constant Duration := 60.0;
    Power_Inquire_Timeout         : constant Duration := 120.0;
+   Preset_Not_Set                : constant := 255;
    Commands                      : constant Array (Standard.Camera.Lib.Base.
                                     Commands_Type) of Standard.Camera.Lib.Base.
                                        Command_Type := (
@@ -122,7 +124,7 @@ package body Camera.Commands.PTZ_Optics is
    overriding
    function Get_Default_Preset (
       Camera                     : in     PTZ_Optics_Type
-   ) return Configuration.Camera.Preset_ID_Type is
+   ) return Preset_ID_Type is
    ----------------------------------------------------------------------------
 
    begin
@@ -133,7 +135,7 @@ package body Camera.Commands.PTZ_Optics is
    overriding
    function Get_Maximum_Preset (
       Camera                     : in     PTZ_Optics_Type
-   ) return Configuration.Camera.Preset_ID_Type is
+   ) return Preset_ID_Type is
    ----------------------------------------------------------------------------
 
    begin

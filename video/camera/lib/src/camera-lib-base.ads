@@ -1,14 +1,15 @@
 with Ada_Lib.Socket_IO.Client;
 with Ada_Lib.Strings;
-with Configuration.Camera;
+--with Configuration.Camera;
 with GNAT.Sockets;
+with Video.Lib;
 
 package Camera.Lib.Base is
 
    Failed                        : exception;
    Timed_Out                     : exception;
 
-   use type GNAT.Sockets.Port_Type;
+   use type Video.Lib.Port_Type;
 
    type Commands_Type is (
       Auto_Focus,
@@ -86,7 +87,7 @@ package Camera.Lib.Base is
 
 -- procedure Cell_Preset (
 --    Camera                     : in out Base_Camera_Type;
---    Preset                     : in     Camera_Preset_Type) is abstract;
+--    Preset                     : in     Preset_ID_Type) is abstract;
 
    overriding
    procedure Close (
@@ -105,11 +106,11 @@ package Camera.Lib.Base is
 
    function Get_Default_Preset (
       Camera                     : in     Base_Camera_Type
-   ) return Configuration.Camera.Preset_ID_Type is abstract;
+   ) return Preset_ID_Type is abstract;
 
    function Get_Maximum_Preset (
       Camera                     : in     Base_Camera_Type
-   ) return Configuration.Camera.Preset_ID_Type is abstract;
+   ) return Preset_ID_Type is abstract;
 
    procedure Get_Response (
       Camera                     : in out Base_Camera_Type;
@@ -128,20 +129,20 @@ package Camera.Lib.Base is
    procedure Host_Open (
       Camera                     :    out Base_Camera_Type;
       Host_Address               : in     String;
-      Port                       : in     GNAT.Sockets.Port_Type);
+      Port                       : in     Video.Lib.Port_Type);
 
    overriding
    procedure IP_Open (
       Camera                     :    out Base_Camera_Type;
       IP_Address                 : in     GNAT.Sockets.Inet_Addr_V4_Type;
-      Port                       : in     GNAT.Sockets.Port_Type
+      Port                       : in     Video.Lib.Port_Type
    ) with Pre => Port /= 0;
 
    overriding
    procedure Open (
       Camera                     :    out Base_Camera_Type;
       Address                    : in     Ada_Lib.Socket_IO.Address_Type;
-      Port                       : in     Ada_Lib.Socket_IO.Port_Type);
+      Port                       : in     Video.Lib.Port_Type);
 
    procedure Send_Command (
       Camera                     : in out Base_Camera_Type;
@@ -183,7 +184,7 @@ package Camera.Lib.Base is
    procedure URL_Open (
       Camera                     :    out Base_Camera_Type;
       URL                        : in     String;
-      Port                       : in     Ada_Lib.Socket_IO.Port_Type);
+      Port                       : in     Video.Lib.Port_Type);
 
    procedure Write (
       Camera                     :    out Base_Camera_Type;

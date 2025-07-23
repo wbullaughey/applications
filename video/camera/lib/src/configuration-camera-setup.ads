@@ -1,6 +1,8 @@
 with Ada_Lib.Strings.Unlimited;
 with Ada_Lib.Trace;
+with Camera;
 with Configuration.Camera.State;
+with Video.Lib;
 
 package Configuration.Camera.Setup is
 
@@ -9,7 +11,7 @@ package Configuration.Camera.Setup is
    type Configuration_Type       is new Root_State_Type with record
       Configuration_ID           : Configuration_ID_Type;
       Label                      : Ada_Lib.Strings.Unlimited.String_Type;
-      Preset_ID                  : Preset_ID_Type := Preset_Not_Set;
+      Preset_ID                  : Standard.Camera.Preset_ID_Type;
    end record;
 
    procedure Dump (
@@ -18,7 +20,7 @@ package Configuration.Camera.Setup is
 
    type Preset_Type              is new Root_State_Type with record
       Column                     : Column_Type := Column_Not_Set;
-      Preset_ID                  : Preset_ID_Type := Preset_Not_Set;
+      Preset_ID                  : Standard.Camera.Preset_ID_Type;
       Row                        : Row_Type := Row_Not_Set;
    end record;
 
@@ -39,7 +41,7 @@ package Configuration.Camera.Setup is
 
    type Configurations_Access    is access Configurations_Type;
 
-   type Presets_Type             is array (Preset_ID_Type range <>)
+   type Presets_Type             is array (Video.Lib.Preset_Range_Type range <>)
                                     of Preset_Type;
 
    type Presets_Access           is access Presets_Type;
@@ -69,7 +71,7 @@ package Configuration.Camera.Setup is
 
    function Get_Preset (
       Setup                      : in     Setup_Type;
-      Preset_Id                  : in     Preset_ID_Type
+      Preset_Id                  : in     Standard.Camera.Preset_ID_Type
    ) return Preset_Type'class
    with Pre => Setup.Is_Loaded;
 
@@ -77,12 +79,12 @@ package Configuration.Camera.Setup is
       Setup                      : in     Setup_Type;
       Row                        : in     Row_Type;
       Column                     : in     Column_Type
-   ) return Preset_ID_Type;
+   ) return Standard.Camera.Preset_ID_Type;
 
    function Get_Preset_ID (
       Setup                      : in     Setup_Type;
       Configuration_Id           : in     Configuration_ID_Type
-   ) return Preset_ID_Type;
+   ) return Standard.Camera.Preset_ID_Type;
 
    function Has_Configuration (
       Setup                      : in     Setup_Type;
@@ -92,7 +94,7 @@ package Configuration.Camera.Setup is
 
    function Has_Preset (
       Setup                      : in     Setup_Type;
-      Preset_Id                  : in     Preset_ID_Type
+      Preset_Id                  : in     Standard.Camera.Preset_ID_Type
    ) return Boolean
    with Pre => Setup.Is_Loaded;
 
@@ -122,18 +124,18 @@ package Configuration.Camera.Setup is
    function Configuration_Preset (
       Setup                      : in     Setup_Type;
       Configuration_ID           : in     Configuration_ID_Type
-   ) return Preset_ID_Type
+   ) return Standard.Camera.Preset_ID_Type
    with Pre => Setup.Has_Configuration (Configuration_ID);
 
    function Preset_Column (
       Setup                      : in     Setup_Type;
-      Preset                     : in     Preset_ID_Type
+      Preset                     : in     Standard.Camera.Preset_ID_Type
    ) return Column_Type
    with Pre => Setup.Has_Preset (Preset);
 
    function Preset_Row (
       Setup                      : in     Setup_Type;
-      Preset                     : in     Preset_ID_Type
+      Preset                     : in     Standard.Camera.Preset_ID_Type
    ) return Row_Type
    with Pre => Setup.Is_Loaded;
 
@@ -156,11 +158,11 @@ package Configuration.Camera.Setup is
    procedure Update_Configuration (
       Setup                      : in out Setup_Type;
       Configuration_ID           : in     Configuration_ID_Type;
-      Preset_ID                  : in     Preset_ID_Type);
+      Preset_ID                  : in     Standard.Camera.Preset_ID_Type);
 
    procedure Update_Preset (
       Setup                      : in out Setup_Type;
-      Preset_ID                  : in     Preset_ID_Type;
+      Preset_ID                  : in     Standard.Camera.Preset_ID_Type;
       Row                        : in     Row_Type;
       Column                     : in     Column_Type);
 
@@ -176,13 +178,13 @@ package Configuration.Camera.Setup is
                                     Initial_Root_State with
       Configuration_ID  => Configuration_Not_Set,
       Label             => Ada_Lib.Strings.Unlimited.Null_String,
-      Preset_ID         => Preset_Not_Set);
+      Preset_ID         => Video.Lib.Null_Preset);
 
-   Null_Preset                      : constant Preset_Type := (
-                                    Initial_Root_State with
-      Column            => Column_Not_Set,
-      Preset_ID         => Preset_Not_Set,
-      Row               => Row_Not_Set);
+-- Null_Preset                      : constant Preset_Type := (
+--                                  Initial_Root_State with
+--    Column            => Column_Not_Set,
+--    Preset_ID         => Preset_Not_Set,
+--    Row               => Row_Not_Set);
 
 
 end Configuration.Camera.Setup;

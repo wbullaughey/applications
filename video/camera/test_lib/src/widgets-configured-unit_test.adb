@@ -23,7 +23,7 @@ with Main;
 package body Widgets.Configured.Unit_Test is
 
 -- use type Configuration_ID_Type;
--- use type Preset_ID_Type;
+   use type Camera.Preset_ID_Type;
 -- use type Gnoga.Gui.Plugin.Message_Boxes.Message_Box_Result;
    use type Gnoga.Gui.View.Pointer_To_View_Base_Class;
 
@@ -67,12 +67,22 @@ package body Widgets.Configured.Unit_Test is
    procedure Update_Preset_Field (
       Setup                      : in     Configuration.Camera.Setup.Setup_Type;
       Cell                       : in     Preset_Package.Cell_Class_Access;
-      Value                      : in     Preset_ID_Type);
+      Value                      : in     Camera.Preset_ID_Type);
 
    generic
       type Field_Type            is range <>;
 
-   procedure Check_Field (
+   procedure Check_Integer (
+      Expected_Value             : in     Field_Type;
+      Value                      : in     String;
+      Field                      : in     String;
+      Check_From                 : in     String;
+      From                       : in     String := Here);
+
+   generic
+      type Field_Type            is mod <>;
+
+   procedure Check_Modular (
       Expected_Value             : in     Field_Type;
       Value                      : in     String;
       Field                      : in     String;
@@ -89,7 +99,7 @@ package body Widgets.Configured.Unit_Test is
          Expected_Row               : in     Row_Type;
          Expected_Label             : in     String;
          Expected_Image             : in     String;
-         Expected_Preset_ID         : in     Preset_ID_Type;
+         Expected_Preset_ID         : in     Camera.Preset_ID_Type;
          From                       : in     String := Here);
       type Coordinate_Type is range <>;
       Field                      : Preset_Column_Index_Type;
@@ -113,7 +123,7 @@ package body Widgets.Configured.Unit_Test is
       Expected_Row               : in     Row_Type;
       Expected_Label             : in     String;
       Expected_Image             : in     String;
-      Expected_Preset_ID         : in     Preset_ID_Type;
+      Expected_Preset_ID         : in     Camera.Preset_ID_Type;
       From                       : in     String := Here);
 
    procedure Column_Fire (
@@ -169,7 +179,7 @@ package body Widgets.Configured.Unit_Test is
                                      Preset_Package.Cell_Class_Access (
                                         Configured_Card.Get_Cell (Field,
                                           Modified_Configuration_ID));
-            Original_Preset_ID   : Preset_ID_Type renames
+            Original_Preset_ID   : Camera.Preset_ID_Type renames
                                     Original_Configuration.Preset_ID;
             Original_Preset      : constant Preset_Type'class :=
                                     Local_Test.Setup.Get_Preset (Original_Preset_ID);
@@ -214,7 +224,7 @@ package body Widgets.Configured.Unit_Test is
                                        Row_Type'first  -- should not happen
                                  ),
                Expected_Preset_ID
-                              => Preset_Not_Set,
+                              => Connection_Data.Camera.Get_Preset_Not_Set,
                Row_Index      => Row_Index_Type (
                                                 Modified_Configuration_ID));
          end;   -- test seting a coordinate that is not used in a preset
@@ -250,10 +260,10 @@ package body Widgets.Configured.Unit_Test is
          Expected_Row               : in     Row_Type;
          Expected_Label             : in     String;
          Expected_Image             : in     String;
-         Expected_Preset_ID         : in     Preset_ID_Type;
+         Expected_Preset_ID         : in     Camera.Preset_ID_Type;
          From                       : in     String := Here);
       type Coordinate_Type is range <>;
-      Expected_Preset_ID         : Preset_ID_Type;
+      Expected_Preset_ID         : Camera.Preset_ID_Type;
       Field                      : Preset_Column_Index_Type;
       with procedure Fire (
          Cell                    : in     Preset_Package.Cell_Class_Access);
@@ -307,7 +317,7 @@ package body Widgets.Configured.Unit_Test is
                                      Preset_Package.Cell_Class_Access (
                                         Configured_Card.Get_Cell (Field,
                                            Modified_Configuration_ID));
-            Original_Preset_ID   : Preset_ID_Type renames
+            Original_Preset_ID   : Camera.Preset_ID_Type renames
                                     Original_Configuration.Preset_ID;
             Original_Preset      : constant Preset_Type'class :=
                                     Local_Test.Setup.Get_Preset (Original_Preset_ID);
@@ -394,7 +404,7 @@ package body Widgets.Configured.Unit_Test is
       Update_Field                        => Update_Row_Field);
 
    ---------------------------------------------------------------
-   procedure Check_Field (
+   procedure Check_Integer (
       Expected_Value             : in     Field_Type;
       Value                      : in     String;
       Field                      : in     String;
@@ -419,12 +429,40 @@ package body Widgets.Configured.Unit_Test is
          Quote (" got", Value) & " (" & Field_Value'img & ")" &
          " expected" & Expected_Value'img & " check from " & Check_From &
          " from " & From);
-   end Check_Field;
+   end Check_Integer;
+
+   ---------------------------------------------------------------
+   procedure Check_Modular (
+      Expected_Value             : in     Field_Type;
+      Value                      : in     String;
+      Field                      : in     String;
+      Check_From                 : in     String;
+      From                       : in     String := Here) is
    ---------------------------------------------------------------
 
-   procedure Check_Column is new Check_Field (Column_Type);
-   procedure Check_Preset is new Check_Field (Preset_ID_Type);
-   procedure Check_Row is new Check_Field (Row_Type);
+      Field_Value                : constant Field_Type :=
+                                    (if Value'length = 0 then
+                                       Field_Type'last
+                                    else
+                                       Field_Type'value (Value));
+
+   begin
+      Log_Here (Debug, "expected value " & Expected_Value'img &
+         " field_Value" & Field_Value'img &
+         Quote (" value", Value) & Quote (" field", Field) &
+         " from " & From);
+
+      Assert (Expected_Value = Field_Value,
+         "Invalid value for " & Field &
+         Quote (" got", Value) & " (" & Field_Value'img & ")" &
+         " expected" & Expected_Value'img & " check from " & Check_From &
+         " from " & From);
+   end Check_Modular;
+   ---------------------------------------------------------------
+
+   procedure Check_Column is new Check_Integer (Column_Type);
+   procedure Check_Preset is new Check_Modular (Camera.Preset_ID_Type);
+   procedure Check_Row    is new Check_Integer (Row_Type);
 
    type Test_Case_Type           is (Accept_Form, Cancel_Form, Not_Set,
                                     Update_Configuration, Update_Label);
@@ -523,7 +561,7 @@ package body Widgets.Configured.Unit_Test is
       Expected_Row               : in     Row_Type;
       Expected_Label             : in     String;
       Expected_Image             : in     String;
-      Expected_Preset_ID         : in     Preset_ID_Type;
+      Expected_Preset_ID         : in     Camera.Preset_ID_Type;
       From                       : in     String := Here) is
    ---------------------------------------------------------------
 
@@ -899,7 +937,7 @@ package body Widgets.Configured.Unit_Test is
                Configuration     : Configuration_Type
                                     renames Global_Camera_Setup.Configurations (
                                        Configuration_Index);
-               Expected_Preset_ID: constant Preset_ID_Type :=
+               Expected_Preset_ID: constant Camera.Preset_ID_Type :=
                                     Local_Test.Setup.Get_Preset_ID (
                                        Configuration_Index);
                Expected_Label : Ada_Lib.Strings.Unlimited.String_Type renames
@@ -1109,7 +1147,7 @@ package body Widgets.Configured.Unit_Test is
                                      Preset_Package.Cell_Class_Access (
                                         Configured_Card.Get_Cell (Preset_Field,
                                           Modified_Configuration_ID));
-            Original_Preset_ID   : Preset_ID_Type renames
+            Original_Preset_ID   : Camera.Preset_ID_Type renames
                                     Original_Configuration.Preset_ID;
             Original_Preset      : constant Preset_Type'class :=
                                     Local_Test.Setup.Get_Preset (Original_Preset_ID);
@@ -1139,9 +1177,9 @@ package body Widgets.Configured.Unit_Test is
                Expected_Label => Original_Configuration.Label.Coerce,
                Expected_Row   => Original_Preset.Row,
                Expected_Preset_ID
-                              => Column_Not_Set,
-               Row_Index      => Row_Index_Type (
-                                                Modified_Configuration_ID));
+                  => Connection_Data.Camera.Get_Preset_Not_Set,
+               Row_Index
+                  => Row_Index_Type (Modified_Configuration_ID));
          end;   -- test seting a preset that is not used in a preset
 
       Log_Out (Debug);
@@ -1263,7 +1301,7 @@ package body Widgets.Configured.Unit_Test is
                                      Preset_Package.Cell_Class_Access (
                                         Configured_Card.Get_Cell (Preset_Field,
                                            Modified_Configuration_ID));
---          Original_Preset_ID   : Preset_ID_Type renames
+--          Original_Preset_ID   : Camera.Preset_ID_Type renames
 --                                  Original_Configuration.Preset_ID;
 --          Original_Preset      : constant Preset_Type :=
 --                                  Local_Test.Setup.Get_Preset (Original_Preset_ID);
@@ -1312,7 +1350,7 @@ package body Widgets.Configured.Unit_Test is
    procedure Update_Preset_Field (
       Setup                      : in     Configuration.Camera.Setup.Setup_Type;
       Cell                       : in     Preset_Package.Cell_Class_Access;
-      Value                      : in     Preset_ID_Type) is
+      Value                      : in     Camera.Preset_ID_Type) is
    ----------------------------------------------------------------
 
    begin

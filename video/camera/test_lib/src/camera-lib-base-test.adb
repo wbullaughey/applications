@@ -48,7 +48,7 @@ package body Camera.Lib.Base.Test is
 -- procedure Open (
 --    Camera                     : in
 --                                           General_Camera_Class_Access;
---    Port                       : in     GNAT.Sockets.Port_Type);
+--    Port                       : in     Port_Type);
 
    procedure Port_Scan(
       Test                       : in out AUnit.Test_Cases.Test_Case'class);
@@ -77,7 +77,7 @@ package body Camera.Lib.Base.Test is
 -- ALPTOP_IP_Address              : constant GNAT.Sockets.Inet_Addr_V4_Type :=
 --                                  (192, 168, 1, 240);
    Camera_Description            : aliased constant String := "test camera";
--- Port                          : constant GNAT.Sockets.Port_Type := 80;
+-- Port                          : constant Port_Type := 80;
 -- PTZ_Optics_Local_IP_Address   : GNAT.Sockets.Inet_Addr_Type;
 -- PTZ_Optics_Local_IP_Address   : constant GNAT.Sockets.Inet_Addr_V4_Type :=
 --                                  (192, 168, 1, 201);
@@ -104,7 +104,7 @@ package body Camera.Lib.Base.Test is
 -- procedure Open (
 --    Camera                     : in
 --                                           General_Camera_Class_Access;
---    Port                       : in     GNAT.Sockets.Port_Type) is
+--    Port                       : in     Port_Type) is
 -- ---------------------------------------------------------------
 --
 -- begin
@@ -135,8 +135,8 @@ package body Camera.Lib.Base.Test is
 --                                  Unit_Test_Program_Options_Type'class
 --                                     renames Standard.Camera.Lib.Unit_Test.
 --                                        Options.all;
-      First_Port                 : constant GNAT.Sockets.Port_Type := 1;
-      Last_Port                  : constant GNAT.Sockets.Port_Type := 9999;
+      First_Port                 : constant Port_Type := 1;
+      Last_Port                  : constant Port_Type := 9999;
       Local_Test                 : Test_Type renames Test_Type (Test);
 
    begin
@@ -167,7 +167,7 @@ package body Camera.Lib.Base.Test is
       Test                       : in out AUnit.Test_Cases.Test_Case'class) is
    ---------------------------------------------------------------
 
-      type Ports_Type            is array (Positive range <>) of GNAT.Sockets.Port_Type;
+      type Ports_Type            is array (Positive range <>) of Port_Type;
       type Ports_Access          is access constant Ports_Type;
 
 --    Options                    : Standard.Camera.Lib.Unit_Test.
@@ -178,7 +178,7 @@ package body Camera.Lib.Base.Test is
       ALPTOP_Ports                : aliased constant Ports_Type := (
                                        554, 1935
                                     );
-      Bad_Port                   : GNAT.Sockets.Port_Type := 0;
+      Bad_Port                   : Port_Type := 0;
       PTZ_Optics_Ports           : aliased constant Ports_Type := (
                                        1 => 5678
                                     );
@@ -207,7 +207,7 @@ package body Camera.Lib.Base.Test is
 
             ------------------------------------------------------------
             procedure Test_Port (
-               Port              : in     GNAT.Sockets.Port_Type) is
+               Port              : in     Port_Type) is
             ------------------------------------------------------------
 
                Ack_Value         : Natural;

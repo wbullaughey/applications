@@ -5,7 +5,7 @@ with Ada_Lib.Time;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
 with Camera.Commands.PTZ_Optics;
 with Hex_IO;
-with Video.Lib;
+--with Video.Lib;
 
 package body Camera.Lib.Base is
 
@@ -90,7 +90,7 @@ package body Camera.Lib.Base is
    ---------------------------------------------------------------
    procedure Camera_No_Found (
       Address                    : in     String;
-      Port                       : in     GNAT.Sockets.Port_Type) is
+      Port                       : in     Video.Lib.Port_Type) is
    ---------------------------------------------------------------
 
    begin
@@ -312,12 +312,13 @@ package body Camera.Lib.Base is
    procedure Host_Open (
       Camera                     :    out Base_Camera_Type;
       Host_Address               : in     String;
-      Port                       : in     GNAT.Sockets.Port_Type) is
+      Port                       : in     Video.Lib.Port_Type) is
    ---------------------------------------------------------------
 
    begin
       Log_In (Debug, "Host_Address " & Host_Address & " port" & Port'img);
-      Camera.Socket.Connect (Host_Address, Port);
+      Camera.Socket.Connect (Host_Address,
+         Ada_Lib.Socket_IO.Port_Type (Port));
       Log_Out (Debug);
 
    exception
@@ -332,7 +333,7 @@ package body Camera.Lib.Base is
    procedure IP_Open (
       Camera                     :    out Base_Camera_Type;
       IP_Address                 : in     Ada_Lib.Socket_IO.IP_Address_Type;
-      Port                       : in     Ada_Lib.Socket_IO.Port_Type) is
+      Port                       : in     Video.Lib.Port_Type) is
    ---------------------------------------------------------------
 
       Address                    : constant String :=
@@ -341,7 +342,7 @@ package body Camera.Lib.Base is
 --Log_Here (Debug'img & " IP Address" & Address & " port" & Port'img);
       Log_In (Debug, "IP Address" & Address & " port" & Port'img);
 --    Camera.Socket.Set_Option (Ada_Lib.Socket_IO.Reuse_Address);
-      Camera.Socket.Connect (Address, Port);
+      Camera.Socket.Connect (Address, Ada_Lib.Socket_IO.Port_Type (Port));
 --    Camera.Socket.Create (Camera.Socket, 1.0, 0.5);
       Log_Out (Debug);
 
@@ -357,12 +358,12 @@ package body Camera.Lib.Base is
    procedure Open (
       Camera                     :    out Base_Camera_Type;
       Address                    : in     Ada_Lib.Socket_IO.Address_Type;
-      Port                       : in     Ada_Lib.Socket_IO.Port_Type) is
+      Port                       : in     Video.Lib.Port_Type) is
    ---------------------------------------------------------------
 
    begin
       Log_In (Debug, "Address " & Address.Image & " port" & Port'img);
-      Camera.Socket.Connect (Address, Port,
+      Camera.Socket.Connect (Address, Ada_Lib.Socket_IO.Port_Type (Port),
          Default_Read_Timeout    => Standard.Camera.Commands.PTZ_Optics.Default_Read_Timeout,
          Default_Write_Timeout   => Standard.Camera.Commands.PTZ_Optics.Default_Write_Timeout);
       Log_Out (Debug);
@@ -442,12 +443,12 @@ package body Camera.Lib.Base is
    procedure URL_Open (
       Camera                     :    out Base_Camera_Type;
       URL                        : in     String;
-      Port                       : in     GNAT.Sockets.Port_Type) is
+      Port                       : in     Video.Lib.Port_Type) is
    ---------------------------------------------------------------
 
    begin
       Log_In (Debug, Quote ("URL", URL) & " port" & Port'img);
-      Camera.Socket.Connect (URL, Port);
+      Camera.Socket.Connect (URL, Ada_Lib.Socket_IO.Port_Type (Port));
 --    Camera.Socket.Create (Camera.Socket, 1.0, 0.5);
       Log_Out (Debug);
 

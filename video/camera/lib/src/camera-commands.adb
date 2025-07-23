@@ -519,7 +519,7 @@ Pause_On_Flag ("exit Position_Relative", Here, TRue);
    ---------------------------------------------------------------
    procedure Set_Preset (
       Camera                  : in out Camera_Type;
-      Preset_ID               : in     Property_Type;
+      Preset_ID               : in     Preset_Range_Type;
       Wait_Until_Finished     : in     Boolean := True;
       Speed                   : in     Property_Type := 0) is  -- 0 => default
    ---------------------------------------------------------------

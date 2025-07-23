@@ -185,7 +185,7 @@ not_implemented;
             declare
                Image             : Gnoga.Gui.Element.Common.IMG_Type
                                     renames Cell.Image;
-               Preset_ID         : constant Configuration.Camera.Preset_ID_Type :=
+               Preset_ID         : constant Camera.Preset_ID_Type :=
                                     Configuration.Camera.Setup.Global_Camera_Setup.
                                        Get_Preset_ID (Table_Row,
                                           Configuration.Camera.Column_Type (
@@ -228,7 +228,7 @@ not_implemented;
                end if;
 
                Image.Class_Name (Configuration.Camera.Control_Image_Style);
-               if Preset_ID /= Configuration.Camera.Preset_Not_Set then
+               if Preset_ID /= Configuration.Camera.Get_Preset_Not_Set then
                   Preset_Text.Create (
                      Parent   => Cell,
                      Content  => Preset_ID'img);

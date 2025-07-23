@@ -27,17 +27,27 @@ package body Video.Lib is
    ---------------------------------------------------------------
    function Address_Kind (
      Options                     : in     Options_Type
-   ) return Configuration.Address_Kind_Type is
+   ) return Address_Kind_Type is
    ---------------------------------------------------------------
 
    begin
       return (case Options.Location is
-         when Configuration.State.Remote =>
-            Configuration.URL,
+         when Video.Lib.Remote => URL,
 
-         when Configuration.State.Local =>
-            Configuration.IP);
+         when Video.Lib.Local => IP);
    end Address_Kind;
+
+   ---------------------------------------------------------------
+   function Constructor (
+      ID                         : in     Preset_Range_Type
+   ) return Preset_ID_Type is
+   ---------------------------------------------------------------
+
+   begin
+      return Preset_ID_Type'(
+         ID       => ID,
+         Set      => True);
+   end Constructor;
 
    ---------------------------------------------------------------
    procedure Dump (
@@ -63,6 +73,16 @@ package body Video.Lib is
    end Image;
 
    -------------------------------------------------------------------------
+   function ID (
+      Preset_ID                  : in     Preset_ID_Type
+   ) return Ada_Lib.Socket_IO.Data_Type is
+   -------------------------------------------------------------------------
+
+   begin
+      return Preset_ID.ID;
+   end ID;
+
+   -------------------------------------------------------------------------
    overriding
    function Initialize (
      Options                     : in out Options_Type;
@@ -82,17 +102,37 @@ package body Video.Lib is
          Options_Debug or Trace_Options);
    end Initialize;
 
+   -------------------------------------------------------------------------
+   function Is_Set (
+      Preset_ID                  : in     Preset_ID_Type
+   ) return Boolean is
+   -------------------------------------------------------------------------
+
+   begin
+      return Preset_ID.Set;
+   end Is_Set;
+
+   ----------------------------------------------------------------
+   function Null_ID
+   return Preset_ID_Type is
+   ----------------------------------------------------------------
+   begin
+      return Preset_ID_Type'(
+         ID       => Preset_Range_Type'last,
+         Set      => False);
+   end Null_ID;
+
    ----------------------------------------------------------------
    function Parse_Image_Value (
       Value                      : in     String;
-      Preset                     :    out Camera_Preset_Type
+      Preset                     :    out Preset_ID_Type
    ) return String is
    ----------------------------------------------------------------
 
       Iterator                   : Ada_Lib.Parser.Iterator_Type :=
                                     Ada_Lib.Parser.Initialize (Value, ",");
    begin
-      Preset := Camera_Preset_Type (Iterator.Get_Number (True));
+      Preset := Constructor (Iterator.Get_Number (True));
       return Iterator.Get_Value (False);
    end Parse_Image_Value;
 
@@ -169,6 +209,17 @@ package body Video.Lib is
       Ada_Lib.Options.Actual.Nested_Options_Type (Options).Program_Help (Help_Mode);
       Log_Out (Options_Debug or Trace_Options);
    end Program_Help;
+
+   ----------------------------------------------------------------------------
+   procedure Set (
+      Preset_ID                  : in out Preset_ID_Type;
+      ID                         : in     APreset_Range_Type) is
+   ----------------------------------------------------------------------------
+
+   begin
+      Preset_ID.ID := ID;
+      Preset_ID.Set := True;
+   end Set;
 
    ----------------------------------------------------------------------------
    overriding

@@ -36,7 +36,7 @@ package body Configuration.State is
    ----------------------------------------------------------------
    function Get_Host_Port (
       State                      : in     State_Type
-   ) return Ada_Lib.Socket_IO.Port_Type is
+   ) return Video.Lib.Port_Type is
    ----------------------------------------------------------------
 
    begin
@@ -171,7 +171,7 @@ package body Configuration.State is
       begin
          State.Video_Address := new Ada_Lib.Socket_IO.Address_Type'(Video_Address);
 
-         State.Video_Port := Ada_Lib.Socket_IO.Port_Type'value (
+         State.Video_Port := Video.Lib.Port_Type'value (
             Get_Config_String (Port_Key (Location).all));
 
          Log_Out (Debug);

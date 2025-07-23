@@ -1,7 +1,7 @@
 with Ada_Lib.Strings;
 with Camera.Commands;
 with Camera.Lib.Base;
-with Configuration.Camera;
+--with Configuration.Camera;
 
 package Camera.LIB.ALPTOP is
 
@@ -22,7 +22,7 @@ private
 -- overriding
 -- procedure Cell_Preset (
 --    Camera                     : in out ALPTOP_Type;
---    Preset                     : in     Video.Lib.Camera_Preset_Type);
+--    Preset                     : in     Video.Lib.Preset_ID_Type);
 
    overriding
    procedure Completed (
@@ -47,12 +47,12 @@ private
    overriding
    function Get_Default_Preset (
       Camera                     : in     ALPTOP_Type
-   ) return Configuration.Camera.Preset_ID_Type;
+   ) return Preset_ID_Type;
 
    overriding
    function Get_Maximum_Preset (
       Camera                     : in     ALPTOP_Type
-   ) return Configuration.Camera.Preset_ID_Type;
+   ) return Preset_ID_Type;
 
    overriding
    function Get_Timeout (

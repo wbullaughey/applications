@@ -276,7 +276,7 @@ package body Camera.Lib.Base.Command_Tests is
 
       begin
          Log_Here (Debug or Trace_Set_Up);
-         Test.Camera.Set_Preset (Property_Type (Test.Camera.Get_Default_Preset));
+         Test.Camera.Set_Preset (Test.Camera.Get_Default_Preset);
       exception
          when Fault: Camera.Commands.Timeout =>
             Log_Exception (Debug or Trace_Set_Up, Fault,

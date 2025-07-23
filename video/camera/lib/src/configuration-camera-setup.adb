@@ -39,7 +39,7 @@ package body Configuration.Camera.Setup is
    function Configuration_Preset (
       Setup                      : in     Setup_Type;
       Configuration_ID           : in     Configuration_ID_Type
-   ) return Preset_ID_Type is
+   ) return Standard.Camera.Preset_ID_Type is
    ----------------------------------------------------------------
 
    begin
@@ -123,7 +123,7 @@ package body Configuration.Camera.Setup is
    ----------------------------------------------------------------
    function Get_Preset (
       Setup                      : in     Setup_Type;
-      Preset_Id                  : in     Preset_ID_Type
+      Preset_Id                  : in     Standard.Camera.Preset_ID_Type
    ) return Preset_Type'class is
    ----------------------------------------------------------------
 
@@ -139,10 +139,10 @@ package body Configuration.Camera.Setup is
    function Get_Preset_ID (
       Setup                      : in     Setup_Type;
       Configuration_Id           : in     Configuration_ID_Type
-   ) return Preset_ID_Type is
+   ) return Standard.Camera.Preset_ID_Type is
    ----------------------------------------------------------------
 
-      Result                     : constant Preset_ID_Type :=
+      Result                     : constant Standard.Camera.Preset_ID_Type :=
                                     Setup.Configurations (
                                        Configuration_Id).Preset_ID;
    begin
@@ -156,7 +156,7 @@ package body Configuration.Camera.Setup is
       Setup                      : in     Setup_Type;
       Row                        : in     Row_Type;
       Column                     : in     Column_Type
-   ) return Preset_ID_Type is
+   ) return Standard.Camera.Preset_ID_Type is
    ----------------------------------------------------------------
 
    begin
@@ -205,7 +205,7 @@ package body Configuration.Camera.Setup is
    ----------------------------------------------------------------
    function Has_Preset (
       Setup                      : in     Setup_Type;
-      Preset_Id                  : in     Preset_ID_Type
+      Preset_Id                  : in     Standard.Camera.Preset_ID_Type
    ) return Boolean is
    ----------------------------------------------------------------
 
@@ -260,7 +260,7 @@ package body Configuration.Camera.Setup is
       Setup.Configurations := new Configurations_Type (1 ..
          State.Number_Configurations);
       Setup.Path.Construct (Name);
-      Setup.Presets := new Presets_Type (Preset_ID_Type'first ..
+      Setup.Presets := new Presets_Type (Standard.Camera.Preset_ID_Type'first ..
          State.Last_Preset);
 
       for Preset_ID in Setup.Presets'first .. State.Last_Preset loop
@@ -327,11 +327,11 @@ package body Configuration.Camera.Setup is
                                        Ignore_Multiple_Seperators    => False,
                                        Seperators                    => ",",
                                        Trim_Spaces                   => False);
-                  Preset_ID      : constant Preset_ID_Type :=
+                  Preset_ID      : constant Standard.Camera.Preset_ID_Type :=
                                     (if Iterator.At_End then
                                        Preset_Not_Set
                                     else
-                                       Preset_ID_Type (Iterator.Get_Number (
+                                       Standard.Camera.Preset_ID_Type (Iterator.Get_Number (
                                           Do_Next => True)));
                   Label          : constant String := (if Iterator.At_End then
                                        ""
@@ -403,7 +403,7 @@ package body Configuration.Camera.Setup is
    ----------------------------------------------------------------
    function Preset_Column (
       Setup                      : in     Setup_Type;
-      Preset                     : in     Preset_ID_Type
+      Preset                     : in     Standard.Camera.Preset_ID_Type
    ) return Column_Type is
    ----------------------------------------------------------------
 
@@ -432,7 +432,7 @@ package body Configuration.Camera.Setup is
    ----------------------------------------------------------------
    function Preset_Row (
       Setup                      : in     Setup_Type;
-      Preset                     : in     Preset_ID_Type
+      Preset                     : in     Standard.Camera.Preset_ID_Type
    ) return Row_Type is
    ----------------------------------------------------------------
 
@@ -564,7 +564,7 @@ package body Configuration.Camera.Setup is
    procedure Update_Configuration (
       Setup                      : in out Setup_Type;
       Configuration_ID           : in     Configuration_ID_Type;
-      Preset_ID                  : in     Preset_ID_Type) is
+      Preset_ID                  : in     Standard.Camera.Preset_ID_Type) is
    ----------------------------------------------------------------
 
       Configuration              : Configuration_Type renames
@@ -599,7 +599,7 @@ package body Configuration.Camera.Setup is
    ----------------------------------------------------------------
    procedure Update_Preset (
       Setup                      : in out Setup_Type;
-      Preset_ID                  : in     Preset_ID_Type;
+      Preset_ID                  : in     Standard.Camera.Preset_ID_Type;
       Row                        : in     Row_Type;
       Column                     : in     Column_Type) is
    ----------------------------------------------------------------

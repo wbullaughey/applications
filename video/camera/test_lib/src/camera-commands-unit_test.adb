@@ -3,7 +3,7 @@ with Ada_Lib.Trace; use Ada_Lib.Trace;
 with Ada_Lib.Unit_Test;
 with AUnit.Assertions; use AUnit.Assertions;
 with AUnit.Test_Cases;
-with Camera.Commands.PTZ_Optics;
+--with Camera.Commands.PTZ_Optics;
 with Camera.Lib.Unit_Test;
 with Interfaces;
 
@@ -51,7 +51,7 @@ package body Camera.Commands.Unit_Test is
 
    Debug       : Boolean renames Camera.Lib.Unit_Test.Camera_Commands_Debug;
    Suite_Name  : constant String := "Commands";
-   Test_Preset : constant := Camera.Commands.PTZ_Optics.Maximum_Preset;
+   Test_Preset : constant Preset_ID_Type := Null_Preset;
 
    ---------------------------------------------------------------
    procedure Check_Coordinates (

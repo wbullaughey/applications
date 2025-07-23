@@ -1,7 +1,7 @@
 with Ada_Lib.Strings;
 with Camera.Lib.Base;
-with Configuration.Camera;
-
+--with Configuration.Camera;
+with Video.Lib;
 package Camera.Commands.PTZ_Optics is
 
    Invalid_Command               : exception;
@@ -26,7 +26,8 @@ package Camera.Commands.PTZ_Optics is
 
    Maximum_Preset                : constant := 254;   -- standard set to same as preset 0
    Port                          : constant := 5678;
-   Powerup_Preset                : constant Configuration.Camera.Preset_ID_Type := 0;
+   Powerup_Preset                : constant Preset_ID_Type :=
+                                    Video.Lib.Constructor (0);
 
 private
 
@@ -53,12 +54,12 @@ private
    overriding
    function Get_Default_Preset (
       Camera                     : in     PTZ_Optics_Type
-   ) return Configuration.Camera.Preset_ID_Type;
+   ) return Preset_ID_Type;
 
    overriding
    function Get_Maximum_Preset (
       Camera                     : in     PTZ_Optics_Type
-   ) return Configuration.Camera.Preset_ID_Type;
+   ) return Preset_ID_Type;
 
    overriding
    function Get_Camera_Speed (

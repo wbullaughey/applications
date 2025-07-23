@@ -13,7 +13,7 @@ with Hex_IO;
 package body Configuration.Camera.State.Unit_Tests is
 
    use type Ada_Lib.Strings.String_Access;
--- use type Standard.Camera.Lib.Unit_Test.Options_Constant_Class_Test_Access;
+   use type Standard.Camera.Preset_ID_Type;
 -- use type Ada_Lib.Options.Interface_Options_Constant_Class_Access;
 
    type Connection_Data_Type     is new GNOGA_Ada_Lib.Connection_Data_Type
@@ -249,7 +249,7 @@ Hex_IO.Dump_32 (State.Number_Columns'address, 32, 1, "number columns");
                                        State.Number_Columns;
          Number_Configurations   : constant Configuration_ID_Type :=
                                     State.Number_Configurations;
-         Last_Preset             : constant Preset_ID_Type :=
+         Last_Preset             : constant Standard.Camera.Preset_ID_Type :=
                                     State.Last_Preset;
          Number_Rows             : constant Row_Type := State.Number_Rows;
 
