@@ -55,10 +55,10 @@ package body Camera.Commands.Unit_Test is
 
    ---------------------------------------------------------------
    procedure Check_Coordinates (
-      Got_Pan                    : in     Camera.Commands.Absolute_Type;
-      Expected_Pan               : in     Camera.Commands.Absolute_Type;
-      Got_Tilt                   : in     Camera.Commands.Absolute_Type;
-      Expected_Tilt              : in     Camera.Commands.Absolute_Type;
+      Got_Pan                    : in     Absolute_Type;
+      Expected_Pan               : in     Absolute_Type;
+      Got_Tilt                   : in     Absolute_Type;
+      Expected_Tilt              : in     Absolute_Type;
       From                       : in     String := Here) is
    ---------------------------------------------------------------
 
@@ -125,13 +125,19 @@ package body Camera.Commands.Unit_Test is
       Test           : in out Test_Type) is
    ---------------------------------------------------------------
 
-      Speed          : constant Data_Type :=
+   begin
+      Log_In (Debug or Trace_Set_Up);
+      Standard.Camera.Lib.Unit_Test.Camera_Test_Type (Test).Set_Up;
+
+      declare
+         Speed       : constant Data_Type :=
                         Test.Camera.Get_Camera_Speed (
                            Select_Maximum_Speed);
-   begin
-      Log_In (Debug or Trace_Set_Up, "speed ", Speed'img);
-      Test.Camera.Set_Preset (Test_Preset,
-         Speed => Speed);     -- normally same as preset 0
+      begin
+         Log_Here (Debug or Trace_Set_Up, "speed ", Speed'img);
+         Test.Camera.Set_Preset (Test_Preset,
+            Speed => Speed);     -- normally same as preset 0
+      end;
       Log_Out (Debug or Trace_Set_Up);
 
    exception
@@ -206,18 +212,18 @@ package body Camera.Commands.Unit_Test is
       type Step_Index_Type    is range 1 .. 4;
 
       type Step_Type          is record
-         Pan                  : Camera.Commands.Relative_Type;
-         Tilt                 : Camera.Commands.Relative_Type;
+         Pan                  :Relative_Type;
+         Tilt                 :Relative_Type;
       end record;
 
 --    Number_Steps            : constant := 4;
       Offset                  : constant := 100;
       Local_Test              : Test_Type'class renames Test_Type'class (Test);
-      Final_Pan               : Camera.Commands.Absolute_Type;
-      Final_Tilt              : Camera.Commands.Absolute_Type;
+      Final_Pan               : Absolute_Type;
+      Final_Tilt              : Absolute_Type;
       Step                    : Natural := 0;
-      Test_Pan                : Camera.Commands.Absolute_Type;
-      Test_Tilt               : Camera.Commands.Absolute_Type;
+      Test_Pan                : Absolute_Type;
+      Test_Tilt               : Absolute_Type;
       Offsets                 : constant array (Step_Index_Type) of Step_Type := (
                                  (
                                     Pan   => Offset,
@@ -254,8 +260,8 @@ package body Camera.Commands.Unit_Test is
          delay 0.2;
          if Debug then
             declare
-               Pan               : Camera.Commands.Absolute_Type;
-               Tilt              : Camera.Commands.Absolute_Type;
+               Pan               : Absolute_Type;
+               Tilt              : Absolute_Type;
 
             begin
                Local_Test.Camera.Get_Absolute (Pan, Tilt);
@@ -295,18 +301,18 @@ package body Camera.Commands.Unit_Test is
    ----------------------------------------------------------------
 
       Local_Test  : Test_Type'class renames Test_Type'class (Test);
-      Final_Pan   : Camera.Commands.Absolute_Type;
-      Final_Tilt  : Camera.Commands.Absolute_Type;
-      Pan_Set     : Camera.Commands.Absolute_Type;
+      Final_Pan   : Absolute_Type;
+      Final_Tilt  : Absolute_Type;
+      Pan_Set     : Absolute_Type;
       Pan_Step    : constant array (1 .. 2) of
-                     Camera.Commands.Absolute_Type := (
+                     Absolute_Type := (
                         100,
                         -100);
-      Test_Pan    : Camera.Commands.Absolute_Type;
-      Test_Tilt   : Camera.Commands.Absolute_Type;
-      Tilt_Set    : Camera.Commands.Absolute_Type;
+      Test_Pan    : Absolute_Type;
+      Test_Tilt   : Absolute_Type;
+      Tilt_Set    : Absolute_Type;
       Tilt_Step    : constant array (1 .. 2) of
-                     Camera.Commands.Absolute_Type := (
+                     Absolute_Type := (
                         -50,
                         50);
 
@@ -342,12 +348,12 @@ package body Camera.Commands.Unit_Test is
    ----------------------------------------------------------------
 
       Local_Test                 : Test_Type'class renames Test_Type'class (Test);
-      Test_Pan                      : Camera.Commands.Absolute_Type;
-      Pan                        : Camera.Commands.Absolute_Type;
-      Pan_Set                    : Camera.Commands.Absolute_Type;
-      Tilt                       : Camera.Commands.Absolute_Type;
-      Test_Tilt                     : Camera.Commands.Absolute_Type;
-      Tilt_Set                   : Camera.Commands.Absolute_Type;
+      Test_Pan                   : Absolute_Type;
+      Pan                        : Absolute_Type;
+      Pan_Set                    : Absolute_Type;
+      Tilt                       : Absolute_Type;
+      Test_Tilt                  : Absolute_Type;
+      Tilt_Set                   : Absolute_Type;
 
    begin
       Log_In (Debug);
@@ -379,7 +385,7 @@ package body Camera.Commands.Unit_Test is
                         Camera.Commands.Minimum,
                         Camera.Commands.Maximum);
       Zoom_Values : array (Pass_Type, Counter_Type) of
-                     Camera.Commands.Absolute_Type;
+                     Absolute_Type;
 
    begin
       Log_In (Debug);

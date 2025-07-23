@@ -1,3 +1,5 @@
+with Camera;
+
 package Configuration.Camera is
 
    Failed                        : exception;
@@ -6,9 +8,10 @@ package Configuration.Camera is
 
    type Configuration_ID_Type    is new Positive;
 
-   type Preset_ID_Type           is new Natural;
+-- type Preset_ID_Type           is new Natural;
 
    type Row_Type                 is new Positive;
+   type Speed_Type               is new Positive;
 
    Adjust_Card_Style             : constant String := "Adjust_Card";
    Blank_Preset                  : constant String := "img/no_image.png";
@@ -23,7 +26,7 @@ package Configuration.Camera is
    Control_Image_Style           : constant String := "Control_Image";
    Horizontal_Slider_Style       : constant String := "Horizontal_Slider_Style";
    Positive_Not_Set              : constant := Positive'last;
-   Preset_Not_Set                : constant := Preset_ID_Type'last;
+   Preset_Not_Set                : constant := Camera.Camera_Preset_Type'last;
    Preset_Style                  : constant String := "Preset_Style";
    Row_Not_Set                   : constant := Row_Type'last;
    Vertical_Slider_Blank_Style   : constant String := "Vertical_Slider_Blank_Style";

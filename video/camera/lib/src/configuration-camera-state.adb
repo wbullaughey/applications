@@ -135,6 +135,20 @@ package body Configuration.Camera.State is
    end File_Path;
 
    ----------------------------------------------------------------
+   function Get_Default_Speed
+   return Speed_Type is
+   ----------------------------------------------------------------
+
+      Connection_Data            : Base.Connection_Data_Type renames
+                                    Base.Connection_Data_Type (
+                                       GNOGA_Ada_Lib.Get_Connection_Data.all);
+      State                      : Configuration.Camera.State.State_Type renames
+                                    Connection_Data.State;
+   begin
+      return State.Default_Speed;
+   end Get_Default_Speed;
+
+   ----------------------------------------------------------------
    function Get_Number_Columns (
       State                      : in     State_Type
    ) return Column_Type is
@@ -245,6 +259,8 @@ package body Configuration.Camera.State is
       Config.Load (Path, False);
       State.Load (Config, Location, Path);
       State.CSS_Path.Construct (Config.Get_String ("css_path"));
+      State.Default_Speed :=  Speed_Type (Config.Get_Integer (
+         "default_speed"));
       State.Number_Columns := Column_Type (Config.Get_Integer (
          "grid_columns"));
       State.Number_Configurations := Configuration_ID_Type (

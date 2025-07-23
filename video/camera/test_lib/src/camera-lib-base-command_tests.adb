@@ -276,7 +276,7 @@ package body Camera.Lib.Base.Command_Tests is
 
       begin
          Log_Here (Debug or Trace_Set_Up);
-         Test.Camera.Set_Preset (Test.Camera.Get_Default_Preset);
+         Test.Camera.Set_Preset (Property_Type (Test.Camera.Get_Default_Preset));
       exception
          when Fault: Camera.Commands.Timeout =>
             Log_Exception (Debug or Trace_Set_Up, Fault,
@@ -653,11 +653,11 @@ package body Camera.Lib.Base.Command_Tests is
       Test                       : in out AUnit.Test_Cases.Test_Case'class) is
    ---------------------------------------------------------------
 
-      Initial_Pan                : Camera.Commands.Absolute_Type;
-      Initial_Tilt               : Camera.Commands.Absolute_Type;
+      Initial_Pan                : Camera.Absolute_Type;
+      Initial_Tilt               : Camera.Absolute_Type;
       Local_Test                 : Test_Type renames Test_Type (Test);
-      Pan                        : Camera.Commands.Absolute_Type;
-      Tilt                       : Camera.Commands.Absolute_Type;
+      Pan                        : Camera.Absolute_Type;
+      Tilt                       : Camera.Absolute_Type;
 
    begin
       Log_In (Debug);
@@ -666,12 +666,12 @@ package body Camera.Lib.Base.Command_Tests is
       Log_Here (Debug, "initial pan" & Initial_Pan'img & " inital tilt" & Initial_Tilt'img);
       for Count in Video.Lib.Relative_Type'(1) .. 10 loop
          declare
-            Expected_Pan         : constant Camera.Commands.Absolute_Type :=
+            Expected_Pan         : constant Camera.Absolute_Type :=
                                     Initial_Pan +
-                                    Camera.Commands.Absolute_Type (Count);
-            Expected_Tilt        : constant Camera.Commands.Absolute_Type :=
+                                    Camera.Absolute_Type (Count);
+            Expected_Tilt        : constant Camera.Absolute_Type :=
                                     Initial_Tilt +
-                                    Camera.Commands.Absolute_Type (Count * 2);
+                                    Camera.Absolute_Type (Count * 2);
 
          begin
             Log_Here (Debug, "Count" & Count'img &
@@ -715,11 +715,11 @@ package body Camera.Lib.Base.Command_Tests is
    ---------------------------------------------------------------
 
       Local_Test                 : Test_Type renames Test_Type (Test);
-      Pan                        : Camera.Commands.Absolute_Type := 0;
+      Pan                        : Camera.Absolute_Type := 0;
 --    Response_Buffer            : Maximum_Response_Type;
-      Set_Pan                    : constant Camera.Commands.Absolute_Type := 16#123#;
-      Set_Tilt                   : constant Camera.Commands.Absolute_Type := 16#0bc#;
-      Tilt                       : Camera.Commands.Absolute_Type := 0;
+      Set_Pan                    : constant Camera.Absolute_Type := 16#123#;
+      Set_Tilt                   : constant Camera.Absolute_Type := 16#0bc#;
+      Tilt                       : Camera.Absolute_Type := 0;
 --    Timeout                    : constant Ada_Lib.Time.Time_Type :=
 --                                  Ada_Lib.Time.Now + 60.0;
    begin

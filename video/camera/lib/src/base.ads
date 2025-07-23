@@ -24,11 +24,11 @@ package Base is
                                     record
       Camera                     : Standard.Camera.Commands.Camera_Class_Access :=
                                     Null;
-      Camera_Pan                 : Standard.Camera.Commands.Absolute_Type;
-      Camera_Pan_Speed           : Standard.Camera.Commands.Property_Type;
-      Camera_Tilt                : Standard.Camera.Commands.Absolute_Type;
-      Camera_Tilt_Speed          : Standard.Camera.Commands.Property_Type;
-      Camera_Zoom                : Standard.Camera.Commands.Property_Type;
+      Camera_Pan                 : Standard.Camera.Absolute_Type;
+      Camera_Pan_Speed           : Standard.Camera.Property_Type;
+      Camera_Tilt                : Standard.Camera.Absolute_Type;
+      Camera_Tilt_Speed          : Standard.Camera.Property_Type;
+      Camera_Zoom                : Standard.Camera.Property_Type;
       Main_Data                  : Main.Main_Data_Access;
       Message_Box_Dialog         : Gnoga.Gui.Plugin.jQueryUI.Widget.
                                     Dialog_Access := Null;
@@ -63,6 +63,10 @@ package Base is
    function Get_Control_Card (
       Connection_Data            : in out Connection_Data_Type
    ) return Widgets.Control.Control_Card_Access;
+
+-- function Get_Default_Speed (
+--    Connection_Data            : in     Connection_Data_Type
+-- ) return Standard.Camera.Commands.Property_Type;
 
    function Get_Exit_Button (
       Connection_Data            : in out Connection_Data_Type

@@ -74,6 +74,17 @@ package body Base is
       return Connection_Data.Main_Data.Get_Control_Card;
    end Get_Control_Card;
 
+-- ----------------------------------------------------------------
+-- function Get_Default_Speed (
+--    Connection_Data            : in     Connection_Data_Type
+-- ) return Standard.Camera.Commands.Property_Type is
+-- ----------------------------------------------------------------
+--
+-- begin
+--    return Standard.Camera.Commands.Property_Type (
+--       Connection_Data.State.Default_Speed);
+-- end Get_Default_Speed;
+
    ----------------------------------------------------------------
    function Get_Exit_Button (
       Connection_Data            : in out Connection_Data_Type

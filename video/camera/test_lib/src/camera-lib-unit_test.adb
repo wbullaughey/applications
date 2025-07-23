@@ -25,6 +25,7 @@ with Widgets.Configured.Unit_Test;
 package body Camera.Lib.Unit_Test is
 
    use type Ada_Lib.Options.Mode_Type;
+   use type Camera.Commands.Camera_Class_Access;
 
    Camera_Description            : aliased constant String := "test camera";
    Trace_Modifier                : constant Character := '@';
@@ -96,6 +97,16 @@ package body Camera.Lib.Unit_Test is
             Quote ("State_Path", Test.State_Path));
       end if;
    end Dump;
+
+   ----------------------------------------------------------------------------
+   function Have_Camera (
+      Test                       : in     Camera_Test_Type
+   ) return Boolean is
+   ----------------------------------------------------------------------------
+
+   begin
+      return Test.Camera /= Null;
+   end Have_Camera;
 
    ----------------------------------------------------------------------------
    function Get_Camera_Unit_Test_Constant_Options (

@@ -2,6 +2,7 @@ with Ada.Streams;
 with Ada.Text_IO; use Ada.Text_IO;
 with ADA_LIB.Trace; use ADA_LIB.Trace;
 with Camera.Lib;
+with Configuration.Camera.State;
 with Hex_IO;
 
 package body Camera.Commands is
@@ -518,46 +519,45 @@ Pause_On_Flag ("exit Position_Relative", Here, TRue);
    ---------------------------------------------------------------
    procedure Set_Preset (
       Camera                  : in out Camera_Type;
-      Preset_ID               : in     Configuration.Camera.Preset_ID_Type;
+      Preset_ID               : in     Property_Type;
       Wait_Until_Finished     : in     Boolean := True;
-      Speed                   : in     Property_Type := 1) is  -- 0 => default
+      Speed                   : in     Property_Type := 0) is  -- 0 => default
    ---------------------------------------------------------------
 
    begin
       Log_In (Debug, "preset id" & Preset_ID'img &
          " speed " & Speed'img &
          " wait " & Wait_Until_Finished'img);
-      Camera.Set_Preset_Speed (Speed);
 
-      declare
-         Configure_Speed      : constant Property_Type := (
-                                 if Speed = 0 then
-                                    Camera.Get_Preset_Speed (
-                                       Select_Default_Speed)
-                                 else
-                                    Speed);
-      begin
-         Log_Here (Debug, "configure speed " & Configure_Speed'img);
-         Camera.Process_Command (Standard.Camera.Lib.Base.Memory_Recall,
-            Options     => ( 1 =>
-                  (
-                     Data           => Configure_Speed,
-                     Start          => 6,
-                     Mode           => Standard.Camera.Lib.Base.Fixed
-                  )
-               ));
+      if Speed = 0 then
+         declare
+            Speed             : constant Property_Type := Property_Type (
+                                 Configuration.Camera.State.Get_Default_Speed);
+         begin
+            Log_Here (Debug, "configure speed " & Speed'img);
+            Camera.Set_Preset_Speed (Speed);
+         end;
+      end if;
 
-         if Wait_Until_Finished then
-            delay Delay_After_Move;
-            declare
-               Pan                  : Absolute_Type;
-               Tilt                 : Absolute_Type;
-            begin
-               Camera.Get_Absolute (Pan, Tilt);
-               Log_Here (Debug, "pan " & Pan'img & " tilt " & Tilt'img);
-            end;
-         end if;
-      end;
+      Camera.Process_Command (Standard.Camera.Lib.Base.Memory_Recall,
+         Options     => ( 1 =>
+               (
+                  Data           => Data_Type (Preset_ID),
+                  Start          => 6,
+                  Mode           => Standard.Camera.Lib.Base.Fixed
+               )
+            ));
+
+      if Wait_Until_Finished then
+         delay Delay_After_Move;
+         declare
+            Pan                  : Absolute_Type;
+            Tilt                 : Absolute_Type;
+         begin
+            Camera.Get_Absolute (Pan, Tilt);
+            Log_Here (Debug, "pan " & Pan'img & " tilt " & Tilt'img);
+         end;
+      end if;
       Log_Out (Debug);
 
    exception
@@ -570,15 +570,13 @@ Pause_On_Flag ("exit Position_Relative", Here, TRue);
 
    ----------------------------------------------------------------------------
    procedure Set_Preset_Speed (
-      Camera                     : in out PTZ_Optics_Type;
-      Command                    : in    Standard.Camera.Lib.Base.Commands_Type;
-      Options                    : in    Standard.Camera.Lib.Base.Options_Type;
+      Camera                     : in out Camera_Type;
       Speed                      : in    Property_Type) is
    ----------------------------------------------------------------------------
 
    begin
       Log_In (Debug, "speed " & Speed'img);
-      Camera.Process_Command (Command (Mode),
+      Camera.Process_Command (Standard.Camera.Lib.Base.Recall_Speed,
          Options     => ( 1 =>
                (
                   Data           => Speed,

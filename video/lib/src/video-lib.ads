@@ -13,8 +13,6 @@ package Video.Lib is
 
    Failed                        : exception;
 
-   Unset_Preset                  : constant := -1;
-
    subtype Address_Kind_Type     is  Ada_Lib.Socket_IO.Address_Kind_Type;
    subtype Address_Type          is  Ada_Lib.Socket_IO.Address_Type;
    subtype Address_Constant_Access
@@ -123,6 +121,8 @@ package Video.Lib is
 
    function Hex is new Hex_IO.Modular_Hex (Data_Type);
    function Hex is new Hex_IO.Modular_Hex (Value_Type);
+
+   Unset_Preset                  : constant Data_Type := Data_Type'last;
 
    Debug                         : Boolean := False;
 -- Global_Video_Lib_Options      : Options_Constant_Class_Access := Null;

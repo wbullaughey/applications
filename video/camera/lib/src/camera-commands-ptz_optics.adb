@@ -1,4 +1,4 @@
-with Ada.Streams;
+--with Ada.Streams;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
 with Hex_IO;
 --with Ada_Lib.Socket_IO.Stream_IO;
@@ -8,7 +8,7 @@ package body Camera.Commands.PTZ_Optics is
 -- use type Ada.Streams.Stream_Element;
    use type Video.Lib.Index_Type;
 
-   Default_Response_Timeout      : constant Duration := 0.5;
+   Default_Response_Timeout      : constant Duration := 0.6;
    Position_Timeout              : constant Duration := 60.0;
    Power_Inquire_Timeout         : constant Duration := 120.0;
    Commands                      : constant Array (Standard.Camera.Lib.Base.

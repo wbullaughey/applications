@@ -63,11 +63,16 @@ package Camera.Lib.Unit_Test is
       Test                       : in     Camera_Test_Type;
       Trace                      : in     Boolean);
 
+   function Have_Camera (
+      Test                       : in     Camera_Test_Type
+   ) return Boolean;
+
    overriding
    procedure Set_Up (
       Test                       : in out Camera_Test_Type
-   ) with Post => Test.Verify_Set_Up;
-
+   ) with Pre  => not Test.Have_Camera,
+          Post => Test.Verify_Set_Up and
+                  Test.Have_Camera;
    overriding
    procedure Tear_Down (
       Test                       : in out Camera_Test_Type);

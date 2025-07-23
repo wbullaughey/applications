@@ -142,6 +142,7 @@ CAC ada_lib trace library options (-a)
       @l              Template Load
       @o              Trace_Options
       @s              Strings
+      @S              Socket_IO IO
       @t              Ada_Lib.Text
 Ada_Lib unit test library trace options (-U)
       a               all

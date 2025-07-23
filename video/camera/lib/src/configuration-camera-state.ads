@@ -14,6 +14,7 @@ package Configuration.Camera.State is
    type State_Type               is new Configuration.State.State_Type with
                                     record
       CSS_Path                   : ADA_LIB.Strings.Unlimited.String_Type;
+      Default_Speed              : Speed_Type;
       Images                     : Images_Access := Null;
       Last_Preset                : Preset_ID_Type;
       Number_Columns             : Column_Type;
@@ -49,6 +50,10 @@ package Configuration.Camera.State is
 
 -- function Global_State_Is_Set
 -- return Boolean;
+
+   function Get_Default_Speed
+   return Speed_Type
+   with Pre => Gnoga_Ada_Lib.Has_Connection_Data;
 
    function Get_Number_Columns (
       State                      : in     State_Type

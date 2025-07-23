@@ -24,7 +24,7 @@ package Camera.Commands.PTZ_Optics is
                                     Minimum_Speed) /2;
    Default_Write_Timeout         : constant Ada_Lib.Socket_IO.Timeout_Type := 0.2;
 
-   Maximum_Preset                : constant := 256;   -- standard set to same as preset 0
+   Maximum_Preset                : constant := 254;   -- standard set to same as preset 0
    Port                          : constant := 5678;
    Powerup_Preset                : constant Configuration.Camera.Preset_ID_Type := 0;
 

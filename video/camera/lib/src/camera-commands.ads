@@ -11,13 +11,6 @@ package Camera.Commands is
    Failed                        : exception;
    Timeout                       : exception;
 
--- use type Data_Type;
--- use type Value_Type;
-
-   subtype Absolute_Type         is Interfaces.Integer_16;
-   subtype Property_Type         is Data_Type range 0 .. 255; -- 2**8;
-   subtype Relative_Type         is Video.Lib.Relative_Type range -2**15 .. 2**15;
-
    type Camera_Type (
       Description                : Ada_Lib.Strings.String_Constant_Access
    ) is abstract new Standard.Camera.Lib.Base.
@@ -88,14 +81,12 @@ package Camera.Commands is
    -- sets camera to a preset
    procedure Set_Preset (
       Camera                     : in out Camera_Type;
-      Preset_ID                  : in     Configuration.Camera.Preset_ID_Type;
+      Preset_ID                  : in     Property_Type;
       Wait_Until_Finished        : in     Boolean := True;
-      Speed                      : in     Property_Type := 1);
+      Speed                      : in     Property_Type := 0);  -- 0 => default
 
    procedure Set_Preset_Speed (
       Camera                     : in out Camera_Type;
-      Command                    : in    Standard.Camera.Lib.Base.Commands_Type;
-      Options                    : in    Standard.Camera.Lib.Base.Options_Type;
       Speed                      : in    Property_Type);
 
    procedure Set_Variable_Zoom (

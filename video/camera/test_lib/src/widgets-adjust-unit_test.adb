@@ -186,9 +186,9 @@ package body Widgets.Adjust.Unit_Test is
 
       Adjust_Card       : constant Adjust_Card_Access :=
                            Connection_Data.Get_Adjust_Card;
-      Pan               : Standard.Camera.Commands.Absolute_Type;
+      Pan               : Standard.Camera.Absolute_Type;
       Pan_Offset        : constant := 100;
-      Tilt              : Standard.Camera.Commands.Absolute_Type;
+      Tilt              : Standard.Camera.Absolute_Type;
       Tilt_Offset       : constant := 200;
 
    begin
