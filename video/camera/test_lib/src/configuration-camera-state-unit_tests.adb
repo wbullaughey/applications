@@ -8,7 +8,7 @@ with Base;
 with AUnit.Assertions; use AUnit.Assertions;
 with AUnit.Test_Cases;
 --with Camera.Lib.Unit_Test;
-with Hex_IO;
+--with Hex_IO;
 with Video.Lib;
 
 package body Configuration.Camera.State.Unit_Tests is
@@ -16,6 +16,7 @@ package body Configuration.Camera.State.Unit_Tests is
    use type Ada_Lib.Strings.String_Access;
 -- use type Standard.Camera.Preset_ID_Type;
 -- use type Ada_Lib.Options.Interface_Options_Constant_Class_Access;
+   use type Video.Lib.Preset_ID_Type;
 
    type Configuration_Load_Test_Type is new Standard.Camera.Lib.
                                     Unit_Test.Camera_Test_Type with
@@ -234,7 +235,8 @@ package body Configuration.Camera.State.Unit_Tests is
             Expected_Number_Rows       : constant := 4;
             Expected_Number_Configurations
                                        : constant := 4;
-      --    Expected_Last_Presets    : constant := 5;
+            Expected_Last_Presets      : constant Video.Lib.Preset_ID_Type :=
+                                          Video.Lib.Constructor (5);
 
       --    type Preset_Value_Type     is record
       --       Row                     : Row_Type := Not_Set;
