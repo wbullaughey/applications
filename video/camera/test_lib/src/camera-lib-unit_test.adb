@@ -16,6 +16,7 @@ with Configuration.Camera.Setup.Unit_Tests;
 with Configuration.Camera.State.Unit_Tests;
 with GNOGA_Ada_Lib;
 with Gnoga.Application.Multi_Connect;
+--with Hex_IO;
 with Main.Unit_Test;
 --with Runtime_Options;
 with Widgets.Adjust.Unit_Test;
@@ -49,6 +50,8 @@ package body Camera.Lib.Unit_Test is
    Camera_State_Path             : constant String := "camera_state_path.cfg";
    Setup_Test_Path               : constant String := "configured_window_setup.cfg";
    State_Test_Path               : constant String := "configured_window_state.cfg";
+   Test_Setup                    : constant String :=
+                                    "test_setup.cfg";
 
    ----------------------------------------------------------------------------
    procedure Add_Test (
@@ -68,7 +71,7 @@ package body Camera.Lib.Unit_Test is
 
    begin
       Log_In (Debug, "set preset");
-      Test.Camera.Set_Preset (Test.Camera.Get_Default_Preset);
+      Test.Camera.Set_Preset (Video.Lib.Get_Default_Preset_ID);
       Log_Out (Debug);
 
    exception
@@ -180,6 +183,47 @@ package body Camera.Lib.Unit_Test is
          Ada_Lib.Options.AUnit_Lib.Aunit_Program_Options_Type (Options).Initialize,
          Debug_Options or Trace_Options);
    end Initialize;
+
+---------------------------------------------------------------
+   procedure Load_Test_State (
+      Test                       : in out Camera_Test_Type) is
+---------------------------------------------------------------
+
+      Connection_Data            : constant Standard.Base.Connection_Data_Access :=
+                                    Standard.Base.Connection_Data_Access (
+                                       Gnoga_Ada_Lib.Get_Connection_Data);
+      Options                    : Standard.Camera.Lib.Unit_Test.
+                                    Unit_Test_Program_Options_Type'class
+                                       renames Standard.Camera.Lib.Unit_Test.
+                                          Get_Camera_Unit_Test_Constant_Options.all;
+      State                      : Configuration.Camera.State.State_Type renames
+                                    Connection_Data.State;
+   begin
+      Log_In (Debug or Trace_Set_Up, "brand " & Test.Brand'img &
+         " video port#", State.Video_Port'img);
+     State.Load (Options.Camera_Options.Location, Camera_State_Path);
+     Test.Setup.Load (State, Test_Setup);
+     Test.Camera_Address := State.Video_Address;
+     Test.Port_Number := State.Video_Port;
+
+     case Test.Brand is
+
+        when Standard.Camera.Lib.ALPTOP_Camera =>
+            not_implemented;
+
+        when Standard.Camera.LIB.PTZ_Optics_Camera =>
+            Test.Camera := new Standard.Camera.Commands.PTZ_Optics.
+               PTZ_Optics_Type (Camera_Description'access);
+
+            Test.Camera.Open (State.Video_Address.all, Test.Port_Number);
+
+        when Standard.Camera.Lib.No_Camera =>
+           raise Failed with "no camera set";
+
+      end case;
+      Test.Camera.Initialize_Standard_Preset_IDs;
+      Log_Out (Debug or Trace_Set_Up);
+   end Load_Test_State;
 
 -- ---------------------------------------------------------------
 -- overriding
@@ -461,12 +505,12 @@ not_implemented;
 
       Connection_Data            : constant Standard.Base.Connection_Data_Access :=
                                     new Standard.Base.Connection_Data_Type;
-      Options                    : Standard.Camera.Lib.Unit_Test.
-                                    Unit_Test_Program_Options_Type'class
-                                       renames Standard.Camera.Lib.Unit_Test.
-                                          Get_Camera_Unit_Test_Constant_Options.all;
-      State                      : Configuration.Camera.State.State_Type renames
-                                    Connection_Data.State;
+--    Options                    : Standard.Camera.Lib.Unit_Test.
+--                                  Unit_Test_Program_Options_Type'class
+--                                     renames Standard.Camera.Lib.Unit_Test.
+--                                        Get_Camera_Unit_Test_Constant_Options.all;
+--    State                      : Configuration.Camera.State.State_Type renames
+--                                  Connection_Data.State;
   begin
       Log_In (Debug or Trace_Set_Up, "load " & Test.Load_State'img &
          " brand " & Test.Brand'img &
@@ -483,26 +527,9 @@ not_implemented;
       Ada_Lib.Unit_Test.Test_Cases.Test_Case_Type (Test).Set_Up;
 
      if Test.Load_State then
-        State.Load (Options.Camera_Options.Location, Camera_State_Path);
-        Test.Camera_Address := State.Video_Address;
-        Test.Port_Number := State.Video_Port;
-
+        Test.Load_Test_State;
      end if;
-     case Test.Brand is
 
-        when Standard.Camera.Lib.ALPTOP_Camera =>
-            not_implemented;
-
-        when Standard.Camera.LIB.PTZ_Optics_Camera =>
-            Test.Camera := new Standard.Camera.Commands.PTZ_Optics.
-               PTZ_Optics_Type (Camera_Description'access);
-
-            Test.Camera.Open (State.Video_Address.all, Test.Port_Number);
-
-        when Standard.Camera.Lib.No_Camera =>
-           raise Failed with "no camera set";
-
-     end case;
      Log_Out (Debug or Trace_Set_Up);
 
   exception
@@ -592,8 +619,17 @@ not_implemented;
                                     Connection_Data.State;
    begin
       Log_In (Debug);
-      Test.Camera.Close;
-      State.Unload;
+      if Test.Camera /= Null then
+         Test.Camera.Close;
+         Test.Camera := Null; -- needs so test can be rerun
+      end if;
+
+      if Test.Setup.Is_Loaded then
+         Test.Setup.Unload (State, False);
+      end if;
+      if State.Is_Loaded then
+         State.Unload;
+      end if;
 
       Gnoga.Application.Multi_Connect.End_Application;
       delay 0.2;

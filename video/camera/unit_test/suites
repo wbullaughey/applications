@@ -36,7 +36,6 @@ Video_Commands Test_Position_Stop
 Video_Commands Test_Position_Up
 Video_Commands Test_Position_Up_Left
 Video_Commands Test_Position_Up_Right
-Video_Commands Test_Power
 Video_Commands Test_Recall_Memory
 Video_Commands Test_Recall_Set
 

@@ -49,11 +49,16 @@ package body Configuration.Camera.Setup is
    ----------------------------------------------------------------
    procedure Dump (
       Setup                      : in     Setup_Type;
+      What                       : in     String := "";
       From                       : in     String := Ada_Lib.Trace.Here) is
    ----------------------------------------------------------------
 
    begin
-      Put_LIne ("dump setup from " & From);
+      Put_LIne ("dump " & (if What'length > 0 then
+            "what " & What & " "
+         else
+            "") &
+         "setup from " & From);
       for Configuration in Setup.Configurations.all'range loop
          Put_Line ("Configuration" & Configuration'img);
          Setup.Configurations (Configuration).Dump;
@@ -69,24 +74,34 @@ package body Configuration.Camera.Setup is
    ----------------------------------------------------------------
    procedure Dump (
       Configuration              : in     Configuration_Type;
+      What                       : in     String := "";
       From                       : in     String := Ada_Lib.Trace.Here) is
    ----------------------------------------------------------------
 
    begin
-      Put_Line ("Configuration" & Configuration.Configuration_ID'img &
+      Put_Line ("Configuration "  & (if What'length > 0 then
+            "what " & What & " "
+         else
+            "") &
+         Configuration.Configuration_ID'img &
          " from " & From);
       Put_Line (Quote ("  label", Configuration.Label));
-      Put_Line ("  Preset ID:" & Configuration.Preset_ID'img);
+      Put_Line ("  Preset ID:" & Configuration.Preset_ID.Image);
    end Dump;
 
    ----------------------------------------------------------------
    procedure Dump (
       Preset                     : in     Preset_Type;
+      What                       : in     String := "";
       From                       : in     String := Ada_Lib.Trace.Here) is
    ----------------------------------------------------------------
 
    begin
-      Put_Line ("Preset" & Preset.Preset_ID'img & " from " & From);
+      Put_Line ((if What'length > 0 then
+            "what " & What & " "
+         else
+            "") &
+         Preset.Preset_ID.Image & " from " & From);
       Put_Line ("  Column:" & Preset.Column'img);
       Put_Line ("  Row:" & Preset.Row'img);
    end Dump;
@@ -128,11 +143,11 @@ package body Configuration.Camera.Setup is
    ----------------------------------------------------------------
 
    begin
-      Log_Here (Debug, "Preset_Id " & Preset_Id'img);
-      return (if Preset_ID = Preset_Not_Set then
+      Log_Here (Debug, "Preset_Id " & Preset_Id.ID'img);
+      return (if not Preset_ID.Is_Set then
             Null_Preset
          else
-            Setup.Presets (Preset_Id));
+            Setup.Presets (Preset_Id.ID));
    end Get_Preset;
 
    ----------------------------------------------------------------
@@ -147,7 +162,7 @@ package body Configuration.Camera.Setup is
                                        Configuration_Id).Preset_ID;
    begin
       Log_Here (Debug, "Configuration_Id " & Configuration_Id'img &
-         " result " & Result'img);
+         " result " & Result.ID'img);
       return Result;
    end Get_Preset_ID;
 
@@ -168,13 +183,13 @@ package body Configuration.Camera.Setup is
          begin
             if Preset.Row = Row and then Preset.Column = Column then
                Log_Out (Debug, "preset" & Id'img);
-               return ID;
+               return Preset.Preset_ID;
             end if;
          end;
       end loop;
 
       Log_Out (Debug, "not defined");
-      return Preset_Not_Set;
+      return Video.Lib.Null_Preset_ID;
    end Get_Preset_ID;
 
    ----------------------------------------------------------------
@@ -210,15 +225,15 @@ package body Configuration.Camera.Setup is
    ----------------------------------------------------------------
 
    begin
-      Log_In (Debug, "preset id" & Preset_ID'img);
+      Log_In (Debug, "preset id" & Preset_ID.Image);
 
       declare
          Result                     : constant Boolean :=
-                                       Preset_ID /= Preset_Not_Set and then
+                                       Preset_ID.Is_Set and then
                                        Setup.Presets (
-                                          Preset_Id).Row /= Row_Not_Set;
+                                          Preset_Id.ID).Row /= Row_Not_Set;
       begin
-         return Log_Out (Result, Debug, "preset id" & Preset_ID'img);
+         return Log_Out (Result, Debug, "preset id" & Preset_ID.ID'img);
       end;
    end Has_Preset;
 
@@ -260,15 +275,16 @@ package body Configuration.Camera.Setup is
       Setup.Configurations := new Configurations_Type (1 ..
          State.Number_Configurations);
       Setup.Path.Construct (Name);
-      Setup.Presets := new Presets_Type (Standard.Camera.Preset_ID_Type'first ..
-         State.Last_Preset);
+      Setup.Presets := new Presets_Type (Standard.Camera.Preset_Range_Type'first ..
+         Video.Lib.Get_Last_Preset_ID.ID);
 
-      for Preset_ID in Setup.Presets'first .. State.Last_Preset loop
+      for Preset_Number in Standard.Camera.Preset_Range_Type'first ..
+            Video.Lib.Get_Last_Preset_ID.ID loop
          declare
             Name                 : constant String :=
-                                    "preset_" & Trim (Preset_ID'img);
+                                    "preset_" & Trim (Preset_Number'img);
          begin
-            Log_Here (Debug, "preset" & Preset_ID'img & Quote (" name", Name));
+            Log_Here (Debug, "preset" & Preset_Number'img & Quote (" name", Name));
             if Config.Has (Name) then
                declare
                   Value          : constant String := Config.Get_String (Name);
@@ -297,18 +313,18 @@ package body Configuration.Camera.Setup is
                         " maximum row" & State.Number_Rows'img;
                   end if;
 
-                  Setup.Presets (Preset_ID) := Preset_Type'(
+                  Setup.Presets (Preset_Number) := Preset_Type'(
                         Initial_Root_State with
                      Column      => Column,
                      Row         => Row,
-                     Preset_ID   => Preset_ID);
+                     Preset_ID   => Video.Lib.Constructor (Preset_Number));
                end;
             else
-               Log_Here (Debug, "preset id" & Preset_ID'img);
-               Setup.Presets (Preset_ID) := Null_Preset;
+               Log_Here (Debug, "preset id" & Preset_Number'img);
+               Setup.Presets (Preset_Number) := Null_Preset;
             end if;
          end;
-         Log_Here (Debug, Setup.Presets (Preset_ID).Preset_Image);
+         Log_Here (Debug, Setup.Presets (Preset_Number).Preset_Image);
       end loop;
 
       for Configuration_ID in 1 .. State.Number_Configurations loop
@@ -329,10 +345,12 @@ package body Configuration.Camera.Setup is
                                        Trim_Spaces                   => False);
                   Preset_ID      : constant Standard.Camera.Preset_ID_Type :=
                                     (if Iterator.At_End then
-                                       Preset_Not_Set
+                                       Video.Lib.Null_Preset_ID
                                     else
-                                       Standard.Camera.Preset_ID_Type (Iterator.Get_Number (
-                                          Do_Next => True)));
+                                       Video.Lib.Constructor (
+                                          Standard.Camera.Preset_Range_Type (
+                                             Iterator.Get_Number (
+                                                Do_Next => True))));
                   Label          : constant String := (if Iterator.At_End then
                                        ""
                                     else
@@ -341,12 +359,13 @@ package body Configuration.Camera.Setup is
                                     "configuration_" & Trim (Configuration_ID'img);
                begin
                   Log_Here (Debug, "configuration name " & Name &
-                     " value " & Configuration_ID'img & " preset id" & Preset_ID'img &
+                     " value " & Configuration_ID'img & " preset id" &
+                     Preset_ID.ID'img &
                      Quote (" label", Label));
 
-                  if    Preset_ID /= Preset_Not_Set and then
-                        Setup.Presets (Preset_ID) = Null_Preset then
-                     raise Failed with "preset" & Preset_ID'img &
+                  if    not Preset_ID.Is_Set or else
+                        not Setup.Presets (Preset_ID.ID).Preset_ID.Is_Set then
+                     raise Failed with "preset" & Preset_ID.ID'img &
                         " not configured for configuration" & Configuration_ID'img;
                   end if;
                   Setup.Configurations (Configuration_ID) := (
@@ -408,10 +427,10 @@ package body Configuration.Camera.Setup is
    ----------------------------------------------------------------
 
    begin
-      if Setup.Presets (Preset).Row = Row_Not_Set then
+      if Setup.Presets (Preset.ID).Row = Row_Not_Set then
          raise Failed with "preset" & Preset'img & " not defined";
       else
-         return Setup.Presets (Preset).Column;
+         return Setup.Presets (Preset.ID).Column;
       end if;
    end Preset_Column;
 
@@ -437,10 +456,10 @@ package body Configuration.Camera.Setup is
    ----------------------------------------------------------------
 
    begin
-      if Setup.Presets (Preset).Row = Row_Not_Set then
+      if Setup.Presets (Preset.ID).Row = Row_Not_Set then
          raise Failed with "preset" & Preset'img & " not defined";
       else
-         return Setup.Presets (Preset).Row;
+         return Setup.Presets (Preset.ID).Row;
       end if;
    end Preset_Row;
 
@@ -505,14 +524,15 @@ package body Configuration.Camera.Setup is
          Quote ("Current_Directory", Current_Directory) &
          Quote (" path", Setup.Path));
 
-      for Preset_ID in Setup.Presets'first .. State.Last_Preset loop
+      for Preset_Number in Standard.Camera.Preset_Range_Type'first ..
+            Video.Lib.Get_Last_Preset_ID.ID loop
          declare
             Name                 : constant String :=
-                                    "preset_" & Trim (Preset_ID'img);
-            Preset               : Preset_Type renames Presets (Preset_ID);
+                                    "preset_" & Trim (Preset_Number'img);
+            Preset               : Preset_Type renames Presets (Preset_Number);
 
          begin
-            Log_Here (Debug, "preset" & Preset_ID'img & Quote (" name", Name));
+            Log_Here (Debug, "preset" & Preset_Number'img & Quote (" name", Name));
             if Preset.Row /= Row_Not_Set then
                Config.Set (Name, Trim (Preset.Row'img) & "," &
                   Trim (Preset.Column'img), Update => False);
@@ -529,11 +549,11 @@ package body Configuration.Camera.Setup is
          begin
             Log_Here (Debug, "configuration" & Configuration_ID'img
                & Quote (" name", Name) &
-               " preset id" & Configuration.Preset_ID'img &
+               " preset id" & Configuration.Preset_ID.ID'img &
                Quote (" label", Configuration.Label));
 
-            if Configuration.Preset_ID /= Preset_Not_Set then
-               Config.Set (Name, Trim (Configuration.Preset_ID'img) & "," &
+            if Configuration.Preset_ID.Is_Set then
+               Config.Set (Name, Trim (Configuration.Preset_ID.ID'img) & "," &
                   Configuration.Label.Coerce, Update => False);
             end if;
          end;
@@ -572,7 +592,7 @@ package body Configuration.Camera.Setup is
                                        Configuration_ID);
    begin
       Log_Here (Debug, "Configuration" & Configuration_ID'img &
-         " Preset_ID" & Preset_ID'img);
+         " Preset_ID" & Preset_ID.Image);
 
       Configuration.Preset_ID := Preset_ID;
       Setup.Modified := True;
@@ -605,9 +625,9 @@ package body Configuration.Camera.Setup is
    ----------------------------------------------------------------
 
       Preset                     : Preset_Type renames
-                                    Setup.Presets (Preset_ID);
+                                    Setup.Presets (Preset_ID.ID);
    begin
-      Log_Here (Debug, "preset id" & Preset_ID'img &
+      Log_Here (Debug, "preset id" & Preset_ID.Image &
          " row" & Row'img & " column" & Column'img);
       Preset.Column := Column;
       Preset.Row := Row;

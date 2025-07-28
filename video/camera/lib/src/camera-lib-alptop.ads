@@ -45,20 +45,14 @@ private
    ) return Data_Type;
 
    overriding
-   function Get_Default_Preset (
-      Camera                     : in     ALPTOP_Type
-   ) return Preset_ID_Type;
-
-   overriding
-   function Get_Maximum_Preset (
-      Camera                     : in     ALPTOP_Type
-   ) return Preset_ID_Type;
-
-   overriding
    function Get_Timeout (
       Camera                     : in     ALPTOP_Type;
       Command                    : in     Standard.Camera.Lib.Base.Commands_Type
    ) return Duration;
+
+   overriding
+   procedure Initialize_Standard_Preset_IDs (
+      Camera                     : in     ALPTOP_Type);
 
    overriding
    procedure Process_Response (

@@ -1,10 +1,10 @@
 --with AUnit.Test_Suites;
 with Ada_Lib.Strings;
 with Ada_Lib.Time;
-with Configuration.Camera;
+--with Configuration.Camera;
 with Camera.Lib.Base;
-with Interfaces;
-with Video.Lib;
+--with Interfaces;
+--with Video.Lib;
 
 package Camera.Commands is
 

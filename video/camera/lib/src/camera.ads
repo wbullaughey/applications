@@ -30,10 +30,6 @@ package Camera is
    subtype Value_Type            is Video.Lib.Value_Type;
    type Zoom_Type                is new Video.Lib.Value_Type range 0 .. 16#FFFF#;
 
-   function Preset_ID_Constructor (
-      Preset_ID                  : in     Natural
-   ) return Video.Lib.Preset_ID_Type renames Video.Lib.Constructor;
-
    procedure Dump (
       Description                : in     String;
       Data                       : in     Buffer_Type;

@@ -104,14 +104,6 @@ package Camera.Lib.Base is
       Camera                     : in     Base_Camera_Type
    ) return Index_Type is abstract;
 
-   function Get_Default_Preset (
-      Camera                     : in     Base_Camera_Type
-   ) return Preset_ID_Type is abstract;
-
-   function Get_Maximum_Preset (
-      Camera                     : in     Base_Camera_Type
-   ) return Preset_ID_Type is abstract;
-
    procedure Get_Response (
       Camera                     : in out Base_Camera_Type;
       Expect_Ack                 : in     Boolean;

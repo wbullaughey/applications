@@ -4,6 +4,8 @@ with ADA_LIB.Trace; use ADA_LIB.Trace;
 with Camera.Lib;
 with Configuration.Camera.State;
 with Hex_IO;
+with Interfaces;
+with Video.Lib;
 
 package body Camera.Commands is
 
@@ -92,7 +94,6 @@ package body Camera.Commands is
       Tries          : Natural := 0;
 
    begin
-log_here (Test_Condition, from_start (Timeout_Time));
       Log_In (Debug, "timeout time " & From_Start (Timeout_Time));
       loop
          declare
@@ -519,13 +520,15 @@ Pause_On_Flag ("exit Position_Relative", Here, TRue);
    ---------------------------------------------------------------
    procedure Set_Preset (
       Camera                  : in out Camera_Type;
-      Preset_ID               : in     Preset_Range_Type;
+      Preset_ID               : in     Preset_Id_Type;
       Wait_Until_Finished     : in     Boolean := True;
       Speed                   : in     Property_Type := 0) is  -- 0 => default
    ---------------------------------------------------------------
 
+      ID                      : constant Preset_Range_Type := Preset_ID.ID;
+
    begin
-      Log_In (Debug, "preset id" & Preset_ID'img &
+      Log_In (Debug, "preset id" & ID'img &
          " speed " & Speed'img &
          " wait " & Wait_Until_Finished'img);
 
@@ -542,7 +545,7 @@ Pause_On_Flag ("exit Position_Relative", Here, TRue);
       Camera.Process_Command (Standard.Camera.Lib.Base.Memory_Recall,
          Options     => ( 1 =>
                (
-                  Data           => Data_Type (Preset_ID),
+                  Data           => ID,
                   Start          => 6,
                   Mode           => Standard.Camera.Lib.Base.Fixed
                )

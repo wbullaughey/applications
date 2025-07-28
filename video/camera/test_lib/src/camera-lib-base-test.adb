@@ -280,7 +280,7 @@ package body Camera.Lib.Base.Test is
                Local_Test.Camera_Address.URL_Address.Coerce,
                Local_Test.Port_Number);
             Test_Port (Ports.all (PTZ_Optics_Port));
-            Local_Test.Camera.Close;
+            Local_Test.Camera.Close ;
 
          exception
             when Failed =>

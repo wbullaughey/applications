@@ -5,7 +5,7 @@ with Ada_Lib.Strings; use Ada_Lib.Strings;
 with ADA_LIB.Trace; use ADA_LIB.Trace;
 with Base;
 with Camera.Command_Queue;
-with Camera.Commands;
+--with Camera.Commands;
 --with Configuration.Camera.Setup;
 --with Configuration.State; use Configuration;
 --with Main;
@@ -195,15 +195,15 @@ package body Widgets.Adjust is
          when Base.Any_Scroll =>
             Camera.Command_Queue.Relative_Command (
                Connection_Data.Camera.all,
-               Camera.Commands.Relative_Type (Mouse_Event.X),
-               Camera.Commands.Relative_Type (Mouse_Event.Y),
+               Camera.Relative_Type (Mouse_Event.X),
+               Camera.Relative_Type (Mouse_Event.Y),
                Connection_Data.Camera_Pan_Speed,
                Connection_Data.Camera_Tilt_Speed);
 
          when Base.Horizontal_Scroll =>
             Camera.Command_Queue.Relative_Command (
                Connection_Data.Camera.all,
-               Camera.Commands.Relative_Type (Mouse_Event.X), 0,
+               Camera.Relative_Type (Mouse_Event.X), 0,
                Connection_Data.Camera_Pan_Speed, 0);
 
          when Base.No_Action | Base.No_Change =>
@@ -213,7 +213,7 @@ package body Widgets.Adjust is
          when Base.Vertical_Scroll =>
             Camera.Command_Queue.Relative_Command (
                Connection_Data.Camera.all, 0,
-               Camera.Commands.Relative_Type (Mouse_Event.Y), 0,
+               Camera.Relative_Type (Mouse_Event.Y), 0,
                Connection_Data.Camera_Tilt_Speed);
 
       end case;
@@ -417,7 +417,7 @@ package body Outer_Package is
 --                                    (if Has_Preset then
 --                                       Configuration.Camera.Camera.Setup.Get_Preset (Outer_ID)
 --                                    else
---                                        Configuration.Camera.Camera.Setup.Null_Preset);
+--                                        Configuration.Camera.Camera.Setup.Null_Preset_ID);
          begin
             Log_In (Debug, "row " & Table_Row'img &
                " Column " & Table_Column'img &

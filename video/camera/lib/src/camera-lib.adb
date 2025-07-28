@@ -231,8 +231,8 @@ package body Camera.Lib is
                Options.Directory.Construct (Iterator.Get_Parameter);
 
             when 'p' =>
-               Options.Port_Number := Ada_Lib.Socket_IO.Port_Type (
-                  Iterator.Get_Integer);
+               Options.Port_Number := Port_Type (
+                  Ada_Lib.Socket_IO.Port_Type (Iterator.Get_Integer));
 
             when 'r' =>    -- remote camera
                if    Options.Simulate and then

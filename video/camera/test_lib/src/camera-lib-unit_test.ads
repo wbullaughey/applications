@@ -67,12 +67,21 @@ package Camera.Lib.Unit_Test is
       Test                       : in     Camera_Test_Type
    ) return Boolean;
 
+   procedure Load_Test_State (
+      Test                       : in out Camera_Test_Type);
+
    overriding
    procedure Set_Up (
       Test                       : in out Camera_Test_Type
-   ) with Pre  => not Test.Have_Camera,
-          Post => Test.Verify_Set_Up and
-                  Test.Have_Camera;
+   ) with Pre  => not Test.Have_Camera and then
+                  not Test.Setup.Is_Loaded,
+          Post => Test.Verify_Set_Up and then
+                  (  if Test.Load_State then
+                        Test.Setup.Is_Loaded and then
+                        Test.Have_Camera
+                     else
+                        True
+                  );
    overriding
    procedure Tear_Down (
       Test                       : in out Camera_Test_Type);

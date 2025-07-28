@@ -16,16 +16,19 @@ package Configuration.Camera.Setup is
 
    procedure Dump (
       Configuration              : in     Configuration_Type;
+      What                       : in     String := "";
       From                       : in     String := Ada_Lib.Trace.Here);
 
    type Preset_Type              is new Root_State_Type with record
       Column                     : Column_Type := Column_Not_Set;
-      Preset_ID                  : Standard.Camera.Preset_ID_Type;
+      Preset_ID                  : Standard.Camera.Preset_ID_Type :=
+                                    Video.Lib.Null_Preset_ID;
       Row                        : Row_Type := Row_Not_Set;
    end record;
 
    procedure Dump (
       Preset                     : in     Preset_Type;
+      What                       : in     String := "";
       From                       : in     String := Ada_Lib.Trace.Here);
 
    function Make_Image_Name (
@@ -58,6 +61,7 @@ package Configuration.Camera.Setup is
 
    procedure Dump (
       Setup                      : in     Setup_Type;
+      What                       : in     String := "";
       From                       : in     String := Ada_Lib.Trace.Here);
 
    function File_Path
@@ -178,13 +182,13 @@ package Configuration.Camera.Setup is
                                     Initial_Root_State with
       Configuration_ID  => Configuration_Not_Set,
       Label             => Ada_Lib.Strings.Unlimited.Null_String,
-      Preset_ID         => Video.Lib.Null_Preset);
+      Preset_ID         => Video.Lib.Null_Preset_ID);
 
--- Null_Preset                      : constant Preset_Type := (
---                                  Initial_Root_State with
---    Column            => Column_Not_Set,
---    Preset_ID         => Preset_Not_Set,
---    Row               => Row_Not_Set);
+   Null_Preset                   : constant Preset_Type := (
+                                    Initial_Root_State with
+      Column            => Column_Not_Set,
+      Preset_ID         => Video.Lib.Null_Preset_ID,
+      Row               => Row_Not_Set);
 
 
 end Configuration.Camera.Setup;

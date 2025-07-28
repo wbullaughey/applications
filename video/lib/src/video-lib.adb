@@ -1,4 +1,4 @@
---with Ada.Exceptions;
+with Ada.Unchecked_Deallocation;
 with Ada.Text_IO;use Ada.Text_IO;
 with Ada_Lib.Help;
 with ADA_LIB.OS;
@@ -23,6 +23,11 @@ package body Video.Lib is
    Options_Without_Parameters    : aliased constant
                                     Ada_Lib.Options.Options_Type :=
                                        Ada_Lib.Options.Null_Options;
+   Presets                       : array (Which_Preset_Type) of
+                                    Preset_ID_Type := (
+                                       others => (
+                                          Is_Set      => False,
+                                          ID          => 0));
 
    ---------------------------------------------------------------
    function Address_Kind (
@@ -44,10 +49,25 @@ package body Video.Lib is
    ---------------------------------------------------------------
 
    begin
-      return Preset_ID_Type'(
+      return (
          ID       => ID,
-         Set      => True);
+         Is_Set   => True);
    end Constructor;
+
+   ---------------------------------------------------------------
+   procedure Dump (
+      Prefix_ID                  : in     Preset_ID_Type;
+      What                       : in     String := "";
+      From                       : in     String := Ada_Lib.Trace.Here) is
+   ---------------------------------------------------------------
+
+   begin
+      Put_Line ((if What'length > 0 then
+            What & " "
+         else
+            "") &
+         "prefix id " & Prefix_ID.Image);
+   end Dump;
 
    ---------------------------------------------------------------
    procedure Dump (
@@ -62,15 +82,61 @@ package body Video.Lib is
          Buffer (Buffer'first .. Buffer'first + Index_Type (Length) - 1), From);
    end Dump;
 
-   ---------------------------------------------------------------
-   function Image (
-      Value                      : in     Data_Type
-   ) return String is
-   ---------------------------------------------------------------
+   -------------------------------------------------------------------------
+   function Get_Default_Preset_ID
+   return Preset_ID_Type is
+   -------------------------------------------------------------------------
 
    begin
-      return Hex_IO.Hex (Interfaces.Integer_8 (Value), 8);
-   end Image;
+      return Presets (Default_Preset);
+   end Get_Default_Preset_ID;
+
+   -------------------------------------------------------------------------
+   function Get_First_Preset_ID
+   return Preset_ID_Type is
+   -------------------------------------------------------------------------
+
+   begin
+      return Presets (First_Preset);
+   end Get_First_Preset_ID;
+
+   -------------------------------------------------------------------------
+   function Get_Last_Preset_ID
+   return Preset_ID_Type is
+   -------------------------------------------------------------------------
+
+   begin
+      return Presets (Last_Preset);
+   end Get_Last_Preset_ID;
+
+   -------------------------------------------------------------------------
+   function Get_Power_On_Preset_ID
+   return Preset_ID_Type is
+   -------------------------------------------------------------------------
+
+   begin
+      return Presets (Power_On_Preset);
+   end Get_Power_On_Preset_ID;
+
+   -------------------------------------------------------------------------
+   function Get_Preset (
+      Which_Preset               : in     Which_Preset_Type
+   ) return Preset_ID_Type is
+   -------------------------------------------------------------------------
+
+   begin
+      return Presets (Which_Preset);
+   end Get_Preset;
+
+   -------------------------------------------------------------------------
+   function Have_Preset (
+      Which_Preset               : in     Which_Preset_Type
+   ) return Boolean is
+   -------------------------------------------------------------------------
+
+   begin
+      return Presets (Which_Preset).Is_Set;
+   end Have_Preset;
 
    -------------------------------------------------------------------------
    function ID (
@@ -81,6 +147,29 @@ package body Video.Lib is
    begin
       return Preset_ID.ID;
    end ID;
+
+   ---------------------------------------------------------------
+   function Image (
+      Preset_ID                  : in     Preset_ID_Type
+   ) return String is
+   ---------------------------------------------------------------
+
+   begin
+      return (if Preset_ID.Is_Set then
+         " id" & Preset_ID.ID'img
+      else
+         " not set");
+   end Image;
+
+   ---------------------------------------------------------------
+   function Image (
+      Value                      : in     Data_Type
+   ) return String is
+   ---------------------------------------------------------------
+
+   begin
+      return Hex_IO.Hex (Interfaces.Integer_8 (Value), 8);
+   end Image;
 
    -------------------------------------------------------------------------
    overriding
@@ -109,30 +198,21 @@ package body Video.Lib is
    -------------------------------------------------------------------------
 
    begin
-      return Preset_ID.Set;
+      return Preset_ID.Is_Set;
    end Is_Set;
-
-   ----------------------------------------------------------------
-   function Null_ID
-   return Preset_ID_Type is
-   ----------------------------------------------------------------
-   begin
-      return Preset_ID_Type'(
-         ID       => Preset_Range_Type'last,
-         Set      => False);
-   end Null_ID;
 
    ----------------------------------------------------------------
    function Parse_Image_Value (
       Value                      : in     String;
-      Preset                     :    out Preset_ID_Type
+      Preset                     :    out Preset_ID_Type'class
    ) return String is
    ----------------------------------------------------------------
 
       Iterator                   : Ada_Lib.Parser.Iterator_Type :=
                                     Ada_Lib.Parser.Initialize (Value, ",");
    begin
-      Preset := Constructor (Iterator.Get_Number (True));
+      Preset := Constructor (
+         Preset_Range_Type (Iterator.Get_Number (True)));
       return Iterator.Get_Value (False);
    end Parse_Image_Value;
 
@@ -213,13 +293,25 @@ package body Video.Lib is
    ----------------------------------------------------------------------------
    procedure Set (
       Preset_ID                  : in out Preset_ID_Type;
-      ID                         : in     APreset_Range_Type) is
+      ID                         : in     Preset_Range_Type) is
    ----------------------------------------------------------------------------
 
    begin
       Preset_ID.ID := ID;
-      Preset_ID.Set := True;
    end Set;
+
+   ----------------------------------------------------------------------------
+   procedure Set_Preset_ID (
+      Which_Preset               : in     Which_Preset_Type;
+      Preset_ID                  : in     Preset_ID_Type) is
+   ----------------------------------------------------------------------------
+
+   begin
+      Log_In (Debug, "which " & Which_Preset'img &
+         Preset_ID.Image);
+      Presets (Which_Preset) := Preset_ID;
+      Log_Out (Debug);
+   end Set_Preset_ID;
 
    ----------------------------------------------------------------------------
    overriding

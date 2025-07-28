@@ -24,10 +24,11 @@ package Camera.Commands.PTZ_Optics is
                                     Minimum_Speed) /2;
    Default_Write_Timeout         : constant Ada_Lib.Socket_IO.Timeout_Type := 0.2;
 
-   Maximum_Preset                : constant := 254;   -- standard set to same as preset 0
+   First_Preset_Number           : constant := 0;
+   Default_Preset_Number         : constant := First_Preset_Number;
+   Maximum_Preset_Number         : constant := 254;
    Port                          : constant := 5678;
-   Powerup_Preset                : constant Preset_ID_Type :=
-                                    Video.Lib.Constructor (0);
+   Power_On_Preset_Number        : constant := First_Preset_Number;
 
 private
 
@@ -37,6 +38,11 @@ private
       Response                   : in     Video.Lib.Buffer_Type;
       Value                      :    out Natural;
       Next_Buffer_Index          :    out Video.Lib.Index_Type);
+
+-- function Allocate_Preset_ID (
+--    Camera                     : in     PTZ_Optics_Type;
+--    ID                         : in     Preset_Range_Type
+-- ) return Preset_ID_Type;
 
    overriding
    procedure Completed (
@@ -52,16 +58,6 @@ private
    ) return Index_Type;
 
    overriding
-   function Get_Default_Preset (
-      Camera                     : in     PTZ_Optics_Type
-   ) return Preset_ID_Type;
-
-   overriding
-   function Get_Maximum_Preset (
-      Camera                     : in     PTZ_Optics_Type
-   ) return Preset_ID_Type;
-
-   overriding
    function Get_Camera_Speed (
       Camera                     : in     PTZ_Optics_Type;
       Which                      : in     Which_Speed_Type := Select_Default_Speed
@@ -72,6 +68,10 @@ private
       Camera                     : in     PTZ_Optics_Type;
       Command                    : in     Standard.Camera.Lib.Base.Commands_Type
    ) return Duration;
+
+   overriding
+   procedure Initialize_Standard_Preset_IDs (
+      Camera                     : in     PTZ_Optics_Type);
 
    overriding
    procedure Process_Response (

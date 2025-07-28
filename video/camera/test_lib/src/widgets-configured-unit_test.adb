@@ -19,6 +19,7 @@ with Configuration.Camera.State;
 with Gnoga.Gui.Base;
 with Gnoga.Gui.View.Card;
 with Main;
+with Video.Lib;
 
 package body Widgets.Configured.Unit_Test is
 
@@ -67,7 +68,7 @@ package body Widgets.Configured.Unit_Test is
    procedure Update_Preset_Field (
       Setup                      : in     Configuration.Camera.Setup.Setup_Type;
       Cell                       : in     Preset_Package.Cell_Class_Access;
-      Value                      : in     Camera.Preset_ID_Type);
+      Preset_ID                  : in     Camera.Preset_ID_Type);
 
    generic
       type Field_Type            is range <>;
@@ -172,7 +173,7 @@ package body Widgets.Configured.Unit_Test is
          " Modified_Configuration_ID" & Modified_Configuration_ID'img &
          " original configuration id" & Original_Configuration.
             Configuration_ID'img &
-         " original preset id" & Original_Configuration.Preset_ID'img);
+         " original preset id" & Original_Configuration.Preset_ID.Image);
          -- test seting a coordinate that is not used in a preset
          declare
             Cell                 : constant Preset_Package.Cell_Class_Access :=
@@ -224,7 +225,7 @@ package body Widgets.Configured.Unit_Test is
                                        Row_Type'first  -- should not happen
                                  ),
                Expected_Preset_ID
-                              => Connection_Data.Camera.Get_Preset_Not_Set,
+                              => Video.Lib.Null_Preset_ID,
                Row_Index      => Row_Index_Type (
                                                 Modified_Configuration_ID));
          end;   -- test seting a coordinate that is not used in a preset
@@ -304,7 +305,7 @@ package body Widgets.Configured.Unit_Test is
          " Modified_Configuration_ID" & Modified_Configuration_ID'img &
          " original configuration id" & Original_Configuration.
             Configuration_ID'img &
-         " original preset id" & Original_Configuration.Preset_ID'img &
+         " original preset id" & Original_Configuration.Preset_ID.Image &
          " Modified_Field_Value_With_Preset" &
             Modified_Field_Value_With_Preset'img &
          " Expected_Preset_ID" & Expected_Preset_ID'img);
@@ -386,7 +387,7 @@ package body Widgets.Configured.Unit_Test is
    procedure Test_Update_Valid_Column is new Test_Update_Valid_Coordinate (
       Check_Fields                        => Check_Fields,
       Coordinate_Type                     => Column_Type,
-      Expected_Preset_ID                  => 1,
+      Expected_Preset_ID                  => Video.Lib.Constructor (1),
       Field                               => Column_Field,
       Fire                                => Column_Fire,
       Modified_Configuration_ID           => 1,
@@ -396,7 +397,7 @@ package body Widgets.Configured.Unit_Test is
    procedure Test_Update_Valid_Row is new Test_Update_Valid_Coordinate (
       Check_Fields                        => Check_Fields,
       Coordinate_Type                     => Row_Type,
-      Expected_Preset_ID                  => 3,
+      Expected_Preset_ID                  => Video.Lib.Constructor (3),
       Field                               => Row_Field,
       Fire                                => Row_Fire,
       Modified_Configuration_ID           => 2,
@@ -461,7 +462,7 @@ package body Widgets.Configured.Unit_Test is
    ---------------------------------------------------------------
 
    procedure Check_Column is new Check_Integer (Column_Type);
-   procedure Check_Preset is new Check_Modular (Camera.Preset_ID_Type);
+   procedure Check_Preset is new Check_Modular (Camera.Preset_Range_Type);
    procedure Check_Row    is new Check_Integer (Row_Type);
 
    type Test_Case_Type           is (Accept_Form, Cancel_Form, Not_Set,
@@ -608,7 +609,7 @@ package body Widgets.Configured.Unit_Test is
                      Value          : constant String :=
                                        Cell.Preset_ID_Field.Value;
                   begin
-                     Check_Preset (Expected_Preset_ID, Value, "preset", From);
+                     Check_Preset (Expected_Preset_ID.ID, Value, "preset", From);
                   end;
 
                when Row_Field =>
@@ -1005,7 +1006,7 @@ package body Widgets.Configured.Unit_Test is
                               Assert (Cell.Preset_ID = Expected_Preset_ID,
                                  "expected preset id (" & Expected_Preset_ID'img &
                                  ") does not match preset id (" &
-                                    Cell.Preset_ID'img & ")");
+                                    Cell.Preset_ID.Image & ")");
 
                            when Row_Field =>
                               declare
@@ -1080,7 +1081,8 @@ package body Widgets.Configured.Unit_Test is
                                    Configured_Card_Type (Current_Card.all);
    begin
       Log_In (Debug);
-         Connection_Data.Camera.Set_Preset (Camera.Lib.Base.Power_On_Preset);
+         Connection_Data.Camera.Set_Preset (
+            Video.Lib.Constructor (Camera.Lib.Base.Power_On_Preset));
          declare
             Cell                 : constant Preset_Package.Cell_Class_Access :=
                                      Preset_Package.Cell_Class_Access (
@@ -1140,7 +1142,7 @@ package body Widgets.Configured.Unit_Test is
       Log_In (Debug, "Modified_Configuration_ID" & Modified_Configuration_ID'img &
          " original configuration id" & Original_Configuration.
             Configuration_ID'img &
-         " original preset id" & Original_Configuration.Preset_ID'img);
+         " original preset id" & Original_Configuration.Preset_ID.Image);
          -- test seting a preset that is not used in a preset
          declare
             Cell                 : constant Preset_Package.Cell_Class_Access :=
@@ -1156,7 +1158,8 @@ package body Widgets.Configured.Unit_Test is
             Log_Here (Debug, "test preset for no preset");
             -- set the preset with no preset defined for the preset,column
             -- the preset should be set blank
-            Update_Preset_Field (Local_Test.Setup, Cell, Modified_Preset_Value_No_Preset);
+            Update_Preset_Field (Local_Test.Setup, Cell,
+               Video.Lib.Constructor (Modified_Preset_Value_No_Preset));
             Cell.Dump (Pause_Flag or Debug);
             Pause_On_Flag ("test preset value set before fire event");
             Connection_Data.Reset_Update_Event;
@@ -1177,7 +1180,7 @@ package body Widgets.Configured.Unit_Test is
                Expected_Label => Original_Configuration.Label.Coerce,
                Expected_Row   => Original_Preset.Row,
                Expected_Preset_ID
-                  => Connection_Data.Camera.Get_Preset_Not_Set,
+                  => Video.Lib.Null_Preset_ID,
                Row_Index
                   => Row_Index_Type (Modified_Configuration_ID));
          end;   -- test seting a preset that is not used in a preset
@@ -1267,7 +1270,9 @@ package body Widgets.Configured.Unit_Test is
                                        GNOGA_Ada_Lib.Get_Connection_Data);
       Cards                      : constant Main.Cards_Access_Type :=
                                     Connection_Data.Get_Cards;
-      Expected_Preset_ID         : constant := 5;
+      Expected_Preset_Number     : constant := 5;
+      Expected_Preset_ID         : constant Video.Lib.Preset_ID_Type :=
+                                    Video.Lib.Constructor (Expected_Preset_Number);
       Expected_Preset            : constant Preset_Type'class :=
                                     Local_Test.Setup.Get_Preset (Expected_Preset_ID);
       Modified_Configuration_ID  : constant := 3;
@@ -1288,15 +1293,15 @@ package body Widgets.Configured.Unit_Test is
          " Modified_Configuration_ID" & Modified_Configuration_ID'img &
          " original configuration id" & Original_Configuration.
             Configuration_ID'img &
-         " original preset id" & Original_Configuration.Preset_ID'img &
+         " original preset id" & Original_Configuration.Preset_ID.Image &
          " Modified_Field_Value_With_Preset" &
             Modified_Field_Value_With_Preset'img &
-         " Expected_Preset_ID" & Expected_Preset_ID'img);
+         " Expected_Preset_Number" & Expected_Preset_Number'img);
          -- test seting a row/column that is valid for a different preset
          -- preset field should be updated
          declare
 --          New_Preset           : constant Preset_Type :=
---                                  Local_Test.Setup.Get_Preset (Expected_Preset_ID);
+--                                  Local_Test.Setup.Get_Preset (Expected_Preset_Number);
             Cell                 : constant Preset_Package.Cell_Class_Access :=
                                      Preset_Package.Cell_Class_Access (
                                         Configured_Card.Get_Cell (Preset_Field,
@@ -1309,7 +1314,7 @@ package body Widgets.Configured.Unit_Test is
             Log_Here (Debug, "test preset field");
             Connection_Data.Reset_Update_Event;
             Update_Preset_Field (Local_Test.Setup, Cell,
-               Modified_Field_Value_With_Preset);
+               Expected_Preset_ID);
 
             Cell.Dump (Pause_Flag or Debug);
             Pause_On_Flag ("test preset Field value set before fire event");
@@ -1350,19 +1355,19 @@ package body Widgets.Configured.Unit_Test is
    procedure Update_Preset_Field (
       Setup                      : in     Configuration.Camera.Setup.Setup_Type;
       Cell                       : in     Preset_Package.Cell_Class_Access;
-      Value                      : in     Camera.Preset_ID_Type) is
+      Preset_ID                  : in     Camera.Preset_ID_Type) is
    ----------------------------------------------------------------
 
    begin
-      if Setup.Has_Preset (Value) then
-         Cell.Preset_ID_Field.Value (Integer (Value));
+      if Setup.Has_Preset (Preset_ID) then
+         Cell.Preset_ID_Field.Value (Integer (Preset_ID.ID));
          Cell.Preset_Set := True;
       else
-         Cell.Preset_ID_Field.Value ("");
-         Cell.Preset_Set := False;
+         Cell.Preset_ID := Video.Lib.Null_Preset_ID;
+            Cell.Preset_Set := False;
       end if;
 
-      Cell.Preset_ID := Value;
+      Cell.Preset_ID := Preset_ID;
    end Update_Preset_Field;
 
    ----------------------------------------------------------------

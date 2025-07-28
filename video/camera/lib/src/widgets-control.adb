@@ -228,11 +228,11 @@ not_implemented;
                end if;
 
                Image.Class_Name (Configuration.Camera.Control_Image_Style);
-               if Preset_ID /= Configuration.Camera.Get_Preset_Not_Set then
+               if not Preset_ID.Is_Set then -- /= Configuration.Camera.Get_Preset_Not_Set then
                   Preset_Text.Create (
                      Parent   => Cell,
                      Content  => Preset_ID'img);
-                  Preset_Text.Class_Name (Control_Text_Style);
+                  Preset_Text.Class_Name (Configuration.Camera.Control_Text_Style);
                end if;
             end;
          end if;

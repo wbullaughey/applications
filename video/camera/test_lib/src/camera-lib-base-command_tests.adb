@@ -276,7 +276,7 @@ package body Camera.Lib.Base.Command_Tests is
 
       begin
          Log_Here (Debug or Trace_Set_Up);
-         Test.Camera.Set_Preset (Test.Camera.Get_Default_Preset);
+         Test.Camera.Set_Preset (Video.Lib.Get_Default_Preset_ID);
       exception
          when Fault: Camera.Commands.Timeout =>
             Log_Exception (Debug or Trace_Set_Up, Fault,
@@ -334,7 +334,7 @@ package body Camera.Lib.Base.Command_Tests is
 
    begin
       Log_In (Debug);
-      Test.Camera.Set_Preset (Test.Camera.Get_Default_Preset,
+      Test.Camera.Set_Preset (Video.Lib.Get_Default_Preset_ID,
          Speed  => Speed);
       -- normally same as preset 0
       Camera.Lib.Unit_Test.Camera_Test_Type (Test).Tear_Down;
@@ -1036,7 +1036,7 @@ package body Camera.Lib.Base.Command_Tests is
    begin
       Log_In (Debug);
       Pause (Local_Test.Manual, "set preset 3");
-      Local_Test.Camera.Set_Preset (3);
+      Local_Test.Camera.Set_Preset (Video.Lib.Constructor (3));
 --    Local_Test.Camera.Process_Command (Base.Memory_Recall,
 --       Options     => (
 --             1 => (

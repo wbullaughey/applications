@@ -71,28 +71,6 @@ package body Camera.LIB.ALPTOP is
 
    ----------------------------------------------------------------------------
    overriding
-   function Get_Default_Preset (
-      Camera                     : in     ALPTOP_Type
-   ) return Preset_ID_Type is
-   ----------------------------------------------------------------------------
-
-   begin
-      return 0;
-   end Get_Default_Preset;
-
-   ----------------------------------------------------------------------------
-   overriding
-   function Get_Maximum_Preset (
-      Camera                     : in     ALPTOP_Type
-   ) return Preset_ID_Type is
-   ----------------------------------------------------------------------------
-
-   begin
-      return 127;
-   end Get_Maximum_Preset;
-
-   ----------------------------------------------------------------------------
-   overriding
    function Get_Timeout (
       Camera                     : in     ALPTOP_Type;
       Command                    : in     Standard.Camera.Lib.Base.Commands_Type
@@ -104,6 +82,16 @@ package body Camera.LIB.ALPTOP is
       Not_Implemented;
       return 0.0;
    end Get_Timeout;
+
+   ----------------------------------------------------------------------------
+   overriding
+   procedure Initialize_Standard_Preset_IDs (
+      Camera                     : in     ALPTOP_Type) is
+   ----------------------------------------------------------------------------
+
+   begin
+      Not_Implemented;
+   end Initialize_Standard_Preset_IDs;
 
    ----------------------------------------------------------------------------
    overriding

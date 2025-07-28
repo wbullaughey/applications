@@ -51,7 +51,7 @@ package body Camera.Commands.Unit_Test is
 
    Debug       : Boolean renames Camera.Lib.Unit_Test.Camera_Commands_Debug;
    Suite_Name  : constant String := "Commands";
-   Test_Preset : constant Preset_ID_Type := Null_Preset;
+   Test_Preset : constant Preset_ID_Type := Video.Lib.Null_Preset_ID;
 
    ---------------------------------------------------------------
    procedure Check_Coordinates (

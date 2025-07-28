@@ -14,7 +14,8 @@ package Configuration is
    type Root_Setup_Type          is tagged private;
 
    function Is_Loaded (
-      Setup                      : in     Root_Setup_Type
+      Setup                      : in     Root_Setup_Type;
+      From                       : in     String := Ada_Lib.Trace.Here
    ) return Boolean;
 
    procedure Set_Loaded (
@@ -27,7 +28,8 @@ package Configuration is
    type Root_State_Type                is tagged private;
 
    function Is_Loaded (
-      State                      : in     Root_State_Type
+      State                      : in     Root_State_Type;
+      From                       : in     String := Ada_Lib.Trace.Here
    ) return Boolean;
 
    procedure Set_Loaded (

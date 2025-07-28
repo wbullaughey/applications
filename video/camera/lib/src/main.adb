@@ -556,7 +556,7 @@ package body Main is
                                        GNOGA_Ada_Lib.Get_Connection_Data.all);
       State                      : Configuration.Camera.State.State_Type renames
                                     Connection_Data.State;
-      Port_Number                : constant Ada_Lib.Socket_IO.Port_Type :=
+      Port_Number                : constant Standard.Camera.Port_Type :=
                                     State.Get_Host_Port;
       Camera_Address             : constant Ada_Lib.Socket_IO.Address_Type :=
                                        State.Get_Host_Address;

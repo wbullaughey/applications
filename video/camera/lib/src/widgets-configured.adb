@@ -10,11 +10,11 @@ with Configuration.Camera.Setup;
 with Configuration.Camera.State; use Configuration.Camera.State;
 --with Main;
 --with Camera.Lib.Base;
+with Video.Lib;
 
 package body Widgets.Configured is
 
--- subtype Configured_Cell_Class_Access
---                               is Generic_Cell_Package.Cell_Class_Access;
+-- use type Camera.Preset_Range_Type;
 
    Column_Labels                 : aliased Column_Labels_Type := (
       new String'("Configuration"),
@@ -93,7 +93,7 @@ package body Widgets.Configured is
    package Column_Package is new Field_Package (Column_Type,
       State_Type,
       Get_Number_Columns);
-   package Preset_ID_Package is new Field_Package (Preset_ID_Type,
+   package Preset_ID_Package is new Field_Package (Natural,
       State_Type,
       Get_Number_Presets);
    package Row_Package is new Field_Package (Row_Type,
@@ -184,6 +184,29 @@ package body Widgets.Configured is
          Configured_Card).Get_Form;
    end Get_Form;
 
+-- ---------------------------------------------------------------
+-- procedure Update_Preset_Number (
+--    State                      : in     State_Type;
+--    Value_Field                : in out Camera.Preset_Range_Type;
+--    Form_Field                 : in out Gnoga.Gui.Element.Form.Number_Type;
+--    Value                      : in     Camera.Preset_Range_Type;
+--    From                       : in     String := Ada_Lib.Trace.Here) is
+-- ---------------------------------------------------------------
+--
+-- begin
+--    Log_In (Debug, "value " & Value'img &
+--       " max " & Get_Number_Presets (State)'img &
+--       " was" & Value_Field'img & Quote (" field", Form_Field.Value) &
+--       " from " & From);
+--    Value_Field := Value;
+--    if Value > Get_Number_Presets (State) then
+--       Form_Field.Value ("");
+--    else
+--       Form_Field.Value (Integer (Value));
+--    end if;
+--    Log_Out (Debug, "new" & Value_Field'img &
+--       Quote (" field", Form_Field.Value));
+-- end Update_Preset_Number;
 
    ----------------------------------------------------------------
    overriding
@@ -257,7 +280,7 @@ package body Widgets.Configured is
          Configuration_ID        : constant Configuration_ID_Type
                                     :=
                                        Configuration_ID_Type'value (Value);
-         Preset_ID               : constant Preset_ID_Type :=
+         Preset_ID               : constant Camera.Preset_ID_Type :=
                                     Global_Camera_Setup.
                                        Configuration_Preset (Configuration_ID);
       begin
@@ -269,7 +292,7 @@ package body Widgets.Configured is
             Camera.Lib.Base.Memory_Set,
             Options     => (
                1 => (
-                  Data           => Camera.Data_Type (Preset_ID),
+                  Data           => Camera.Data_Type (Preset_ID.ID),
                   Mode           => Camera.Lib.Base.Fixed,
                   Start          => 6
                )
@@ -340,12 +363,12 @@ package body Widgets.Configured is
          Field_ID               : constant String := Name & "_Field_" &
                                     Ada_Lib.Strings.Trim (Table_Row'img) & "_" &
                                     Ada_Lib.Strings.Trim (Table_Column'img);
-         Preset_ID               : constant Preset_ID_Type :=
+         Preset_ID               : constant Camera.Preset_ID_Type :=
                                     Global_Camera_Setup.
                                        Get_Preset_ID (Configuration_ID);
          Has_Preset              : constant Boolean :=
                                     Global_Camera_Setup.
-                                       Has_Preset (Preset_Id);
+                                       Has_Preset (Preset_ID);
          Preset                  : constant
                                     Preset_Type'class :=
                                        (if
@@ -363,7 +386,7 @@ package body Widgets.Configured is
             " Column " & Table_Column'img &
             Quote (" cell ID", Cell_ID) &
             Quote (" column ID", Column.ID) &
-            " preset id" & Preset_ID'img &
+            " preset id" & Preset_ID.Image &
             " has preset " & Has_Preset'img);
 
          if    Configuration_ID =
@@ -402,12 +425,12 @@ package body Widgets.Configured is
                      ID          : constant String := Name & "_Control_Table";
 
                   begin
-                     Log_Here (Debug, "preset id" & Preset_ID'img &
+                     Log_Here (Debug, "preset id" & Preset_ID.Image &
                         Quote (" id", ID) &
                         Quote (" row id", Row.ID) &
                         Quote (" column id", Column.ID) &
                         " number presets" &
-                           State.Last_Preset'img);
+                           Video.Lib.Get_Last_Preset_ID'img);
                      Cell.Control_Table.Create (
                         Connection_Data.Get_Main_Window.all,
                         Parent   => Column,
@@ -416,7 +439,7 @@ package body Widgets.Configured is
                end if;
 
             when Image_Field =>
-               Log_Here (Debug, "Preset_ID" & Preset_ID'img);
+               Log_Here (Debug, "Preset_ID" & Preset_ID.Image);
                if Global_Camera_Setup.Has_Preset (Preset_ID) then
                   declare
                      Configuration_Row_Index
@@ -620,10 +643,9 @@ not_implemented;
                   Put_Line (Quote ("  Image path", Cell.Image_Div.Path));
 
                when Preset_Field =>
-                  Put_Line ("  Preset_ID:" & Cell.Preset_ID'img);
+                  Put_Line ("  Preset_ID:" & Cell.Preset_ID.Image);
                   Put_Line (Quote ("  Preset_ID_Field:",
                      Cell.Preset_ID_Field.Value));
-                  Put_Line ("  Preset_Set:" & Cell.Preset_Set'img);
 
                when Row_Field =>
                   Put_Line ("  Row_Number:" & Cell.Row_Number'img);
@@ -719,7 +741,7 @@ not_implemented;
          Log_In (Debug);
          Not_Implemented;
 --       Cell.Preset_ID := Preset_ID;
---       Cell.Preset_ID_Field.Value (Preset_ID'img);
+--       Cell.Preset_ID_Field.Value (Preset_ID.Image);
          Log_Out (Debug);
       end Update_Cell;
 
@@ -769,7 +791,7 @@ not_implemented;
             with function Generic_Preset_ID (
                New_Coordinate    : in     Coordinate_Type;
                Other_Coordinate  : in     Other_Coordinate_Type
-            ) return Preset_ID_Type;
+            ) return Camera.Preset_ID_Type;
             with procedure Package_Update (
                Cell              : in     Cell_Class_Access;
                Coordinate        : in     Coordinate_Type);
@@ -826,9 +848,11 @@ not_implemented;
                                  : constant Coordinate_Type :=
                                     Coordinate_Type (Raw_Coordinate);
                      New_Preset_ID
-                                 : constant Preset_ID_Type :=
+                                 : Camera.Preset_ID_Type :=
                                     Generic_Preset_ID (New_Coordinate,
                                        Preset_Other_Coordinate (Preset));
+                     New_Preset_Number
+                                 : Natural;
                      Preset_Cell : constant Cell_Class_Access := Cell_Class_Access (
                                     Configured_Card.Get_Cell (Preset_Field,
                                        Cell.Configuration_ID));
@@ -838,9 +862,9 @@ not_implemented;
                         " other coordinate" & Preset_Other_Coordinate (Preset)'img);
 
                      Package_Update (Cell, New_Coordinate);
-                     if New_Preset_ID = Preset_Not_Set then
+                     if not New_Preset_ID.Is_Set then
                         Log_Here (Debug);
-                        Preset_Cell.Preset_ID := Preset_Not_Set;
+                        Preset_Cell.Preset_ID := Video.Lib.Null_Preset_ID;
                         Preset_Cell.Preset_ID_Field.Value ("");
                         Image_Cell.Image_Div.Image.URL_Source (Blank_Preset);
                         Image_Cell.Image_Div.Path.Construct (Blank_Preset);
@@ -857,9 +881,10 @@ not_implemented;
                            Global_Camera_Setup.Update_Configuration (
                               Cell.Configuration_ID, New_Preset_ID);
                            Preset_ID_Package.Update (
-                              State, Preset_Cell.Preset_ID,
-                              Preset_Cell.Preset_ID_Field, New_Preset_ID);
+                              State, New_Preset_Number,
+                              Preset_Cell.Preset_ID_Field, Natural (New_Preset_ID.ID));
 
+                           New_Preset_ID.Set (Camera.Preset_Range_Type (New_Preset_Number));
                            Image_Cell.Image_Div.Image.URL_Source (Path);
                            Image_Cell.Image_Div.Path.Construct (Path);
                         end;
@@ -920,7 +945,7 @@ not_implemented;
          function Row_Preset_ID (
             Coordinate           : in     Row_Type;
             Other_Coordinate      : in     Column_Type
-         ) return Preset_ID_Type is
+         ) return Camera.Preset_ID_Type is
          -------------------------------------------------------------
 
          begin
@@ -976,7 +1001,7 @@ not_implemented;
          function Column_Preset_ID (
             Coordinate           : in     Column_Type;
             Other_Coordinate      : in     Row_Type
-         ) return Preset_ID_Type is
+         ) return Camera.Preset_ID_Type is
          -------------------------------------------------------------
 
          begin
@@ -1062,20 +1087,22 @@ not_implemented;
                                           GNOGA_Ada_Lib.Get_Connection_Data.all);
          Raw_Value                  : constant String :=
                                        Preset_Cell.Preset_ID_Field.Value;
-         New_Preset_ID              : constant Preset_ID_Type :=
+         New_Preset_ID              : constant Camera.Preset_ID_Type :=
                                        (if Raw_Value'length = 0 then
-                                          Preset_Not_Set
+                                          Video.Lib.Null_Preset_ID
                                        else
-                                          Preset_ID_Type'value (Raw_Value));
+                                          Video.Lib.Constructor (
+                                             Camera.Preset_Range_Type'value (
+                                                Raw_Value)));
          State                      : Configuration.Camera.State.State_Type renames
                                        Connection_Data.State;
       begin
          Log_In (Debug, "Configuration_ID" & Configuration_ID'img &
             Quote (" raw preset value", Raw_Value) &
             " new preset id" & New_Preset_ID'img);
-         if New_Preset_ID = Preset_Not_Set then -- put back the previous preset
+         if not New_Preset_ID.Is_Set  then -- put back the previous preset
             Log_Here (Debug);
-            Preset_Cell.Preset_ID_Field.Value (Preset_Cell.Preset_ID'img);
+            Preset_Cell.Preset_ID_Field.Value (Preset_Cell.Preset_ID.Image);
          else
             Log_Here (Debug);
             declare
@@ -1089,11 +1116,12 @@ not_implemented;
                                        Configuration_ID));
                Preset            : constant
                                     Preset_Type'class :=
-                                       (if New_Preset_ID = Preset_Not_Set then
+                                       (if not New_Preset_ID.Is_Set then
                                              Null_Preset
                                           else
                                              Global_Camera_Setup.Get_Preset (
                                                 New_Preset_ID));
+               Preset_Number     : Natural;
                Path              : constant String := Image_Name (
                                     Row      => Preset.Row,
                                     Column   => Preset.Column);
@@ -1104,9 +1132,10 @@ not_implemented;
             begin
                Log_Here (Debug, Quote ("image", Path));
                Global_Camera_Setup.Update_Configuration (
-                  Configuration_ID, New_Preset_ID);
-               Preset_ID_Package.Update (State, Preset_Cell.Preset_ID,
-                  Preset_Cell.Preset_ID_Field, New_Preset_ID);
+                  Configuration_ID, Video.Lib.Constructor (
+                     Camera.Preset_Range_Type (Preset_Number)));
+               Preset_ID_Package.Update (State, Preset_Number,
+                  Preset_Cell.Preset_ID_Field, Natural (New_Preset_ID.ID));
 
                Column_Package_Update (Column_Cell, Preset.Column);
                Image_Cell.Image_Div.Image.URL_Source (Path);

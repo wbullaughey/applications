@@ -8,11 +8,9 @@ package body Camera.Commands.PTZ_Optics is
 -- use type Ada.Streams.Stream_Element;
    use type Video.Lib.Index_Type;
 
-   Default_Preset                : constant := 0;
    Default_Response_Timeout      : constant Duration := 0.6;
    Position_Timeout              : constant Duration := 60.0;
    Power_Inquire_Timeout         : constant Duration := 120.0;
-   Preset_Not_Set                : constant := 255;
    Commands                      : constant Array (Standard.Camera.Lib.Base.
                                     Commands_Type) of Standard.Camera.Lib.Base.
                                        Command_Type := (
@@ -76,6 +74,19 @@ package body Camera.Commands.PTZ_Optics is
       end if;
    end Acked;
 
+--   ----------------------------------------------------------------------------
+--   procedure Allocate_Preset_ID (
+--      Camera                     : in     PTZ_Optics_Type;
+--      Preset_ID                  : in out Preset_ID_Type;
+--      ID                         : in     Preset_Range_Type) is
+--   ----------------------------------------------------------------------------
+--
+----    Preset_ID.Pointer := new Preset_Pointer_Type;
+--   begin
+--      Result.Set (ID);
+--      return Result;
+--   end Allocate_Preset_ID;
+
    ----------------------------------------------------------------------------
    overriding
    procedure Completed (
@@ -122,28 +133,6 @@ package body Camera.Commands.PTZ_Optics is
 
    ----------------------------------------------------------------------------
    overriding
-   function Get_Default_Preset (
-      Camera                     : in     PTZ_Optics_Type
-   ) return Preset_ID_Type is
-   ----------------------------------------------------------------------------
-
-   begin
-      return Powerup_Preset;
-   end Get_Default_Preset;
-
-   ----------------------------------------------------------------------------
-   overriding
-   function Get_Maximum_Preset (
-      Camera                     : in     PTZ_Optics_Type
-   ) return Preset_ID_Type is
-   ----------------------------------------------------------------------------
-
-   begin
-      return Maximum_Preset;
-   end Get_Maximum_Preset;
-
-   ----------------------------------------------------------------------------
-   overriding
    function Get_Timeout (
       Camera                     : in     PTZ_Optics_Type;
       Command                    : in     Standard.Camera.Lib.Base.Commands_Type
@@ -153,6 +142,23 @@ package body Camera.Commands.PTZ_Optics is
    begin
       return Commands (Command).Response_Timeout;
    end Get_Timeout;
+
+   ----------------------------------------------------------------------------
+   overriding
+   procedure Initialize_Standard_Preset_IDs (
+      Camera                     : in     PTZ_Optics_Type) is
+   ----------------------------------------------------------------------------
+
+      use Video.Lib;
+
+   begin
+      Log_In (Debug);
+      Set_Preset_ID (Default_Preset, Constructor (Power_On_Preset_Number));
+      Set_Preset_ID (First_Preset, Constructor (First_Preset_Number));
+      Set_Preset_ID (Maximum_Preset, Constructor (Maximum_Preset_Number));
+      Set_Preset_ID (Power_On_Preset, Constructor (Power_On_Preset_Number));
+      Log_Out (Debug);
+   end Initialize_Standard_Preset_IDs;
 
    ----------------------------------------------------------------------------
    overriding

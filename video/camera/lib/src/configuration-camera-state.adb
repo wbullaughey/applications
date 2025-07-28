@@ -12,7 +12,7 @@ with AUnit.Assertions; use AUnit.Assertions;
 with Base;
 with Camera.Lib.Options;
 --with Hex_IO;
---with Video.Lib;
+with Video.Lib;
 
 package body Configuration.Camera.State is
 
@@ -106,7 +106,7 @@ package body Configuration.Camera.State is
       Put_Line (Quote ("  CSS Path", State.CSS_Path));
       Put_Line ("  Number Columns:" & State.Number_Columns'img);
       Put_Line ("  Number Configurations:" & State.Number_Configurations'img);
-      Put_Line ("  Last Preset:" & State.Last_Preset'img);
+      Put_Line ("  Last Preset:" & Video.Lib.Get_Last_Preset_ID'img);
       Put_Line ("  Number Rows:" & State.Number_Rows'img);
       for Row in State.Images.all'range (1) loop
          for Column in State.Images.all'range (2) loop
@@ -161,11 +161,11 @@ package body Configuration.Camera.State is
    ----------------------------------------------------------------
    function Get_Number_Presets (
       State                      : in     State_Type
-   ) return Standard.Camera.Preset_ID_Type is
+   ) return Natural is
    ----------------------------------------------------------------
 
    begin
-      return State.Last_Preset;
+      return Natural (State.Number_Columns);
    end Get_Number_Presets;
 
    ----------------------------------------------------------------
@@ -245,6 +245,7 @@ package body Configuration.Camera.State is
       Config                     : Ada_Lib.Configuration.Configuration_Type;
       Current_Directory          : constant String :=
                                     Standard.Camera.Lib.Options.Current_Directory;
+      Last_Preset_Number         : Positive;
       Path                       : constant String :=
                                     (if Current_Directory'length > 0 then
                                        Current_Directory & "/"
@@ -265,9 +266,16 @@ package body Configuration.Camera.State is
          "grid_columns"));
       State.Number_Configurations := Configuration_ID_Type (
          Config.Get_Integer ("configurations"));
-      State.Last_Preset :=
-         Standard.Camera.Preset_ID_Type (Config.Get_Integer ("last preset")); -- presets start at 0
+--       Standard.Camera.Preset_ID_Type (Config.Get_Integer ("last preset")); -- presets start at 0
       State.Number_Rows := Row_Type (Config.Get_Integer ("grid_rows"));
+      Last_Preset_Number := Config.Get_Integer ("last_preset");
+
+      declare
+         use Video.Lib;
+
+      begin
+         Set_Preset_ID (Last_Preset, Constructor (Preset_Range_Type (Last_Preset_Number)));
+      end;
 
       Log_Here (Debug,
          Quote ("video address", State.Video_Address.Image) &
@@ -275,7 +283,7 @@ package body Configuration.Camera.State is
          Quote (" CSS_Path", State.CSS_Path) &
          " Number_Columns" & State.Number_Columns'img &
          " Number_Configurations" & State.Number_Configurations'img &
-         " Last_Preset" & State.Last_Preset'img &
+         " Last_Preset" & Last_Preset_Number'img &
          " Number_Rows" & State.Number_Rows'img);
       State.Images := new Images_Type (1 .. State.Number_Rows,
          1 .. State.Number_Columns);
