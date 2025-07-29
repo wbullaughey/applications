@@ -328,8 +328,8 @@ package body Camera.Lib is
 --       Put_Line ("      v               Trace Video communications");
          Put_Line ("      V               Trace Video widgets");
          Put_Line ("      " & Trace_Prefix & "a              Adjust Window");
-         Put_Line ("      " & Trace_Prefix & "c              Control Window");
-         Put_Line ("      " & Trace_Prefix & "C              Configured Window");
+         Put_Line ("      " & Trace_Prefix & "c              Widgets.Control debyg");
+         Put_Line ("      " & Trace_Prefix & "C              Widgets.Configured debug");
          Put_Line ("      " & Trace_Prefix & "l              List camera commands");
          Put_Line ("      " & Trace_Prefix & "s              configuration");
 

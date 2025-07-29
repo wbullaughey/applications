@@ -54,8 +54,8 @@ Camera Lib trace options (-@T)
       T               Windows.Top
       V               Trace Video widgets
       wa              Adjust Window
-      wc              Control Window
-      wC              Configured Window
+      wc              Widgets.Control debyg
+      wC              Widgets.Configured debug
       wl              List camera commands
       ws              configuration
 

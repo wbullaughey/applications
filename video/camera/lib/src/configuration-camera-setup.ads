@@ -88,7 +88,8 @@ package Configuration.Camera.Setup is
    function Get_Preset_ID (
       Setup                      : in     Setup_Type;
       Configuration_Id           : in     Configuration_ID_Type
-   ) return Standard.Camera.Preset_ID_Type;
+   ) return Standard.Camera.Preset_ID_Type
+   with Pre => Setup.Has_Configuration(Configuration_Id);
 
    function Has_Configuration (
       Setup                      : in     Setup_Type;

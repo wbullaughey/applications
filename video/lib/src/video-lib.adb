@@ -88,6 +88,7 @@ package body Video.Lib is
    -------------------------------------------------------------------------
 
    begin
+      Log_Here (Debug, "Default_Preset " & Presets (Default_Preset).Image);
       return Presets (Default_Preset);
    end Get_Default_Preset_ID;
 
@@ -97,6 +98,7 @@ package body Video.Lib is
    -------------------------------------------------------------------------
 
    begin
+      Log_Here (Debug, "First_Presett " & Presets (First_Preset).Image);
       return Presets (First_Preset);
    end Get_First_Preset_ID;
 
@@ -106,6 +108,7 @@ package body Video.Lib is
    -------------------------------------------------------------------------
 
    begin
+      Log_Here (Debug, "Last preset " & Presets (Last_Preset).Image);
       return Presets (Last_Preset);
    end Get_Last_Preset_ID;
 
@@ -115,6 +118,7 @@ package body Video.Lib is
    -------------------------------------------------------------------------
 
    begin
+      Log_Here (Debug, "Power_On_Preset " & Presets (Power_On_Preset).Image);
       return Presets (Power_On_Preset);
    end Get_Power_On_Preset_ID;
 
@@ -125,6 +129,8 @@ package body Video.Lib is
    -------------------------------------------------------------------------
 
    begin
+      Log_Here (Debug, "Which_Preset " & Which_Preset'img &
+         " Preset_ID " & Presets (Which_Preset).Image);
       return Presets (Which_Preset);
    end Get_Preset;
 
@@ -135,16 +141,19 @@ package body Video.Lib is
    -------------------------------------------------------------------------
 
    begin
-      return Presets (Which_Preset).Is_Set;
+      return Log_Here (Presets (Which_Preset).Is_Set, Debug,
+         "Preset_ID " & Presets (Which_Preset).Image);
    end Have_Preset;
 
    -------------------------------------------------------------------------
    function ID (
-      Preset_ID                  : in     Preset_ID_Type
+      Preset_ID                  : in     Preset_ID_Type;
+      From                       : in     String := Ada_Lib.Trace.Here
    ) return Ada_Lib.Socket_IO.Data_Type is
    -------------------------------------------------------------------------
 
    begin
+      Log_Here (Debug, "Preset_ID " & Preset_ID.Image & " from " & From);
       return Preset_ID.ID;
    end ID;
 
@@ -155,10 +164,7 @@ package body Video.Lib is
    ---------------------------------------------------------------
 
    begin
-      return (if Preset_ID.Is_Set then
-         " id" & Preset_ID.ID'img
-      else
-         " not set");
+      return "id" & Preset_ID.ID'img & " Is_Set " & Preset_ID.Is_Set'img;
    end Image;
 
    ---------------------------------------------------------------
@@ -193,12 +199,14 @@ package body Video.Lib is
 
    -------------------------------------------------------------------------
    function Is_Set (
-      Preset_ID                  : in     Preset_ID_Type
+      Preset_ID                  : in     Preset_ID_Type;
+      From                       : in     String := Ada_Lib.Trace.Here
    ) return Boolean is
    -------------------------------------------------------------------------
 
    begin
-      return Preset_ID.Is_Set;
+      return Log_Here (Preset_ID.Is_Set, Debug,
+         "Preset_ID " & Preset_ID.Image & " from " & From);
    end Is_Set;
 
    ----------------------------------------------------------------
@@ -354,7 +362,7 @@ package body Video.Lib is
 begin
 --Elaborate := True;
    Options_Debug := Debug_Options.Debug_All;
---Debug := True;
+Debug := True;
 --Trace_Options := True;
    Log_Here (Elaborate or Options_Debug or Debug or Trace_Options);
 

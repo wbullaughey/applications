@@ -154,8 +154,10 @@ package body Widgets.Generic_Table is
                            Number_Rows    => Number_Rows,
                            Row            => Row,
                            Row_Index      => Row_Index);
+log_here;
                         Cell.Create_Cell (Grid.Form'unchecked_access,
                            Row, Column.all, Column_Index, Row_Index);
+log_here;
                      end;
                   end;
                end loop;

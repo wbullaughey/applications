@@ -195,7 +195,7 @@ package body Main.Unit_Test is
       Button_Press_Event      : Button_Push_Event_Type;
 --    Local_Test              : Test_Type'class renames Test_Type'class (Test);
    begin
-      Log_In (Debug);
+      Log_In (Debug, "Test_Driver " & Options.Test_Driver'img);
 
       if not Options.Test_Driver then
          Log_Here (Debug);

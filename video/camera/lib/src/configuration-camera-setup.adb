@@ -157,13 +157,18 @@ package body Configuration.Camera.Setup is
    ) return Standard.Camera.Preset_ID_Type is
    ----------------------------------------------------------------
 
+begin
+log_here;
+declare
       Result                     : constant Standard.Camera.Preset_ID_Type :=
                                     Setup.Configurations (
                                        Configuration_Id).Preset_ID;
    begin
+log_here;
       Log_Here (Debug, "Configuration_Id " & Configuration_Id'img &
          " result " & Result.ID'img);
       return Result;
+end;
    end Get_Preset_ID;
 
    ----------------------------------------------------------------
@@ -267,7 +272,8 @@ package body Configuration.Camera.Setup is
    begin
       Log_In (Debug, Quote ("file name", Name) &
          Quote (" Current_Directory", Current_Directory) &
-         Quote (" path", Path));
+         Quote (" path", Path) &
+         " number configurations" & State.Number_Configurations'img);
 
       Global_Camera_Setup := Setup'unchecked_access;
       Config.Load (Path, False);
@@ -359,23 +365,32 @@ package body Configuration.Camera.Setup is
                                     "configuration_" & Trim (Configuration_ID'img);
                begin
                   Log_Here (Debug, "configuration name " & Name &
-                     " value " & Configuration_ID'img & " preset id" &
-                     Preset_ID.ID'img &
+                     " value " & Configuration_ID'img & " preset id " &
+                     Preset_ID.Image &
                      Quote (" label", Label));
+log_here;
 
-                  if    not Preset_ID.Is_Set or else
-                        not Setup.Presets (Preset_ID.ID).Preset_ID.Is_Set then
-                     raise Failed with "preset" & Preset_ID.ID'img &
-                        " not configured for configuration" & Configuration_ID'img;
+                  if    Preset_ID.Is_Set then
+                     Log_Here (Debug, "Setup.Presets" & Preset_ID.ID'img &
+                        " " & Setup.Presets (Preset_ID.ID).Preset_ID.Image);
+
+                     if not Setup.Presets (Preset_ID.ID).Preset_ID.Is_Set then
+                        raise Failed with "preset" & Preset_ID.ID'img &
+                           " not configured for configuration" &
+                           Configuration_ID'img & " at " & Here;
+                     end if;
                   end if;
+log_here;
                   Setup.Configurations (Configuration_ID) := (
                      Initial_Root_State with
                      Configuration_ID  => Configuration_ID,
                      Label             => Ada_Lib.Strings.Unlimited.Coerce (Label),
                      Preset_ID         => Preset_ID);
+log_here;
                end;
             end if;
          end;
+log_here;
       end loop;
 
       Config.Close;
@@ -635,7 +650,7 @@ package body Configuration.Camera.Setup is
    end Update_Preset;
 
 begin
---Debug := True;
+Debug := True;
    Log_Here (Debug or Elaborate);
 
 end Configuration.Camera.Setup;

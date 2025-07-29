@@ -105,7 +105,8 @@ package Video.Lib is
    with Pre => Have_Preset (Which_Preset);
 
    function ID (
-      Preset_ID                  : in     Preset_ID_Type
+      Preset_ID                  : in     Preset_ID_Type;
+      From                       : in     String := Ada_Lib.Trace.Here
    ) return Preset_Range_Type
    with Pre => Preset_ID.Is_Set;
 
@@ -114,7 +115,8 @@ package Video.Lib is
    ) return String;
 
    function Is_Set (
-      Preset_ID                  : in     Preset_ID_Type
+      Preset_ID                  : in     Preset_ID_Type;
+      From                       : in     String := Ada_Lib.Trace.Here
    ) return Boolean;
 
    procedure Set (
