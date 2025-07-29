@@ -11,7 +11,7 @@ package body Configuration.State is
                                     Remote   => new String'("remote_camera"));
    Port_Key                      : constant Address_Key_Type := (
                                     Local    => new String'("local_port"),
-                                    Remote   => new String'("remote_port"));
+                                    utRemote   => new String'("remote_port"));
 
    ----------------------------------------------------------------
    procedure Dump (

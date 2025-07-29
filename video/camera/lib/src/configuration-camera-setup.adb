@@ -641,7 +641,7 @@ package body Configuration.Camera.Setup is
    end Update_Preset;
 
 begin
-Debug := True;
+--Debug := True;
    Log_Here (Debug or Elaborate);
 
 end Configuration.Camera.Setup;

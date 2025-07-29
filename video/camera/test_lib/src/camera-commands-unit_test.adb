@@ -6,6 +6,7 @@ with AUnit.Test_Cases;
 --with Camera.Commands.PTZ_Optics;
 with Camera.Lib.Unit_Test;
 with Interfaces;
+with Video.Lib;
 
 package body Camera.Commands.Unit_Test is
 
@@ -34,6 +35,9 @@ package body Camera.Commands.Unit_Test is
       Test                       : in out Test_Type
    ) with post => Verify_Torn_Down (Test);
 
+   function Get_Test_Preset
+   return Video.Lib.Preset_ID_Type renames Video.Lib.Get_Default_Preset_ID;
+
 -- procedure Test_Get_Absolute (
 --    Test                       : in out AUnit.Test_Cases.Test_Case'class);
 
@@ -51,7 +55,6 @@ package body Camera.Commands.Unit_Test is
 
    Debug       : Boolean renames Camera.Lib.Unit_Test.Camera_Commands_Debug;
    Suite_Name  : constant String := "Commands";
-   Test_Preset : constant Preset_ID_Type := Video.Lib.Null_Preset_ID;
 
    ---------------------------------------------------------------
    procedure Check_Coordinates (
@@ -134,8 +137,8 @@ package body Camera.Commands.Unit_Test is
                         Test.Camera.Get_Camera_Speed (
                            Select_Maximum_Speed);
       begin
-         Log_Here (Debug or Trace_Set_Up, "speed ", Speed'img);
-         Test.Camera.Set_Preset (Test_Preset,
+         Log_Here (Debug or Trace_Set_Up, "speed " & Speed'img);
+         Test.Camera.Set_Preset (Video.Lib.Get_Default_Preset_ID,
             Speed => Speed);     -- normally same as preset 0
       end;
       Log_Out (Debug or Trace_Set_Up);
@@ -148,7 +151,7 @@ package body Camera.Commands.Unit_Test is
 
    end Set_Up;
 
-   ---------------------------------------------------------------
+   --------------------------------ult-------------------------------
    function Suite return AUnit.Test_Suites.Access_Test_Suite is
    ---------------------------------------------------------------
 
@@ -176,7 +179,7 @@ package body Camera.Commands.Unit_Test is
    begin
       Log_In (Debug or Trace_Set_Up, "speed ", Speed'img);
       Log_In (Debug);
-      Test.Camera.Set_Preset (Test_Preset,     -- normally same as preset 0
+      Test.Camera.Set_Preset (Get_Test_Preset,     -- normally same as preset 0
          Speed => Speed);
       Log_Out (Debug);
 
@@ -246,7 +249,7 @@ package body Camera.Commands.Unit_Test is
 
    begin
       Log_In (Debug);
-      -- start from Test_Preset as reference - set by Set_Up
+      -- start from Get_Test_Preset as reference - set by Set_Up
       -- move 4 steps return to Test_Prset
       -- get coordinats of test preset
       Local_Test.Camera.Get_Absolute (Test_Pan, Test_Tilt);
@@ -278,7 +281,7 @@ package body Camera.Commands.Unit_Test is
       Log_Here (Debug, "final pan " & Final_Pan'img & " tilt " & Final_Tilt'img);
       Check_Coordinates (Final_Pan, Test_Pan , Final_Tilt, Test_Tilt);
       -- set it back to reference
-      Local_Test.Camera.Set_Preset (Test_Preset);
+      Local_Test.Camera.Set_Preset (Get_Test_Preset);
       -- git its coordinats
       Local_Test.Camera.Get_Absolute (Final_Pan, Final_Tilt);
       Log_Here (Debug, "final pan " & Final_Pan'img & " tilt " & Final_Tilt'img);
@@ -320,8 +323,8 @@ package body Camera.Commands.Unit_Test is
       Log_In (Debug);
       for Counter in 1 .. 2 loop
          Log_Here (Debug, "counter" & Counter'img);
-         -- use Test_Preset as reference
-         Local_Test.Camera.Set_Preset (Test_Preset);
+         -- use Get_Test_Preset as reference
+         Local_Test.Camera.Set_Preset (Get_Test_Preset);
          -- get coordinats of test preset
          Local_Test.Camera.Get_Absolute (Test_Pan, Test_Tilt);
          -- calculate offset from reference
@@ -334,7 +337,7 @@ package body Camera.Commands.Unit_Test is
          -- verify it got coordinates that were set
          Check_Coordinates (Final_Pan, Pan_Set, Final_Tilt, Tilt_Set);
          -- set it back to reference
-         Local_Test.Camera.Set_Preset (Test_Preset);
+         Local_Test.Camera.Set_Preset (Get_Test_Preset);
          -- git its coordinats
          Local_Test.Camera.Get_Absolute (Final_Pan, Final_Tilt);
          Check_Coordinates (Final_Pan, Test_Pan, Final_Tilt, Test_Tilt);

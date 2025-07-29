@@ -4,7 +4,6 @@ with Ada_Lib.Time;
 --with Configuration.Camera;
 with Camera.Lib.Base;
 --with Interfaces;
---with Video.Lib;
 
 package Camera.Commands is
 

@@ -362,7 +362,7 @@ package body Video.Lib is
 begin
 --Elaborate := True;
    Options_Debug := Debug_Options.Debug_All;
-Debug := True;
+--Debug := True;
 --Trace_Options := True;
    Log_Here (Elaborate or Options_Debug or Debug or Trace_Options);
 
