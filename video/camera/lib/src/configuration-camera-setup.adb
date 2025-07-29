@@ -157,18 +157,13 @@ package body Configuration.Camera.Setup is
    ) return Standard.Camera.Preset_ID_Type is
    ----------------------------------------------------------------
 
-begin
-log_here;
-declare
       Result                     : constant Standard.Camera.Preset_ID_Type :=
                                     Setup.Configurations (
                                        Configuration_Id).Preset_ID;
    begin
-log_here;
       Log_Here (Debug, "Configuration_Id " & Configuration_Id'img &
-         " result " & Result.ID'img);
+         " result " & Result.Image);
       return Result;
-end;
    end Get_Preset_ID;
 
    ----------------------------------------------------------------
@@ -230,7 +225,7 @@ end;
    ----------------------------------------------------------------
 
    begin
-      Log_In (Debug, "preset id" & Preset_ID.Image);
+      Log_In (Debug, "preset id " & Preset_ID.Image);
 
       declare
          Result                     : constant Boolean :=
@@ -238,7 +233,7 @@ end;
                                        Setup.Presets (
                                           Preset_Id.ID).Row /= Row_Not_Set;
       begin
-         return Log_Out (Result, Debug, "preset id" & Preset_ID.ID'img);
+         return Log_Out (Result, Debug);
       end;
    end Has_Preset;
 
@@ -368,7 +363,6 @@ end;
                      " value " & Configuration_ID'img & " preset id " &
                      Preset_ID.Image &
                      Quote (" label", Label));
-log_here;
 
                   if    Preset_ID.Is_Set then
                      Log_Here (Debug, "Setup.Presets" & Preset_ID.ID'img &
@@ -380,17 +374,14 @@ log_here;
                            Configuration_ID'img & " at " & Here;
                      end if;
                   end if;
-log_here;
                   Setup.Configurations (Configuration_ID) := (
                      Initial_Root_State with
                      Configuration_ID  => Configuration_ID,
                      Label             => Ada_Lib.Strings.Unlimited.Coerce (Label),
                      Preset_ID         => Preset_ID);
-log_here;
                end;
             end if;
          end;
-log_here;
       end loop;
 
       Config.Close;

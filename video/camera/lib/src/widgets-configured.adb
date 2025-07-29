@@ -375,19 +375,13 @@ package body Widgets.Configured is
             Preset_ID               : constant Camera.Preset_ID_Type :=
                                        Global_Camera_Setup.
                                           Get_Preset_ID (Configuration_ID);
-begin
-log_here;
-declare
             Has_Preset              : constant Boolean :=
                                        Global_Camera_Setup.
                                           Has_Preset (Preset_ID);
             Preset                  : constant
                                        Preset_Type'class :=
-                                          (if
-                                             Global_Camera_Setup.Has_Preset (
-                                                   Preset_ID) then
-
-                                                   Global_Camera_Setup.Get_Preset (
+                                          (if Has_Preset then
+                                             Global_Camera_Setup.Get_Preset (
                                                       Preset_ID)
                                           else
                                               Null_Preset);
@@ -561,7 +555,6 @@ declare
 
             end case;
             Cell.Dump (Debug);
-end;
          end;
          Log_Out (Debug);
    exception
