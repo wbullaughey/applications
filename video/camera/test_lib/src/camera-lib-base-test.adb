@@ -129,8 +129,8 @@ package body Camera.Lib.Base.Test is
 --      for Port in First_Port .. Last_Port loop
 --         begin
 --            Log_Here (Debug, "Port" & Port'img);
---            Local_Test.Camera.Open (Local_Test.Camera_Address.all, Port);
---            Local_Test.Camera.Close;
+--            Local_Test.Camera_Info.Camera.Open (Local_Test.Camera_Info.Camera_Address.all, Port);
+--            Local_Test.Camera_Info.Camera.Close;
 --            Put_Line ("opened port" & Port'img);
 --
 --         exception
@@ -138,7 +138,7 @@ package body Camera.Lib.Base.Test is
 --               null;
 --         end;
 --
---         Local_Test.Camera.Close;
+--         Local_Test.Camera_Info.Camera.Close;
 --      end loop;
 --      Put_Line ("port scan completed");
 --
@@ -211,7 +211,7 @@ package body Camera.Lib.Base.Test is
 
             begin
                Log_In (Debug, "port" & Port'img);
-               Local_Test.Camera.Send_Command (
+               Local_Test.Camera_Info.Camera.Send_Command (
                   Command        => Position_Request,
                   Options        => Standard.Camera.Lib.Base.Null_Option,
                   Get_Ack        => Get_Ack,
@@ -226,14 +226,14 @@ package body Camera.Lib.Base.Test is
                Assert (Has_Response, "response expected");
 --             Assert (Response_Length = , "response expected");
 
-               Local_Test.Camera.Get_Response (
+               Local_Test.Camera_Info.Camera.Get_Response (
                   Expect_Ack        => Get_Ack,
                   Expect_Response   => Has_Response,
                   Response          => Buffer,
                   Response_Length   => Response_Length,
                   Response_Timeout  => 0.5);
 
-               Local_Test.Camera.Process_Response (
+               Local_Test.Camera_Info.Camera.Process_Response (
                   Response          => Buffer,
                   Value             => Value,
                   Next_Buffer_Start => Next_Buffer_Start);
@@ -246,15 +246,15 @@ package body Camera.Lib.Base.Test is
 
          begin
             Log_Here (Debug, "Port" & Ports.all (Port)'img);
-            Local_Test.Camera.URL_Open (
-               Local_Test.Camera_Address.URL_Address.Coerce,
-               Local_Test.Port_Number);
+            Local_Test.Camera_Info.Camera.URL_Open (
+               Local_Test.Camera_Info.Camera_Address.URL_Address.Coerce,
+               Local_Test.Camera_Info.Port_Number);
             Test_Port (Ports.all (Port));
-            Local_Test.Camera.Close ;
+            Local_Test.Camera_Info.Camera.Close ;
 
          exception
             when Fault: Ada_Lib.Socket_IO.Stream_IO.Timeout =>
-               Local_Test.Camera.Close ;
+               Local_Test.Camera_Info.Camera.Close ;
                Trace_Exception (Debug, Fault);
                Assert (False, "timeout reading response " &
                   Ada.Exceptions.Exception_Message (Fault));
@@ -312,7 +312,7 @@ package body Camera.Lib.Base.Test is
 
  begin
     Log_Here (Debug or Trace_Set_Up);
-    Test.Open_Camera := False;
+    Test.Camera_Info.Open_Camera := False;
     Camera.Lib.Unit_Test.With_Camera_Test_Type (Test).Set_Up;
  end Set_Up;
 
@@ -343,7 +343,7 @@ package body Camera.Lib.Base.Test is
 --
 -- begin
 --    Log (Debug, Here, Who);
---    Test.Camera.Close;
+--    Test.Camera_Info.Camera.Close;
 --    Ada_Lib.Unit_Test.Test_Cases.Test_Case_Type (Test).Tear_Down;
 -- end Tear_Down;
 
@@ -360,8 +360,8 @@ package body Camera.Lib.Base.Test is
 
    begin
       Put_Line ("test open");
-      Local_Test.Camera.Open (Local_Test.Camera_Address.all,
-         Local_Test.Port_Number);
+      Local_Test.Camera_Info.Camera.Open (Local_Test.Camera_Info.Camera_Address.all,
+         Local_Test.Camera_Info.Port_Number);
 
    exception
       when Fault: others =>
@@ -406,7 +406,7 @@ package body Camera.Lib.Base.Test is
 --      for Unit in First_Unit .. Last_Unit loop
 ----       IP_Address (4) := Unit;
 --         begin
---            Local_Test.Camera.Open (Local_Test.Camera_Address.all, Unit);
+--            Local_Test.Camera_Info.Camera.Open (Local_Test.Camera_Info.Camera_Address.all, Unit);
 --            Put_Line ("opened unit" & Unit'img);
 --
 --         exception
@@ -414,7 +414,7 @@ package body Camera.Lib.Base.Test is
 --               null;
 --         end;
 --
---         Local_Test.Camera.Close;
+--         Local_Test.Camera_Info.Camera.Close;
 --      end loop;
 --      Put_Line ("unit scan completed");
 --

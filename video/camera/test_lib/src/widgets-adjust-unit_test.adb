@@ -14,6 +14,7 @@ with ADA_LIB.Trace; use ADA_LIB.Trace;
 with Gnoga.Gui.Base;
 with Interfaces;
 with Main;
+with Video.Lib;
 
 package body Widgets.Adjust.Unit_Test is
 
@@ -111,7 +112,7 @@ package body Widgets.Adjust.Unit_Test is
 
    begin
       Log_In (Debug or Trace_Set_Up);
-      Test.Camera.Set_Preset (Video.Lib.Get_Default_Preset_ID);
+      Test.Camera_Info.Camera.Set_Preset (Video.Lib.Get_Default_Preset_ID);
       Log_Out (Debug or Trace_Set_Up);
 
    exception

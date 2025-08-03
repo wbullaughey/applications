@@ -279,7 +279,7 @@ log_here;
 
       begin
          Log_Here (Debug or Trace_Set_Up);
-         Test.Camera.Set_Preset (Video.Lib.Get_Default_Preset_ID);
+         Test.Camera_Info.Camera.Set_Preset (Video.Lib.Get_Default_Preset_ID);
       exception
          when Fault: Camera.Commands.Timeout =>
             Log_Exception (Debug or Trace_Set_Up, Fault,
@@ -312,14 +312,14 @@ log_here ("test address " & Image (test.all'address));
 --    case Brand is
 --
 --       when ALPTOP_Camera =>
---          Test.Camera := new Standard.Camera.LIB.ALPTOP.ALPTOP_Type (
+--          Test.Camera_Info.Camera := new Standard.Camera.LIB.ALPTOP.ALPTOP_Type (
 --             Camera_Description'access);
 --
 --       when No_Camera =>
 --          raise Failed with "no camera brand selected";
 --
 --       when PTZ_Optics_Camera =>
---          Test.Camera := new Standard.Camera.Commands.PTZ_Optics.
+--          Test.Camera_Info.Camera := new Standard.Camera.Commands.PTZ_Optics.
 --             PTZ_Optics_Type (Camera_Description'access);
 --
 --    end case;
@@ -334,12 +334,12 @@ log_here ("test address " & Image (test.all'address));
    ---------------------------------------------------------------
 
       Speed       : constant Data_Type :=
-                     Test.Camera.Get_Camera_Speed (
+                     Test.Camera_Info.Camera.Get_Camera_Speed (
                         Camera.Commands.Select_Maximum_Speed);
 
    begin
       Log_In (Debug or Trace_Set_Up);
-      Test.Camera.Set_Preset (Video.Lib.Get_Default_Preset_ID,
+      Test.Camera_Info.Camera.Set_Preset (Video.Lib.Get_Default_Preset_ID,
          Speed  => Speed);
       -- normally same as preset 0
       Camera.Lib.Unit_Test.With_Camera_Test_Type (Test).Tear_Down;
@@ -382,14 +382,14 @@ log_here ("test address " & Image (test.all'address));
 
       Local_Test  : Test_Type renames Test_Type (Test);
       Speed       : constant Data_Type :=
-                     Local_Test.Camera.Get_Camera_Speed (
+                     Local_Test.Camera_Info.Camera.Get_Camera_Speed (
                         Camera.Commands.Select_Default_Speed);
    begin
       Log_In (Debug);
       Pause (Local_Test.Manual,
          "set preset 0 watch for slow scan down for 10 seconds");
 
-      Local_Test.Camera.Set_Absolute (16#123#, 16#321#,
+      Local_Test.Camera_Info.Camera.Set_Absolute (16#123#, 16#321#,
          Pan_Speed   => Speed,
          Tilt_Speed  => Speed);
 
@@ -409,7 +409,7 @@ log_here ("test address " & Image (test.all'address));
    begin
       Log_In (Debug);
 
-      Local_Test.Camera.Process_Command (Base.Position_Down_Left,
+      Local_Test.Camera_Info.Camera.Process_Command (Base.Position_Down_Left,
          Options     => (
                (
                   Data           => 1,    -- pan slow speed
@@ -427,13 +427,13 @@ log_here ("test address " & Image (test.all'address));
       Wait (2.0);
       Log_Here (Debug, "send stop");
 
-      Local_Test.Camera.Process_Command (Base.Position_Stop,
+      Local_Test.Camera_Info.Camera.Process_Command (Base.Position_Stop,
          Options     => Base.Null_Option);
 
       Assert (Ask_Pause (Local_Test.Manual,
             "verify that the image shifted down left slowly, watch for fast scan for 5 seconds"),
          "manual set failed");
-      Local_Test.Camera.Process_Command (Base.Position_Down_Left,
+      Local_Test.Camera_Info.Camera.Process_Command (Base.Position_Down_Left,
          Options     => (
                (
                   Data           => 16#18#,    -- pan high speed
@@ -449,7 +449,7 @@ log_here ("test address " & Image (test.all'address));
 
       Wait (2.0);
 
-      Local_Test.Camera.Process_Command (Base.Position_Stop,
+      Local_Test.Camera_Info.Camera.Process_Command (Base.Position_Stop,
          Options     => Base.Null_Option);
 
       Assert (Ask_Pause (Local_Test.Manual,
@@ -468,7 +468,7 @@ log_here ("test address " & Image (test.all'address));
    begin
       Log_In (Debug);
 
-      Local_Test.Camera.Process_Command (Base.Position_Down_Right,
+      Local_Test.Camera_Info.Camera.Process_Command (Base.Position_Down_Right,
          Options     => (
                (
                   Data           => 1,    -- pan slow speed
@@ -483,7 +483,7 @@ log_here ("test address " & Image (test.all'address));
             ));
       Wait (2.0);
 
-      Local_Test.Camera.Process_Command (Base.Position_Stop,
+      Local_Test.Camera_Info.Camera.Process_Command (Base.Position_Stop,
          Options     => Base.Null_Option);
 
       Assert (Ask_Pause (Local_Test.Manual,
@@ -504,7 +504,7 @@ log_here ("test address " & Image (test.all'address));
       Pause (Local_Test.Manual,
          "set preset 0 watch for slow scan down for 10 seconds");
 
-      Local_Test.Camera.Process_Command (Base.Position_Down,
+      Local_Test.Camera_Info.Camera.Process_Command (Base.Position_Down,
          Options     => (
                (
                   Data           => 1,    -- pan slow speed
@@ -520,7 +520,7 @@ log_here ("test address " & Image (test.all'address));
 
       Wait (2.0);
 
-      Local_Test.Camera.Process_Command (Base.Position_Stop,
+      Local_Test.Camera_Info.Camera.Process_Command (Base.Position_Stop,
          Options     => (
                (
                   Data           => 1,    -- pan slow speed
@@ -537,7 +537,7 @@ log_here ("test address " & Image (test.all'address));
       Assert (Ask_Pause (Local_Test.Manual,
             "verify that the image shifted down slowly, watch for fast scan for 5 seconds"),
          "manual set failed");
-      Local_Test.Camera.Process_Command (Base.Position_Down,
+      Local_Test.Camera_Info.Camera.Process_Command (Base.Position_Down,
          Options     => (
                (
                   Data           => 1,    -- pan slow speed
@@ -553,7 +553,7 @@ log_here ("test address " & Image (test.all'address));
 
       Wait (1.5);
 
-      Local_Test.Camera.Process_Command (Base.Position_Stop,
+      Local_Test.Camera_Info.Camera.Process_Command (Base.Position_Stop,
          Options     => (
                (
                   Data           => 1,    -- pan slow speed
@@ -586,7 +586,7 @@ log_here ("test address " & Image (test.all'address));
       Pause (Local_Test.Manual,
          "set preset 0 watch for slow scan left for 10 seconds");
 
-      Local_Test.Camera.Process_Command (Base.Position_Left,
+      Local_Test.Camera_Info.Camera.Process_Command (Base.Position_Left,
          Options     => (
                (
                   Data           => 1,    -- pan slow speed
@@ -601,7 +601,7 @@ log_here ("test address " & Image (test.all'address));
             ));
       Wait (2.0);
 
-      Local_Test.Camera.Process_Command (Base.Position_Stop,
+      Local_Test.Camera_Info.Camera.Process_Command (Base.Position_Stop,
          Options     => (
                (
                   Data           => 1,    -- pan slow speed
@@ -618,7 +618,7 @@ log_here ("test address " & Image (test.all'address));
       Assert (Ask_Pause (Local_Test.Manual,
             "verify that the image shifted left slowly, watch for fast scan for 5 seconds"),
          "manual set failed");
-      Local_Test.Camera.Process_Command (Base.Position_Left,
+      Local_Test.Camera_Info.Camera.Process_Command (Base.Position_Left,
          Options     => (
                (
                   Data           => 16#0C#,    -- pan slow speed
@@ -633,7 +633,7 @@ log_here ("test address " & Image (test.all'address));
             ));
       Wait (1.5);
 
-      Local_Test.Camera.Process_Command (Base.Position_Stop,
+      Local_Test.Camera_Info.Camera.Process_Command (Base.Position_Stop,
          Options     => (
                (
                   Data           => 1,    -- pan slow speed
@@ -667,7 +667,7 @@ log_here ("test address " & Image (test.all'address));
    begin
       Log_In (Debug);
       Pause (Local_Test.Manual, "camera should be at preset 0");
-      Local_Test.Camera.Get_Absolute (Initial_Pan, Initial_Tilt);
+      Local_Test.Camera_Info.Camera.Get_Absolute (Initial_Pan, Initial_Tilt);
       Log_Here (Debug, "initial pan" & Initial_Pan'img & " inital tilt" & Initial_Tilt'img);
       for Count in Video.Lib.Relative_Type'(1) .. 10 loop
          declare
@@ -682,10 +682,10 @@ log_here ("test address " & Image (test.all'address));
             Log_Here (Debug, "Count" & Count'img &
                "initial pan" & Initial_Pan'img &
                " initial Tilt" & Initial_Tilt'img);
-            Local_Test.Camera.Position_Relative (
+            Local_Test.Camera_Info.Camera.Position_Relative (
                Pan   => Count,
                Tilt  => Count * 2);
-            Local_Test.Camera.Get_Absolute (Pan, Tilt);
+            Local_Test.Camera_Info.Camera.Get_Absolute (Pan, Tilt);
             Log_Here (Debug, "pan" & Pan'img & " tilt" & Tilt'img &
                " expected pan" & Expected_Pan'img &
                " expected tilt" & Expected_Tilt'img);
@@ -729,8 +729,8 @@ log_here ("test address " & Image (test.all'address));
 --                                  Ada_Lib.Time.Now + 60.0;
    begin
       Log_In (Debug, "set pan " & Set_Pan'img & " set tilt " & Set_Tilt'img);
-      Local_Test.Camera.Set_Absolute (Set_Pan, Set_Tilt);
-      Local_Test.Camera.Get_Absolute (Pan, Tilt);
+      Local_Test.Camera_Info.Camera.Set_Absolute (Set_Pan, Set_Tilt);
+      Local_Test.Camera_Info.Camera.Get_Absolute (Pan, Tilt);
 
       Assert (Pan = Set_Pan, "invalid pan " & Pan'img &
          " expected " & Set_Pan'img);
@@ -751,7 +751,7 @@ log_here ("test address " & Image (test.all'address));
       Pause (Local_Test.Manual,
          "set preset 0 watch for slow scan right for 10 seconds");
 
-      Local_Test.Camera.Process_Command (Base.Position_Right,
+      Local_Test.Camera_Info.Camera.Process_Command (Base.Position_Right,
          Options     => (
                (
                   Data           => 1,    -- pan slow speed
@@ -766,7 +766,7 @@ log_here ("test address " & Image (test.all'address));
             ));
       Wait (2.0);
 
-      Local_Test.Camera.Process_Command (Base.Position_Stop,
+      Local_Test.Camera_Info.Camera.Process_Command (Base.Position_Stop,
          Options     => (
                (
                   Data           => 1,    -- pan slow speed
@@ -783,7 +783,7 @@ log_here ("test address " & Image (test.all'address));
       Assert (Ask_Pause (Local_Test.Manual,
             "verify that the image shifted right slowly, watch for fast scan for 5 seconds"),
          "manual set failed");
-      Local_Test.Camera.Process_Command (Base.Position_Right,
+      Local_Test.Camera_Info.Camera.Process_Command (Base.Position_Right,
          Options     => (
                (
                   Data           => 1,    -- pan slow speed
@@ -798,7 +798,7 @@ log_here ("test address " & Image (test.all'address));
             ));
       Wait (1.5);
 
-      Local_Test.Camera.Process_Command (Base.Position_Stop,
+      Local_Test.Camera_Info.Camera.Process_Command (Base.Position_Stop,
          Options     => (
                (
                   Data           => 1,    -- pan slow speed
@@ -827,7 +827,7 @@ log_here ("test address " & Image (test.all'address));
 
    begin
       Log_In (Debug);
-      Local_Test.Camera.Process_Command (Base.Position_Stop,
+      Local_Test.Camera_Info.Camera.Process_Command (Base.Position_Stop,
          Options     => (
                (
                   Data           => 1,    -- pan slow speed
@@ -855,7 +855,7 @@ log_here ("test address " & Image (test.all'address));
       Pause (Local_Test.Manual,
          "set preset 0 watch for slow scan up for 10 seconds");
 
-      Local_Test.Camera.Process_Command (Base.Position_Up,
+      Local_Test.Camera_Info.Camera.Process_Command (Base.Position_Up,
          Options     => (
                (
                   Data           => 1,    -- pan slow speed
@@ -871,7 +871,7 @@ log_here ("test address " & Image (test.all'address));
 
       Wait (2.0);
 
-      Local_Test.Camera.Process_Command (Base.Position_Stop,
+      Local_Test.Camera_Info.Camera.Process_Command (Base.Position_Stop,
          Options     => (
                (
                   Data           => 1,    -- pan slow speed
@@ -888,7 +888,7 @@ log_here ("test address " & Image (test.all'address));
       Assert (Ask_Pause (Local_Test.Manual,
             "verify that the image shifted up slowly, watch for fast scan for 5 seconds"),
          "manual set failed");
-      Local_Test.Camera.Process_Command (Base.Position_Up,
+      Local_Test.Camera_Info.Camera.Process_Command (Base.Position_Up,
          Options     => (
                (
                   Data           => 16#0C#,    -- pan high speed
@@ -903,7 +903,7 @@ log_here ("test address " & Image (test.all'address));
             ));
       Wait (1.5);
 
-      Local_Test.Camera.Process_Command (Base.Position_Stop,
+      Local_Test.Camera_Info.Camera.Process_Command (Base.Position_Stop,
          Options     => (
                (
                   Data           => 1,    -- pan slow speed
@@ -934,7 +934,7 @@ log_here ("test address " & Image (test.all'address));
       Log_In (Debug);
       Pause (Local_Test.Manual, "set preset 0");
 
-      Local_Test.Camera.Process_Command (Base.Position_Up_Left,
+      Local_Test.Camera_Info.Camera.Process_Command (Base.Position_Up_Left,
          Options     => (
                (
                   Data           => 1,    -- pan slow speed
@@ -950,7 +950,7 @@ log_here ("test address " & Image (test.all'address));
 
       Wait (1.5);
 
-      Local_Test.Camera.Process_Command (Base.Position_Stop,
+      Local_Test.Camera_Info.Camera.Process_Command (Base.Position_Stop,
          Options     => (
                (
                   Data           => 1,    -- pan slow speed
@@ -981,7 +981,7 @@ log_here ("test address " & Image (test.all'address));
       Log_In (Debug);
       Pause (Local_Test.Manual, "set preset 0");
 
-      Local_Test.Camera.Process_Command (Base.Position_Up_Right,
+      Local_Test.Camera_Info.Camera.Process_Command (Base.Position_Up_Right,
          Options     => (
                (
                   Data           => 1,    -- pan slow speed
@@ -996,7 +996,7 @@ log_here ("test address " & Image (test.all'address));
             ));
       Wait (1.5);
 
-      Local_Test.Camera.Process_Command (Base.Position_Stop,
+      Local_Test.Camera_Info.Camera.Process_Command (Base.Position_Stop,
          Options     => (
                (
                   Data           => 1,    -- pan slow speed
@@ -1026,7 +1026,7 @@ log_here ("test address " & Image (test.all'address));
 -- begin
 --    Log_In (Debug);
 --    for On in Boolean'range loop
---       Local_Test.Camera.Set_Power (On);
+--       Local_Test.Camera_Info.Camera.Set_Power (On);
 --    end loop;
 --    Log_Out (Debug);
 -- end Test_Power;
@@ -1041,8 +1041,8 @@ log_here ("test address " & Image (test.all'address));
    begin
       Log_In (Debug);
       Pause (Local_Test.Manual, "set preset 3");
-      Local_Test.Camera.Set_Preset (Video.Lib.Constructor (3));
---    Local_Test.Camera.Process_Command (Base.Memory_Recall,
+      Local_Test.Camera_Info.Camera.Set_Preset (Video.Lib.Constructor (3));
+--    Local_Test.Camera_Info.Camera.Process_Command (Base.Memory_Recall,
 --       Options     => (
 --             1 => (
 --                Data           => 3,   -- preset 3
@@ -1075,7 +1075,7 @@ log_here ("test address " & Image (test.all'address));
       Log_In (Debug);
       Pause (Local_Test.Manual, "possition camera away from preset");
 
-      Local_Test.Camera.Process_Command (Base.Memory_Set,
+      Local_Test.Camera_Info.Camera.Process_Command (Base.Memory_Set,
          Options     => ( 1 =>
                (
                   Data           => Test_Preset,
@@ -1084,7 +1084,7 @@ log_here ("test address " & Image (test.all'address));
                )
             ));
 
-      Local_Test.Camera.Process_Command (Base.Memory_Recall,
+      Local_Test.Camera_Info.Camera.Process_Command (Base.Memory_Recall,
          Options     => ( 1 =>
                (
                   Data           => 0,   -- preset 0

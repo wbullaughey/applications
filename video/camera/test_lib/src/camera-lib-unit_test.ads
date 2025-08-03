@@ -22,6 +22,15 @@ package Camera.Lib.Unit_Test is
 
    Failed               : exception;
 
+   type Camera_Info_Type   is record
+      Camera               : Standard.Camera.Commands.
+                              Camera_Class_Access := Null;
+      Camera_Address       : Address_Constant_Access := Null;
+      Location             : Configuration.State.Location_Type;
+      Open_Camera          : Boolean := True;
+      Port_Number          : Port_Type := Standard.Camera.Commands.PTZ_Optics.Port;
+   end record;
+
    -- use for tests without GNOGA
    type Test_Type is abstract new Ada_Lib.Unit_Test.Test_Cases.Test_Case_Type
          with record
@@ -36,12 +45,7 @@ package Camera.Lib.Unit_Test is
    type With_Camera_Test_Type (
       Brand             : Standard.Camera.Lib.Brand_Type
    ) is abstract new Test_Type with record
-      Camera            : Standard.Camera.Commands.
-                           Camera_Class_Access := Null;
-      Camera_Address    : Address_Constant_Access := Null;
-      Location          : Configuration.State.Location_Type;
-      Open_Camera       : Boolean := True;
-      Port_Number       : Port_Type := Standard.Camera.Commands.PTZ_Optics.Port;
+      Camera_Info       : Camera_Info_Type;
    end record;
 
    type Camera_Test_Access       is access With_Camera_Test_Type;
@@ -107,7 +111,15 @@ package Camera.Lib.Unit_Test is
       Brand                      : Standard.Camera.Lib.Brand_Type;
       Initialize_GNOGA           : Boolean) is abstract new
                                     Camera_Window_Test_Type (
-                                       Initialize_GNOGA) with null record;
+                                       Initialize_GNOGA) with record
+      Camera_Info                : Camera_Info_Type;
+      Setup                      : Configuration.Camera.Setup.Setup_Type;
+   end record;
+
+   overriding
+   procedure Set_Up (
+      Test                       : in out Camera_Window_Test_With_Camera_Type
+   ) with Post => Test.Verify_Set_Up;
 
    -- allocated options for unit test of camera library
    type Unit_Test_Program_Options_Type is new

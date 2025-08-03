@@ -74,7 +74,7 @@ package body Camera.Lib.Unit_Test is
 
    begin
       Log_In (Debug, "set preset");
-      Test.Camera.Set_Preset (Video.Lib.Get_Default_Preset_ID);
+      Test.Camera_Info.Camera.Set_Preset (Video.Lib.Get_Default_Preset_ID);
       Log_Out (Debug);
 
    exception
@@ -97,8 +97,8 @@ package body Camera.Lib.Unit_Test is
          Put_Line ("brand " & Test.Brand'img);
          Put_Line ("Initialize_GNOGA " &
             " Load_State " & Test.Load_State'img &
-            " Location " & Test.Location'img &
-            " Port_Number " & Test.Port_Number'img &
+            " Location " & Test.Camera_Info.Location'img &
+            " Port_Number " & Test.Camera_Info.Port_Number'img &
             Quote ("Setup_Path", Test.Setup_Path) &
             Quote ("State_Path", Test.State_Path));
       end if;
@@ -111,7 +111,7 @@ package body Camera.Lib.Unit_Test is
    ----------------------------------------------------------------------------
 
    begin
-      return Log_Here (Test.Camera /= Null, Debug);
+      return Log_Here (Test.Camera_Info.Camera /= Null, Debug);
    end Have_Camera;
 
    ----------------------------------------------------------------------------
@@ -121,7 +121,7 @@ package body Camera.Lib.Unit_Test is
    ----------------------------------------------------------------------------
 
    begin
-      return Log_Here (Test.Camera_Address /= Null, Debug);
+      return Log_Here (Test.Camera_Info.Camera_Address /= Null, Debug);
    end Have_Camera_Address;
 
    ----------------------------------------------------------------------------
@@ -215,7 +215,8 @@ package body Camera.Lib.Unit_Test is
 
 ---------------------------------------------------------------
    procedure Load_Test_State (
-      Test                       : in out With_Camera_Test_Type) is
+      Camera_Info                : Camera_Info_Type;
+      Setup                      : Configuration.Camera.Setup.Setup_Type) is
 ---------------------------------------------------------------
 
       Connection_Data            : constant Standard.Base.Connection_Data_Access :=
@@ -228,29 +229,14 @@ package body Camera.Lib.Unit_Test is
       State                      : Configuration.Camera.State.State_Type renames
                                     Connection_Data.State;
    begin
-      Log_In (Debug or Trace_Set_Up, "brand " & Test.Brand'img );
+      Log_In (Debug or Trace_Set_Up);
       State.Load (Options.Camera_Options.Location, Camera_State_Path);
       Log_Here (Debug or Trace_Set_Up, " video port#" & State.Video_Port'img);
-      Test.Setup.Load (State, Test_Setup);
-      Test.Camera_Address := State.Video_Address;
-      Test.Port_Number := State.Video_Port;
+      Setup.Load (State, Test_Setup);
+      Camera_Info.Camera_Address := State.Video_Address;
+      Camera_Info.Port_Number := State.Video_Port;
 
---   case Test.Brand is
---
---      when Standard.Camera.Lib.ALPTOP_Camera =>
---          not_implemented;
---
---      when Standard.Camera.LIB.PTZ_Optics_Camera =>
---          Test.Camera := new Standard.Camera.Commands.PTZ_Optics.
---             PTZ_Optics_Type (Camera_Description'access);
---
---          Test.Camera.Open (State.Video_Address.all, Test.Port_Number);
---
---      when Standard.Camera.Lib.No_Camera =>
---         raise Failed with "no camera set";
---
---    end case;
-      Test.Camera.Initialize_Standard_Preset_IDs;
+      Camera_Info.Camera.Initialize_Standard_Preset_IDs;
       Log_Out (Debug or Trace_Set_Up);
    end Load_Test_State;
 
@@ -529,6 +515,38 @@ not_implemented;
 -- end Run_Suite;
 
 ---------------------------------------------------------------
+procedure Setup_Camera (
+      Brand          : in     Standard.Camera.Lib.Brand_Type;
+      Camera_Info    : in out Camera_Info_Type) is
+---------------------------------------------------------------
+
+   begin
+      Log_In (Debug or Trace_Set_Up,
+         " location " & Camera_Info.Location'img);
+
+      case Brand is
+
+         when ALPTOP_Camera =>
+            Camera_Info.Camera := new Standard.Camera.LIB.ALPTOP.ALPTOP_Type (
+               Camera_Description'access);
+
+         when No_Camera =>
+            raise Failed with "no camera brand selected";
+
+         when PTZ_Optics_Camera =>
+            Camera_Info.Camera := new Standard.Camera.Commands.PTZ_Optics.
+               PTZ_Optics_Type (Camera_Description'access);
+
+      end case;
+
+      if Camera_Info.Open_Camera then
+         Camera_Info.Camera.Open (
+            Camera_Info.Camera_Address.all, Camera_Info.Port_Number);
+      end if;
+      Log_Out(Debug);
+   end Setup_Camera;
+
+---------------------------------------------------------------
   overriding
   procedure Set_Up (
       Test                       : in out With_Camera_Test_Type) is
@@ -545,31 +563,34 @@ not_implemented;
   begin
       Log_In (Debug or Trace_Set_Up, "load " & Test.Load_State'img &
          " brand " & Test.Brand'img &
-         " location " & Test.Location'img);
+         " location " & Test.Camera_Info.Location'img);
       GNOGA_Ada_Lib.Set_Connection_Data (
          GNOGA_Ada_Lib.Connection_Data_Class_Access (Connection_Data));
 
-      case Test.Brand is
-
-         when ALPTOP_Camera =>
-            Test.Camera := new Standard.Camera.LIB.ALPTOP.ALPTOP_Type (
-               Camera_Description'access);
-
-         when No_Camera =>
-            raise Failed with "no camera brand selected";
-
-         when PTZ_Optics_Camera =>
-            Test.Camera := new Standard.Camera.Commands.PTZ_Optics.
-               PTZ_Optics_Type (Camera_Description'access);
-
-      end case;
+--    case Test.Brand is
+--
+--       when ALPTOP_Camera =>
+--          Test.Camera_Info.Camera := new Standard.Camera.LIB.ALPTOP.ALPTOP_Type (
+--             Camera_Description'access);
+--
+--       when No_Camera =>
+--          raise Failed with "no camera brand selected";
+--
+--       when PTZ_Optics_Camera =>
+--          Test.Camera_Info.Camera := new Standard.Camera.Commands.PTZ_Optics.
+--             PTZ_Optics_Type (Camera_Description'access);
+--
+--    end case;
       if Test.Load_State then
          Test.Load_Test_State;
       end if;
 
-      if Test.Open_Camera then
-         Test.Camera.Open (Test.Camera_Address.all, Test.Port_Number);
-      end if;
+      Setup_Camera (Test.Brand, Test.Camera_Info);
+
+--    if Test.Camera_Info.Open_Camera then
+--       Test.Camera_Info.Camera.Open (
+--          Test.Camera_Info.Camera_Address.all, Test.Camera_Info.Port_Number);
+--    end if;
 --     if Options.If_Emulation then
 --        Not_Implemented;
 --      Emulator.Create;
@@ -627,6 +648,29 @@ not_implemented;
 
    end Set_Up;
 
+   ---------------------------------------------------------------
+   overriding
+   procedure Set_Up (
+      Test                       : in out Camera_Window_Test_With_Camera_Type) is
+   ---------------------------------------------------------------
+
+      Connection_Data            : constant Standard.Base.Connection_Data_Access :=
+                                    new Standard.Base.Connection_Data_Type;
+   begin
+      Log_In (Debug or Trace_Set_Up,
+         " brand " & Test.Brand'img &
+         " location " & Test.Camera_Info.Location'img);
+      Camera_Window_Test_Type (Test).Set_Up;
+
+      GNOGA_Ada_Lib.Set_Connection_Data (
+         GNOGA_Ada_Lib.Connection_Data_Class_Access (Connection_Data));
+
+      Test.Load_Test_State;
+
+      Setup_Camera (Test.Brand, Test.Camera_Info);
+      Log_Out (Debug or Trace_Set_Up);
+   end Set_Up;
+
 -- ------------------------------------------------------------
 -- procedure Suite_Action (
 --    Suite                      : in     String;
@@ -668,9 +712,9 @@ not_implemented;
                                     Connection_Data.State;
    begin
       Log_In (Debug or Trace_Set_Up);
-      if Test.Camera /= Null then
-         Test.Camera.Close;
-         Test.Camera := Null; -- needs so test can be rerun
+      if Test.Camera_Info.Camera /= Null then
+         Test.Camera_Info.Camera.Close;
+         Test.Camera_Info.Camera := Null; -- needs so test can be rerun
       end if;
 
       if Test.Setup.Is_Loaded then

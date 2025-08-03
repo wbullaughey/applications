@@ -134,11 +134,11 @@ package body Camera.Commands.Unit_Test is
 
       declare
          Speed       : constant Data_Type :=
-                        Test.Camera.Get_Camera_Speed (
+                        Test.Camera_Info.Camera.Get_Camera_Speed (
                            Select_Maximum_Speed);
       begin
          Log_Here (Debug or Trace_Set_Up, "speed " & Speed'img);
-         Test.Camera.Set_Preset (Video.Lib.Get_Default_Preset_ID,
+         Test.Camera_Info.Camera.Set_Preset (Video.Lib.Get_Default_Preset_ID,
             Speed => Speed);     -- normally same as preset 0
       end;
       Log_Out (Debug or Trace_Set_Up);
@@ -178,11 +178,11 @@ package body Camera.Commands.Unit_Test is
    ---------------------------------------------------------------
 
       Speed          : constant Data_Type :=
-                        Test.Camera.Get_Camera_Speed (
+                        Test.Camera_Info.Camera.Get_Camera_Speed (
                            Select_Maximum_Speed);
    begin
       Log_In (Debug or Trace_Set_Up, "speed " & Speed'img);
-      Test.Camera.Set_Preset (Get_Test_Preset,     -- normally same as preset 0
+      Test.Camera_Info.Camera.Set_Preset (Get_Test_Preset,     -- normally same as preset 0
          Speed => Speed);
       Standard.Camera.Lib.Unit_Test.With_Camera_Test_Type (Test).Tear_Down;
       Log_Out (Debug or Trace_Set_Up);
@@ -259,15 +259,15 @@ package body Camera.Commands.Unit_Test is
    begin
       Log_In (Debug);
       -- start from Get_Test_Preset as reference - set by Set_Up
-      Local_Test.Camera.Set_Preset (Get_Test_Preset);
+      Local_Test.Camera_Info.Camera.Set_Preset (Get_Test_Preset);
       -- move 4 steps return to Test_Prset
       -- get coordinats of test preset
-      Local_Test.Camera.Get_Absolute (Test_Pan, Test_Tilt);
+      Local_Test.Camera_Info.Camera.Get_Absolute (Test_Pan, Test_Tilt);
       Log_Here (Debug, "test pan " & Test_Pan'img & " tilt " & Test_Tilt'img);
 
       for Offset of Offsets loop
       -- set relative
-         Local_Test.Camera.Position_Relative (
+         Local_Test.Camera_Info.Camera.Position_Relative (
             Offset.Pan, Offset.Tilt);
          delay 0.2;
          if Debug then
@@ -292,7 +292,7 @@ package body Camera.Commands.Unit_Test is
                         Absolute_Type (Offset.Tilt);
                   end;
                end if;
-               Local_Test.Camera.Get_Absolute (Pan, Tilt);
+               Local_Test.Camera_Info.Camera.Get_Absolute (Pan, Tilt);
                Log_Here ("step" & Step'img &
                   " pan " & Pan'img & " offset " & Offset.Pan'img &
                   " tilt " & Tilt'img & " offset " & Offset.Tilt'img &
@@ -306,14 +306,14 @@ package body Camera.Commands.Unit_Test is
       end loop;
 
       -- get coordinates of final location
-      Local_Test.Camera.Get_Absolute (Final_Pan, Final_Tilt);
+      Local_Test.Camera_Info.Camera.Get_Absolute (Final_Pan, Final_Tilt);
       -- verify it got coordinates that were set
       Log_Here (Debug, "final pan " & Final_Pan'img & " tilt " & Final_Tilt'img);
       Check_Coordinates (Final_Pan, Test_Pan , Final_Tilt, Test_Tilt);
       -- set it back to reference
-      Local_Test.Camera.Set_Preset (Get_Test_Preset);
+      Local_Test.Camera_Info.Camera.Set_Preset (Get_Test_Preset);
       -- get its coordinats
-      Local_Test.Camera.Get_Absolute (Final_Pan, Final_Tilt);
+      Local_Test.Camera_Info.Camera.Get_Absolute (Final_Pan, Final_Tilt);
       Log_Here (Debug, "final pan " & Final_Pan'img & " tilt " & Final_Tilt'img);
       Check_Coordinates (Final_Pan, Test_Pan, Final_Tilt, Test_Tilt);
       Log_Out (Debug);
@@ -354,22 +354,22 @@ package body Camera.Commands.Unit_Test is
       for Counter in 1 .. 2 loop
          Log_Here (Debug, "counter" & Counter'img);
          -- use Get_Test_Preset as reference
-         Local_Test.Camera.Set_Preset (Get_Test_Preset);
+         Local_Test.Camera_Info.Camera.Set_Preset (Get_Test_Preset);
          -- get coordinats of test preset
-         Local_Test.Camera.Get_Absolute (Test_Pan, Test_Tilt);
+         Local_Test.Camera_Info.Camera.Get_Absolute (Test_Pan, Test_Tilt);
          -- calculate offset from reference
          Pan_Set := Test_Pan + Pan_Step (Counter);
          Tilt_Set := Test_Tilt + Tilt_Step (Counter);
          -- set to that offset
-         Local_Test.Camera.Set_Absolute (Pan_Set, Tilt_Set);
+         Local_Test.Camera_Info.Camera.Set_Absolute (Pan_Set, Tilt_Set);
          -- get coordinates of new location
-         Local_Test.Camera.Get_Absolute (Final_Pan, Final_Tilt);
+         Local_Test.Camera_Info.Camera.Get_Absolute (Final_Pan, Final_Tilt);
          -- verify it got coordinates that were set
          Check_Coordinates (Final_Pan, Pan_Set, Final_Tilt, Tilt_Set);
          -- set it back to reference
-         Local_Test.Camera.Set_Preset (Get_Test_Preset);
+         Local_Test.Camera_Info.Camera.Set_Preset (Get_Test_Preset);
          -- git its coordinats
-         Local_Test.Camera.Get_Absolute (Final_Pan, Final_Tilt);
+         Local_Test.Camera_Info.Camera.Get_Absolute (Final_Pan, Final_Tilt);
          Check_Coordinates (Final_Pan, Test_Pan, Final_Tilt, Test_Tilt);
       end loop;
       Log_Out (Debug);
@@ -391,14 +391,14 @@ package body Camera.Commands.Unit_Test is
    begin
       Log_In (Debug);
       -- use test preset as reference - set by Set_Up
-      Local_Test.Camera.Get_Absolute (Test_Pan, Test_Tilt);
+      Local_Test.Camera_Info.Camera.Get_Absolute (Test_Pan, Test_Tilt);
       -- calculate some points relative to test preset
       Pan_Set := Test_Pan + 100;
       Tilt_Set := Test_Tilt - 100;
       -- set camera to those offsets
-      Local_Test.Camera.Set_Absolute (Pan_Set, Tilt_Set);
+      Local_Test.Camera_Info.Camera.Set_Absolute (Pan_Set, Tilt_Set);
       -- check it was set to that point
-      Local_Test.Camera.Get_Absolute (Pan, Tilt);
+      Local_Test.Camera_Info.Camera.Get_Absolute (Pan, Tilt);
       Check_Coordinates (Pan, Pan_Set, Tilt, Tilt_Set);
       Log_Out (Debug);
    end Test_Set_Preset;
@@ -431,9 +431,9 @@ package body Camera.Commands.Unit_Test is
             -- 1st step sets min zoom
             -- 2nd step sets max zoom
             Log_Here (Debug, "pass " & Pass'img & " counter" & Counter'img);
-            Local_Test.Camera.Set_Fixed_Zoom (Modes (Counter));
+            Local_Test.Camera_Info.Camera.Set_Fixed_Zoom (Modes (Counter));
 
-            Local_Test.Camera.Get_Zoom (Zoom_Values (Pass, Counter));
+            Local_Test.Camera_Info.Camera.Get_Zoom (Zoom_Values (Pass, Counter));
             Log_Here (Debug, "zoom value " & Zoom_Values (Pass, Counter)'img);
 
             if Pass = Test_Settings then
