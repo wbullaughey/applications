@@ -4,6 +4,7 @@ camera_aunit
 
 camera_aunit command line options:
     -1 <trace options>             : Camera Lib unit test            (Camera.Lib.Unit_Test)
+    -2 <trace options>             : Camera Lib Debug                (Camera Lib)
     -?                             : this message                    (Ada_Lib)
     -a <trace options>             : Ada_Lib library trace options   (Ada_Lib)
     -c <directory>                 : current directory               (Camera Lib)
@@ -34,12 +35,11 @@ camera_aunit command line options:
     -@R <seed>                     : set random seed                 (test_ada_lib)
     -@S                            : report random seed              (test_ada_lib)
     -@t                            : include task in trace           (Ada_Lib)
-    -@T <trace options>            : trace options                   (Camera Lib)
     -@u                            : use random seed                 (test_ada_lib)
     -@x                            : exclude time in trace           (Ada_Lib)
 
 
-Camera Lib trace options (-@T)
+Camera Lib trace options (-2)
       a               all
       b               Base.debug
       B               Camera.Lib.Base.debug
@@ -53,11 +53,12 @@ Camera Lib trace options (-@T)
       S               configuration state
       T               Windows.Top
       V               Trace Video widgets
-      wa              Adjust Window
-      wc              Widgets.Control debyg
-      wC              Widgets.Configured debug
-      wl              List camera commands
-      ws              configuration
+      @a              Adjust Window
+      @c              Widgets.Control debyg
+      @C              Widgets.Configured debug
+      @l              List camera commands
+      @s              Configuration
+      @S              Configuration.Camera.State.Debug
 
 Video Lib trace options (-V)
       a               all
@@ -67,9 +68,10 @@ Camera Lib Unit Test trace options (1)
       a               all
       A               Widgets.Adjust unit test trace
       b               Base Command_Tests
+      B               Base Test
       c               Widgets.Control unit_test trace
       C               Widgets.Configured unit test trace
-      d               library unit test trace
+      d               Camera.Lib.Unit_Test.Debug
       m               main unit test trace
       o               unit_test options
       p               program trace
@@ -147,13 +149,15 @@ CAC ada_lib trace library options (-a)
 Ada_Lib unit test library trace options (-U)
       a               all
       A               all unit tests
+      e               Ada_Lib.Trace.Trace_Exceptions
       g               Ada_Lib.GNOGA.Unit_Test.Debug
-      l               Ada_Lib.Unit_Test.Debug Library
       p               test programs
       r               Runtime_Options
       s               Trace Set_Up Tear_Down
       t               Ada_Lib.Test.Debug
       T               Ada_Lib.Trace.Debug_Trace
+      u               Ada_Lib.Unit_Test.Debug Library
+      U               Ada_Lib.Unit_Test.Test_Cases.Debug Library
 
 Enable suites disabled by default (-S)
       a               enable all

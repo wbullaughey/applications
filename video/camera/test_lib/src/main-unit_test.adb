@@ -175,11 +175,11 @@ package body Main.Unit_Test is
       State                      : Configuration.Camera.State.State_Type renames
                                     Connection_Data.State;
    begin
-      Log_In (Debug);
+      Log_In (Debug or Trace_Set_Up);
       Ada_Lib.GNOGA.Unit_Test.GNOGA_Tests_Type (Test).Tear_Down;
       GNOGA_Ada_Lib.Clear_Connection_Data;
       State.Unload;
-      Log_Out (Debug);
+      Log_Out (Debug or Trace_Set_Up);
    end Tear_Down;
 
    ---------------------------------------------------------------

@@ -12,7 +12,7 @@ with Base;
 with Camera.Commands;
 with Camera.Lib.Base;
 --with Configuration.Camera.State;
-with Configuration.Camera;
+with Configuration.Camera.State;
 with Configuration.State;
 with Emulator;
 with Main;
@@ -30,16 +30,14 @@ package body Camera.Lib is
    use type Ada_Lib.Options.Options_Type;
 -- use type Ada_Lib.Options.Interface_Options_Constant_Class_Access;
 
-   Trace_Option                  : constant Character := 'T';
-   Trace_Prefix                  : constant Character := 'w';
-   Display_Trace_Option          : constant String := Ada_Lib.Help.Modifier &
-                                    Trace_Option;
+   Trace_Option                  : constant Character := '2';
+   Trace_Prefix                  : constant Character := Ada_Lib.Help.Modifier;
    Options_With_Parameters       : aliased constant
                                     Ada_Lib.Options.Options_Type :=
                                        Ada_Lib.Options.Create_Options (
                                           "cp", Ada_Lib.Options.Unmodified) &
                                        Ada_Lib.Options.Create_Options (
-                                          Trace_Option, Ada_Lib.Help.Modifier);
+                                          Trace_Option, Ada_Lib.Options.Unmodified);
    Options_Without_Parameters    : aliased constant
                                     Ada_Lib.Options.Options_Type :=
                                        Ada_Lib.Options.Create_Options (
@@ -303,8 +301,8 @@ package body Camera.Lib is
             "port option", Component);
          Ada_Lib.Help.Add_Option ('r', "", "remote camera", Component);
          Ada_Lib.Help.Add_Option ('E', "", "simulate camera", Component);
-         Ada_Lib.Help.Add_Option (Trace_Option, "trace options", "trace options",
-            Component, Ada_Lib.Help.Modifier);
+         Ada_Lib.Help.Add_Option (Trace_Option, "trace options", "Camera Lib Debug",
+            Component);
 --       Ada_Lib.Help.Add_Option ('u', "camera URL", "URL", Component);
          New_Line;
 
@@ -312,7 +310,7 @@ package body Camera.Lib is
          New_Line;
 
          Put_Line (Component & " trace options (-" &
-            Display_Trace_Option & ")");
+            Trace_Option & ")");
          Put_Line ("      a               all");
          Put_Line ("      b               Base.debug");
          Put_Line ("      B               Camera.Lib.Base.debug");
@@ -331,7 +329,8 @@ package body Camera.Lib is
          Put_Line ("      " & Trace_Prefix & "c              Widgets.Control debyg");
          Put_Line ("      " & Trace_Prefix & "C              Widgets.Configured debug");
          Put_Line ("      " & Trace_Prefix & "l              List camera commands");
-         Put_Line ("      " & Trace_Prefix & "s              configuration");
+         Put_Line ("      " & Trace_Prefix & "s              Configuration");
+         Put_Line ("      " & Trace_Prefix & "S              Configuration.Camera.State.Debug");
 
       end case;
 
@@ -369,6 +368,7 @@ package body Camera.Lib is
                      Camera.Lib.Base.Debug := True;
                      Camera.Lib.Base.List_Commands := True;
                      Configuration.Camera.Debug := True;
+                     Configuration.Camera.State.Debug := True;
                      Configuration.State.Debug := True;
                      Configuration.Debug := True;
                      Debug_Options := True;
@@ -426,7 +426,7 @@ package body Camera.Lib is
                   when others =>
                      Options.Bad_Option (Quote (
                         "unexpected trace option", Trace) &
-                        " for '" & Display_Trace_Option & "'");
+                        " for '" & Trace_Option & "'");
 
                end case;
 
@@ -449,12 +449,15 @@ package body Camera.Lib is
                   when 's' =>
                      Configuration.Debug := True;
 
+                  when 'S' =>
+                     Configuration.Camera.State.Debug := True;
+
                   when others =>
                      Options.Bad_Option (Quote (
                         "unexpected trace option",
                         Trace) &
                      " suboption " & Suboption'img &
-                     " for '" & Display_Trace_Option & "'");
+                     " for '" & Trace_Option & "'");
 
                end case;
                Suboption := Plain;

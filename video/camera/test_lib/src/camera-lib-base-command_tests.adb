@@ -6,8 +6,8 @@ with AUnit.Test_Cases;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
 with Base;
 with Camera.Commands;
-with Camera.Commands.PTZ_Optics;
-with Camera.LIB.ALPTOP;
+--with Camera.Commands.PTZ_Optics;
+--with Camera.LIB.ALPTOP;
 with Camera.Lib.Unit_Test;
 with GNOGA_Ada_Lib;
 with Interfaces;
@@ -20,7 +20,7 @@ package body Camera.Lib.Base.Command_Tests is
 
    type Test_Type (
       Brand                      : Brand_Type) is new Camera.Lib.Unit_Test.
-                                    Camera_Test_Type (
+                                    With_Camera_Test_Type (
                                        Brand       => Brand) with record
       Manual                     : Boolean := False;
    end record;
@@ -107,7 +107,7 @@ package body Camera.Lib.Base.Command_Tests is
    procedure Wait (
       Length                     : in     Duration);
 
-   Camera_Description            : aliased constant String := "test camera";
+-- Camera_Description            : aliased constant String := "test camera";
    Suite_Name                    : constant String := "Video_Commands";
 
    ---------------------------------------------------------------
@@ -262,8 +262,11 @@ package body Camera.Lib.Base.Command_Tests is
       Log_In (Debug or Trace_Set_Up);
       GNOGA_Ada_Lib.Set_Connection_Data (
          GNOGA_Ada_Lib.Connection_Data_Class_Access (Connection_Data));
+log_here;
       Connection_Data.Initialize;
-      Camera.Lib.Unit_Test.Camera_Test_Type (Test).Set_Up;
+log_here;
+      Camera.Lib.Unit_Test.With_Camera_Test_Type (Test).Set_Up;
+log_here;
 
 --    begin
 --       Log_Here (Debug or Trace_Set_Up);
@@ -301,23 +304,25 @@ package body Camera.Lib.Base.Command_Tests is
       Test                       : constant Test_Access := new Test_Type (Brand);
 
    begin
-      Log_In (Debug, "brand " & Brand'img);
+      Log_In (Debug, "brand " & Brand'img & " Suite_Name " & Suite_Name);
+log_here ("test address " & Image (test.all'address));
       Ada_Lib.Unit_Test.Suite (Suite_Name);
       Test_Suite.Add_Test (Test);
-      case Brand is
-
-         when ALPTOP_Camera =>
-            Test.Camera := new Standard.Camera.LIB.ALPTOP.ALPTOP_Type (
-               Camera_Description'access);
-
-         when No_Camera =>
-            raise Failed with "no camera brand selected";
-
-         when PTZ_Optics_Camera =>
-            Test.Camera := new Standard.Camera.Commands.PTZ_Optics.
-               PTZ_Optics_Type (Camera_Description'access);
-
-      end case;
+--    Test.Allocate_Camera (Brand);
+--    case Brand is
+--
+--       when ALPTOP_Camera =>
+--          Test.Camera := new Standard.Camera.LIB.ALPTOP.ALPTOP_Type (
+--             Camera_Description'access);
+--
+--       when No_Camera =>
+--          raise Failed with "no camera brand selected";
+--
+--       when PTZ_Optics_Camera =>
+--          Test.Camera := new Standard.Camera.Commands.PTZ_Optics.
+--             PTZ_Optics_Type (Camera_Description'access);
+--
+--    end case;
       Log_Out (Debug);
       return Test_Suite;
    end Suite;
@@ -333,12 +338,12 @@ package body Camera.Lib.Base.Command_Tests is
                         Camera.Commands.Select_Maximum_Speed);
 
    begin
-      Log_In (Debug);
+      Log_In (Debug or Trace_Set_Up);
       Test.Camera.Set_Preset (Video.Lib.Get_Default_Preset_ID,
          Speed  => Speed);
       -- normally same as preset 0
-      Camera.Lib.Unit_Test.Camera_Test_Type (Test).Tear_Down;
-      Log_Out (Debug);
+      Camera.Lib.Unit_Test.With_Camera_Test_Type (Test).Tear_Down;
+      Log_Out (Debug or Trace_Set_Up);
 
    exception
       when Fault: others =>

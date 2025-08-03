@@ -19,7 +19,7 @@ package body Configuration.Camera.Setup.Unit_Tests is
    use type Standard.Camera.Preset_ID_Type;
 
    type Configuration_Load_Test_Type is new Standard.Camera.Lib.
-                                    Unit_Test.Camera_Test_Type with
+                                    Unit_Test.With_Camera_Test_Type with
                                        null record;
 
    type Configuration_Load_Test_Access is access Configuration_Load_Test_Type;
@@ -39,7 +39,7 @@ package body Configuration.Camera.Setup.Unit_Tests is
    ) with Post => Test.Verify_Set_Up;
 
    type Configuration_Tests_Type is new Standard.Camera.Lib.
-                                    Unit_Test.Camera_Test_Type with
+                                    Unit_Test.With_Camera_Test_Type with
                                        null record;
 
    type Configuration_Tests_Access is access Configuration_Tests_Type;
@@ -150,7 +150,7 @@ package body Configuration.Camera.Setup.Unit_Tests is
    begin
       Log_In (Debug or Trace_Set_Up);
       Test.Load_State := False;
-      Standard.Camera.Lib.Unit_Test.Camera_Test_Type (Test).Set_Up;
+      Standard.Camera.Lib.Unit_Test.With_Camera_Test_Type (Test).Set_Up;
       Log_Out (Debug or Trace_Set_Up);
 
    exception
@@ -204,22 +204,22 @@ package body Configuration.Camera.Setup.Unit_Tests is
       Test                       : in out AUnit.Test_Cases.Test_Case'class) is
    ---------------------------------------------------------------
 
-      Connection_Data            : Base.Connection_Data_Type renames
-                                    Base.Connection_Data_Type (
-                                       GNOGA_Ada_Lib.Get_Connection_Data.all);
+--    Connection_Data            : Base.Connection_Data_Type renames
+--                                  Base.Connection_Data_Type (
+--                                     GNOGA_Ada_Lib.Get_Connection_Data.all);
       Local_Test                 : Configuration_Load_Test_Type renames
                                     Configuration_Load_Test_Type (Test);
 --    Options                    : Standard.Camera.Lib.Unit_Test.
 --                                  Unit_Test_Program_Options_Type'class renames
 --                                     Standard.Camera.Lib.Unit_Test.
 --                                        Get_Camera_Unit_Test_Constant_Options.all;
-      State                      : Configuration.Camera.State.State_Type renames
-                                    Connection_Data.State;
+--    State                      : Configuration.Camera.State.State_Type renames
+--                                  Connection_Data.State;
 
    begin
       Log_In (Debug);
       Local_Test.Load_Test_State;
-      Local_Test.Camera.Open (State.Video_Address.all, Local_Test.Port_Number);
+--    Local_Test.Camera.Open (State.Video_Address.all, Local_Test.Port_Number);
       Log_Out (Debug);
 
    exception

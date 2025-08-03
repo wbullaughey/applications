@@ -13,7 +13,7 @@ package body Camera.Commands.Unit_Test is
    use type Interfaces.Integer_16;
 
    type Test_Type is new
-                     Standard.Camera.Lib.Unit_Test.Camera_Test_Type (
+                     Standard.Camera.Lib.Unit_Test.With_Camera_Test_Type (
          Brand       => Camera.Lib.PTZ_Optics_Camera) with null record;
 
    type Test_Access is access Test_Type;
@@ -130,7 +130,7 @@ package body Camera.Commands.Unit_Test is
 
    begin
       Log_In (Debug or Trace_Set_Up);
-      Standard.Camera.Lib.Unit_Test.Camera_Test_Type (Test).Set_Up;
+      Standard.Camera.Lib.Unit_Test.With_Camera_Test_Type (Test).Set_Up;
 
       declare
          Speed       : constant Data_Type :=
@@ -155,6 +155,10 @@ package body Camera.Commands.Unit_Test is
    function Suite return AUnit.Test_Suites.Access_Test_Suite is
    ---------------------------------------------------------------
 
+--    Options                    : Standard.Camera.Lib.Unit_Test.
+--                                  Unit_Test_Program_Options_Type'class
+--                                     renames Standard.Camera.Lib.Unit_Test.
+--                                        Get_Camera_Unit_Test_Constant_Options.all;
       Test_Suite  : constant AUnit.Test_Suites.Access_Test_Suite :=
                      new AUnit.Test_Suites.Test_Suite;
       Test        : constant Test_Access := new Test_Type;
@@ -177,11 +181,11 @@ package body Camera.Commands.Unit_Test is
                         Test.Camera.Get_Camera_Speed (
                            Select_Maximum_Speed);
    begin
-      Log_In (Debug or Trace_Set_Up, "speed ", Speed'img);
-      Log_In (Debug);
+      Log_In (Debug or Trace_Set_Up, "speed " & Speed'img);
       Test.Camera.Set_Preset (Get_Test_Preset,     -- normally same as preset 0
          Speed => Speed);
-      Log_Out (Debug);
+      Standard.Camera.Lib.Unit_Test.With_Camera_Test_Type (Test).Tear_Down;
+      Log_Out (Debug or Trace_Set_Up);
 
    exception
       when Fault: others =>
@@ -214,20 +218,25 @@ package body Camera.Commands.Unit_Test is
 
       type Step_Index_Type    is range 1 .. 4;
 
-      type Step_Type          is record
-         Pan                  :Relative_Type;
-         Tilt                 :Relative_Type;
+      type Absolute_Step_Type is record
+         Pan                  : Absolute_Type;
+         Tilt                 : Absolute_Type;
       end record;
 
---    Number_Steps            : constant := 4;
+      type Relative_Step_Type is record
+         Pan                  : Relative_Type;
+         Tilt                 : Relative_Type;
+      end record;
+
+      Expected                : array (Step_Index_Type) of Absolute_Step_Type;
       Offset                  : constant := 100;
       Local_Test              : Test_Type'class renames Test_Type'class (Test);
       Final_Pan               : Absolute_Type;
       Final_Tilt              : Absolute_Type;
-      Step                    : Natural := 0;
+      Step                    : Step_Index_Type := 1;
       Test_Pan                : Absolute_Type;
       Test_Tilt               : Absolute_Type;
-      Offsets                 : constant array (Step_Index_Type) of Step_Type := (
+      Offsets                 : constant array (Step_Index_Type) of Relative_Step_Type := (
                                  (
                                     Pan   => Offset,
                                     Tilt  => 0
@@ -250,28 +259,49 @@ package body Camera.Commands.Unit_Test is
    begin
       Log_In (Debug);
       -- start from Get_Test_Preset as reference - set by Set_Up
+      Local_Test.Camera.Set_Preset (Get_Test_Preset);
       -- move 4 steps return to Test_Prset
       -- get coordinats of test preset
       Local_Test.Camera.Get_Absolute (Test_Pan, Test_Tilt);
       Log_Here (Debug, "test pan " & Test_Pan'img & " tilt " & Test_Tilt'img);
 
       for Offset of Offsets loop
-         Step := Step + 1;
       -- set relative
          Local_Test.Camera.Position_Relative (
             Offset.Pan, Offset.Tilt);
          delay 0.2;
          if Debug then
             declare
+               Expected_Entry    : Absolute_Step_Type renames Expected (Step);
                Pan               : Absolute_Type;
                Tilt              : Absolute_Type;
 
             begin
+               if Step = 1 then
+                  Expected_Entry.Pan := Test_Pan +
+                     Absolute_Type (Offset.Pan);
+                  Expected_Entry.Tilt := Test_Tilt +
+                     Absolute_Type (Offset.Tilt);
+               else
+                  declare
+                     Last_Entry  : Absolute_Step_Type renames Expected (Step - 1);
+                  begin
+                     Expected_Entry.Pan := Last_Entry.Pan +
+                        Absolute_Type (Offset.Pan);
+                     Expected_Entry.Tilt := Last_Entry.Tilt +
+                        Absolute_Type (Offset.Tilt);
+                  end;
+               end if;
                Local_Test.Camera.Get_Absolute (Pan, Tilt);
                Log_Here ("step" & Step'img &
                   " pan " & Pan'img & " offset " & Offset.Pan'img &
-                  " tilt " & Tilt'img & " offset " & Offset.Tilt'img);
+                  " tilt " & Tilt'img & " offset " & Offset.Tilt'img &
+                  " expected pan" & Expected_Entry.Pan'img &
+                  " Tilt" & Expected_Entry.Tilt'img);
             end;
+         end if;
+         if Step < Step_Index_Type'last then
+            Step := Step + 1;
          end if;
       end loop;
 
@@ -282,7 +312,7 @@ package body Camera.Commands.Unit_Test is
       Check_Coordinates (Final_Pan, Test_Pan , Final_Tilt, Test_Tilt);
       -- set it back to reference
       Local_Test.Camera.Set_Preset (Get_Test_Preset);
-      -- git its coordinats
+      -- get its coordinats
       Local_Test.Camera.Get_Absolute (Final_Pan, Final_Tilt);
       Log_Here (Debug, "final pan " & Final_Pan'img & " tilt " & Final_Tilt'img);
       Check_Coordinates (Final_Pan, Test_Pan, Final_Tilt, Test_Tilt);

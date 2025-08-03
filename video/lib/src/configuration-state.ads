@@ -18,10 +18,11 @@ package Configuration.State is
    type Address_Key_Type    is array (Location_Type) of
                                ADA_LIB.Strings.String_Access;
 
-   type State_Type          is new Root_State_Type with record
-      Video_Address         : aliased Ada_Lib.Socket_IO.Address_Constant_Access;
-      Video_Port            : Video.Lib.Port_Type :=
-                               Video.Lib.Port_Type'last;
+   type State_Type   is new Root_State_Type with record
+      Video_Address  : aliased Ada_Lib.Socket_IO.Address_Constant_Access :=
+                        Null;
+      Video_Port     : Video.Lib.Port_Type :=
+                        Video.Lib.Port_Type'last;
    end record;
 
    type State_Access             is access State_Type;
@@ -39,6 +40,14 @@ package Configuration.State is
       State                      : in     State_Type
    ) return Video.Lib.Port_Type
    with Pre => State.Video_Port /= Video.Lib.Port_Type'last;
+
+   function Have_Video_Address (
+      State                      : in     State_Type
+   ) return Boolean;
+
+   function Have_Video_Port (
+      State                      : in     State_Type
+   ) return Boolean;
 
    procedure Load (
       State                      : in out State_Type;

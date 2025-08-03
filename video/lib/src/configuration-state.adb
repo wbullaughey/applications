@@ -11,7 +11,7 @@ package body Configuration.State is
                                     Remote   => new String'("remote_camera"));
    Port_Key                      : constant Address_Key_Type := (
                                     Local    => new String'("local_port"),
-                                    utRemote   => new String'("remote_port"));
+                                    Remote   => new String'("remote_port"));
 
    ----------------------------------------------------------------
    procedure Dump (
@@ -42,6 +42,26 @@ package body Configuration.State is
    begin
       return State.Video_Port;
    end Get_Host_Port;
+
+   ----------------------------------------------------------------
+   function Have_Video_Address (
+      State                      : in     State_Type
+   ) return Boolean is
+   ----------------------------------------------------------------
+
+   begin
+      return Log_Here (State.Video_Address /= Null, Debug);
+   end Have_Video_Address;
+
+   ----------------------------------------------------------------
+   function Have_Video_Port (
+      State                      : in     State_Type
+   ) return Boolean is
+   ----------------------------------------------------------------
+
+   begin
+      return Log_Here (State.Video_Port /= Video.Lib.Port_Type'last, Debug);
+   end Have_Video_Port;
 
    ----------------------------------------------------------------
    procedure Load (

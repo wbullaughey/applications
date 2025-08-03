@@ -225,64 +225,66 @@ package body Camera.Lib.Base is
                               -- read the rest of the completion
                               Start_Read := Start_Read + Ack_Length;
                               Read_Length := Response_Length - Ack_Length;
+                              Log_Here (Debug, "Start_Read" & Start_Read'img &
+                                 " Read_Length" & Read_Length'img);
 
-
-                                 if Read_Length > 0 then
-                                    End_Read := Start_Read + Read_Length - 1;
-                                    Camera.Socket.Read (Response (Start_Read .. End_Read),
-                                       Time_Left);
-                                    if Debug then
-                                       Video.Lib.Dump ("response",
-                                          Response, Natural (Response_Length));
-                                    end if;
-                                 end if;
-                                 exit;
-                              end if;
-
-                           when 16#60# .. 16#6F# => -- Error
-                              declare
-                                 Error_Code  : constant Data_Type :=
-                                                Response (3);
-                              begin
-                                 --
-                                 Start_Read := Start_Read + Ack_Length;
-                                 Read_Length := 1;
+                              if Read_Length > 0 then
                                  End_Read := Start_Read + Read_Length - 1;
                                  Camera.Socket.Read (Response (Start_Read .. End_Read),
                                     Time_Left);
                                  if Debug then
-                                    Video.Lib.Dump ("response", Response (Response'first ..
-                                       End_Read), Natural (Ack_Length + 1));
+                                    Video.Lib.Dump ("response",
+                                       Response, Natural (Response_Length));
                                  end if;
-                                 Log_Here (Debug, "error code" & Hex (Response (3)));
-                                 case Error_Code is
+                              end if;
+                              Log_Here (Debug);
+                              exit;
+                           end if;
 
-                                    when 2 =>      -- bad format
-                                       Put_Line ("camera bad format error");
+                        when 16#60# .. 16#6F# => -- Error
+                           declare
+                              Error_Code  : constant Data_Type :=
+                                             Response (3);
+                           begin
+                              --
+                              Start_Read := Start_Read + Ack_Length;
+                              Read_Length := 1;
+                              End_Read := Start_Read + Read_Length - 1;
+                              Camera.Socket.Read (Response (Start_Read .. End_Read),
+                                 Time_Left);
+                              if Debug then
+                                 Video.Lib.Dump ("response", Response (Response'first ..
+                                    End_Read), Natural (Ack_Length + 1));
+                              end if;
+                              Log_Here (Debug, "error code" & Hex (Response (3)));
+                              case Error_Code is
 
-                                    when 3 =>
-                                       Put_Line ("multile socet command");
+                                 when 2 =>      -- bad format
+                                    Put_Line ("camera bad format error");
 
-                                    when 4 =>   -- command canceled
-                                       Put_Line ("type 4 command canceled");
+                                 when 3 =>
+                                    Put_Line ("multile socet command");
 
-                                    when 5 =>
-                                       Put_Line ("type 5 command canceled");
+                                 when 4 =>   -- command canceled
+                                    Put_Line ("type 4 command canceled");
 
-                                    when 16#41# =>
-                                       Put_Line ("type 41 command cannot be executed");
+                                 when 5 =>
+                                    Put_Line ("type 5 command canceled");
 
-                                    when others =>
-                                       Failure ("unexpected error code " &
-                                          Hex (Error_Code));
+                                 when 16#41# =>
+                                    Put_Line ("type 41 command cannot be executed");
 
-                                 end case;
-                                 exit;
-                              end;
+                                 when others =>
+                                    Failure ("unexpected error code " &
+                                       Hex (Error_Code));
 
-                           when others =>    -- unexpected
-                              Failure ("unexpected resonse" &
-                                 Hex (Response_Subcode));
+                              end case;
+                              exit;
+                           end;
+
+                        when others =>    -- unexpected
+                           Failure ("unexpected resonse" &
+                              Hex (Response_Subcode));
 
                         end case;
                      end;

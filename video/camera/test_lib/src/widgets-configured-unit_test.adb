@@ -800,14 +800,14 @@ package body Widgets.Configured.Unit_Test is
       State                      : Configuration.Camera.State.State_Type renames
                                     Connection_Data.State;
    begin
-      Log_In (Debug);
+      Log_In (Debug or Trace_Set_Up);
       GNOGA_Ada_Lib.Clear_Connection_Data;
 
       if Test.Setup.Is_Loaded then
          Test.Setup.Unload (State, Save_Changes => False);
       end if;
       Camera.Lib.Unit_Test.Camera_Window_Test_Type (Test).Tear_Down;
-      Log_Out (Debug);
+      Log_Out (Debug or Trace_Set_Up);
    end Tear_Down;
 
    ----------------------------------------------------------------

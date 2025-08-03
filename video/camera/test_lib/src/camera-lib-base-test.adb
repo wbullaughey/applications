@@ -1,43 +1,24 @@
 with Ada.Exceptions;
-with Ada.Strings.Fixed;
+--with Ada.Strings.Fixed;
 with Ada.Text_IO;use Ada.Text_IO;
---with Ada_Lib.Test.Tests;
---with Ask;
+with Ada_Lib.Unit_Test;
 with AUnit.Assertions; use AUnit.Assertions;
 with AUnit.Test_Cases;
---with AUnit.Test_Suites;
---with Ada_Lib.Unit_Test;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
---with Ada_Lib.Unit_Test.Test_Cases;
-with GNAT.Sockets;
-with Hex_IO;
-with Camera.Commands.PTZ_Optics;
-with Camera.LIB.ALPTOP;
+with Base;
 with Camera.Lib.Unit_Test;
+with Configuration.Camera.State;
+--with GNAT.Sockets;
+with Gnoga_Ada_Lib;
 
 package body Camera.Lib.Base.Test is
 
-   use type Index_Type;
+-- use type Camera.Lib.Unit_Test.With_Camera_Test_Type;
 
    type Test_Type (
       Brand       : Brand_Type) is new
-                     Camera.Lib.Unit_Test.Camera_Test_Type (
+                     Camera.Lib.Unit_Test.With_Camera_Test_Type (
                         Brand) with null record;
-
---    Camera            : Base.Base_Camera_Class_Access := Null;
---    case Brand is
---       when ALPTOP_Camera =>
---          ALPTOP      : aliased Standard.Camera.LIB.ALPTOP.ALPTOP_Type;
---
---       when No_Camera=>
---          Null;
---
---       when PTZ_Optics_Camera =>
---          PTZ_Optics  : aliased Standard.Camera.Commands.PTZ_Optics.
---                         PTZ_Optics_Type;
---
---    end case;
--- end record;
 
    type Test_Access is access Test_Type;
 
@@ -50,8 +31,8 @@ package body Camera.Lib.Base.Test is
 --                                           General_Camera_Class_Access;
 --    Port                       : in     Port_Type);
 
-   procedure Port_Scan(
-      Test                       : in out AUnit.Test_Cases.Test_Case'class);
+-- procedure Port_Scan(
+--    Test                       : in out AUnit.Test_Cases.Test_Case'class);
 
    procedure Read_Write (
       Test                       : in out AUnit.Test_Cases.Test_Case'class);
@@ -60,29 +41,33 @@ package body Camera.Lib.Base.Test is
    procedure Register_Tests (
       Test                       : in out Test_Type);
 
--- overriding
--- procedure Set_Up (Test : in out Test_Type)
+   overriding
+   procedure Set_Up (Test : in out Test_Type);
 
 -- overriding
 -- procedure Tear_Down (Test : in out Test_Type);
 
    procedure Test_Open (
-      Test                       : in out AUnit.Test_Cases.Test_Case'class);
+      Test                       : in out AUnit.Test_Cases.Test_Case'class)
+   with Pre => Camera.Lib.Unit_Test.With_Camera_Test_Type (
+                  Test).Have_Camera and then
+               Camera.Lib.Unit_Test.With_Camera_Test_Type (
+                  Test).Have_Camera_Address;
 
 -- function URL return String;
 
-   procedure URL_Scan(
-      Test                       : in out AUnit.Test_Cases.Test_Case'class);
+-- procedure URL_Scan(
+--    Test                       : in out AUnit.Test_Cases.Test_Case'class);
 
 -- ALPTOP_IP_Address              : constant GNAT.Sockets.Inet_Addr_V4_Type :=
 --                                  (192, 168, 1, 240);
-   Camera_Description            : aliased constant String := "test camera";
+-- Camera_Description            : aliased constant String := "test camera";
 -- Port                          : constant Port_Type := 80;
 -- PTZ_Optics_Local_IP_Address   : GNAT.Sockets.Inet_Addr_Type;
 -- PTZ_Optics_Local_IP_Address   : constant GNAT.Sockets.Inet_Addr_V4_Type :=
 --                                  (192, 168, 1, 201);
 -- PTZ_Optics_Local_URL_Address  : constant String := "192.168.1.201";
-   PTZ_Optics_Port               : constant := 5678;
+-- PTZ_Optics_Port               : constant := 5678;
 -- PTZ_Optics_Remote_URL_Address : constant String := "http://ucwc.dyndns.org";
 -- Local_Port                    : constant String := ":80";
 -- Remote_Port                   : constant String := ":9100";
@@ -126,41 +111,43 @@ package body Camera.Lib.Base.Test is
 --    Log_Out (Debug);
 -- end Open;
 
-   ---------------------------------------------------------------
-   procedure Port_Scan(
-      Test                       : in out AUnit.Test_Cases.Test_Case'class) is
-   ---------------------------------------------------------------
-
---    Options                    : Standard.Camera.Lib.Unit_Test.
---                                  Unit_Test_Program_Options_Type'class
---                                     renames Standard.Camera.Lib.Unit_Test.
---                                        Options.all;
-      First_Port                 : constant Port_Type := 1;
-      Last_Port                  : constant Port_Type := 9999;
-      Local_Test                 : Test_Type renames Test_Type (Test);
-
-   begin
-      Put_Line ("test port scan");
-      for Port in First_Port .. Last_Port loop
-         begin
-            Local_Test.Camera.Open (Local_Test.Camera_Address.all, Port);
-            Put_Line ("opened port" & Port'img);
-
-         exception
-            when Failed =>
-               null;
-         end;
-
-         Local_Test.Camera.Close;
-      end loop;
-      Put_Line ("port scan completed");
-
-   exception
-      when Fault: others =>
-         Trace_Exception (Debug, Fault);
-         Assert (False, Ada.Exceptions.Exception_Message (Fault));
-
-   end Port_Scan;
+--   ---------------------------------------------------------------
+--   procedure Port_Scan(
+--      Test                       : in out AUnit.Test_Cases.Test_Case'class) is
+--   ---------------------------------------------------------------
+--
+----    Options                    : Standard.Camera.Lib.Unit_Test.
+----                                  Unit_Test_Program_Options_Type'class
+----                                     renames Standard.Camera.Lib.Unit_Test.
+----                                        Options.all;
+--      First_Port                 : constant Port_Type := 1;
+--      Last_Port                  : constant Port_Type := 9999;
+--      Local_Test                 : Test_Type renames Test_Type (Test);
+--
+--   begin
+--      Put_Line ("test port scan");
+--      for Port in First_Port .. Last_Port loop
+--         begin
+--            Log_Here (Debug, "Port" & Port'img);
+--            Local_Test.Camera.Open (Local_Test.Camera_Address.all, Port);
+--            Local_Test.Camera.Close;
+--            Put_Line ("opened port" & Port'img);
+--
+--         exception
+--            when Standard.Camera.Lib.Base.Failed =>
+--               null;
+--         end;
+--
+--         Local_Test.Camera.Close;
+--      end loop;
+--      Put_Line ("port scan completed");
+--
+--   exception
+--      when Fault: others =>
+--         Trace_Exception (Debug, Fault);
+--         Assert (False, Ada.Exceptions.Exception_Message (Fault));
+--
+--   end Port_Scan;
 
    ---------------------------------------------------------------
    procedure Read_Write(
@@ -170,6 +157,9 @@ package body Camera.Lib.Base.Test is
       type Ports_Type            is array (Positive range <>) of Port_Type;
       type Ports_Access          is access constant Ports_Type;
 
+      Connection_Data            : constant Standard.Base.Connection_Data_Access :=
+                                    Standard.Base.Connection_Data_Access (
+                                       Gnoga_Ada_Lib.Get_Connection_Data);
 --    Options                    : Standard.Camera.Lib.Unit_Test.
 --                                  Unit_Test_Program_Options_Type'class
 --                                     renames Standard.Camera.Lib.Unit_Test.
@@ -178,11 +168,13 @@ package body Camera.Lib.Base.Test is
       ALPTOP_Ports                : aliased constant Ports_Type := (
                                        554, 1935
                                     );
-      Bad_Port                   : Port_Type := 0;
+--    Bad_Port                   : constant Port_Type := 0;
+      State                      : Configuration.Camera.State.State_Type renames
+                                    Connection_Data.State;
       PTZ_Optics_Ports           : aliased constant Ports_Type := (
-                                       1 => 5678
+                                       1 => State.Get_Host_Port
                                     );
-      Good_Response              : Boolean := False;
+--    Good_Response              : Boolean := False;
       Ports                      : Ports_Access := Null;
 
    begin
@@ -210,67 +202,45 @@ package body Camera.Lib.Base.Test is
                Port              : in     Port_Type) is
             ------------------------------------------------------------
 
-               Ack_Value         : Natural;
                Buffer            : Ada_Lib.Socket_IO.Buffer_Type (1 .. 100);
-               Completion_Value  : Natural;
                Get_Ack           : Boolean;
                Has_Response      : Boolean;
-               Next_Byte         : Index_Type;
+               Next_Buffer_Start : Video.Lib.Index_Type;
                Response_Length   : Index_Type;
+               Value             : Data_Type;
 
             begin
-               Log_In (Debug);
+               Log_In (Debug, "port" & Port'img);
                Local_Test.Camera.Send_Command (
-                  Command        => Memory_Recall,
-                  Options        => ( 1 => (
-                     Data           => 3,            -- set recall to setting 3
-                     Start          => 6,
-                     Mode => Fixed)),
+                  Command        => Position_Request,
+                  Options        => Standard.Camera.Lib.Base.Null_Option,
                   Get_Ack        => Get_Ack,
                   Has_Response   => Has_Response,
                   Response_Length=> Response_Length);
                delay 0.5;  -- let camera send response
+               Log_Here (Debug, "get ack " & Get_Ack'img &
+                  " has response " & Has_Response'img &
+                  " response length" & Response_Length'img);
 
-               Assert (not Has_Response, "no response expected");
-               if Get_Ack then
-                  declare
-                     Ack_Length  : constant Index_Type :=
-                                    Local_Test.Camera.Get_Ack_Length;
-                  begin
-                     Local_Test.Camera.Get_Response (Get_Ack, Has_Response,
-                        Buffer, Response_Length,
-                        Local_Test.Camera.Get_Timeout (Memory_Recall));
+               Assert (not Get_Ack, "no ack expected");
+               Assert (Has_Response, "response expected");
+--             Assert (Response_Length = , "response expected");
 
-                     Local_Test.Camera.Acked (Buffer, Ack_Value, Next_Byte);
-                     Put_Line ("ack value" & Hex_IO.Hex (Ack_Value, 8) & " next value" & Next_Byte'img);
-                     if Next_Byte > 0 then
-                        Local_Test.Camera.Completed (
-                              Buffer (Next_Byte .. Ack_Length),
-                              3, Completion_Value, Next_Byte);
-                        Put_Line ("completion value" & Completion_Value'img &
-                           " Next_Byte" & Next_Byte'img);
-                     end if;
+               Local_Test.Camera.Get_Response (
+                  Expect_Ack        => Get_Ack,
+                  Expect_Response   => Has_Response,
+                  Response          => Buffer,
+                  Response_Length   => Response_Length,
+                  Response_Timeout  => 0.5);
 
-                     declare
-                        Line           : String (1 .. Natural (Ack_Length));
-                        for Line'address use Buffer'address;
+               Local_Test.Camera.Process_Response (
+                  Response          => Buffer,
+                  Value             => Value,
+                  Next_Buffer_Start => Next_Buffer_Start);
 
-                     begin
-                        if Ada.Strings.Fixed.Index (Line, "Bad Request") = 0 then
-                           Put_Line ("command succeded for port" & Port'img);
-                           Good_Response := True;
-                        else
-                           Good_Response := False;
-                           Bad_Port := Port;
-                           Put_Line ("command failed for port" & Port'img);
-                        end if;
-                        Log_Out (Debug, "response length" & Ack_Length'img &
-                           " Good_Response " & Good_Response'img);
-                     end;
-                  end;
-               end if;
-               Assert (not Has_Response, "response not expected");
-               Assert (Response_Length = 0, "Response_Length should be 0");
+               Log_Here (Debug, "Next_Buffer_Start" & Next_Buffer_Start'img);
+
+               Log_Out (Debug);
             end Test_Port;
             ------------------------------------------------------------
 
@@ -279,24 +249,29 @@ package body Camera.Lib.Base.Test is
             Local_Test.Camera.URL_Open (
                Local_Test.Camera_Address.URL_Address.Coerce,
                Local_Test.Port_Number);
-            Test_Port (Ports.all (PTZ_Optics_Port));
+            Test_Port (Ports.all (Port));
             Local_Test.Camera.Close ;
 
          exception
-            when Failed =>
-               null;
+            when Fault: Ada_Lib.Socket_IO.Stream_IO.Timeout =>
+               Local_Test.Camera.Close ;
+               Trace_Exception (Debug, Fault);
+               Assert (False, "timeout reading response " &
+                  Ada.Exceptions.Exception_Message (Fault));
+
          end;
 
       end loop;
 
       Put_Line ("read write completed");
-      Assert (Good_Response, "Port" & Bad_Port'img & " no valid response");
+--    Assert (Good_Response, "Port" & Bad_Port'img & " no valid response");
       Log_Out (Debug);
 
 -- exception
---    when AUnit.Assertions =>
+--    when Fault: AUnit.Assertions =>
+--       Trace_Exception (Debug, Fault);
 --       raise;
---
+
 --    when Fault: others =>
 --       Trace_Exception (Debug, Fault);
 --       Assert (False, Ada.Exceptions.Exception_Message (Fault));
@@ -315,31 +290,31 @@ package body Camera.Lib.Base.Test is
          Routine        => Test_Open'access,
          Routine_Name   => AUnit.Format ("Test_Open")));
 
-      Test.Add_Routine (AUnit.Test_Cases.Routine_Spec'(
-         Routine        => Port_Scan'access,
-         Routine_Name   => AUnit.Format ("Port_Scan")));
+--    Test.Add_Routine (AUnit.Test_Cases.Routine_Spec'(
+--       Routine        => Port_Scan'access,
+--       Routine_Name   => AUnit.Format ("Port_Scan")));
 
       Test.Add_Routine (AUnit.Test_Cases.Routine_Spec'(
          Routine        => Read_Write'access,
          Routine_Name   => AUnit.Format ("Read_Write")));
 
-      Test.Add_Routine (AUnit.Test_Cases.Routine_Spec'(
-         Routine        => URL_Scan'access,
-         Routine_Name   => AUnit.Format ("URL_Scan")));
+--    Test.Add_Routine (AUnit.Test_Cases.Routine_Spec'(
+--       Routine        => URL_Scan'access,
+--       Routine_Name   => AUnit.Format ("URL_Scan")));
 
       Log_Out (Debug);
    end Register_Tests;
 
--- ---------------------------------------------------------------
--- procedure Set_Up (Test : in out Test_Type) is
--- ---------------------------------------------------------------
---
---    Seperator               : character;
---
--- begin
---Log (Here, Who);
---    Log (Debug, Here, Who);
--- end Set_Up;
+ ---------------------------------------------------------------
+ Overriding
+ procedure Set_Up (Test : in out Test_Type) is
+ ---------------------------------------------------------------
+
+ begin
+    Log_Here (Debug or Trace_Set_Up);
+    Test.Open_Camera := False;
+    Camera.Lib.Unit_Test.With_Camera_Test_Type (Test).Set_Up;
+ end Set_Up;
 
    ---------------------------------------------------------------
    function Suite return AUnit.Test_Suites.Access_Test_Suite is
@@ -356,21 +331,8 @@ package body Camera.Lib.Base.Test is
 
    begin
       Log_In (Debug, "brand " & Options.Camera_Options.Brand'img);
+      Ada_Lib.Unit_Test.Suite (Suite_Name);  -- used for listing suites
       Test_Suite.Add_Test (Test);
-      case Options.Camera_Options.Brand is
-
-         when ALPTOP_Camera =>
-            Test.Camera := new Standard.Camera.LIB.ALPTOP.ALPTOP_Type (
-               Camera_Description'access);
-
-         when No_Camera =>
-            raise Failed with "no camera brand selected";
-
-         when PTZ_Optics_Camera =>
-            Test.Camera := new Standard.Camera.Commands.PTZ_Optics.
-               PTZ_Optics_Type (Camera_Description'access);
-
-      end case;
       Log_Out (Debug);
       return Test_Suite;
    end Suite;
@@ -390,15 +352,16 @@ package body Camera.Lib.Base.Test is
       Test                       : in out AUnit.Test_Cases.Test_Case'class) is
    ---------------------------------------------------------------
 
-      Options                    : Standard.Camera.Lib.Unit_Test.
-                                    Unit_Test_Program_Options_Type'class
-                                       renames Standard.Camera.Lib.Unit_Test.
-                                          Get_Camera_Unit_Test_Constant_Options.all;
+--    Options                    : Standard.Camera.Lib.Unit_Test.
+--                                  Unit_Test_Program_Options_Type'class
+--                                     renames Standard.Camera.Lib.Unit_Test.
+--                                        Get_Camera_Unit_Test_Constant_Options.all;
       Local_Test                 : Test_Type renames Test_Type (Test);
 
    begin
       Put_Line ("test open");
-      Local_Test.Camera.Open (Options.Camera_Options.Camera_Address.all, 80);
+      Local_Test.Camera.Open (Local_Test.Camera_Address.all,
+         Local_Test.Port_Number);
 
    exception
       when Fault: others =>
@@ -423,46 +386,44 @@ package body Camera.Lib.Base.Test is
 --          PTZ_Optics_Remote_URL_Address & Remote_Port);
 -- end URL;
 
-   ---------------------------------------------------------------
-   procedure URL_Scan(
-      Test                       : in out AUnit.Test_Cases.Test_Case'class) is
-   ---------------------------------------------------------------
-
---    Options                    : Standard.Camera.Lib.Unit_Test.
---                                  Unit_Test_Program_Options_Type'class
---                                     renames Standard.Camera.Lib.Unit_Test.
---                                        Get_Camera_Unit_Test_Constant_Options.all;
-      First_Unit                 : constant GNAT.Sockets.Inet_Addr_Comp_Type := 2;
---    IP_Address                 : GNAT.Sockets.Inet_Addr_V4_Type :=
---                                  (192, 168, 1, 0);
-      Last_Unit                  : constant GNAT.Sockets.Inet_Addr_Comp_Type := 254;
-      Local_Test                 : Test_Type renames Test_Type (Test);
-
-   begin
-      Put_Line ("test unit scan");
-      for Unit in First_Unit .. Last_Unit loop
---       IP_Address (4) := Unit;
-         begin
-            Local_Test.Camera.Open (Camera.Lib.Unit_Test.
-               Get_Camera_Unit_Test_Constant_Options.Camera_Options.
-                  Camera_Address.all, 80);     -- use default HTTP port
-            Put_Line ("opened unit" & Unit'img);
-
-         exception
-            when Failed =>
-               null;
-         end;
-
-         Local_Test.Camera.Close;
-      end loop;
-      Put_Line ("unit scan completed");
-
-   exception
-      when Fault: others =>
-         Trace_Exception (Debug, Fault);
-         Assert (False, Ada.Exceptions.Exception_Message (Fault));
-
-   end URL_Scan;
+--   ---------------------------------------------------------------
+--   procedure URL_Scan(
+--      Test                       : in out AUnit.Test_Cases.Test_Case'class) is
+--   ---------------------------------------------------------------
+--
+----    Options                    : Standard.Camera.Lib.Unit_Test.
+----                                  Unit_Test_Program_Options_Type'class
+----                                     renames Standard.Camera.Lib.Unit_Test.
+----                                        Get_Camera_Unit_Test_Constant_Options.all;
+--      First_Unit                 : constant GNAT.Sockets.Inet_Addr_Comp_Type := 2;
+----    IP_Address                 : GNAT.Sockets.Inet_Addr_V4_Type :=
+----                                  (192, 168, 1, 0);
+--      Last_Unit                  : constant GNAT.Sockets.Inet_Addr_Comp_Type := 254;
+--      Local_Test                 : Test_Type renames Test_Type (Test);
+--
+--   begin
+--      Put_Line ("test unit scan");
+--      for Unit in First_Unit .. Last_Unit loop
+----       IP_Address (4) := Unit;
+--         begin
+--            Local_Test.Camera.Open (Local_Test.Camera_Address.all, Unit);
+--            Put_Line ("opened unit" & Unit'img);
+--
+--         exception
+--            when Failed =>
+--               null;
+--         end;
+--
+--         Local_Test.Camera.Close;
+--      end loop;
+--      Put_Line ("unit scan completed");
+--
+--   exception
+--      when Fault: others =>
+--         Trace_Exception (Debug, Fault);
+--         Assert (False, Ada.Exceptions.Exception_Message (Fault));
+--
+--   end URL_Scan;
 
 begin
    if Trace_Tests then

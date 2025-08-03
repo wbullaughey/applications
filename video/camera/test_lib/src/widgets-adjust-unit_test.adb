@@ -19,9 +19,11 @@ package body Widgets.Adjust.Unit_Test is
 
    use type Interfaces.Integer_16;
 
-   type Widgets_Adjust_Test_Type is new
+   type Widgets_Adjust_Test_Type (
+      Brand                      : Standard.Camera.Lib.Brand_Type) is new
                                     Camera.Lib.Unit_Test.
-                                       Camera_Window_Test_Type (
+                                       Camera_Window_Test_With_Camera_Type (
+                                          Brand             => Brand,
                                           Initialize_GNOGA  => False) with
                                           -- Set_Up will use Main.Run to initialize
                                              null record;
@@ -37,10 +39,10 @@ package body Widgets.Adjust.Unit_Test is
    procedure Register_Tests (
       Test                       : in out Widgets_Adjust_Test_Type);
 
--- overriding
--- procedure Set_Up (
---    Test                       : in out Widgets_Adjust_Test_Type
--- ) with Post => Test.Verify_Set_Up;
+   overriding
+   procedure Set_Up (
+      Test                       : in out Widgets_Adjust_Test_Type
+   ) with Post => Test.Verify_Set_Up;
 
 -- overriding
 -- procedure Tear_Down (
@@ -101,52 +103,38 @@ package body Widgets.Adjust.Unit_Test is
 
    end Register_Tests;
 
---   ---------------------------------------------------------------
---   overriding
---   procedure Set_Up (
---      Test                       : in out Widgets_Adjust_Test_Type) is
---   ---------------------------------------------------------------
---
---   begin
---      Log_In (Debug or Trace_Set_Up);
---      Camera.Lib.Unit_Test.Camera_Window_Test_Type (Test).Set_Up ;
---      declare
---         Connection_Data            : Base.Connection_Data_Type renames
---                                       Base.Connection_Data_Type (
---                                          GNOGA_Ada_Lib.Get_Connection_Data.all);
---         Options                    : Camera.Lib.Unit_Test.
---                                       Unit_Test_Program_Options_Type'class
---                                          renames Camera.Lib.Unit_Test.
---                                             Options.all;
---         State                      : Configuration.Camera.State.State_Type renames
---                                       Connection_Data.State;
---      begin
---         State.Load (Options.Camera_Options.Location, State_Test_Path); -- need to load state 1st
-----       Test.Setup.Load (State, Setup_Test_Path);
---      end;
---      Log_Out (Debug or Trace_Set_Up);
---
---   exception
---      when Fault: others =>
---         Trace_Exception (Debug or Trace_Set_Up, Fault);
---         Assert (False, "exception message " &
---            Ada.Exceptions.Exception_Message (Fault));
---
---   end Set_Up;
+   ---------------------------------------------------------------
+   overriding
+   procedure Set_Up (
+      Test                       : in out Widgets_Adjust_Test_Type) is
+   ---------------------------------------------------------------
+
+   begin
+      Log_In (Debug or Trace_Set_Up);
+      Test.Camera.Set_Preset (Video.Lib.Get_Default_Preset_ID);
+      Log_Out (Debug or Trace_Set_Up);
+
+   exception
+      when Fault: others =>
+         Trace_Exception (Debug or Trace_Set_Up, Fault);
+         Assert (False, "exception message " &
+            Ada.Exceptions.Exception_Message (Fault));
+
+   end Set_Up;
 
    ---------------------------------------------------------------
    function Suite
    return AUnit.Test_Suites.Access_Test_Suite is
    ---------------------------------------------------------------
 
---    Options                    : Camera.Lib.Unit_Test.
---                                  Unit_Test_Program_Options_Type'class
---                                     renames Camera.Lib.Unit_Test.
---                                        Options.all;
+      Options                    : Camera.Lib.Unit_Test.Unit_Test_Program_Options_Type'class
+                                    renames Camera.Lib.Unit_Test.
+                                       Get_Camera_Unit_Test_Constant_Options.all;
       Test_Suite                 : constant AUnit.Test_Suites.Access_Test_Suite
                                     := new AUnit.Test_Suites.Test_Suite;
       Tests                      : constant Widgets_Adjust_Test_Access :=
-                                    new Widgets_Adjust_Test_Type;
+                                    new Widgets_Adjust_Test_Type (
+                                    Options.Camera_Options.Brand);
 
    begin
       Log_In (Debug); --, "test state address " & Image (Tests.State'address) & " pointer address " & image (Global_Camera_State'address));
@@ -211,12 +199,10 @@ package body Widgets.Adjust.Unit_Test is
             Meta           => False),
          Wait           => 0.25);
 
-      Camera.Set_Absolute (
-         Pan      => 0,
-         Tilt     => 0);
-
+      Log_Here (Debug);
       Adjust_Card.Fire_On_Mouse_Click (Event.Mouse_Event);
       delay 0.5;     -- wait for button to be pushed
+      Log_Here (Debug);
       Camera.Get_Absolute (Pan, Tilt);
       Assert (Pan = Pan_Offset, "wrong pan" & Pan'img &
          " expected" & Pan_Offset'img);

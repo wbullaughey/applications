@@ -111,5 +111,7 @@ package Configuration.Camera.State is
    Default_State                 : constant String := "state.cfg";
 -- Global_Camera_State           : State_Access := Null;
 
+   Debug                         : Boolean := False;
+
 end Configuration.Camera.State;
 

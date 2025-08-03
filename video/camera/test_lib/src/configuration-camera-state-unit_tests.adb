@@ -19,7 +19,7 @@ package body Configuration.Camera.State.Unit_Tests is
    use type Video.Lib.Preset_ID_Type;
 
    type Configuration_Load_Test_Type is new Standard.Camera.Lib.
-                                    Unit_Test.Camera_Test_Type with
+                                    Unit_Test.With_Camera_Test_Type with
                                        null record;
 
    type Configuration_Load_Test_Access is access Configuration_Load_Test_Type;
@@ -39,7 +39,7 @@ package body Configuration.Camera.State.Unit_Tests is
    ) with Post => Test.Verify_Set_Up;
 
    type Configuration_Tests_Type is new
-                  Standard.Camera.Lib.Unit_Test.Camera_Test_Type
+                  Standard.Camera.Lib.Unit_Test.With_Camera_Test_Type
                      with null record;
 
    type Configuration_Tests_Access is access Configuration_Tests_Type;
@@ -65,8 +65,8 @@ package body Configuration.Camera.State.Unit_Tests is
       Test                       : in out AUnit.Test_Cases.Test_Case'class
    ) with Pre => GNOGA_Ada_Lib.Has_Connection_Data;
 
-   type Connection_Data_Type     is new GNOGA_Ada_Lib.Connection_Data_Type
-                                    with null record;
+-- type Connection_Data_Type     is new GNOGA_Ada_Lib.Connection_Data_Type
+--                                  with null record;
    Suite_Name                    : constant String := "State";
 
    Test_State               : constant String :=
@@ -139,7 +139,7 @@ package body Configuration.Camera.State.Unit_Tests is
    begin
       Log_In (Debug or Trace_Set_Up);
       Test.Load_State := False;
-      Standard.Camera.Lib.Unit_Test.Camera_Test_Type (Test).Set_Up ;
+      Standard.Camera.Lib.Unit_Test.With_Camera_Test_Type (Test).Set_Up ;
       Log_Out (Debug or Trace_Set_Up);
 
    exception
@@ -182,10 +182,10 @@ package body Configuration.Camera.State.Unit_Tests is
    ---------------------------------------------------------------
 
    begin
-      Log_In (Debug);
+      Log_In (Debug or Trace_Set_Up);
       GNOGA_Ada_Lib.Clear_Connection_Data;
       Ada_Lib.Unit_Test.Test_Cases.Test_Case_Type (Test).Tear_Down;
-      Log_Out (Debug);
+      Log_Out (Debug or Trace_Set_Up);
    end Tear_Down;
 
    ---------------------------------------------------------------
