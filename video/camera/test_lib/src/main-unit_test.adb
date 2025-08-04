@@ -16,7 +16,7 @@ package body Main.Unit_Test is
    type Test_Type (
       Brand                      : Standard.Camera.Lib.Brand_Type) is new
                                     Camera.Lib.Unit_Test.
-                                       Camera_Window_Test_With_Camera_Type (
+                                       With_Camera_With_GNOGA_Test_Type (
                                           Brand             => Brand,
                                           Initialize_GNOGA  => True) with
                                              null record;
@@ -127,7 +127,7 @@ package body Main.Unit_Test is
 --
 -- begin
 --    Log_In (Debug or Trace_Set_Up);
---    Camera.Lib.Unit_Test.Camera_Window_Test_Type (Test).Set_Up;
+--    Camera.Lib.Unit_Test.No_Camera_With_GNOGA_Test_Type (Test).Set_Up;
 --       -- allocate connection data
 --    declare
 --       Connection_Data         : Base.Connection_Data_Type renames

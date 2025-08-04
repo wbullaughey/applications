@@ -13,7 +13,7 @@ package body Camera.Commands.Unit_Test is
    use type Interfaces.Integer_16;
 
    type Test_Type is new
-                     Standard.Camera.Lib.Unit_Test.With_Camera_Test_Type (
+                     Standard.Camera.Lib.Unit_Test.With_Camera_No_GNOGA_Test_Type (
          Brand       => Camera.Lib.PTZ_Optics_Camera) with null record;
 
    type Test_Access is access Test_Type;
@@ -130,7 +130,7 @@ package body Camera.Commands.Unit_Test is
 
    begin
       Log_In (Debug or Trace_Set_Up);
-      Standard.Camera.Lib.Unit_Test.With_Camera_Test_Type (Test).Set_Up;
+      Standard.Camera.Lib.Unit_Test.With_Camera_No_GNOGA_Test_Type (Test).Set_Up;
 
       declare
          Speed       : constant Data_Type :=
@@ -184,7 +184,7 @@ package body Camera.Commands.Unit_Test is
       Log_In (Debug or Trace_Set_Up, "speed " & Speed'img);
       Test.Camera_Info.Camera.Set_Preset (Get_Test_Preset,     -- normally same as preset 0
          Speed => Speed);
-      Standard.Camera.Lib.Unit_Test.With_Camera_Test_Type (Test).Tear_Down;
+      Standard.Camera.Lib.Unit_Test.With_Camera_No_GNOGA_Test_Type (Test).Tear_Down;
       Log_Out (Debug or Trace_Set_Up);
 
    exception

@@ -23,7 +23,7 @@ package body Widgets.Adjust.Unit_Test is
    type Widgets_Adjust_Test_Type (
       Brand                      : Standard.Camera.Lib.Brand_Type) is new
                                     Camera.Lib.Unit_Test.
-                                       Camera_Window_Test_With_Camera_Type (
+                                       With_Camera_With_GNOGA_Test_Type (
                                           Brand             => Brand,
                                           Initialize_GNOGA  => False) with
                                           -- Set_Up will use Main.Run to initialize
@@ -154,7 +154,7 @@ package body Widgets.Adjust.Unit_Test is
 --   begin
 --      Log_In (Debug);
 ----    GNOGA_Ada_Lib.Clear_Connection_Data;
---      Camera.Lib.Unit_Test.Camera_Window_Test_Type (Test).Tear_Down ;
+--      Camera.Lib.Unit_Test.No_Camera_With_GNOGA_Test_Type (Test).Tear_Down ;
 --      Log_Out (Debug);
 --   end Tear_Down;
 

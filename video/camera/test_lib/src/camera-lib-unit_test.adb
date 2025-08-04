@@ -69,7 +69,7 @@ package body Camera.Lib.Unit_Test is
 
    ----------------------------------------------------------------------------
    procedure Check_Preset (
-      Test                       : in     With_Camera_Test_Type) is
+      Test                       : in     With_Camera_No_GNOGA_Test_Type) is
    ----------------------------------------------------------------------------
 
    begin
@@ -86,7 +86,7 @@ package body Camera.Lib.Unit_Test is
 
    ----------------------------------------------------------------------------
    procedure Dump (
-      Test                       : in     With_Camera_Test_Type;
+      Test                       : in     With_Camera_No_GNOGA_Test_Type;
       Trace                      : in     Boolean) is
    ----------------------------------------------------------------------------
 
@@ -106,7 +106,7 @@ package body Camera.Lib.Unit_Test is
 
    ----------------------------------------------------------------------------
    function Have_Camera (
-      Test                       : in     With_Camera_Test_Type
+      Test                       : in     With_Camera_No_GNOGA_Test_Type
    ) return Boolean is
    ----------------------------------------------------------------------------
 
@@ -116,7 +116,7 @@ package body Camera.Lib.Unit_Test is
 
    ----------------------------------------------------------------------------
    function Have_Camera_Address (
-      Test                       : in     With_Camera_Test_Type
+      Test                       : in     With_Camera_No_GNOGA_Test_Type
    ) return Boolean is
    ----------------------------------------------------------------------------
 
@@ -126,7 +126,7 @@ package body Camera.Lib.Unit_Test is
 
    ----------------------------------------------------------------------------
    function Have_Video_Address (
-      Test                       : in     With_Camera_Test_Type
+      Test                       : in     With_Camera_No_GNOGA_Test_Type
    ) return Boolean is
    ----------------------------------------------------------------------------
 
@@ -215,8 +215,7 @@ package body Camera.Lib.Unit_Test is
 
 ---------------------------------------------------------------
    procedure Load_Test_State (
-      Camera_Info                : Camera_Info_Type;
-      Setup                      : Configuration.Camera.Setup.Setup_Type) is
+      Test                       : in out With_Camera_No_GNOGA_Test_Type) is
 ---------------------------------------------------------------
 
       Connection_Data            : constant Standard.Base.Connection_Data_Access :=
@@ -232,18 +231,18 @@ package body Camera.Lib.Unit_Test is
       Log_In (Debug or Trace_Set_Up);
       State.Load (Options.Camera_Options.Location, Camera_State_Path);
       Log_Here (Debug or Trace_Set_Up, " video port#" & State.Video_Port'img);
-      Setup.Load (State, Test_Setup);
-      Camera_Info.Camera_Address := State.Video_Address;
-      Camera_Info.Port_Number := State.Video_Port;
+      Test.Setup.Load (State, Test_Setup);
+      Test.Camera_Info.Camera_Address := State.Video_Address;
+      Test.Camera_Info.Port_Number := State.Video_Port;
 
-      Camera_Info.Camera.Initialize_Standard_Preset_IDs;
+      Test.Camera_Info.Camera.Initialize_Standard_Preset_IDs;
       Log_Out (Debug or Trace_Set_Up);
    end Load_Test_State;
 
 -- ---------------------------------------------------------------
 -- overriding
 -- function Name (
---    Test                       : in     With_Camera_Test_Type
+--    Test                       : in     With_Camera_No_GNOGA_Test_Type
 -- ) return AUnit.Message_String is
 -- ---------------------------------------------------------------
 --
@@ -470,7 +469,7 @@ not_implemented;
 
 -- ---------------------------------------------------------------
 -- procedure Run_Suite (
---    Test                       : in     Camera_Window_Test_Type) is
+--    Test                       : in     No_Camera_With_GNOGA_Test_Type) is
 -- ---------------------------------------------------------------
 --
 -- begin
@@ -549,7 +548,7 @@ procedure Setup_Camera (
 ---------------------------------------------------------------
   overriding
   procedure Set_Up (
-      Test                       : in out With_Camera_Test_Type) is
+      Test                       : in out With_Camera_No_GNOGA_Test_Type) is
 ---------------------------------------------------------------
 
       Connection_Data            : constant Standard.Base.Connection_Data_Access :=
@@ -610,7 +609,7 @@ procedure Setup_Camera (
    ---------------------------------------------------------------
    overriding
    procedure Set_Up (
-      Test                    : in out Camera_Window_Test_Type) is
+      Test                    : in out No_Camera_With_GNOGA_Test_Type) is
    ---------------------------------------------------------------
 
       Connection_Data         : constant Standard.Base.Connection_Data_Access :=
@@ -651,7 +650,7 @@ procedure Setup_Camera (
    ---------------------------------------------------------------
    overriding
    procedure Set_Up (
-      Test                       : in out Camera_Window_Test_With_Camera_Type) is
+      Test                       : in out With_Camera_With_GNOGA_Test_Type) is
    ---------------------------------------------------------------
 
       Connection_Data            : constant Standard.Base.Connection_Data_Access :=
@@ -660,7 +659,7 @@ procedure Setup_Camera (
       Log_In (Debug or Trace_Set_Up,
          " brand " & Test.Brand'img &
          " location " & Test.Camera_Info.Location'img);
-      Camera_Window_Test_Type (Test).Set_Up;
+      No_Camera_With_GNOGA_Test_Type (Test).Set_Up;
 
       GNOGA_Ada_Lib.Set_Connection_Data (
          GNOGA_Ada_Lib.Connection_Data_Class_Access (Connection_Data));
@@ -702,7 +701,7 @@ procedure Setup_Camera (
    ---------------------------------------------------------------
    overriding
    procedure Tear_Down (
-      Test                       : in out With_Camera_Test_Type) is
+      Test                       : in out With_Camera_No_GNOGA_Test_Type) is
    ---------------------------------------------------------------
 
       Connection_Data            : Standard.Base.Connection_Data_Type renames

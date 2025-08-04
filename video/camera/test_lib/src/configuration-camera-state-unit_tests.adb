@@ -19,7 +19,7 @@ package body Configuration.Camera.State.Unit_Tests is
    use type Video.Lib.Preset_ID_Type;
 
    type Configuration_Load_Test_Type is new Standard.Camera.Lib.
-                                    Unit_Test.With_Camera_Test_Type with
+                                    Unit_Test.With_Camera_No_GNOGA_Test_Type with
                                        null record;
 
    type Configuration_Load_Test_Access is access Configuration_Load_Test_Type;
@@ -39,7 +39,7 @@ package body Configuration.Camera.State.Unit_Tests is
    ) with Post => Test.Verify_Set_Up;
 
    type Configuration_Tests_Type is new
-                  Standard.Camera.Lib.Unit_Test.With_Camera_Test_Type
+                  Standard.Camera.Lib.Unit_Test.With_Camera_No_GNOGA_Test_Type
                      with null record;
 
    type Configuration_Tests_Access is access Configuration_Tests_Type;
@@ -139,7 +139,7 @@ package body Configuration.Camera.State.Unit_Tests is
    begin
       Log_In (Debug or Trace_Set_Up);
       Test.Load_State := False;
-      Standard.Camera.Lib.Unit_Test.With_Camera_Test_Type (Test).Set_Up ;
+      Standard.Camera.Lib.Unit_Test.With_Camera_No_GNOGA_Test_Type (Test).Set_Up ;
       Log_Out (Debug or Trace_Set_Up);
 
    exception

@@ -13,11 +13,11 @@ with Gnoga_Ada_Lib;
 
 package body Camera.Lib.Base.Test is
 
--- use type Camera.Lib.Unit_Test.With_Camera_Test_Type;
+-- use type Camera.Lib.Unit_Test.With_Camera_No_GNOGA_Test_Type;
 
    type Test_Type (
       Brand       : Brand_Type) is new
-                     Camera.Lib.Unit_Test.With_Camera_Test_Type (
+                     Camera.Lib.Unit_Test.With_Camera_No_GNOGA_Test_Type (
                         Brand) with null record;
 
    type Test_Access is access Test_Type;
@@ -49,9 +49,9 @@ package body Camera.Lib.Base.Test is
 
    procedure Test_Open (
       Test                       : in out AUnit.Test_Cases.Test_Case'class)
-   with Pre => Camera.Lib.Unit_Test.With_Camera_Test_Type (
+   with Pre => Camera.Lib.Unit_Test.With_Camera_No_GNOGA_Test_Type (
                   Test).Have_Camera and then
-               Camera.Lib.Unit_Test.With_Camera_Test_Type (
+               Camera.Lib.Unit_Test.With_Camera_No_GNOGA_Test_Type (
                   Test).Have_Camera_Address;
 
 -- function URL return String;
@@ -313,7 +313,7 @@ package body Camera.Lib.Base.Test is
  begin
     Log_Here (Debug or Trace_Set_Up);
     Test.Camera_Info.Open_Camera := False;
-    Camera.Lib.Unit_Test.With_Camera_Test_Type (Test).Set_Up;
+    Camera.Lib.Unit_Test.With_Camera_No_GNOGA_Test_Type (Test).Set_Up;
  end Set_Up;
 
    ---------------------------------------------------------------

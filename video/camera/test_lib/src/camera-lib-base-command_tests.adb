@@ -20,7 +20,7 @@ package body Camera.Lib.Base.Command_Tests is
 
    type Test_Type (
       Brand                      : Brand_Type) is new Camera.Lib.Unit_Test.
-                                    With_Camera_Test_Type (
+                                    With_Camera_No_GNOGA_Test_Type (
                                        Brand       => Brand) with record
       Manual                     : Boolean := False;
    end record;
@@ -265,7 +265,7 @@ package body Camera.Lib.Base.Command_Tests is
 log_here;
       Connection_Data.Initialize;
 log_here;
-      Camera.Lib.Unit_Test.With_Camera_Test_Type (Test).Set_Up;
+      Camera.Lib.Unit_Test.With_Camera_No_GNOGA_Test_Type (Test).Set_Up;
 log_here;
 
 --    begin
@@ -342,7 +342,7 @@ log_here ("test address " & Image (test.all'address));
       Test.Camera_Info.Camera.Set_Preset (Video.Lib.Get_Default_Preset_ID,
          Speed  => Speed);
       -- normally same as preset 0
-      Camera.Lib.Unit_Test.With_Camera_Test_Type (Test).Tear_Down;
+      Camera.Lib.Unit_Test.With_Camera_No_GNOGA_Test_Type (Test).Tear_Down;
       Log_Out (Debug or Trace_Set_Up);
 
    exception

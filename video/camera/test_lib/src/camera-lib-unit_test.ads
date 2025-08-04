@@ -22,6 +22,10 @@ package Camera.Lib.Unit_Test is
 
    Failed               : exception;
 
+   type Camera_Test_Interface is Interface;
+
+   type GNOGA_Test_Interface is Interface
+
    type Camera_Info_Type   is record
       Camera               : Standard.Camera.Commands.
                               Camera_Class_Access := Null;
@@ -31,52 +35,51 @@ package Camera.Lib.Unit_Test is
       Port_Number          : Port_Type := Standard.Camera.Commands.PTZ_Optics.Port;
    end record;
 
-   -- use for tests without GNOGA
+   -- use for all tests
    type Test_Type is abstract new Ada_Lib.Unit_Test.Test_Cases.Test_Case_Type
-         with record
+         with null record;
+
+   -- use for tests with camera but no web pages
+   type With_Camera_No_GNOGA_Test_Type (
+      Brand             : Standard.Camera.Lib.Brand_Type
+   ) is abstract new Test_Type and Camera_Test_Interface with record
+      Camera_Info       : Camera_Info_Type;
       Load_State        : Boolean := True;
       Setup             : Configuration.Camera.Setup.Setup_Type;
       Setup_Path        : access constant String := Null;
       State_Path        : access constant String := Null;
    end record;
 
-
-   -- use for tests with camera but no web pages
-   type With_Camera_Test_Type (
-      Brand             : Standard.Camera.Lib.Brand_Type
-   ) is abstract new Test_Type with record
-      Camera_Info       : Camera_Info_Type;
-   end record;
-
-   type Camera_Test_Access       is access With_Camera_Test_Type;
-   type Camera_Test_Constant_Access
-                                 is access constant With_Camera_Test_Type;
+   type With_Camera_No_GNOGA_Test_Access
+                        is access With_Camera_No_GNOGA_Test_Type;
+   type With_Camera_No_GNOGA_Constant_Test_Access
+                        is access constant With_Camera_No_GNOGA_Test_Type;
    procedure Check_Preset (
-      Test                       : in     With_Camera_Test_Type);
+      Test                       : in     With_Camera_No_GNOGA_Test_Type);
 
    procedure Dump (
-      Test                       : in     With_Camera_Test_Type;
+      Test                       : in     With_Camera_No_GNOGA_Test_Type;
       Trace                      : in     Boolean);
 
    function Have_Camera (
-      Test                       : in     With_Camera_Test_Type
+      Test                       : in     With_Camera_No_GNOGA_Test_Type
    ) return Boolean;
 
    function Have_Camera_Address (
-      Test                       : in     With_Camera_Test_Type
+      Test                       : in     With_Camera_No_GNOGA_Test_Type
    ) return Boolean;
 
    function Have_Video_Address (
-      Test                       : in     With_Camera_Test_Type
+      Test                       : in     With_Camera_No_GNOGA_Test_Type
    ) return Boolean;
 
    procedure Load_Test_State (
-      Test                       : in out With_Camera_Test_Type
+      Test                       : in out With_Camera_No_GNOGA_Test_Type
    ) with Pre => Gnoga_Ada_Lib.Has_Connection_Data;
 
    overriding
    procedure Set_Up (
-      Test                       : in out With_Camera_Test_Type
+      Test                       : in out With_Camera_No_GNOGA_Test_Type
    ) with Pre  => not Test.Have_Camera and then
                   not Test.Setup.Is_Loaded,
           Post => Test.Verify_Set_Up and then
@@ -88,37 +91,39 @@ package Camera.Lib.Unit_Test is
                   );
    overriding
    procedure Tear_Down (
-      Test                       : in out With_Camera_Test_Type);
+      Test                       : in out With_Camera_No_GNOGA_Test_Type);
 
    -- use for test which create the standard main window
    -- which don't manipulate camera
-   type Camera_Window_Test_Type (
-      Initialize_GNOGA           : Boolean) is abstract new Ada_Lib.GNOGA.
-                                    Unit_Test.GNOGA_Tests_Type (
+   type No_Camera_With_GNOGA_Test_Type (
+      Initialize_GNOGA           : Boolean)
+                              is abstract new Ada_Lib.GNOGA.GNOGA_Interface
+                                 with record
+      GNOGA_Test              : Ada_Lib.GNOGA.Unit_Test.GNOGA_Tests_Type (
                                        Initialize_GNOGA  => Initialize_GNOGA,
-                                       Test_Driver       => False) with record
-      Main_Window                : Gnoga.GUI.Window.Window_Type;
-      Setup                      : Configuration.Camera.Setup.Setup_Type;
+                                       Test_Driver       => False);
+      Main_Window             : Gnoga.GUI.Window.Window_Type;
+      Setup                   : Configuration.Camera.Setup.Setup_Type;
+      Unit_Test               : Ada_Lib.Unit_Test.Tests.Test_Case_Type;
    end record;
 
    overriding
    procedure Set_Up (
-      Test                       : in out Camera_Window_Test_Type
+      Test                       : in out No_Camera_With_GNOGA_Test_Type
    ) with Post => Test.Verify_Set_Up;
 
    -- use for test which create the standard main window which manipulate camera
-   type Camera_Window_Test_With_Camera_Type (
+   type With_Camera_With_GNOGA_Test_Type (
       Brand                      : Standard.Camera.Lib.Brand_Type;
       Initialize_GNOGA           : Boolean) is abstract new
-                                    Camera_Window_Test_Type (
+                                    No_Camera_With_GNOGA_Test_Type (
                                        Initialize_GNOGA) with record
       Camera_Info                : Camera_Info_Type;
-      Setup                      : Configuration.Camera.Setup.Setup_Type;
    end record;
 
    overriding
    procedure Set_Up (
-      Test                       : in out Camera_Window_Test_With_Camera_Type
+      Test                       : in out With_Camera_With_GNOGA_Test_Type
    ) with Post => Test.Verify_Set_Up;
 
    -- allocated options for unit test of camera library
