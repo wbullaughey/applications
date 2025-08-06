@@ -22,9 +22,8 @@ package Camera.Lib.Unit_Test is
 
    Failed               : exception;
 
+   use for all camera tests
    type Camera_Test_Interface is Interface;
-
-   type GNOGA_Test_Interface is Interface
 
    type Camera_Info_Type   is record
       Camera               : Standard.Camera.Commands.
