@@ -4,6 +4,7 @@ with Ada_Lib.GNOGA.Unit_Test; -- .Base;
 --with GNOGA_Options;
 with Ada_Lib.Trace;
 with Ada_Lib.Unit_Test.Test_Cases;
+--with Ada_Lib.Unit_Test.Tests;
 --with AUnit.Ada_Lib.Options;
 with AUnit.Options;
 with AUnit.Simple_Test_Cases;
@@ -20,10 +21,12 @@ with Gnoga_Ada_Lib;
 
 package Camera.Lib.Unit_Test is
 
+   use type Camera.Commands.Camera_Class_Access;
+
    Failed               : exception;
 
-   use for all camera tests
-   type Camera_Test_Interface is Interface;
+-- use for all camera tests
+   type Camera_Test_Interface is limited Interface;
 
    type Camera_Info_Type   is record
       Camera               : Standard.Camera.Commands.
@@ -33,6 +36,11 @@ package Camera.Lib.Unit_Test is
       Open_Camera          : Boolean := True;
       Port_Number          : Port_Type := Standard.Camera.Commands.PTZ_Optics.Port;
    end record;
+
+   procedure Load_Test_State (
+      Camera_Info       : in out Camera_Info_Type;
+      Setup             : in out Configuration.Camera.Setup.Setup_Type
+   ) with Pre => Gnoga_Ada_Lib.Has_Connection_Data;
 
    -- use for all tests
    type Test_Type is abstract new Ada_Lib.Unit_Test.Test_Cases.Test_Case_Type
@@ -72,10 +80,6 @@ package Camera.Lib.Unit_Test is
       Test                       : in     With_Camera_No_GNOGA_Test_Type
    ) return Boolean;
 
-   procedure Load_Test_State (
-      Test                       : in out With_Camera_No_GNOGA_Test_Type
-   ) with Pre => Gnoga_Ada_Lib.Has_Connection_Data;
-
    overriding
    procedure Set_Up (
       Test                       : in out With_Camera_No_GNOGA_Test_Type
@@ -96,14 +100,13 @@ package Camera.Lib.Unit_Test is
    -- which don't manipulate camera
    type No_Camera_With_GNOGA_Test_Type (
       Initialize_GNOGA           : Boolean)
-                              is abstract new Ada_Lib.GNOGA.GNOGA_Interface
-                                 with record
-      GNOGA_Test              : Ada_Lib.GNOGA.Unit_Test.GNOGA_Tests_Type (
+                              is abstract new  Ada_Lib.GNOGA.Unit_Test.GNOGA_Tests_Type (
                                        Initialize_GNOGA  => Initialize_GNOGA,
-                                       Test_Driver       => False);
+                                       Test_Driver       => False) and
+                                 Ada_Lib.GNOGA.GNOGA_Interface with record
+--    Load_State              : Boolean := True;
       Main_Window             : Gnoga.GUI.Window.Window_Type;
-      Setup                   : Configuration.Camera.Setup.Setup_Type;
-      Unit_Test               : Ada_Lib.Unit_Test.Tests.Test_Case_Type;
+--    Unit_Test               : Ada_Lib.Unit_Test.Tests.Test_Case_Type;
    end record;
 
    overriding
@@ -118,6 +121,7 @@ package Camera.Lib.Unit_Test is
                                     No_Camera_With_GNOGA_Test_Type (
                                        Initialize_GNOGA) with record
       Camera_Info                : Camera_Info_Type;
+      Setup                   : Configuration.Camera.Setup.Setup_Type;
    end record;
 
    overriding

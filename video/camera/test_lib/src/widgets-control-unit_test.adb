@@ -122,7 +122,7 @@ package body Widgets.Control.Unit_Test is
       State.Load (Options.Camera_Options.Location, State_Test_Path);
       -- need to load state 1st
       Test.Setup.Load (State, Setup_Test_Path);
-      Camera.Lib.Unit_Test.No_Camera_With_GNOGA_Test_Type (Test).Set_Up;
+      Camera.Lib.Unit_Test.With_Camera_With_GNOGA_Test_Type (Test).Set_Up;
       Log_Out (Debug or Trace_Set_Up);
 
    exception
@@ -168,7 +168,7 @@ package body Widgets.Control.Unit_Test is
 
    begin
       Log_In (Debug or Trace_Set_Up);
-      Camera.Lib.Unit_Test.No_Camera_With_GNOGA_Test_Type (Test).Tear_Down;
+      Camera.Lib.Unit_Test.With_Camera_With_GNOGA_Test_Type (Test).Tear_Down;
       Log_Out (Debug or Trace_Set_Up);
    end Tear_Down;
 

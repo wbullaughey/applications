@@ -218,7 +218,8 @@ package body Configuration.Camera.Setup.Unit_Tests is
 
    begin
       Log_In (Debug);
-      Local_Test.Load_Test_State;
+      Standard.Camera.Lib.Unit_Test.Load_Test_State (
+         Local_Test.Camera_Info, Local_Test.Setup);
 --    Local_Test.Camera_Info.Camera.Open (State.Video_Address.all, Local_Test.Port_Number);
       Log_Out (Debug);
 
