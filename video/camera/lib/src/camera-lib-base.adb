@@ -90,12 +90,14 @@ package body Camera.Lib.Base is
    ---------------------------------------------------------------
    procedure Camera_No_Found (
       Address                    : in     String;
-      Port                       : in     Video.Lib.Port_Type) is
+      Port                       : in     Video.Lib.Port_Type;
+      From                       : in     String := Here) is
    ---------------------------------------------------------------
 
    begin
       raise Failed with Quote ("Camera address", Address) &
-         " port" & Port'img & " not found";
+         " port" & Port'img & " not found" &
+         " called from " & From;
    end Camera_No_Found;
 
    ---------------------------------------------------------------

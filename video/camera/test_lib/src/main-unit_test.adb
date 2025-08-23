@@ -202,7 +202,7 @@ package body Main.Unit_Test is
 --       Button_Press_Event.Connection_Data :=
 --          Base.Connection_Data_Access (Local_Test.Connection_Data);
 
-         Button_Press_Event.Set_Wait (2.0, "halt wait");
+         Button_Press_Event.Start (2.0, "halt wait");
             -- leave time for web page to display
 
          Run (

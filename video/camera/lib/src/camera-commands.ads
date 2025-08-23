@@ -1,4 +1,5 @@
 --with AUnit.Test_Suites;
+with Ada_lib.Lock;
 with Ada_Lib.Strings;
 with Ada_Lib.Time;
 --with Configuration.Camera;
@@ -12,9 +13,7 @@ package Camera.Commands is
 
    type Camera_Type (
       Description                : Ada_Lib.Strings.String_Constant_Access
-   ) is abstract new Standard.Camera.Lib.Base.
-                                    Base_Camera_Type (
-                                       Description) with null record;
+   ) is abstract new Standard.Camera.Lib.Base.Base_Camera_Type with private;
 
    type Camera_Class_Access      is access all Camera_Type'class;
 
@@ -95,5 +94,19 @@ package Camera.Commands is
       Wait_For_Complete          : in     Boolean := True);
 
    Debug                         : Boolean := False;
+
+private
+
+   Lock_Description              : aliased String := "camera lock";
+
+   type Camera_Type (
+      Description                : Ada_Lib.Strings.String_Constant_Access
+   ) is abstract new Standard.Camera.Lib.Base.
+                                    Base_Camera_Type with record
+      Lock                       : Ada_lib.Lock.Lock_Type (
+                                    Lock_Description'access);
+   end record;
+
+
 
 end Camera.Commands;

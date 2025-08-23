@@ -219,7 +219,7 @@ package body Configuration.Camera.Setup.Unit_Tests is
    begin
       Log_In (Debug);
       Standard.Camera.Lib.Unit_Test.Load_Test_State (
-         Local_Test.Camera_Info, Local_Test.Setup);
+         Local_Test.Camera_Info, Local_Test.Setup, Local_Test.State);
 --    Local_Test.Camera_Info.Camera.Open (State.Video_Address.all, Local_Test.Port_Number);
       Log_Out (Debug);
 
@@ -257,7 +257,7 @@ package body Configuration.Camera.Setup.Unit_Tests is
 
    begin
       Log_In (Debug);
---    Local_Test.Setup.Load (Connection_Data.State, Test_Setup);
+--    Local_Test.Setup.Load (Local_Test.State, Test_Setup);
       if Debug then
          Local_Test.Setup.Get_Configuration (Configuration_ID).Dump ("configuration");
          Local_Test.Setup.Get_Preset (Preset_ID).Dump ("preset");
@@ -267,7 +267,7 @@ package body Configuration.Camera.Setup.Unit_Tests is
       Updated_Setup.Update_Configuration (Configuration_ID, New_Label);
       Updated_Setup.Update_Configuration (Configuration_ID, New_Preset_ID);
       Updated_Setup.Update_Preset (New_Preset_ID, New_Row, New_Column);
-      Updated_Setup.Update (Connection_Data.State);
+      Updated_Setup.Update (Local_Test.State);
       if Debug then
          Updated_Setup.Get_Configuration (Configuration_ID).Dump;
          Updated_Setup.Get_Preset (New_Preset_ID).Dump;
@@ -320,13 +320,15 @@ package body Configuration.Camera.Setup.Unit_Tests is
       Test                       : in out AUnit.Test_Cases.Test_Case'class) is
    ---------------------------------------------------------------
 
-      Connection_Data            : Base.Connection_Data_Type renames
-                                    Base.Connection_Data_Type (
-                                       GNOGA_Ada_Lib.Get_Connection_Data.all);
+--    Connection_Data            : Base.Connection_Data_Type renames
+--                                  Base.Connection_Data_Type (
+--                                     GNOGA_Ada_Lib.Get_Connection_Data.all);
+      Local_Test                 : Configuration_Tests_Type renames
+                                    Configuration_Tests_Type (Test);
       State                      : Configuration.Camera.State.State_Type renames
-                                    Connection_Data.State;
+                                    Local_Test.State;
    begin
-      Log_In (Debug, "Number_Configurations" & State.Number_Configurations'img);
+      Log_In (Debug, "Number_Configurations" & State.Get_Number_Configurations'img);
 
       declare
          Expected_Number_Columns    : constant := 3;
@@ -365,7 +367,7 @@ package body Configuration.Camera.Setup.Unit_Tests is
                Preset_ID   => Video.Lib.Constructor (0)),
             others => Null_Preset));
          Number_Configurations      : constant Configuration_ID_Type :=
-                                       State.Number_Configurations;
+                                       State.Get_Number_Configurations;
          Expected_Configurations    : constant Configurations_Type (
                                        1 .. Number_Configurations) := (
             1 => (

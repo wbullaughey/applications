@@ -36,7 +36,7 @@ package Base is
                                     Message_Box_Result;
       Mouse_Action               : Mouse_Click_Action_Type := No_Action;
                                     -- application responing to
-      State                      : Configuration.Camera.State.State_Type;
+--    State                      : Configuration.Camera.State.State_Type;
       Update_Event               : Ada_Lib.Event.Event_Type (
                                     new String'("update event"));
    end record;
@@ -44,6 +44,11 @@ package Base is
    type Connection_Data_Access   is access all Connection_Data_Type;
    type Connection_Data_Class_Access
                                  is access all Connection_Data_Type'class;
+
+   function Allocate_Connection_Data
+   return Connection_Data_Access
+   with Pre    => not GNOGA_Ada_Lib.Has_Connection_Data,
+        Post   => Allocate_Connection_Data'Result /= Null;
 
    procedure Close_Message_Box (
       Connection_Data            : in out Connection_Data_Type);
@@ -81,9 +86,6 @@ package Base is
    ) return Gnoga.Gui.View.Card.Pointer_To_Tab_Class;
 
    procedure Halt;
-
-   procedure Initialize (
-      Connection_Data            : in out Connection_Data_Type);
 
    procedure Message_Box (
       Connection_Data            : in out Connection_Data_Type;

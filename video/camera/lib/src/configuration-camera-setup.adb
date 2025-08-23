@@ -268,13 +268,13 @@ package body Configuration.Camera.Setup is
       Log_In (Debug, Quote ("file name", Name) &
          Quote (" Current_Directory", Current_Directory) &
          Quote (" path", Path) &
-         " number configurations" & State.Number_Configurations'img);
+         " number configurations" & State.Get_Number_Configurations'img);
 
       Global_Camera_Setup := Setup'unchecked_access;
       Config.Load (Path, False);
 
       Setup.Configurations := new Configurations_Type (1 ..
-         State.Number_Configurations);
+         State.Get_Number_Configurations);
       Setup.Path.Construct (Name);
       Setup.Presets := new Presets_Type (Standard.Camera.Preset_Range_Type'first ..
          Video.Lib.Get_Last_Preset_ID.ID);
@@ -328,7 +328,7 @@ package body Configuration.Camera.Setup is
          Log_Here (Debug, Setup.Presets (Preset_Number).Preset_Image);
       end loop;
 
-      for Configuration_ID in 1 .. State.Number_Configurations loop
+      for Configuration_ID in 1 .. State.Get_Number_Configurations loop
          declare
             Name                 : constant String := "configuration_" &
                                     Trim (Configuration_ID'img);
@@ -546,7 +546,7 @@ package body Configuration.Camera.Setup is
          end;
       end loop;
 
-      for Configuration_ID in 1 .. State.Number_Configurations loop
+      for Configuration_ID in 1 .. State.Get_Number_Configurations loop
          declare
             Name                 : constant String := "configuration_" &
                                     Trim (Configuration_ID'img);

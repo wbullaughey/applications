@@ -112,6 +112,7 @@ package body Widgets.Adjust.Unit_Test is
 
    begin
       Log_In (Debug or Trace_Set_Up);
+      Camera.Lib.Unit_Test.With_Camera_With_GNOGA_Test_Type (Test).Set_Up;
       Test.Camera_Info.Camera.Set_Preset (Video.Lib.Get_Default_Preset_ID);
       Log_Out (Debug or Trace_Set_Up);
 
@@ -233,7 +234,7 @@ package body Widgets.Adjust.Unit_Test is
       ---------------------------------------------------------------
 
       begin
-         Mouse_Move_Event.Initialize (Wait, Description,
+         Mouse_Move_Event.Start (Wait, Description,
             Dynamic     => False,
             Repeating   => False);
          Mouse_Move_Event.Mouse_Event := Mouse_Event;

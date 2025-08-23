@@ -33,7 +33,7 @@ package body Camera.Commands.Unit_Test is
    overriding
    procedure Tear_Down (
       Test                       : in out Test_Type
-   ) with post => Verify_Torn_Down (Test);
+   ) with post => Verify_Tear_Down (Test);
 
    function Get_Test_Preset
    return Video.Lib.Preset_ID_Type renames Video.Lib.Get_Default_Preset_ID;

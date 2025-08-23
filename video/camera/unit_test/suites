@@ -1,7 +1,6 @@
 suites
-command: -@l
 camera_aunit
-main_task_0000000146008800: [00:00:00.01] camera-lib-base-command_tests.adb:308 Camera.Lib.Base.Command_Tests.Suite (0) test address 0000000146820E10
+main_task_00007FBB8E008200: [00:00:00.00] camera-lib-base-command_tests.adb:308 Camera.Lib.Base.Command_Tests.Suite (0) test address 00007FBB8F00F410
 Adjust_Card Test_Mouse_Move
 Basic_Video Read_Write
 Basic_Video Test_Open

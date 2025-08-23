@@ -11,7 +11,8 @@ package body Configuration is
    ----------------------------------------------------------------
 
    begin
-      return Log_Here (State.Loaded, Debug, "from " & From & " " &
+      return Log_Here (State.Loaded, Debug or Trace_Pre_Post_Conditions,
+         "from " & From & " " &
          "address " & Image (State'address) &
          " class " & Ada.Tags.Expanded_Name (Root_State_Type'class (State)'tag));
    end Is_Loaded;
@@ -24,7 +25,8 @@ package body Configuration is
    ----------------------------------------------------------------
 
    begin
-      return Log_Here (Setup.Loaded, Debug, "from " & From & " " &
+      return Log_Here (Setup.Loaded, Debug or Trace_Pre_Post_Conditions,
+         "from " & From & " " &
          "address " & Image (Setup'address) &
          " class " & Ada.Tags.Expanded_Name (Root_Setup_Type'class (Setup)'tag));
    end Is_Loaded;
@@ -37,7 +39,7 @@ package body Configuration is
    ----------------------------------------------------------------
 
    begin
-      Log_Here (Debug, "value " & Value'img & "class " &
+      Log_Here (Debug, "value " & Value'img & " class " &
          Ada.Tags.Expanded_Name (Root_State_Type'class (State)'tag) &
          " address " & Image (State'address) &
          " from " & From);

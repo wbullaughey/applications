@@ -54,7 +54,7 @@ package body Widgets.Configured.Unit_Test is
    overriding
    procedure Tear_Down (
       Test                       : in out Test_Type
-   ) with post => Verify_Torn_Down (Test);
+   ) with post => Test_Type'class (Test).Verify_Tear_Down;
 
    procedure Test_Select_Preset (
       Test                       : in out AUnit.Test_Cases.Test_Case'class);
@@ -752,7 +752,7 @@ package body Widgets.Configured.Unit_Test is
 ----    State.Load (
 ----       Options.Camera_Options.Location, State_Test_Path); -- need to load state 1st
 ----    Test.Setup.Load (State, Setup_Test_Path);
---      Camera.Lib.Unit_Test.Camera_Window_Test_Type (Test).Set_Up;
+--      Camera.Lib.Unit_Test.With_Camera_With_GNOGA_Test_Type (Test).Set_Up;
 ----    Button_Push_Event.Reset_Event;
 --      Log_Out (Debug or Trace_Set_Up);
 --
@@ -806,7 +806,7 @@ package body Widgets.Configured.Unit_Test is
       if Test.Setup.Is_Loaded then
          Test.Setup.Unload (State, Save_Changes => False);
       end if;
-      Camera.Lib.Unit_Test.Camera_Window_Test_Type (Test).Tear_Down;
+      Camera.Lib.Unit_Test.With_Camera_With_GNOGA_Test_Type (Test).Tear_Down;
       Log_Out (Debug or Trace_Set_Up);
    end Tear_Down;
 
@@ -842,7 +842,7 @@ package body Widgets.Configured.Unit_Test is
          Event                   : Button_Push_Event_Type ;
 
       begin
-         Event.Initialize (
+         Event.Start (
             Wait           => 0.25,
             Description    => "accept button");
 --       Event.Test_Case := Accept_Form;
@@ -894,7 +894,7 @@ package body Widgets.Configured.Unit_Test is
          Event                   : Button_Push_Event_Type;
 
       begin
-         Event.Initialize (
+         Event.Start (
             Wait           => 0.25,
             Description    => "cancel button");
 --       Event.Test_Case := Cancel_Form;
@@ -933,7 +933,7 @@ package body Widgets.Configured.Unit_Test is
       begin
          -- test configurations
          for Configuration_Index in Configuration_ID_Type'first ..
-               State.Number_Configurations loop
+               State.Get_Number_Configurations loop
             declare
                Configuration     : Configuration_Type
                                     renames Global_Camera_Setup.Configurations (
@@ -1221,7 +1221,7 @@ package body Widgets.Configured.Unit_Test is
          Event                   : Button_Push_Event_Type;
 
       begin
-         Event.Initialize (
+         Event.Start (
             Wait           => 0.25,
             Description    => "update button");
 --       Event.Test_Case := Update_Label;

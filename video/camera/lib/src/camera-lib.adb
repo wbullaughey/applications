@@ -321,7 +321,7 @@ package body Camera.Lib is
          Put_Line ("      L               camera library options");
          Put_Line ("      m               Main Window");
          Put_Line ("      s               Trace simulator");
-         Put_Line ("      S               configuration state");
+         Put_Line ("      S               configuration.state.Debug");
          Put_Line ("      T               Windows.Top");
 --       Put_Line ("      v               Trace Video communications");
          Put_Line ("      V               Trace Video widgets");

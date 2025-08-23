@@ -13,14 +13,7 @@ package Configuration.Camera.State is
    type Images_Access            is access Images_Type;
 
    type State_Type               is new Configuration.State.State_Type with
-                                    record
-      CSS_Path                   : ADA_LIB.Strings.Unlimited.String_Type;
-      Default_Speed              : Speed_Type;
-      Images                     : Images_Access := Null;
-      Number_Columns             : Column_Type;
-      Number_Configurations      : Configuration_ID_Type;
-      Number_Rows                : Row_Type;
-   end record;
+                                    private;
 
    type State_Access             is access all State_Type;
    type State_Class_Access       is access all State_Type'class;
@@ -59,6 +52,10 @@ package Configuration.Camera.State is
       State                      : in     State_Type
    ) return Column_Type;
 
+   function Get_Number_Configurations (
+      State                      : in     State_Type
+   ) return Configuration_ID_Type;
+
    function Get_Number_Presets (
       State                      : in     State_Type
    ) return Natural;
@@ -66,6 +63,12 @@ package Configuration.Camera.State is
    function Get_Number_Rows (
       State                      : in     State_Type
    ) return Row_Type;
+
+   function Get_Modifiable_State return State_Access
+   with Pre    => State_Set;
+
+   function Get_Read_Only_State return State_Constant_Access
+   with Pre    => State_Set;
 
    function Has_Image (
       State                      : in     State_Type;
@@ -104,6 +107,13 @@ package Configuration.Camera.State is
    ) with Pre => not State.Is_Loaded,
           Post => State.Is_Loaded;
 
+   procedure Set_State (
+      State                      : in     State_Access
+   ) with Pre  => not State_Set,
+          Post => State_Set;
+
+   function State_Set return Boolean;
+
    overriding
    procedure Unload (
       State                      : in out State_Type);
@@ -112,6 +122,19 @@ package Configuration.Camera.State is
 -- Global_Camera_State           : State_Access := Null;
 
    Debug                         : Boolean := False;
+
+private
+
+   type State_Type               is new Configuration.State.State_Type with
+                                    record
+      CSS_Path                   : ADA_LIB.Strings.Unlimited.String_Type;
+      Default_Speed              : Speed_Type;
+      Images                     : Images_Access := Null;
+      Number_Columns             : Column_Type;
+      Number_Configurations      : Configuration_ID_Type;
+      Number_Rows                : Row_Type;
+   end record;
+
 
 end Configuration.Camera.State;
 

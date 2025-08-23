@@ -4,12 +4,12 @@ with AUnit.Assertions; use AUnit.Assertions;
 with AUnit.Test_Cases;
 --with Ada_Lib.Options.Unit_Test;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
-with Base;
+--with Base;
 with Camera.Commands;
 --with Camera.Commands.PTZ_Optics;
 --with Camera.LIB.ALPTOP;
 with Camera.Lib.Unit_Test;
-with GNOGA_Ada_Lib;
+--with GNOGA_Ada_Lib;
 with Interfaces;
 with Video.Lib;
 
@@ -42,7 +42,7 @@ package body Camera.Lib.Base.Command_Tests is
    overriding
    procedure Tear_Down (
       Test                       : in out Test_Type
-   ) with post => Verify_Torn_Down (Test);
+   ) with post => Verify_Tear_Down (Test);
 
 -- procedure Test_Auto_Focus (
 --    Test                       : in out AUnit.Test_Cases.Test_Case'class);
@@ -256,38 +256,17 @@ package body Camera.Lib.Base.Command_Tests is
       Test                       : in out Test_Type) is
    ---------------------------------------------------------------
 
-      Connection_Data         : constant Standard.Base.Connection_Data_Access :=
-                                 new Standard.Base.Connection_Data_Type;
    begin
       Log_In (Debug or Trace_Set_Up);
-      GNOGA_Ada_Lib.Set_Connection_Data (
-         GNOGA_Ada_Lib.Connection_Data_Class_Access (Connection_Data));
-log_here;
-      Connection_Data.Initialize;
-log_here;
       Camera.Lib.Unit_Test.With_Camera_No_GNOGA_Test_Type (Test).Set_Up;
-log_here;
-
---    begin
---       Log_Here (Debug or Trace_Set_Up);
---       Test.Check_Preset;
---    exception
---       when Fault: others =>
---          Trace_Message_Exception (Debug or Trace_Set_Up, Fault,
---             "ignore exception in Set_Up for Set_Power");
---    end;
-
-      begin
-         Log_Here (Debug or Trace_Set_Up);
-         Test.Camera_Info.Camera.Set_Preset (Video.Lib.Get_Default_Preset_ID);
-      exception
-         when Fault: Camera.Commands.Timeout =>
-            Log_Exception (Debug or Trace_Set_Up, Fault,
-               "timeout set preset");
-            raise;
-
-      end;
+      Test.Camera_Info.Camera.Set_Preset (Video.Lib.Get_Default_Preset_ID);
       Log_Out (Debug or Trace_Set_Up);
+
+   exception
+      when Fault: Camera.Commands.Timeout =>
+         Log_Exception (Debug or Trace_Set_Up, Fault,
+            "timeout set preset");
+         raise;
    end Set_Up;
 
    ---------------------------------------------------------------
@@ -305,7 +284,6 @@ log_here;
 
    begin
       Log_In (Debug, "brand " & Brand'img & " Suite_Name " & Suite_Name);
-log_here ("test address " & Image (test.all'address));
       Ada_Lib.Unit_Test.Suite (Suite_Name);
       Test_Suite.Add_Test (Test);
 --    Test.Allocate_Camera (Brand);

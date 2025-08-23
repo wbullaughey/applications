@@ -127,7 +127,8 @@ package body Widgets.Control.Unit_Test is
 
    exception
       when Fault: Ada_Lib.Configuration.Failed =>
-         Test.Set_Up_Message_Exception (Fault, "could not load configuration" &
+         Test_Type'class (Test).Set_Up_Message_Exception (Fault,
+            "could not load configuration" &
             Quote (" Setup_Path", Setup_Test_Path) &
             Quote (" State_Path", State_Test_Path));
          raise;
@@ -211,7 +212,7 @@ package body Widgets.Control.Unit_Test is
                Event                   : Button_Push_Event_Type;
 
             begin
-               Event.Initialize (0.25, "button timer");
+               Event.Start (0.25, "button timer");
                delay 0.5;     -- wait for button to be pushed
             end;
          end;

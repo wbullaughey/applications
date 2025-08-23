@@ -114,7 +114,7 @@ package body Widgets.Configured is
                                     Connection_Data.State;
       Number_Configurations      : constant
                                     Configuration_ID_Type :=
-                                       State.Number_Configurations;
+                                       State.Get_Number_Configurations;
    begin
       Log_In (Debug);
       Configured_Card.Create (

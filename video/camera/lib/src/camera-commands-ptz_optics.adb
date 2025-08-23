@@ -9,6 +9,7 @@ package body Camera.Commands.PTZ_Optics is
    use type Video.Lib.Index_Type;
 
    Default_Response_Timeout      : constant Duration := 0.6;
+   Position_Request_Timeout      : constant Duration := 0.75;
    Position_Timeout              : constant Duration := 60.0;
    Power_Inquire_Timeout         : constant Duration := 120.0;
    Commands                      : constant Array (Standard.Camera.Lib.Base.
@@ -26,7 +27,7 @@ package body Camera.Commands.PTZ_Optics is
       Standard.Camera.Lib.Base.Position_Relative    => ( 15, ( 16#81#,16#01#,16#06#,16#03#,
          16#00#, 16#00#, 16#00#, 16#00#, 16#00#, 16#00#, 16#00#, 16#00#, 16#00#, 16#00#,
          16#FF#, others => 0 ), True, Position_Timeout, False, 0),
-      Standard.Camera.Lib.Base.Position_Request     => ( 5, ( 16#81#,16#09#,16#06#,16#12#,16#FF#, others => 0 ), False, Default_Response_Timeout, True, 11),
+      Standard.Camera.Lib.Base.Position_Request     => ( 5, ( 16#81#,16#09#,16#06#,16#12#,16#FF#, others => 0 ), False, Position_Request_Timeout, True, 11),
       Standard.Camera.Lib.Base.Position_Right       => ( 9, ( 16#81#,16#01#,16#06#,16#01#,16#00#,16#00#,16#02#,16#03#,16#FF#, others => 0 ), True, Default_Response_Timeout, False, 0),
       Standard.Camera.Lib.Base.Position_Stop        => ( 9, ( 16#81#,16#01#,16#06#,16#01#,16#00#,16#00#,16#03#,16#03#,16#FF#, others => 0 ), True, Default_Response_Timeout, False, 0),
       Standard.Camera.Lib.Base.Position_Up          => ( 9, ( 16#81#,16#01#,16#06#,16#01#,16#00#,16#00#,16#03#,16#01#,16#FF#, others => 0 ), True, Default_Response_Timeout, False, 0),

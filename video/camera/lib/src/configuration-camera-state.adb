@@ -20,6 +20,8 @@ package body Configuration.Camera.State is
       Images_Type,
       Images_Access);
 
+   State_Pointer                 : State_Access := Null;
+
    ----------------------------------------------------------------
    function Check_Column (
       Column                     : in     Column_Type
@@ -62,39 +64,6 @@ package body Configuration.Camera.State is
    end Check_Row;
 
    ----------------------------------------------------------------
-   function Image_Name (
-      Column               : in     Configuration.Camera.Column_Type;
-      Row                  : in     Configuration.Camera.Row_Type
-   ) return String is
-   ----------------------------------------------------------------
-
-      Connection_Data            : Base.Connection_Data_Type renames
-                                    Base.Connection_Data_Type (
-                                       GNOGA_Ada_Lib.Get_Connection_Data.all);
-      State                      : Configuration.Camera.State.State_Type renames
-                                    Connection_Data.State;
-      Image_Name                 : constant String :=
-                                    State.Image_Path (Row, Column);
-      Image_Path        : constant String := "img/" & Image_Name;
-                           -- gnoga ads img/
-   begin
-      Log_Here (Debug, "row" & Row'img &
-         " column" & Column'img &
-         Quote (" image Name", Image_Name) &
-         Quote (" image path", Image_Path));
-
-      if Image_Name'length > 0 then
-         if Ada_Lib.Directory.Exists (Image_Path) then
-            return Image_Path;
-         else
-            raise Failed with Quote ("image path", Image_Path) & " does not exist";
-         end if;
-      else
-         return "";
-      end if;
-   end Image_Name;
-
-   ----------------------------------------------------------------
    procedure Dump (
       State                      : in     State_Type;
       From                       : in     String := Ada_Lib.Trace.Here) is
@@ -105,7 +74,7 @@ package body Configuration.Camera.State is
       State.Dump (From);
       Put_Line (Quote ("  CSS Path", State.CSS_Path));
       Put_Line ("  Number Columns:" & State.Number_Columns'img);
-      Put_Line ("  Number Configurations:" & State.Number_Configurations'img);
+      Put_Line ("  Number Configurations:" & State.Get_Number_Configurations'img);
       Put_Line ("  Last Preset:" & Video.Lib.Get_Last_Preset_ID'img);
       Put_Line ("  Number Rows:" & State.Number_Rows'img);
       for Row in State.Images.all'range (1) loop
@@ -133,6 +102,22 @@ package body Configuration.Camera.State is
       else
          Default_State);
    end File_Path;
+
+   ----------------------------------------------------------------
+   function Get_Modifiable_State return State_Access is
+   ----------------------------------------------------------------
+
+   begin
+      return State;
+   end Get_Modifiable_State;
+
+   ----------------------------------------------------------------
+   function Get_Read_Only_State return State_Constant_Access is
+   ----------------------------------------------------------------
+
+   begin
+      return State_Constant_Access (State);
+   end Get_Modifiable_State;
 
    ----------------------------------------------------------------
    function Get_Default_Speed
@@ -204,6 +189,39 @@ package body Configuration.Camera.State is
       else
          State.Images (Row, Column).Length > 0);
    end Has_Image;
+
+   ----------------------------------------------------------------
+   function Image_Name (
+      Column               : in     Configuration.Camera.Column_Type;
+      Row                  : in     Configuration.Camera.Row_Type
+   ) return String is
+   ----------------------------------------------------------------
+
+      Connection_Data            : Base.Connection_Data_Type renames
+                                    Base.Connection_Data_Type (
+                                       GNOGA_Ada_Lib.Get_Connection_Data.all);
+      State                      : Configuration.Camera.State.State_Type renames
+                                    Connection_Data.State;
+      Image_Name                 : constant String :=
+                                    State.Image_Path (Row, Column);
+      Image_Path        : constant String := "img/" & Image_Name;
+                           -- gnoga ads img/
+   begin
+      Log_Here (Debug, "row" & Row'img &
+         " column" & Column'img &
+         Quote (" image Name", Image_Name) &
+         Quote (" image path", Image_Path));
+
+      if Image_Name'length > 0 then
+         if Ada_Lib.Directory.Exists (Image_Path) then
+            return Image_Path;
+         else
+            raise Failed with Quote ("image path", Image_Path) & " does not exist";
+         end if;
+      else
+         return "";
+      end if;
+   end Image_Name;
 
    ----------------------------------------------------------------
    function Image_Path (
@@ -282,7 +300,7 @@ package body Configuration.Camera.State is
          Quote ("video port", State.Video_Port'img) &
          Quote (" CSS_Path", State.CSS_Path) &
          " Number_Columns" & State.Number_Columns'img &
-         " Number_Configurations" & State.Number_Configurations'img &
+         " Number_Configurations" & State.Get_Number_Configurations'img &
          " Last_Preset" & Last_Preset_Number'img &
          " Number_Rows" & State.Number_Rows'img);
       State.Images := new Images_Type (1 .. State.Number_Rows,
@@ -334,6 +352,24 @@ package body Configuration.Camera.State is
          raise;
 
    end Load;
+
+   ----------------------------------------------------------------
+   function State_Set return Boolean is
+   ----------------------------------------------------------------
+
+   begin
+      return State_Pointer /= Null;
+   end State_Set;
+
+   ----------------------------------------------------------------
+   procedure Set_State (
+      State                      : in     State_Access) is
+   ----------------------------------------------------------------
+
+   begin
+      State_Pointer := State;
+   end Set_State;
+
    ----------------------------------------------------------------
    overriding
    procedure Unload (

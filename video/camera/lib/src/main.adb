@@ -34,12 +34,16 @@ package body Main is
 --    Mouse_Event                : in     Gnoga.Gui.Base.Mouse_Event_Record
 -- ) with Pre => Object.Connection_Data /= Null;
 
+   function Has_Main_Data
+   return Boolean;
+
    --  Setup GUI for each connection.
    procedure On_Connect (
       Main_Window                : in out Gnoga.Gui.Window.Window_Type'Class;
       Connection                 : access Gnoga.Application.Multi_Connect.
                                              Connection_Holder_Type
-   ) with Pre => GNOGA_Ada_Lib.Has_Connection_Data;
+   ) with Pre => GNOGA_Ada_Lib.Has_Connection_Data and then
+                 Has_Main_Data;
 
    --  Application event handlers
 -- procedure On_Exit (
@@ -260,6 +264,26 @@ package body Main is
    begin
       return Main_Data.View.Docker.Deck.Tabs'unchecked_access;
    end Get_Tabs;
+
+   ----------------------------------------------------------------
+   function Has_Main_Data
+   return Boolean is
+   ----------------------------------------------------------------
+
+   begin
+      if GNOGA_Ada_Lib.Has_Connection_Data then
+         declare
+            Connection_Data      : Base.Connection_Data_Type renames
+                                    Base.Connection_Data_Type (
+                                       GNOGA_Ada_Lib.Get_Connection_Data.all);
+         begin
+            return Log_Here (Connection_Data.Main_Data /= Null,
+               Debug or Trace_Pre_Post_Conditions);
+         end;
+      else
+         return Log_Here (False, Debug or Trace_Pre_Post_Conditions);
+      end if;
+   end Has_Main_Data;
 
    ----------------------------------------------------------------
    function Main_Window (

@@ -22,7 +22,7 @@ procedure Camera_Control is
 
    Camera_Setup                  : Configuration.Camera.Setup.Setup_Type;
    Connection_Data               : constant Base.Connection_Data_Class_Access :=
-                                    new Base.Connection_Data_Type;
+                                    Allocate_Connection_Data;
    Options                       : aliased Camera.Lib.Options.Program_Options_Type;
    Debug                         : Boolean renames Options.Debug;
 
@@ -37,8 +37,6 @@ begin
    if Options.Initialize then
       Log_In (Debug, "Help_Test " & Ada_Lib.Help_Test'img);
       Connection_Data.Initialize;
-      GNOGA_Ada_Lib.Set_Connection_Data (
-         GNOGA_Ada_Lib.Connection_Data_Class_Access (Connection_Data));
       if Options.Process (
          Include_Options      => True,
          Include_Non_Options  => False,

@@ -4,7 +4,7 @@ with Ada_Lib.Options.Actual;
 with Ada_Lib.Strings;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
 with Ada_Lib.Unit_Test.Test_Cases;
-with Base;
+--with Base;
 with AUnit.Assertions; use AUnit.Assertions;
 with AUnit.Test_Cases;
 --with Camera.Lib.Unit_Test;
@@ -194,20 +194,20 @@ package body Configuration.Camera.State.Unit_Tests is
    pragma Unreferenced (Test);
    ---------------------------------------------------------------
 
-      Connection_Data            : Base.Connection_Data_Type renames
-                                    Base.Connection_Data_Type (
-                                       GNOGA_Ada_Lib.Get_Connection_Data.all);
---    Local_Test                 : Configuration_Tests_Type renames
---                                  Configuration_Tests_Type (Test);
+--    Connection_Data            : Base.Connection_Data_Type renames
+--                                  Base.Connection_Data_Type (
+--                                     GNOGA_Ada_Lib.Get_Connection_Data.all);
+      Local_Test                 : Configuration_Tests_Type renames
+                                    Configuration_Tests_Type (Test);
       Options                    : Standard.Camera.Lib.Unit_Test.
                                     Unit_Test_Program_Options_Type'class
                                        renames Standard.Camera.Lib.Unit_Test.
                                           Get_Camera_Unit_Test_Constant_Options.all;
-      State                      : Configuration.Camera.State.State_Type renames
-                                    Connection_Data.State;
+--    State                      : Configuration.Camera.State.State_Type renames
+--                                  Connection_Data.State;
    begin
       Log_In (Debug);
-      State.Load (Options.Camera_Options.Location, Test_State);
+      Local_Test.State.Load (Options.Camera_Options.Location, Test_State);
       Log_Out (Debug);
 
    exception
@@ -225,9 +225,9 @@ package body Configuration.Camera.State.Unit_Tests is
    pragma Unreferenced (Test);
    ---------------------------------------------------------------
 
-      Connection_Data            : Base.Connection_Data_Type renames
-                                    Base.Connection_Data_Type (
-                                       GNOGA_Ada_Lib.Get_Connection_Data.all);
+--    Connection_Data            : Base.Connection_Data_Type renames
+--                                  Base.Connection_Data_Type (
+--                                     GNOGA_Ada_Lib.Get_Connection_Data.all);
       begin
          Log_In (Debug);
          declare
@@ -256,18 +256,18 @@ package body Configuration.Camera.State.Unit_Tests is
 
             Expected_Images            : constant Expect_Image_Type := Expect_Image_Type'[
                                              1 => [
-                                                1 => new String'("preset0.jpeg"),
-                                                2 => new String'("preset5.jpeg"),
+                                                1 => new String'("preset_0.png"),
+                                                2 => new String'("preset_5.png"),
                                                 others => Null],
                                              2 => [
-                                                2 => new String'("preset2.jpeg"),
+                                                2 => new String'("preset_2.png"),
                                                 others => Null],
                                              3 => [
-                                                2 => new String'("preset4.jpeg"),
-                                                3 => new String'("preset1.jpeg"),
+                                                2 => new String'("preset_4.png"),
+                                                3 => new String'("preset_1.png"),
                                                 others => Null],
                                              4 => [
-                                                2 => new String'("preset3.jpeg"),
+                                                2 => new String'("preset_3.png"),
                                                 others => Null]];
 
       --    Expected_Prsets            : constant Expected_Preset_Type :=
@@ -276,14 +276,14 @@ package body Configuration.Camera.State.Unit_Tests is
       --                                     3  => [ 1, 2 ],
       --                                     5  => [ 1, 3 ],
       --                                     others => Null_Preset_ID ];
-      --    Local_Test                 : Configuration_Tests_Type renames
-      --                                  Configuration_Tests_Type (Test);
+            Local_Test                 : Configuration_Tests_Type renames
+                                          Configuration_Tests_Type (Test);
             Options                    : Standard.Camera.Lib.Unit_Test.
                                           Unit_Test_Program_Options_Type'class
                                              renames Standard.Camera.Lib.Unit_Test.
                                                 Get_Camera_Unit_Test_Constant_Options.all;
             State                      : Configuration.Camera.State.State_Type
-                                          renames Connection_Data.State;
+                                          renames Local_Test.State;
          begin
             Log_Here (Debug, "set " & State.Is_Loaded'img & " Number_Columns " &
                " location " & Options.Camera_Options.Location'img &
@@ -296,7 +296,7 @@ package body Configuration.Camera.State.Unit_Tests is
                Number_Columns          : constant Column_Type :=
                                              State.Number_Columns;
                Number_Configurations   : constant Configuration_ID_Type :=
-                                          State.Number_Configurations;
+                                          State.Get_Number_Configurations;
                Last_Preset             : constant Standard.Camera.Preset_ID_Type :=
                                           Video.Lib.Get_Last_Preset_ID;
                Number_Rows             : constant Row_Type := State.Number_Rows;

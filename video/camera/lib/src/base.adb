@@ -7,6 +7,22 @@ with ADA_LIB.Trace; use ADA_LIB.Trace;
 package body Base is
 
      use type Gnoga.Gui.Plugin.jQueryUI.Widget.Dialog_Access;
+
+   ---------------------------------------------------------------
+   function Allocate_Connection_Data
+   return Connection_Data_Access is
+   ---------------------------------------------------------------
+
+      Connection_Data            : constant Standard.Base.Connection_Data_Access :=
+                                    new Standard.Base.Connection_Data_Type;
+   begin
+      Log_Here (Debug);
+      Connection_Data.Main_Data := new Main.Main_Data_Type;
+      GNOGA_Ada_Lib.Set_Connection_Data (
+         GNOGA_Ada_Lib.Connection_Data_Class_Access (Connection_Data));
+      return Connection_Data;
+   end Allocate_Connection_Data;
+
    ---------------------------------------------------------------
    procedure Close_Message_Box (
       Connection_Data            : in out Connection_Data_Type) is
@@ -122,16 +138,6 @@ package body Base is
    begin
       Log_Here (Debug);
    end Halt;
-
-   ----------------------------------------------------------------
-   procedure Initialize (
-      Connection_Data            : in out Connection_Data_Type) is
-   ----------------------------------------------------------------
-
-   begin
-      Log_Here (Debug);
-      Connection_Data.Main_Data := new Main.Main_Data_Type;
-   end Initialize;
 
    ----------------------------------------------------------------
    procedure Message_Box (

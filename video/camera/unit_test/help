@@ -105,13 +105,13 @@ Ada_Lib.Options.AUnit_Lib.Program_Help trace options (-t)
 
 GNOGA_Options unit test trace options (-g)
       a               all
-      e               Ada_Lib.GNOGA.Unit_Test.Event.Debig
+      e               Ada_Lib.GNOGA.Unit_Test.Event.Debug
       g               GNOGA_Options.Debug (main window)
       o               Ada_Lib.GNOGA.Unit_Test.Options.Debug_Options
 
 GNOGA_Options library trace options (-G)
       a               all
-      m               GNOGA_Ada_Lib.Trace
+      m               GNOGA_Ada_Lib Debug
       o               GNOGA options
 
 CAC ada_lib trace library options (-a)
@@ -152,6 +152,7 @@ Ada_Lib unit test library trace options (-U)
       e               Ada_Lib.Trace.Trace_Exceptions
       g               Ada_Lib.GNOGA.Unit_Test.Debug
       p               test programs
+      P               Trace Pre and Post Condtion functions
       r               Runtime_Options
       s               Trace Set_Up Tear_Down
       t               Ada_Lib.Test.Debug
