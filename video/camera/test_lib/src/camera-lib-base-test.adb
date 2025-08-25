@@ -5,11 +5,11 @@ with Ada_Lib.Unit_Test;
 with AUnit.Assertions; use AUnit.Assertions;
 with AUnit.Test_Cases;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
-with Base;
+--with Base;
 with Camera.Lib.Unit_Test;
 with Configuration.Camera.State;
 --with GNAT.Sockets;
-with Gnoga_Ada_Lib;
+--with Gnoga_Ada_Lib;
 
 package body Camera.Lib.Base.Test is
 
@@ -154,28 +154,19 @@ package body Camera.Lib.Base.Test is
       Test                       : in out AUnit.Test_Cases.Test_Case'class) is
    ---------------------------------------------------------------
 
-      type Ports_Type            is array (Positive range <>) of Port_Type;
-      type Ports_Access          is access constant Ports_Type;
+      type Ports_Type      is array (Positive range <>) of Port_Type;
+      type Ports_Access    is access constant Ports_Type;
 
-      Connection_Data            : constant Standard.Base.Connection_Data_Access :=
-                                    Standard.Base.Connection_Data_Access (
-                                       Gnoga_Ada_Lib.Get_Connection_Data);
---    Options                    : Standard.Camera.Lib.Unit_Test.
---                                  Unit_Test_Program_Options_Type'class
---                                     renames Standard.Camera.Lib.Unit_Test.
---                                        Get_Camera_Unit_Test_Constant_Options.all;
-      Local_Test                 : Test_Type renames Test_Type (Test);
-      ALPTOP_Ports                : aliased constant Ports_Type := (
-                                       554, 1935
-                                    );
---    Bad_Port                   : constant Port_Type := 0;
-      State                      : Configuration.Camera.State.State_Type renames
-                                    Connection_Data.State;
-      PTZ_Optics_Ports           : aliased constant Ports_Type := (
-                                       1 => State.Get_Host_Port
-                                    );
---    Good_Response              : Boolean := False;
-      Ports                      : Ports_Access := Null;
+      Local_Test        : Test_Type renames Test_Type (Test);
+      ALPTOP_Ports          : aliased constant Ports_Type := (
+                                 554, 1935
+                              );
+      State             : Configuration.Camera.State.State_Type renames
+                           Local_Test.State;
+      PTZ_Optics_Ports  : aliased constant Ports_Type := (
+                              1 => State.Get_Host_Port
+                           );
+      Ports             : Ports_Access := Null;
 
    begin
       Log_In (Debug);

@@ -1,7 +1,7 @@
 with Ada_Lib.Event;
 --with Ada_Lib.GNOGA;
 with Camera.Commands;
-with Configuration.Camera.State;
+--with Configuration.Camera.State;
 with GNOGA_Ada_Lib;
 with Gnoga.Gui.Element.Common;
 with Gnoga.Gui.Plugin.jQueryUI.Widget;
@@ -44,6 +44,8 @@ package Base is
    type Connection_Data_Access   is access all Connection_Data_Type;
    type Connection_Data_Class_Access
                                  is access all Connection_Data_Type'class;
+
+   procedure Allocate_Connection_Data;
 
    function Allocate_Connection_Data
    return Connection_Data_Access

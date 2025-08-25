@@ -9,6 +9,18 @@ package body Base is
      use type Gnoga.Gui.Plugin.jQueryUI.Widget.Dialog_Access;
 
    ---------------------------------------------------------------
+   procedure Allocate_Connection_Data is
+   ---------------------------------------------------------------
+
+      Connection_Data   : constant Standard.Base.Connection_Data_Access :=
+                           Allocate_Connection_Data;
+      pragma Unreferenced (Connection_Data);
+
+   begin
+      Log_Here (Debug);
+   end Allocate_Connection_Data;
+
+   ---------------------------------------------------------------
    function Allocate_Connection_Data
    return Connection_Data_Access is
    ---------------------------------------------------------------

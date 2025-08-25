@@ -49,7 +49,7 @@ private
       Loaded                     : Boolean := False;
    end record;
 
-   type Root_State_Type                is tagged record
+   type Root_State_Type          is tagged record
       Loaded                     : Boolean := False;
       Updated                    : Boolean := False;
    end record;

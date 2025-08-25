@@ -18,6 +18,7 @@ with Camera.Lib.Options;
 with Configuration.Camera.Setup.Unit_Tests;
 with Configuration.Camera.State.Unit_Tests;
 with Gnoga.Application.Multi_Connect;
+with Gnoga_Ada_Lib;
 --with Hex_IO;
 with Main.Unit_Test;
 --with Runtime_Options;
@@ -132,11 +133,11 @@ package body Camera.Lib.Unit_Test is
    ) return Boolean is
    ----------------------------------------------------------------------------
 
-      Connection_Data            : constant Standard.Base.Connection_Data_Access :=
-                                    Standard.Base.Connection_Data_Access (
-                                       Gnoga_Ada_Lib.Get_Connection_Data);
+--    Connection_Data            : constant Standard.Base.Connection_Data_Access :=
+--                                  Standard.Base.Connection_Data_Access (
+--                                     Gnoga_Ada_Lib.Get_Connection_Data);
       State                      : Configuration.Camera.State.State_Type renames
-                                    Connection_Data.State;
+                                    Test.State;
    begin
       return Log_Here (State.Have_Video_Address, Debug);
    end Have_Video_Address;
@@ -573,20 +574,16 @@ procedure Setup_Camera (
       Test                    : in out Camera_Lib_GNOGA_Test_Type) is
    ---------------------------------------------------------------
 
+--    Connection_Data            : constant Standard.Base.Connection_Data_Access :=
+--                                    Standard.Base.Allocate_Connection_Data;
+--    pragma Unreferenced (Connection_Data); -- called for side affect
+
    begin
       Log_In (Debug or Trace_Set_Up, "load state " & Test.Load_State'img);
---    declare
---       Connection_Data         : constant Standard.Base.Connection_Data_Access :=
---                                     Standard.Base.Allocate_Connection_Data;
---       Options                 : Standard.Camera.Lib.Unit_Test.
---                                  Unit_Test_Program_Options_Type'class
---                                     renames Standard.Camera.Lib.Unit_Test.
---                                        Get_Camera_Unit_Test_Constant_Options.all;
---       State                      : Configuration.Camera.State.State_Type renames
---                                     Connection_Data.State;
---    begin
+      Standard.Base.Allocate_Connection_Data;
+
+      Configuration.Camera.State.Set_State (Test.State'unchecked_access);
          Ada_Lib.GNOGA.Unit_Test.GNOGA_Tests_Type(Test).Set_Up;
---    end;
       Log_Out (Debug or Trace_Set_Up);
 
    exception
@@ -602,11 +599,10 @@ procedure Setup_Camera (
       Test                       : in out With_Camera_No_GNOGA_Test_Type) is
 ---------------------------------------------------------------
 
---    Connection_Data            : constant Standard.Base.Connection_Data_Access :=
---                                  Standard.Base.Allocate_Connection_Data;
   begin
       Log_In (Debug or Trace_Set_Up, "load " & Test.Load_State'img &
          " brand " & Test.Brand'img);
+      Configuration.Camera.State.Set_State (Test.State'unchecked_access);
       Initialize_Camera_Info (Test.Camera_Info);
       Setup_Camera (True, Test.Brand, Test.Camera_Info, Test.Setup, Test.State);
 
@@ -665,10 +661,6 @@ procedure Setup_Camera (
    procedure Set_Up (
       Test                       : in out With_Camera_With_GNOGA_Test_Type) is
    ---------------------------------------------------------------
-
-      Connection_Data            : constant Standard.Base.Connection_Data_Access :=
-                                      Standard.Base.Allocate_Connection_Data;
-      pragma Unreferenced (Connection_Data); -- called for side affect
 
    begin
       Log_In (Debug or Trace_Set_Up,
@@ -741,11 +733,11 @@ procedure Setup_Camera (
       Test                       : in out Camera_Lib_GNOGA_Test_Type) is
    ---------------------------------------------------------------
 
-      Connection_Data            : Standard.Base.Connection_Data_Type renames
-                                    Standard.Base.Connection_Data_Type (
-                                       GNOGA_Ada_Lib.Get_Connection_Data.all);
+--    Connection_Data            : Standard.Base.Connection_Data_Type renames
+--                                  Standard.Base.Connection_Data_Type (
+--                                     GNOGA_Ada_Lib.Get_Connection_Data.all);
       State                      : Configuration.Camera.State.State_Type renames
-                                    Connection_Data.State;
+                                    Test.State;
    begin
       Log_In (Debug or Trace_Set_Up);
 
@@ -758,6 +750,7 @@ procedure Setup_Camera (
 
       Ada_Lib.GNOGA.Unit_Test.GNOGA_Tests_Type (Test).Tear_Down;
       Gnoga_Ada_Lib.Clear_Connection_Data;
+      Configuration.Camera.State.Clear_State;
       Log_Out (Debug or Trace_Set_Up);
    end Tear_Down;
 
@@ -767,11 +760,11 @@ procedure Setup_Camera (
       Test                       : in out With_Camera_No_GNOGA_Test_Type) is
    ---------------------------------------------------------------
 
-      Connection_Data            : Standard.Base.Connection_Data_Type renames
-                                    Standard.Base.Connection_Data_Type (
-                                       GNOGA_Ada_Lib.Get_Connection_Data.all);
+--    Connection_Data            : Standard.Base.Connection_Data_Type renames
+--                                  Standard.Base.Connection_Data_Type (
+--                                     GNOGA_Ada_Lib.Get_Connection_Data.all);
       State                      : Configuration.Camera.State.State_Type renames
-                                    Connection_Data.State;
+                                    Test.State;
    begin
       Log_In (Debug or Trace_Set_Up);
       if Test.Camera_Info.Camera /= Null then
@@ -790,7 +783,8 @@ procedure Setup_Camera (
       delay 0.2;
 
       Ada_Lib.Unit_Test.Test_Cases.Test_Case_Type (Test).Tear_Down;
-      Gnoga_Ada_Lib.Clear_Connection_Data;
+      Configuration.Camera.State.Clear_State;
+--    Gnoga_Ada_Lib.Clear_Connection_Data;
       Log_Out (Debug or Trace_Set_Up);
    end Tear_Down;
 

@@ -22,7 +22,7 @@ package Configuration.Camera.State is
    function Check_Column (
       Column                     : in     Column_Type
    ) return Boolean
-   with Pre => GNOGA_Ada_Lib.Has_Connection_Data;
+   with Pre => State_Set;
 
    function Check_Image (
       Column                     : in     Column_Type;
@@ -32,7 +32,11 @@ package Configuration.Camera.State is
    function Check_Row (
       Row                        : in     Row_Type
    ) return Boolean
-   with Pre => GNOGA_Ada_Lib.Has_Connection_Data;
+   with Pre => State_Set;
+
+   procedure Clear_State
+   with Pre    => State_Set,
+        Post   => not State_Set;
 
    procedure Dump (
       State                      : in     State_Type;
@@ -44,9 +48,13 @@ package Configuration.Camera.State is
 -- function Global_State_Is_Set
 -- return Boolean;
 
+   function Get_CSS_Path (
+      State                      : in     State_Type
+   ) return String;
+
    function Get_Default_Speed
    return Speed_Type
-   with Pre => Gnoga_Ada_Lib.Has_Connection_Data;
+   with Pre => State_Set;
 
    function Get_Number_Columns (
       State                      : in     State_Type
@@ -108,7 +116,8 @@ package Configuration.Camera.State is
           Post => State.Is_Loaded;
 
    procedure Set_State (
-      State                      : in     State_Access
+      State                      : in     State_Access;
+      From                       : in     String := Ada_Lib.Trace.Here
    ) with Pre  => not State_Set,
           Post => State_Set;
 

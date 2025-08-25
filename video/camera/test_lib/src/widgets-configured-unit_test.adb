@@ -299,7 +299,7 @@ package body Widgets.Configured.Unit_Test is
       Configured_Card            : Configured_Card_Type renames
                                    Configured_Card_Type (Current_Card.all);
       State                      : Configuration.Camera.State.State_Type renames
-                                    Connection_Data.State;
+                                    Local_Test.State;
    begin
       Log_In (Debug, "field " & Field'img &
          " Modified_Configuration_ID" & Modified_Configuration_ID'img &
@@ -794,14 +794,11 @@ package body Widgets.Configured.Unit_Test is
       Test                       : in out Test_Type) is
    ---------------------------------------------------------------
 
-      Connection_Data            : Base.Connection_Data_Type renames
-                                    Base.Connection_Data_Type (
-                                       GNOGA_Ada_Lib.Get_Connection_Data.all);
       State                      : Configuration.Camera.State.State_Type renames
-                                    Connection_Data.State;
+                                    Test.State;
    begin
       Log_In (Debug or Trace_Set_Up);
-      GNOGA_Ada_Lib.Clear_Connection_Data;
+--    GNOGA_Ada_Lib.Clear_Connection_Data;
 
       if Test.Setup.Is_Loaded then
          Test.Setup.Unload (State, Save_Changes => False);
@@ -920,7 +917,7 @@ package body Widgets.Configured.Unit_Test is
        Cards                      : constant Main.Cards_Access_Type :=
                                     Connection_Data.Get_Cards;
       State                      : Configuration.Camera.State.State_Type renames
-                                    Connection_Data.State;
+                                    Local_Test.State;
    begin
       Log_In (Debug);
 
@@ -1137,7 +1134,7 @@ package body Widgets.Configured.Unit_Test is
       Configured_Card            : Configured_Card_Type renames
                                    Configured_Card_Type (Current_Card.all);
       State                      : Configuration.Camera.State.State_Type renames
-                                    Connection_Data.State;
+                                    Local_Test.State;
    begin
       Log_In (Debug, "Modified_Configuration_ID" & Modified_Configuration_ID'img &
          " original configuration id" & Original_Configuration.
@@ -1201,7 +1198,7 @@ package body Widgets.Configured.Unit_Test is
       Cards                      : constant Main.Cards_Access_Type :=
                                     Connection_Data.Get_Cards;
       State                      : Configuration.Camera.State.State_Type renames
-                                    Connection_Data.State;
+                                    Local_Test.State;
       Tabs                       : constant Gnoga.Gui.View.Card.Pointer_To_Tab_Class :=
                                     Connection_Data.Get_Tabs;
    begin
@@ -1287,7 +1284,7 @@ package body Widgets.Configured.Unit_Test is
       Configured_Card            : Configured_Card_Type renames
                                    Configured_Card_Type (Current_Card.all);
       State                      : Configuration.Camera.State.State_Type renames
-                                    Connection_Data.State;
+                                    Local_Test.State;
    begin
       Log_In (Debug, "preset field " &
          " Modified_Configuration_ID" & Modified_Configuration_ID'img &

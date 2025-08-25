@@ -62,8 +62,7 @@ package body Configuration.Camera.State.Unit_Tests is
    ) with Pre => Ada_Lib.Options.Actual.Have_Ada_Lib_Program_Options;
 
    procedure Test_Values (
-      Test                       : in out AUnit.Test_Cases.Test_Case'class
-   ) with Pre => GNOGA_Ada_Lib.Has_Connection_Data;
+      Test                       : in out AUnit.Test_Cases.Test_Case'class);
 
 -- type Connection_Data_Type     is new GNOGA_Ada_Lib.Connection_Data_Type
 --                                  with null record;
@@ -183,7 +182,7 @@ package body Configuration.Camera.State.Unit_Tests is
 
    begin
       Log_In (Debug or Trace_Set_Up);
-      GNOGA_Ada_Lib.Clear_Connection_Data;
+--    GNOGA_Ada_Lib.Clear_Connection_Data;
       Ada_Lib.Unit_Test.Test_Cases.Test_Case_Type (Test).Tear_Down;
       Log_Out (Debug or Trace_Set_Up);
    end Tear_Down;
@@ -191,7 +190,7 @@ package body Configuration.Camera.State.Unit_Tests is
    ---------------------------------------------------------------
    procedure Test_Load (
       Test                       : in out AUnit.Test_Cases.Test_Case'class) is
-   pragma Unreferenced (Test);
+-- pragma Unreferenced (Test);
    ---------------------------------------------------------------
 
 --    Connection_Data            : Base.Connection_Data_Type renames
@@ -222,12 +221,9 @@ package body Configuration.Camera.State.Unit_Tests is
    ---------------------------------------------------------------
    procedure Test_Values (
       Test                       : in out AUnit.Test_Cases.Test_Case'class) is
-   pragma Unreferenced (Test);
+-- pragma Unreferenced (Test);
    ---------------------------------------------------------------
 
---    Connection_Data            : Base.Connection_Data_Type renames
---                                  Base.Connection_Data_Type (
---                                     GNOGA_Ada_Lib.Get_Connection_Data.all);
       begin
          Log_In (Debug);
          declare
@@ -287,19 +283,19 @@ package body Configuration.Camera.State.Unit_Tests is
          begin
             Log_Here (Debug, "set " & State.Is_Loaded'img & " Number_Columns " &
                " location " & Options.Camera_Options.Location'img &
-               " address " & Image (State.Number_Columns'address) &
-               " bits " & State.Number_Columns'size'img);
---    Hex_IO.Dump_32 (State.Number_Columns'address, 32, 1, "number columns");
+               " address " & Image (State.Get_Number_Columns'address) &
+               " bits " & State.Get_Number_Columns'size'img);
+--    Hex_IO.Dump_32 (State.Get_Number_Columns'address, 32, 1, "number columns");
       --log_here ("test state address " & image (state'address) & " global state " & image (Global_Camera_State.all'address) & " pointer address " & image (Global_Camera_State'address));
 
             declare
                Number_Columns          : constant Column_Type :=
-                                             State.Number_Columns;
+                                             State.Get_Number_Columns;
                Number_Configurations   : constant Configuration_ID_Type :=
                                           State.Get_Number_Configurations;
                Last_Preset             : constant Standard.Camera.Preset_ID_Type :=
                                           Video.Lib.Get_Last_Preset_ID;
-               Number_Rows             : constant Row_Type := State.Number_Rows;
+               Number_Rows             : constant Row_Type := State.Get_Number_Rows;
 
             begin
                Log_Here (Debug,
@@ -327,7 +323,7 @@ package body Configuration.Camera.State.Unit_Tests is
                   "Number_Rows" & Number_Rows'img &
                   " not equal Expected_Number_Rows" &
                   Expected_Number_Rows'img);
-
+Log_Here;
                for Row in 1 .. Number_Rows loop
                   for Column in 1 .. Number_Columns loop
                      declare
@@ -336,20 +332,23 @@ package body Configuration.Camera.State.Unit_Tests is
                         Value          : Ada_Lib.Strings.String_Access renames
                                           Expected_Images (Row, Column);
                      begin
+Log_Here;
                         if Value = Null then
                            Assert (not Have_Image, "had unexpected image for row" &
                               Row'img & " column" & Column'img);
                         elsif Have_Image then
-      --log_here;
+log_here;
                            declare
                               Image    : constant String := State.
                                           Image_Path (Row, Column);
                            begin
+Log_Here;
                               Assert (Image = Value.all,
                                  "wrong image. " & Quote ("expected", Value.all) &
                                  Quote (" got", Image));
                            end;
                         else
+Log_Here;
                            Assert (False, "did not have expected image for row" &
                               Row'img & " column" & Column'img);
                         end if;

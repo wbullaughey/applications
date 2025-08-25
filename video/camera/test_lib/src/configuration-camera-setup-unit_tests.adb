@@ -1,13 +1,13 @@
 with Ada.Exceptions;
 with Ada_Lib.Directory.Compare_Files;
-with GNOGA_Ada_Lib;
+--with GNOGA_Ada_Lib;
 --with Ada_Lib.Options;
 with Ada_Lib.Strings.Unlimited; use Ada_Lib.Strings.Unlimited;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
 with Ada_Lib.Unit_Test;
 with AUnit.Assertions; use AUnit.Assertions;
 with AUnit.Test_Cases;
-with Base;
+--with Base;
 --with Camera.Commands.PTZ_Optics;
 with Camera.Lib.Unit_Test;
 with Video_Lib;
@@ -237,9 +237,9 @@ package body Configuration.Camera.Setup.Unit_Tests is
       Test                       : in out AUnit.Test_Cases.Test_Case'class) is
    ---------------------------------------------------------------
 
-      Connection_Data            : Base.Connection_Data_Type renames
-                                    Base.Connection_Data_Type (
-                                       GNOGA_Ada_Lib.Get_Connection_Data.all);
+--    Connection_Data            : Base.Connection_Data_Type renames
+--                                  Base.Connection_Data_Type (
+--                                     GNOGA_Ada_Lib.Get_Connection_Data.all);
       Configuration_ID           : constant Configuration_ID_Type := 3;
       Expected_Setup             : constant String :=
                                     "expected_updated_test_setup.cfg";
@@ -395,10 +395,10 @@ package body Configuration.Camera.Setup.Unit_Tests is
       begin
          declare
             Number_Columns          : constant Column_Type :=
-                                       State.Number_Columns;
+                                       State.Get_Number_Columns;
             Last_Preset             : constant Standard.Camera.Preset_ID_Type :=
                                        Video.Lib.Get_Last_Preset_ID;
-            Number_Rows             : constant Row_Type := State.Number_Rows;
+            Number_Rows             : constant Row_Type := State.Get_Number_Rows;
 
          begin
             Log_Here (Debug,

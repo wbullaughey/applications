@@ -21,21 +21,18 @@ package body Widgets.Control is
       ID                         : in     String := "") is
    ----------------------------------------------------------------
 
-      Connection_Data            : Base.Connection_Data_Type renames
-                                    Base.Connection_Data_Type (
-                                       GNOGA_Ada_Lib.Get_Connection_Data.all);
-      Top_Name                   : constant String := (if ID'length = 0 then
-                                       ""
-                                    else
-                                       ID & "_")
-                                    & Widget_Name;
-      State                      : Configuration.Camera.State.State_Type renames
-                                    Connection_Data.State;
-      Number_Columns             : constant Control_Column_Index_Type :=
-                                    Control_Column_Index_Type (
-                                       State.Number_Columns);
-      Number_Rows                : constant Configuration.Camera.Row_Type :=
-                                       State.Number_Rows;
+      Top_Name           : constant String := (if ID'length = 0 then
+                               ""
+                            else
+                               ID & "_")
+                            & Widget_Name;
+      State             : Configuration.Camera.State.State_Type renames
+                           Configuration.Camera.State.Get_Read_Only_State.all;
+      Number_Columns    : constant Control_Column_Index_Type :=
+                            Control_Column_Index_Type (
+                               State.Get_Number_Columns);
+      Number_Rows       : constant Configuration.Camera.Row_Type :=
+                               State.Get_Number_Rows;
    begin
       Log_In (Debug, Quote ("ID", ID) & Quote (" Top_Name", Top_Name) &
          Quote (" Widget_Name", Widget_Name));

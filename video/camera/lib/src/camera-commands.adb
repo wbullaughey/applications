@@ -263,6 +263,7 @@ package body Camera.Commands is
             end if;
 
             Last_Zoom := Zoom;
+            delay 0.5;
          end;
       end loop;
    end Get_Zoom;

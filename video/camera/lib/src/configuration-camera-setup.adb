@@ -305,13 +305,13 @@ package body Configuration.Camera.Setup is
                   Log_Here (Debug, Quote ("value", Value) &
                      " row" & Row'img & " column" & Column'img);
 
-                  if Column > State.Number_Columns then
+                  if Column > State.Get_Number_Columns then
                      raise Failed with "invalid column" & Column'img &
-                        " maximum column" & State.Number_Columns'img;
+                        " maximum column" & State.Get_Number_Columns'img;
                   end if;
-                  if Row > State.Number_Rows then
+                  if Row > State.Get_Number_Rows then
                      raise Failed with "invalid row" & Row'img &
-                        " maximum row" & State.Number_Rows'img;
+                        " maximum row" & State.Get_Number_Rows'img;
                   end if;
 
                   Setup.Presets (Preset_Number) := Preset_Type'(

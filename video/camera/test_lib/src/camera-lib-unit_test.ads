@@ -18,7 +18,7 @@ with Configuration.Camera.State;
 with Configuration.State;
 with GNAT.Source_Info;
 with Gnoga.GUI.Window;
-with Gnoga_Ada_Lib;
+--with Gnoga_Ada_Lib;
 
 package Camera.Lib.Unit_Test is
 
@@ -55,7 +55,7 @@ package Camera.Lib.Unit_Test is
       Load_State        : Boolean := True;
       Setup             : Configuration.Camera.Setup.Setup_Type;
       Setup_Path        : access constant String := Null;
-      State             : Configuration.Camera.State.State_Type;
+      State             : aliased Configuration.Camera.State.State_Type;
       State_Path        : access constant String := Null;
    end record;
 
@@ -100,12 +100,13 @@ package Camera.Lib.Unit_Test is
    ) with Post => Test.Verify_Tear_Down;
 
    type Camera_Lib_GNOGA_Test_Type (
-      Initialize_GNOGA           : Boolean)
-                              is abstract new  Ada_Lib.GNOGA.Unit_Test.GNOGA_Tests_Type (
-                                       Initialize_GNOGA  => Initialize_GNOGA,
-                                       Test_Driver       => False) with record
-      Load_State              : Boolean := True;
-      Main_Window             : Gnoga.GUI.Window.Window_Type;
+      Initialize_GNOGA  : Boolean) is abstract new
+                           Ada_Lib.GNOGA.Unit_Test.GNOGA_Tests_Type (
+                              Initialize_GNOGA  => Initialize_GNOGA,
+                              Test_Driver       => False) with record
+      Load_State        : Boolean := True;
+      Main_Window       : Gnoga.GUI.Window.Window_Type;
+      State             : aliased Configuration.Camera.State.State_Type;
    end record;
 
    overriding
@@ -139,7 +140,6 @@ package Camera.Lib.Unit_Test is
                                        Initialize_GNOGA) with record
       Camera_Info                : Camera_Info_Type;
       Setup                      : Configuration.Camera.Setup.Setup_Type;
-      State                      : Configuration.Camera.State.State_Type;
    end record;
 
    overriding

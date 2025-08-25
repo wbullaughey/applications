@@ -108,15 +108,12 @@ package body Widgets.Control.Unit_Test is
       Test                       : in out Test_Type) is
    ---------------------------------------------------------------
 
-      Connection_Data            : Base.Connection_Data_Type renames
-                                    Base.Connection_Data_Type (
-                                       GNOGA_Ada_Lib.Get_Connection_Data.all);
       Options                    : Standard.Camera.Lib.Unit_Test.
                                     Unit_Test_Program_Options_Type'class
                                        renames Standard.Camera.Lib.Unit_Test.
                                           Get_Camera_Unit_Test_Constant_Options.all;
       State                      : Configuration.Camera.State.State_Type renames
-                                    Connection_Data.State;
+                                    Test.State;
    begin
       Log_In (Debug or Trace_Set_Up);
       State.Load (Options.Camera_Options.Location, State_Test_Path);

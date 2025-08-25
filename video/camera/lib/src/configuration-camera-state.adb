@@ -9,7 +9,6 @@ with Ada_Lib.Strings.Unlimited; use Ada_Lib.Strings; use Ada_Lib.Strings.Unlimit
 with Ada.Text_IO; use Ada.Text_IO;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
 with AUnit.Assertions; use AUnit.Assertions;
-with Base;
 with Camera.Lib.Options;
 --with Hex_IO;
 with Video.Lib;
@@ -28,13 +27,11 @@ package body Configuration.Camera.State is
    ) return Boolean is
    ----------------------------------------------------------------
 
-      Connection_Data            : Base.Connection_Data_Type renames
-                                    Base.Connection_Data_Type (
-                                       GNOGA_Ada_Lib.Get_Connection_Data.all);
-      State                      : State_Type renames Connection_Data.State;
+      State       : Configuration.Camera.State.State_Type renames
+                     Configuration.Camera.State.Get_Read_Only_State.all;
 
    begin
-      return Column <= State.Number_Columns;
+      return Column <= State.Get_Number_Columns;
    end Check_Column;
 
    ----------------------------------------------------------------
@@ -54,14 +51,20 @@ package body Configuration.Camera.State is
    ) return Boolean is
    ----------------------------------------------------------------
 
-      Connection_Data            : Base.Connection_Data_Type renames
-                                    Base.Connection_Data_Type (
-                                       GNOGA_Ada_Lib.Get_Connection_Data.all);
-      State                      : State_Type renames Connection_Data.State;
+      State       : Configuration.Camera.State.State_Type renames
+                     Configuration.Camera.State.Get_Read_Only_State.all;
 
    begin
       return Row <= State.Number_Rows;
    end Check_Row;
+
+   ---------------------------------------------------------------
+   procedure Clear_State is
+   ---------------------------------------------------------------
+
+   begin
+      State_Pointer :=  Null;
+   end Clear_State;
 
    ----------------------------------------------------------------
    procedure Dump (
@@ -73,7 +76,7 @@ package body Configuration.Camera.State is
       Put_Line ("dump Configuration state type from " & From);
       State.Dump (From);
       Put_Line (Quote ("  CSS Path", State.CSS_Path));
-      Put_Line ("  Number Columns:" & State.Number_Columns'img);
+      Put_Line ("  Number Columns:" & State.Get_Number_Columns'img);
       Put_Line ("  Number Configurations:" & State.Get_Number_Configurations'img);
       Put_Line ("  Last Preset:" & Video.Lib.Get_Last_Preset_ID'img);
       Put_Line ("  Number Rows:" & State.Number_Rows'img);
@@ -104,11 +107,32 @@ package body Configuration.Camera.State is
    end File_Path;
 
    ----------------------------------------------------------------
+   function Get_CSS_Path (
+      State                      : in     State_Type
+   ) return String is
+   ----------------------------------------------------------------
+
+   begin
+      return State.CSS_Path.Coerce;
+   end Get_CSS_Path;
+
+   ----------------------------------------------------------------
+   function Get_Default_Speed
+   return Speed_Type is
+   ----------------------------------------------------------------
+
+      State       : Configuration.Camera.State.State_Type renames
+                     Configuration.Camera.State.Get_Read_Only_State.all;
+   begin
+      return State.Default_Speed;
+   end Get_Default_Speed;
+
+   ----------------------------------------------------------------
    function Get_Modifiable_State return State_Access is
    ----------------------------------------------------------------
 
    begin
-      return State;
+      return State_Pointer;
    end Get_Modifiable_State;
 
    ----------------------------------------------------------------
@@ -116,22 +140,8 @@ package body Configuration.Camera.State is
    ----------------------------------------------------------------
 
    begin
-      return State_Constant_Access (State);
-   end Get_Modifiable_State;
-
-   ----------------------------------------------------------------
-   function Get_Default_Speed
-   return Speed_Type is
-   ----------------------------------------------------------------
-
-      Connection_Data            : Base.Connection_Data_Type renames
-                                    Base.Connection_Data_Type (
-                                       GNOGA_Ada_Lib.Get_Connection_Data.all);
-      State                      : Configuration.Camera.State.State_Type renames
-                                    Connection_Data.State;
-   begin
-      return State.Default_Speed;
-   end Get_Default_Speed;
+      return State_Constant_Access (State_Pointer);
+   end Get_Read_Only_State;
 
    ----------------------------------------------------------------
    function Get_Number_Columns (
@@ -144,13 +154,23 @@ package body Configuration.Camera.State is
    end Get_Number_Columns;
 
    ----------------------------------------------------------------
+   function Get_Number_Configurations (
+      State                      : in     State_Type
+   ) return Configuration_ID_Type is
+   ----------------------------------------------------------------
+
+   begin
+      return State.Number_Configurations;
+   end Get_Number_Configurations;
+
+   ----------------------------------------------------------------
    function Get_Number_Presets (
       State                      : in     State_Type
    ) return Natural is
    ----------------------------------------------------------------
 
    begin
-      return Natural (State.Number_Columns);
+      return Natural (State.Get_Number_Columns);
    end Get_Number_Presets;
 
    ----------------------------------------------------------------
@@ -197,15 +217,12 @@ package body Configuration.Camera.State is
    ) return String is
    ----------------------------------------------------------------
 
-      Connection_Data            : Base.Connection_Data_Type renames
-                                    Base.Connection_Data_Type (
-                                       GNOGA_Ada_Lib.Get_Connection_Data.all);
-      State                      : Configuration.Camera.State.State_Type renames
-                                    Connection_Data.State;
-      Image_Name                 : constant String :=
-                                    State.Image_Path (Row, Column);
-      Image_Path        : constant String := "img/" & Image_Name;
-                           -- gnoga ads img/
+      State       : Configuration.Camera.State.State_Type renames
+                     Configuration.Camera.State.Get_Read_Only_State.all;
+      Image_Name  : constant String :=
+                     State.Image_Path (Row, Column);
+      Image_Path  : constant String := "img/" & Image_Name;
+                     -- gnoga ads img/
    begin
       Log_Here (Debug, "row" & Row'img &
          " column" & Column'img &
@@ -273,8 +290,7 @@ package body Configuration.Camera.State is
    begin
       Log_In (Debug, Quote ("file name", Name) &
          Quote (" Current_Directory", Current_Directory) &
-         Quote (" path", Path) &
-         " address " & Image (State.Number_Columns'address));
+         Quote (" path", Path));
       Config.Load (Path, False);
       State.Load (Config, Location, Path);
       State.CSS_Path.Construct (Config.Get_String ("css_path"));
@@ -363,10 +379,12 @@ package body Configuration.Camera.State is
 
    ----------------------------------------------------------------
    procedure Set_State (
-      State                      : in     State_Access) is
+      State                      : in     State_Access;
+      From                       : in     String := Ada_Lib.Trace.Here) is
    ----------------------------------------------------------------
 
    begin
+      Log_Here (Debug, "from " & From);
       State_Pointer := State;
    end Set_State;
 

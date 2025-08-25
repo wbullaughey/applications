@@ -9,15 +9,13 @@ with Ada_Lib.Strings;
 with ADA_LIB.Trace; use ADA_LIB.Trace;
 with Ask;
 with Base;
-with Camera.Commands;
-with Camera.Lib;
+with Camera.Commands.PTZ_Optics;
+with Camera.Lib.Base;
 with Configuration.Camera.State;
 with GNAT.Sockets;
 with GNOGA_Ada_Lib.Base;
 with Gnoga.Application.Multi_Connect;
 with Gnoga.Types.Colors;
-with Camera.Lib.Base;
-with Camera.Commands.PTZ_Optics;
 
 package body Main is
 
@@ -42,7 +40,8 @@ package body Main is
       Main_Window                : in out Gnoga.Gui.Window.Window_Type'Class;
       Connection                 : access Gnoga.Application.Multi_Connect.
                                              Connection_Holder_Type
-   ) with Pre => GNOGA_Ada_Lib.Has_Connection_Data and then
+   ) with Pre => Configuration.Camera.State.State_Set and then
+                 GNOGA_Ada_Lib.Has_Connection_Data and then
                  Has_Main_Data;
 
    --  Application event handlers
@@ -363,11 +362,11 @@ package body Main is
    pragma Unreferenced (Connection);
    ----------------------------------------------------------------
 
-      Connection_Data            : Base.Connection_Data_Type renames
-                                    Base.Connection_Data_Type (
-                                       GNOGA_Ada_Lib.Get_Connection_Data.all);
-      State                      : Configuration.Camera.State.State_Type
-                                    renames Connection_Data.State;
+      Connection_Data   : Base.Connection_Data_Type renames
+                           Base.Connection_Data_Type (
+                              GNOGA_Ada_Lib.Get_Connection_Data.all);
+      State             : Configuration.Camera.State.State_Type renames
+                           Configuration.Camera.State.Get_Read_Only_State.all;
    begin
       Log_In (Debug, "started " & Started'img);
       declare
@@ -405,7 +404,7 @@ package body Main is
 
          declare
             CSS_Path             : constant String :=
-                                    State.CSS_Path.Coerce;
+                                    State.Get_CSS_Path;
          begin
             Log_Here (Debug, Quote ("class path", CSS_Path));
 --          Main_Window.Load_CSS_File (CSS_Path);
@@ -575,15 +574,12 @@ package body Main is
       Description    : in     Ada_Lib.Strings.String_Constant_Access) is
    ---------------------------------------------------------------
 
-      Connection_Data            : Base.Connection_Data_Type renames
-                                    Base.Connection_Data_Type (
-                                       GNOGA_Ada_Lib.Get_Connection_Data.all);
-      State                      : Configuration.Camera.State.State_Type renames
-                                    Connection_Data.State;
-      Port_Number                : constant Standard.Camera.Port_Type :=
-                                    State.Get_Host_Port;
-      Camera_Address             : constant Ada_Lib.Socket_IO.Address_Type :=
-                                       State.Get_Host_Address;
+      State             : Configuration.Camera.State.State_Type renames
+                           Configuration.Camera.State.Get_Read_Only_State.all;
+      Port_Number        : constant Standard.Camera.Port_Type :=
+                            State.Get_Host_Port;
+      Camera_Address     : constant Ada_Lib.Socket_IO.Address_Type :=
+                               State.Get_Host_Address;
    begin
       Log_In (Debug,
          Quote (" Camera_URL", Camera_Address.Image) &
@@ -611,14 +607,14 @@ package body Main is
       Object            : in out Gnoga.Gui.Base.Base_Type'Class) is
    ---------------------------------------------------------------
 
-      Connection_Data            : Base.Connection_Data_Type renames
-                                    Base.Connection_Data_Type (
-                                       GNOGA_Ada_Lib.Get_Connection_Data.all);
-      State                      : Configuration.Camera.State.State_Type renames
-                                    Connection_Data.State;
-      Camera_CSS                 : constant String := State.CSS_Path.Coerce;
-      Main_Data                  : Main_Data_Type renames Connection_Data.
-                                    Main_Data.all;
+      Connection_Data   : Base.Connection_Data_Type renames
+                           Base.Connection_Data_Type (
+                              GNOGA_Ada_Lib.Get_Connection_Data.all);
+      State             : Configuration.Camera.State.State_Type renames
+                           Configuration.Camera.State.Get_Read_Only_State.all;
+      Camera_CSS        : constant String := State.Get_CSS_Path;
+      Main_Data         : Main_Data_Type renames Connection_Data.
+                           Main_Data.all;
 
    begin
       Ada.Text_IO.Put_Line (Quote ("reload CSS ", Camera_CSS));

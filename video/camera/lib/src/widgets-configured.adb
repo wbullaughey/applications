@@ -107,14 +107,12 @@ package body Widgets.Configured is
       Cards                      : in out Gnoga.Gui.View.View_Base_Type'Class) is
    ----------------------------------------------------------------
 
-      Connection_Data            : Base.Connection_Data_Type renames
-                                    Base.Connection_Data_Type (
-                                       GNOGA_Ada_Lib.Get_Connection_Data.all);
-      State                      : Configuration.Camera.State.State_Type renames
-                                    Connection_Data.State;
-      Number_Configurations      : constant
-                                    Configuration_ID_Type :=
-                                       State.Get_Number_Configurations;
+      State                   : Configuration.Camera.State.State_Type renames
+                                 Configuration.Camera.State.
+                                    Get_Read_Only_State.all;
+      Number_Configurations   : constant
+                                 Configuration_ID_Type :=
+                                    State.Get_Number_Configurations;
    begin
       Log_In (Debug);
       Configured_Card.Create (
@@ -307,11 +305,9 @@ package body Widgets.Configured is
          Coordinate           : in     Column_Type) is
       -------------------------------------------------------------
 
-         Connection_Data      : Base.Connection_Data_Type renames
-                                 Base.Connection_Data_Type (
-                                    GNOGA_Ada_Lib.Get_Connection_Data.all);
          State                : Configuration.Camera.State.State_Type renames
-                                    Connection_Data.State;
+                                 Configuration.Camera.State.
+                                    Get_Read_Only_State.all;
       begin
          Column_Package.Update (State, Cell.Column_Number,
             Cell.Column_Coordinate, Coordinate);
@@ -372,21 +368,21 @@ package body Widgets.Configured is
             " Configuration_ID" & Configuration_ID'img);
 
          declare
-            Preset_ID               : constant Camera.Preset_ID_Type :=
-                                       Global_Camera_Setup.
-                                          Get_Preset_ID (Configuration_ID);
-            Has_Preset              : constant Boolean :=
-                                       Global_Camera_Setup.
-                                          Has_Preset (Preset_ID);
-            Preset                  : constant
-                                       Preset_Type'class :=
-                                          (if Has_Preset then
-                                             Global_Camera_Setup.Get_Preset (
-                                                      Preset_ID)
-                                          else
-                                              Null_Preset);
-            State                   : Configuration.Camera.State.State_Type renames
-                                       Connection_Data.State;
+            Preset_ID   : constant Camera.Preset_ID_Type :=
+                           Global_Camera_Setup.
+                              Get_Preset_ID (Configuration_ID);
+            Has_Preset  : constant Boolean :=
+                           Global_Camera_Setup.
+                              Has_Preset (Preset_ID);
+            Preset      : constant
+                           Preset_Type'class :=
+                              (if Has_Preset then
+                                 Global_Camera_Setup.Get_Preset (
+                                          Preset_ID)
+                              else
+                                  Null_Preset);
+            State       : Configuration.Camera.State.State_Type renames
+                           Configuration.Camera.State.Get_Read_Only_State.all;
          begin
             Log_Here (Debug, " preset id" & Preset_ID.Image &
                " has preset " & Has_Preset'img);
@@ -706,11 +702,9 @@ not_implemented;
          Coordinate           : in     Row_Type) is
       -------------------------------------------------------------
 
-         Connection_Data      : Base.Connection_Data_Type renames
-                                 Base.Connection_Data_Type (
-                                    GNOGA_Ada_Lib.Get_Connection_Data.all);
          State                : Configuration.Camera.State.State_Type renames
-                                 Connection_Data.State;
+                                 Configuration.Camera.State.
+                                    Get_Read_Only_State.all;
       begin
          Row_Package.Update (State, Cell.Row_Number, Cell.Row_Coordinate,
             Coordinate);
@@ -774,8 +768,9 @@ not_implemented;
          Preset                  : constant Preset_Type'class :=
                                     Global_Camera_Setup.Get_Preset (
                                        Configuration.Preset_ID);
-         State                   : Standard.Configuration.Camera.State.State_Type renames
-                                    Connection_Data.State;
+         State                   : Standard.Configuration.Camera.State.State_Type
+                                    renames Standard.Configuration.Camera.State.
+                                    Get_Read_Only_State.all;
 
          generic
 
@@ -860,7 +855,7 @@ not_implemented;
                                     Generic_Preset_ID (New_Coordinate,
                                        Preset_Other_Coordinate (Preset));
                      New_Preset_Number
-                                 : Natural;
+                                 : Natural := 0;
                      Preset_Cell : constant Cell_Class_Access := Cell_Class_Access (
                                     Configured_Card.Get_Cell (Preset_Field,
                                        Cell.Configuration_ID));
@@ -1090,20 +1085,18 @@ not_implemented;
          Preset_Cell                : in out Preset_Package.Cell_Type'class) is
       ----------------------------------------------------------------
 
-         Connection_Data            : Base.Connection_Data_Type renames
-                                       Base.Connection_Data_Type (
-                                          GNOGA_Ada_Lib.Get_Connection_Data.all);
-         Raw_Value                  : constant String :=
-                                       Preset_Cell.Preset_ID_Field.Value;
-         New_Preset_ID              : constant Camera.Preset_ID_Type :=
-                                       (if Raw_Value'length = 0 then
-                                          Video.Lib.Null_Preset_ID
-                                       else
-                                          Video.Lib.Constructor (
-                                             Camera.Preset_Range_Type'value (
-                                                Raw_Value)));
-         State                      : Configuration.Camera.State.State_Type renames
-                                       Connection_Data.State;
+         Raw_Value         : constant String :=
+                              Preset_Cell.Preset_ID_Field.Value;
+         New_Preset_ID     : constant Camera.Preset_ID_Type :=
+                              (if Raw_Value'length = 0 then
+                                 Video.Lib.Null_Preset_ID
+                              else
+                                 Video.Lib.Constructor (
+                                    Camera.Preset_Range_Type'value (
+                                       Raw_Value)));
+            State          : Configuration.Camera.State.State_Type renames
+                              Configuration.Camera.State.
+                                 Get_Read_Only_State.all;
       begin
          Log_In (Debug, "Configuration_ID" & Configuration_ID'img &
             Quote (" raw preset value", Raw_Value) &
@@ -1129,7 +1122,7 @@ not_implemented;
                                           else
                                              Global_Camera_Setup.Get_Preset (
                                                 New_Preset_ID));
-               Preset_Number     : Natural;
+               Preset_Number     : Natural := 0;
                Path              : constant String := Image_Name (
                                     Row      => Preset.Row,
                                     Column   => Preset.Column);
