@@ -604,10 +604,13 @@ procedure Setup_Camera (
          " brand " & Test.Brand'img);
       Configuration.Camera.State.Set_State (Test.State'unchecked_access);
       Initialize_Camera_Info (Test.Camera_Info);
-      Setup_Camera (True, Test.Brand, Test.Camera_Info, Test.Setup, Test.State);
+      Test.Camera_Info.Open_Camera := Test.Load_State;
+      Setup_Camera (Test.Load_State, Test.Brand, Test.Camera_Info,
+         Test.Setup, Test.State);
 
       Ada_Lib.Unit_Test.Test_Cases.Test_Case_Type (Test).Set_Up;
-      Log_Out (Debug or Trace_Set_Up, " location " & Test.Camera_Info.Location'img);
+      Log_Out (Debug or Trace_Set_Up,
+         " location " & Test.Camera_Info.Location'img);
 
   exception
      when Fault: others =>

@@ -196,8 +196,8 @@ package body Configuration.Camera.State.Unit_Tests is
 --    Connection_Data            : Base.Connection_Data_Type renames
 --                                  Base.Connection_Data_Type (
 --                                     GNOGA_Ada_Lib.Get_Connection_Data.all);
-      Local_Test                 : Configuration_Tests_Type renames
-                                    Configuration_Tests_Type (Test);
+      Local_Test                 : Configuration_Load_Test_Type renames
+                                    Configuration_Load_Test_Type (Test);
       Options                    : Standard.Camera.Lib.Unit_Test.
                                     Unit_Test_Program_Options_Type'class
                                        renames Standard.Camera.Lib.Unit_Test.
