@@ -565,7 +565,7 @@ procedure Setup_Camera (
          Camera_Info.Camera.Open (
             Camera_Info.Camera_Address.all, Camera_Info.Port_Number);
       end if;
-      Log_Out(Debug);
+      Log_Out(Debug or Trace_Set_Up);
    end Setup_Camera;
 
    ---------------------------------------------------------------

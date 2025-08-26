@@ -63,6 +63,7 @@ package body Configuration.Camera.State is
    ---------------------------------------------------------------
 
    begin
+      Log_Here (Debug);
       State_Pointer :=  Null;
    end Clear_State;
 
@@ -374,7 +375,7 @@ package body Configuration.Camera.State is
    ----------------------------------------------------------------
 
    begin
-      return State_Pointer /= Null;
+      return Log_Here (State_Pointer /= Null, Trace_Pre_Post_Conditions);
    end State_Set;
 
    ----------------------------------------------------------------
