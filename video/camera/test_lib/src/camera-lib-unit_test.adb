@@ -673,7 +673,7 @@ procedure Setup_Camera (
       Initialize_Camera_Info (Test.Camera_Info);
       Setup_Camera (Test.Load_State, Test.Brand, Test.Camera_Info, Test.Setup,
          Test.State);
-      Camera_Lib_GNOGA_Test_Type (Test).Set_Up;
+--    Camera_Lib_GNOGA_Test_Type (Test).Set_Up;
 
       if not Test.Initialize_GNOGA then
          declare
@@ -686,7 +686,9 @@ procedure Setup_Camera (
 --          State                      : Configuration.Camera.State.State_Type renames
 --                                        Connection_Data.State;
             begin
-               Ada_Lib.GNOGA.Unit_Test.GNOGA_Tests_Type(Test).Set_Up;
+log_here;
+               Camera_Lib_GNOGA_Test_Type (Test).Set_Up;
+log_here;
                Main.Run (
                   Directory            => Camera.Lib.Options.Current_Directory,
                   Port                 => Options.GNOGA_Options.HTTP_Port,
@@ -700,6 +702,7 @@ procedure Setup_Camera (
   exception
      when Fault: others =>
         Test.Set_Up_Exception (Fault);
+        Log_Out (Debug or Trace_Set_Up, "location " & Test.Camera_Info.Location'img);
    end Set_Up;
 
 -- ------------------------------------------------------------
@@ -751,9 +754,9 @@ procedure Setup_Camera (
       Gnoga.Application.Multi_Connect.End_Application;
       delay 0.2;
 
-      Ada_Lib.GNOGA.Unit_Test.GNOGA_Tests_Type (Test).Tear_Down;
       Gnoga_Ada_Lib.Clear_Connection_Data;
       Configuration.Camera.State.Clear_State;
+      Ada_Lib.GNOGA.Unit_Test.GNOGA_Tests_Type (Test).Tear_Down;
       Log_Out (Debug or Trace_Set_Up);
    end Tear_Down;
 

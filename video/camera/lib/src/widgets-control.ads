@@ -128,6 +128,7 @@ package Widgets.Control is
       Row_Header           => True,
       Row_Index_Type       => Row_Index_Type);
 
+   -- widget used to control the camera
    type Control_Card_Type        is new Generic_Package.Widget_Type
                                     with null record;
 

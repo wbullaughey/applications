@@ -279,7 +279,7 @@ package body Camera.Commands is
    ---------------------------------------------------------------
 
    begin
-Log_In (Debug, "pan " & Pan'img & " tilt " & Tilt'img);
+      Log_In (Debug, "pan " & Pan'img & " tilt " & Tilt'img);
       Camera.Process_Command (Standard.Camera.Lib.Base.Position_Relative,
          Options     => (
             (
@@ -318,8 +318,8 @@ Log_In (Debug, "pan " & Pan'img & " tilt " & Tilt'img);
          end;
       end if;
 
-Log_Out (Debug);
-Pause_On_Flag ("exit Position_Relative", Here, TRue);
+      Log_Out (Debug);
+      Pause_On_Flag ("exit Position_Relative", Here, TRue);
    end Position_Relative;
 
    ---------------------------------------------------------------
@@ -526,7 +526,7 @@ Pause_On_Flag ("exit Position_Relative", Here, TRue);
       Speed                   : in     Property_Type := 0) is  -- 0 => default
    ---------------------------------------------------------------
 
-      ID                      : constant Preset_Range_Type := Preset_ID.ID;
+      ID                      : constant Preset_Range_Type := Preset_ID.Get_ID;
 
    begin
       Log_In (Debug, "preset id" & ID'img &
@@ -584,7 +584,7 @@ Pause_On_Flag ("exit Position_Relative", Here, TRue);
          Options     => ( 1 =>
                (
                   Data           => Speed,
-                  Start          => 6,
+                  Start          => 5,
                   Mode           => Standard.Camera.Lib.Base.Fixed
                )
             ));

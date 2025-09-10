@@ -71,9 +71,6 @@ package Video.Lib is
 
    type Preset_ID_Type           is tagged private;
 
-   type Relative_Type            is new Integer;
-   type Value_Type               is mod 2**32;
-
    function Constructor (
       ID                         : in     Preset_Range_Type
    ) return Preset_ID_Type;
@@ -91,6 +88,12 @@ package Video.Lib is
    return Preset_ID_Type
    with Pre => Have_Preset (First_Preset);
 
+   function Get_ID (
+      Preset_ID                  : in     Preset_ID_Type;
+      From                       : in     String := Ada_Lib.Trace.Here
+   ) return Preset_Range_Type;
+   -- not checked for Is_Set. allowed to return unset id
+
    function Get_Last_Preset_ID
    return Preset_ID_Type
    with Pre => Have_Preset (Last_Preset);
@@ -104,12 +107,6 @@ package Video.Lib is
    ) return Preset_ID_Type
    with Pre => Have_Preset (Which_Preset);
 
-   function ID (
-      Preset_ID                  : in     Preset_ID_Type;
-      From                       : in     String := Ada_Lib.Trace.Here
-   ) return Preset_Range_Type
-   with Pre => Preset_ID.Is_Set;
-
    function Image (
       Preset_ID                  : in     Preset_ID_Type
    ) return String;
@@ -122,6 +119,9 @@ package Video.Lib is
    procedure Set (
       Preset_ID                  : in out Preset_ID_Type;
       ID                         : in     Preset_Range_Type);
+
+   type Relative_Type            is new Integer;
+   type Value_Type               is mod 2**32;
 
    type Options_Type             is limited new Ada_Lib.Options.Actual.
                                     Nested_Options_Type with record
@@ -193,6 +193,7 @@ package Video.Lib is
 
    Debug                         : Boolean := False;
    Null_Preset_ID                : constant Preset_ID_Type;
+   Null_Preset_ID_Number         : constant Preset_Range_Type;
 -- Global_Video_Lib_Options      : Options_Constant_Class_Access := Null;
 
 private
@@ -204,9 +205,11 @@ private
 
    Address                       : Ada_Lib.Strings.Unlimited.String_Type;
    Port                          : Port_Type;
+   Null_Preset_ID_Number         : constant Preset_Range_Type :=
+                                    Preset_Range_Type'last;
    Null_Preset_ID                : constant Preset_ID_Type := (
-                                    ID       => 0,
-                                    Is_Set   => False);
+                                    ID       => Null_Preset_ID_Number,
+                                    Is_Set   => True);
 
    overriding
    procedure Program_Help (

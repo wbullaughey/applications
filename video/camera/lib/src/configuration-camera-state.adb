@@ -27,11 +27,14 @@ package body Configuration.Camera.State is
    ) return Boolean is
    ----------------------------------------------------------------
 
-      State       : Configuration.Camera.State.State_Type renames
-                     Configuration.Camera.State.Get_Read_Only_State.all;
+      State             : Configuration.Camera.State.State_Type renames
+                           Configuration.Camera.State.Get_Read_Only_State.all;
+      Number_Columns    : constant Column_Type := State.Get_Number_Columns;
 
    begin
-      return Column <= State.Get_Number_Columns;
+      return Log_Here (Column <= Number_Columns,
+         Trace_Pre_Post_Conditions, "column" & Column'img &
+            " number columns" & Number_Columns'img);
    end Check_Column;
 
    ----------------------------------------------------------------
@@ -42,7 +45,8 @@ package body Configuration.Camera.State is
    ----------------------------------------------------------------
 
    begin
-      return Check_Column (Column) and then Check_Row (Row);
+      return Log_Here (Check_Column (Column) and then Check_Row (Row),
+         Trace_Pre_Post_Conditions);
    end Check_Image;
 
    ----------------------------------------------------------------
@@ -53,9 +57,12 @@ package body Configuration.Camera.State is
 
       State       : Configuration.Camera.State.State_Type renames
                      Configuration.Camera.State.Get_Read_Only_State.all;
+      Number_Rows : constant Row_Type := State.Get_Number_Rows;
 
    begin
-      return Row <= State.Number_Rows;
+      return Log_Here (Row <= State.Number_Rows, Trace_Pre_Post_Conditions,
+         "row" & Row'img &
+            " number rows" & Number_Rows'img);
    end Check_Row;
 
    ---------------------------------------------------------------
@@ -251,7 +258,7 @@ package body Configuration.Camera.State is
    ----------------------------------------------------------------
 
    begin
---log_here (row'img & column'img & (if State.Images = Null then " null images" else "have image"));
+log_here (row'img & column'img & (if State.Images = Null then " null images" else "have image"));
       return (if Add_Prefix then
             "img/"
          else
@@ -301,16 +308,17 @@ package body Configuration.Camera.State is
          "grid_columns"));
       State.Number_Configurations := Configuration_ID_Type (
          Config.Get_Integer ("configurations"));
---       Standard.Camera.Preset_ID_Type (Config.Get_Integer ("last preset")); -- presets start at 0
       State.Number_Rows := Row_Type (Config.Get_Integer ("grid_rows"));
       Last_Preset_Number := Config.Get_Integer ("last_preset");
 
-      declare
-         use Video.Lib;
-
-      begin
-         Set_Preset_ID (Last_Preset, Constructor (Preset_Range_Type (Last_Preset_Number)));
-      end;
+--    declare
+--       use Video.Lib;
+--
+--    begin
+         Video.Lib.Set_Preset_ID (Video.Lib.Last_Preset,
+            Video.Lib.Constructor (
+            Video.Lib.Preset_Range_Type (Last_Preset_Number)));
+--    end;
 
       Log_Here (Debug,
          Quote ("video address", State.Video_Address.Image) &
@@ -320,9 +328,11 @@ package body Configuration.Camera.State is
          " Number_Configurations" & State.Get_Number_Configurations'img &
          " Last_Preset" & Last_Preset_Number'img &
          " Number_Rows" & State.Number_Rows'img);
+      -- allocate 2 dimensional array of image file names
       State.Images := new Images_Type (1 .. State.Number_Rows,
          1 .. State.Number_Columns);
 
+      -- lookup image names in configuration to get file names
       for Row in 1 .. State.Number_Rows loop
          for Column in 1 .. State.Number_Columns loop
             declare
@@ -336,14 +346,13 @@ package body Configuration.Camera.State is
                   declare
                      Value       : constant String :=
                                     Config.Get_String  (Name);
---                   Path        : constant String := "img/" & Value;
 
                   begin
                      Log_Here (Debug, Quote ("value", Value));
 --                      Quote (" path", Path));
                      State.Images (Row, Column).Construct (Value);
                   end;
-               else
+               else  -- if file name not in config leave zero legnth file name
                   Log_Here (Debug, "row" & Row'img &
                      " column" & Column'img & " not configured");
                end if;
@@ -375,7 +384,7 @@ package body Configuration.Camera.State is
    ----------------------------------------------------------------
 
    begin
-      return Log_Here (State_Pointer /= Null, Trace_Pre_Post_Conditions);
+      return Log_Here (State_Pointer /= Null, Debug or Trace_Pre_Post_Conditions);
    end State_Set;
 
    ----------------------------------------------------------------
@@ -412,7 +421,7 @@ package body Configuration.Camera.State is
    end Unload;
 
 begin
---Debug := True;
+Debug := True;
 --Trace_Options := True;
    Log_Here (Debug or Trace_Options or Elaborate);
 

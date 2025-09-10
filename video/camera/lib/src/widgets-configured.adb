@@ -291,7 +291,7 @@ package body Widgets.Configured is
             Camera.Lib.Base.Memory_Set,
             Options     => (
                1 => (
-                  Data           => Camera.Data_Type (Preset_ID.ID),
+                  Data           => Camera.Data_Type (Preset_Id.Get_ID),
                   Mode           => Camera.Lib.Base.Fixed,
                   Start          => 6
                )
@@ -885,7 +885,7 @@ not_implemented;
                               Cell.Configuration_ID, New_Preset_ID);
                            Preset_ID_Package.Update (
                               State, New_Preset_Number,
-                              Preset_Cell.Preset_ID_Field, Natural (New_Preset_ID.ID));
+                              Preset_Cell.Preset_ID_Field, Natural (New_Preset_ID.Get_ID));
 
                            New_Preset_ID.Set (Camera.Preset_Range_Type (New_Preset_Number));
                            Image_Cell.Image_Div.Image.URL_Source (Path);
@@ -1136,7 +1136,7 @@ not_implemented;
                   Configuration_ID, Video.Lib.Constructor (
                      Camera.Preset_Range_Type (Preset_Number)));
                Preset_ID_Package.Update (State, Preset_Number,
-                  Preset_Cell.Preset_ID_Field, Natural (New_Preset_ID.ID));
+                  Preset_Cell.Preset_ID_Field, Natural (New_Preset_ID.Get_ID));
 
                Column_Package_Update (Column_Cell, Preset.Column);
                Image_Cell.Image_Div.Image.URL_Source (Path);
@@ -1148,5 +1148,8 @@ not_implemented;
 
    end Preset_Package;
 
+begin
+Debug := True;
+   Log_Here (Debug or Elaborate);
 end Widgets.Configured;
 

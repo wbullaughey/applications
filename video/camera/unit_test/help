@@ -1,3 +1,4 @@
+Optional parameters: help
 camera_aunit
 
 
@@ -50,11 +51,11 @@ Camera Lib trace options (-2)
       L               camera library options
       m               Main Window
       s               Trace simulator
-      S               configuration state
+      S               configuration.state.Debug
       T               Windows.Top
       V               Trace Video widgets
-      @a              Adjust Window
-      @c              Widgets.Control debyg
+      @a              Widgets.Adjust debug
+      @c              Widgets.Control debug
       @C              Widgets.Configured debug
       @l              List camera commands
       @s              Configuration
@@ -150,6 +151,7 @@ Ada_Lib unit test library trace options (-U)
       a               all
       A               all unit tests
       e               Ada_Lib.Trace.Trace_Exceptions
+      E               Ada_Lib.Evemt.Unit_Test.Debug
       g               Ada_Lib.GNOGA.Unit_Test.Debug
       p               test programs
       P               Trace Pre and Post Condtion functions

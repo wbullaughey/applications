@@ -3,7 +3,8 @@ with Ada.Exceptions;
 with Ada_Lib.Options.Actual;
 with Ada_Lib.Strings;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
-with Ada_Lib.Unit_Test.Test_Cases;
+with Ada_Lib.Unit_Test;
+--with Ada_Lib.Unit_Test.Test_Cases;
 --with Base;
 with AUnit.Assertions; use AUnit.Assertions;
 with AUnit.Test_Cases;
@@ -55,7 +56,8 @@ package body Configuration.Camera.State.Unit_Tests is
 
    overriding
    procedure Tear_Down (
-      Test                       : in out Configuration_Tests_Type);
+      Test                       : in out Configuration_Tests_Type
+   ) with post => Test.Verify_Tear_Down;
 
    procedure Test_Load (
       Test                       : in out AUnit.Test_Cases.Test_Case'class
@@ -183,7 +185,8 @@ package body Configuration.Camera.State.Unit_Tests is
    begin
       Log_In (Debug or Trace_Set_Up);
 --    GNOGA_Ada_Lib.Clear_Connection_Data;
-      Ada_Lib.Unit_Test.Test_Cases.Test_Case_Type (Test).Tear_Down;
+      Standard.Camera.Lib.Unit_Test.With_Camera_No_GNOGA_Test_Type (
+         Test).Tear_Down;
       Log_Out (Debug or Trace_Set_Up);
    end Tear_Down;
 
@@ -323,7 +326,6 @@ package body Configuration.Camera.State.Unit_Tests is
                   "Number_Rows" & Number_Rows'img &
                   " not equal Expected_Number_Rows" &
                   Expected_Number_Rows'img);
-Log_Here;
                for Row in 1 .. Number_Rows loop
                   for Column in 1 .. Number_Columns loop
                      declare
@@ -332,23 +334,19 @@ Log_Here;
                         Value          : Ada_Lib.Strings.String_Access renames
                                           Expected_Images (Row, Column);
                      begin
-Log_Here;
                         if Value = Null then
                            Assert (not Have_Image, "had unexpected image for row" &
                               Row'img & " column" & Column'img);
                         elsif Have_Image then
-log_here;
                            declare
                               Image    : constant String := State.
                                           Image_Path (Row, Column);
                            begin
-Log_Here;
                               Assert (Image = Value.all,
                                  "wrong image. " & Quote ("expected", Value.all) &
                                  Quote (" got", Image));
                            end;
                         else
-Log_Here;
                            Assert (False, "did not have expected image for row" &
                               Row'img & " column" & Column'img);
                         end if;
@@ -370,7 +368,8 @@ Log_Here;
 
 begin
    if Trace_Tests then
-      Debug := Trace_Tests;
+      Debug := True;
    end if;
+debug := True;
 
 end Configuration.Camera.State.Unit_Tests;

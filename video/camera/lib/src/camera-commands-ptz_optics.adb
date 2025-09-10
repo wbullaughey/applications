@@ -38,7 +38,7 @@ package body Camera.Commands.PTZ_Optics is
       Standard.Camera.Lib.Base.Memory_Reset         => ( 7, ( 16#81#,16#01#,16#04#,16#3F#,16#02#,16#00#,16#FF#, others => 0 ), True, Default_Response_Timeout, False, 0),
       Standard.Camera.Lib.Base.Power                => ( 6, ( 16#81#,16#01#,16#04#,16#00#,16#00#,16#FF#, others => 0 ), False, Default_Response_Timeout, true, 3),
       Standard.Camera.Lib.Base.Power_Inquire        => ( 5, ( 16#81#,16#09#,16#04#,16#00#,16#FF#, others => 0 ), False, Power_Inquire_Timeout, True, 4),
-      Standard.Camera.Lib.Base.Recall_Speed         => ( 7, ( 16#81#,16#01#,16#04#,16#3F#,16#02#,16#02#,16#FF#, others => 0 ), True, Default_Response_Timeout, False, 0),
+      Standard.Camera.Lib.Base.Recall_Speed         => ( 6, ( 16#81#,16#01#,16#06#,16#01#,16#00#,16#FF#, others => 0 ), True, Default_Response_Timeout, False, 0),
       Standard.Camera.Lib.Base.Zoom_Direct          => ( 9, ( 16#81#,16#01#,16#04#,16#47#,16#00#,16#00#,16#00#,16#00#,16#FF#, others => 0 ), True, Default_Response_Timeout, False, 0),
       Standard.Camera.Lib.Base.Zoom_Stop            => ( 6, ( 16#81#,16#01#,16#04#,16#07#,16#00#,16#FF#, others => 0 ), True, Default_Response_Timeout, False, 0),
       Standard.Camera.Lib.Base.Zoom_Inquire         => ( 5, ( 16#81#,16#09#,16#04#,16#47#,16#FF#, others => 0 ), False, Default_Response_Timeout, True, 7),

@@ -166,6 +166,7 @@ not_implemented;
                                     Ada_Lib.Strings.Trim (Table_Row'img);
 
       begin
+log_here;
          Log_In (Debug, Quote ("name", Name) & " Row id " & Row.ID &
             " table column" & Table_Column'img);
          Cell.Create (Column, ID => Name & "_Cell_" &
@@ -197,7 +198,9 @@ not_implemented;
             begin
                Log_Here (Debug, "row" & Table_Row'img &
                   " column" & Table_Column'img &
-                  Quote (" image Name", Image_Name));
+                  Quote (" image Name", Image_Name) &
+                  " preset id " & Preset_ID.Get_ID'img &
+                  " is set " & Preset_ID.Is_Set'img);
 
                if Image_Name'length > 0 then
                   Cell.Image_Path.Construct (Image_Name);
@@ -228,7 +231,7 @@ not_implemented;
                if not Preset_ID.Is_Set then -- /= Configuration.Camera.Get_Preset_Not_Set then
                   Preset_Text.Create (
                      Parent   => Cell,
-                     Content  => Preset_ID'img);
+                     Content  => Preset_ID.Get_ID'img);
                   Preset_Text.Class_Name (Configuration.Camera.Control_Text_Style);
                end if;
             end;
@@ -263,5 +266,8 @@ not_implemented;
 
    end Control_Package;
 
+begin
+Debug := True;
+   Log_Here (Debug or Elaborate);
 end Widgets.Control;
 

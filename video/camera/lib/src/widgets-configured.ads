@@ -25,9 +25,16 @@ package Widgets.Configured is
    type Cell_Type                is new Gnoga.Gui.Element.Common.DIV_Type
                                     with null record;
 
-   type Preset_Column_Index_Type -- need to be on order columns created
-                              is (Row_Header, Label_Field, Preset_Field,
-                               Column_Field, Row_Field, Image_Field, Control_Field);
+   type Preset_Column_Index_Type is (  -- need to be on order columns created
+      Row_Header,    -- button for editing configuration id
+      Label_Field,   -- display label for presets
+      Preset_Field,  -- field for editing preset number
+      Column_Field,  -- select which column a preset image should be in
+                     -- the preset grid
+      Row_Field,     -- select which row a preset image should be in
+                     -- the preset grid
+      Image_Field,   -- cell with path for image file
+      Control_Field);--
    subtype Preset_Row_Index_Type
                               is Configuration.Camera.Configuration_ID_Type;
 

@@ -454,7 +454,7 @@ package body Configuration.Camera.Setup.Unit_Tests is
             end loop;
 
             for Preset_Number in Standard.Camera.Preset_Range_Type'first ..
-                  Last_Preset.ID loop
+                  Last_Preset.Get_ID loop
                declare
                   Expected_Preset_Value
                                     : Preset_Type renames

@@ -58,6 +58,8 @@ package body Widgets.Adjust.Unit_Test is
          Mouse_Event                : Gnoga.Gui.Base.Mouse_Event_Record;
       end record;
 
+      type Mouse_Move_Event_Access is access Mouse_Move_Event_Type;
+
       procedure Initialize_Event (
          Mouse_Move_Event        : in out Mouse_Move_Event_Type;
          Connection_Data         : in     Base.Connection_Data_Access;
@@ -172,45 +174,58 @@ package body Widgets.Adjust.Unit_Test is
                                  GNOGA_Ada_Lib.Get_Connection_Data);
       Camera            : Standard.Camera.Commands.Camera_Class_Access renames
                            Connection_Data.Camera;
-      Event             : Move_Package.Mouse_Move_Event_Type;
+      Event             : constant Move_Package.Mouse_Move_Event_Access := new
+                           Move_Package.Mouse_Move_Event_Type;
 
       Adjust_Card       : constant Adjust_Card_Access :=
                            Connection_Data.Get_Adjust_Card;
       Pan               : Standard.Camera.Absolute_Type;
       Pan_Offset        : constant := 100;
+      Start_Pan         : Standard.Camera.Absolute_Type;
+      Start_Tilt        : Standard.Camera.Absolute_Type;
       Tilt              : Standard.Camera.Absolute_Type;
       Tilt_Offset       : constant := 200;
 
    begin
       Log_In (Debug);
-      Move_Package.Initialize_Event (Event,
-         Connection_Data=> Connection_Data,
-         Description    => "mouse move event",
-         Mouse_Event    => (
-            Message        => Mouse_Move,
-            X              => Pan_Offset,
-            Y              => Tilt_Offset,
-            Screen_X       => 100,
-            Screen_Y       => 200,
-            Left_Button    => False,
-            Middle_Button  => False,
-            Right_Button   => False,
-            Alt            => False,
-            Control        => False,
-            Shift          => False,
-            Meta           => False),
-         Wait           => 0.25);
+      Camera.Get_Absolute (Start_Pan, Start_Tilt);
+      declare
+         Expected_Pan      : constant Standard.Camera.Absolute_Type :=
+                              Start_Pan + Pan_Offset;
+         Expected_Tilt     : constant Standard.Camera.Absolute_Type :=
+                              Start_Tilt + Tilt_Offset;
+      begin
+         Log_Here (Debug,
+            "start pan" & Start_Pan'img & " tilt" & Start_Tilt'img &
+            " expected pan" & Expected_Pan'img & " tilt" & Expected_Tilt'img);
+         -- create a mouse move event telling the amout to move
+         Move_Package.Initialize_Event (Event.all,
+            Connection_Data=> Connection_Data,
+            Description    => "mouse move event",
+            Mouse_Event    => (
+               Message        => Mouse_Move,
+               X              => Pan_Offset,
+               Y              => Tilt_Offset,
+               Screen_X       => 100,
+               Screen_Y       => 200,
+               Left_Button    => False,
+               Middle_Button  => False,
+               Right_Button   => False,
+               Alt            => False,
+               Control        => False,
+               Shift          => False,
+               Meta           => False),
+            Wait           => 0.25);
 
-      Log_Here (Debug);
-      Adjust_Card.Fire_On_Mouse_Click (Event.Mouse_Event);
-      delay 0.5;     -- wait for button to be pushed
-      Log_Here (Debug);
-      Camera.Get_Absolute (Pan, Tilt);
-      Assert (Pan = Pan_Offset, "wrong pan" & Pan'img &
-         " expected" & Pan_Offset'img);
-      Assert (Tilt = Tilt_Offset, "wrong tilt" & Tilt'img &
-         " expected" & Tilt_Offset'img);
-
+         Log_Here (Debug);
+         Adjust_Card.Fire_On_Mouse_Click (Event.Mouse_Event);
+         delay 0.5;     -- wait for button to be pushed
+         Log_Here (Debug);
+         Camera.Get_Absolute (Pan, Tilt);
+         Assert (Pan = Expected_Pan and then Tilt = Expected_Tilt,
+            "pan" & Pan'img & " expected" & Expected_Pan'img &
+            " tilt" & Tilt'img & " expected" & Expected_Tilt'img);
+      end;
       Log_Out (Debug);
 
    exception
@@ -235,7 +250,7 @@ package body Widgets.Adjust.Unit_Test is
 
       begin
          Mouse_Move_Event.Start (Wait, Description,
-            Dynamic     => False,
+            Dynamic     => True,
             Repeating   => False);
          Mouse_Move_Event.Mouse_Event := Mouse_Event;
       end Initialize_Event;

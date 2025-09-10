@@ -14,6 +14,9 @@ package body Camera.Lib.Base is
    use type Index_Type;
    use type Value_Type;
 
+   -- time in seconds to wait for a camera to be not busy
+   Lock_Timeout                  : constant := 60.0;
+
    ----------------------------------------------------------------------------
    procedure Apply_Parameters (
       Buffer                     : in out Maximum_Command_Type;
@@ -26,7 +29,8 @@ package body Camera.Lib.Base is
             Option               : Option_Type renames Options (Index);
 
          begin
-            Log_Here (Debug, "Index " & Index'img & " Start " & Option.Start'img);
+            Log_Here (Debug, "Index " & Index'img & " Start " & Option.Start'img &
+               " mode " & Option.Mode'img);
 
             case Option.Mode is
 
@@ -46,7 +50,7 @@ package body Camera.Lib.Base is
 
                   begin
                      Log_Here (Debug, "Buffer_Index" & Buffer_Index'img &
-                        " width" & Option.Width'img);
+                        " width" & Option.Width'img & " value " & Value'img);
                      for Counter in 1 .. Option.Width loop
                         Buffer (Buffer_Index) := Data_Type (Value and 16#0F#);
                         Buffer_Index := Buffer_Index - 1;
@@ -76,6 +80,18 @@ package body Camera.Lib.Base is
       Apply_Parameters (Buffer, Options);
       Log_Out (Debug);
    end Apply_Parameters;
+
+   ---------------------------------------------------------------
+   procedure Camera_Locked_Too_Long (
+      From        : in     String := Here) is
+   ---------------------------------------------------------------
+
+      Message  : constant String := "timed out waiting for camera lock." &
+                  " Called from " & From;
+   begin
+      Log_Exception (Debug, Message);
+      raise Camera_Locked with Message;
+   end Camera_Locked_Too_Long;
 
    ---------------------------------------------------------------
    procedure Dump_Input_Buffer (
@@ -292,7 +308,7 @@ package body Camera.Lib.Base is
                      end;
 
                   when others =>          -- unexpected
-                     Put_Line ("" & Hex (Response_Code));
+--                   Put_Line ("" & Hex (Response_Code));
                      Failure ("unexpected command header " &
                         Hex (Response_Code));
                end case;
@@ -419,21 +435,36 @@ package body Camera.Lib.Base is
       Log_In (Debug or List_Commands, "command " & Command'img &
          " Timeout_Time " & Timeout_Time'img &
          " timeout " & Timeout'img);
-      Base_Camera_Type'class (Camera).Send_Command (Command, Options,
-         Get_Ack, Has_Response, Response_Length);
-      Log_Here (Debug, "get ack " & Get_Ack'img &
-         " return package " & Has_Response'img &
-         " response length" & Response_Length'img);
+      if Camera.Lock.Lock (Lock_Timeout) then
+         begin
+            Base_Camera_Type'class (Camera).Send_Command (Command, Options,
+               Get_Ack, Has_Response, Response_Length);
+            Log_Here (Debug, "get ack " & Get_Ack'img &
+               " return package " & Has_Response'img &
+               " response length" & Response_Length'img);
 
-      Camera.Get_Response (Get_Ack, Has_Response, Response,
-         Response_Length, Timeout);  -- get response
+            Camera.Get_Response (Get_Ack, Has_Response, Response,
+               Response_Length, Timeout);  -- get response
 
-      if Debug and then Has_Response then
-         Dump ("package response", Response (
-            Response'first .. Response_Length));
+            if Debug and then Has_Response then
+               Dump ("package response", Response (
+                  Response'first .. Response_Length));
+            end if;
+            Camera.Lock.Unlock;
+
+         exception
+
+            when Fault : others =>
+               Camera.Lock.Unlock;
+               Log_Exception (Debug, Fault, "in Process_Command");
+               raise;
+
+         end;
+      else
+         Camera_Locked_Too_Long;
       end if;
 
-      Log_Out (Debug or List_Commands);
+      Log_Out (Debug or List_Commands, "command " & Command'img);
 
    exception
       when Fault : others =>

@@ -1,4 +1,4 @@
-with Ada.Unchecked_Deallocation;
+--with Ada.Unchecked_Deallocation;
 with Ada.Text_IO;use Ada.Text_IO;
 with Ada_Lib.Help;
 with ADA_LIB.OS;
@@ -103,6 +103,18 @@ package body Video.Lib is
    end Get_First_Preset_ID;
 
    -------------------------------------------------------------------------
+   function Get_ID (
+      Preset_ID                  : in     Preset_ID_Type;
+      From                       : in     String := Ada_Lib.Trace.Here
+   ) return Ada_Lib.Socket_IO.Data_Type is
+   -------------------------------------------------------------------------
+
+   begin
+      Log_Here (Debug, "Preset_ID " & Preset_ID.Image & " from " & From);
+      return Preset_ID.ID;
+   end Get_ID;
+
+   -------------------------------------------------------------------------
    function Get_Last_Preset_ID
    return Preset_ID_Type is
    -------------------------------------------------------------------------
@@ -141,21 +153,10 @@ package body Video.Lib is
    -------------------------------------------------------------------------
 
    begin
-      return Log_Here (Presets (Which_Preset).Is_Set, Debug,
+      return Log_Here (Presets (Which_Preset).Is_Set,
+         Debug or Trace_Pre_Post_Conditions,
          "Preset_ID " & Presets (Which_Preset).Image);
    end Have_Preset;
-
-   -------------------------------------------------------------------------
-   function ID (
-      Preset_ID                  : in     Preset_ID_Type;
-      From                       : in     String := Ada_Lib.Trace.Here
-   ) return Ada_Lib.Socket_IO.Data_Type is
-   -------------------------------------------------------------------------
-
-   begin
-      Log_Here (Debug, "Preset_ID " & Preset_ID.Image & " from " & From);
-      return Preset_ID.ID;
-   end ID;
 
    ---------------------------------------------------------------
    function Image (
@@ -205,7 +206,7 @@ package body Video.Lib is
    -------------------------------------------------------------------------
 
    begin
-      return Log_Here (Preset_ID.Is_Set, Debug,
+      return Log_Here (Preset_ID.Is_Set, Debug or Trace_Pre_Post_Conditions,
          "Preset_ID " & Preset_ID.Image & " from " & From);
    end Is_Set;
 

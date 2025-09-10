@@ -1,4 +1,4 @@
-with Ada_Lib.GNOGA.Unit_Test;
+--with Ada_Lib.GNOGA.Unit_Test;
 with Ada_Lib.Options.Actual;
 with Ada_Lib.Timer;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
@@ -38,7 +38,8 @@ package body Main.Unit_Test is
 
    overriding
    procedure Tear_Down (
-      Test                       : in out Test_Type);
+      Test                       : in out Test_Type
+   ) with post => Test.Verify_Tear_Down;
 
    procedure Test_Halt (
       Test                       : in out AUnit.Test_Cases.Test_Case'class);
@@ -199,7 +200,10 @@ package body Main.Unit_Test is
 --       Button_Press_Event.Connection_Data :=
 --          Base.Connection_Data_Access (Local_Test.Connection_Data);
 
-         Button_Press_Event.Start (2.0, "halt wait");
+         Button_Press_Event.Start (
+            Wait           => 2.0,
+            Dynamic        => False,
+            Description    => "halt wait");
             -- leave time for web page to display
 
          Run (

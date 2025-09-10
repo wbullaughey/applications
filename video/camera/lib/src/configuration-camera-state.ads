@@ -3,7 +3,7 @@ with ADA_LIB.Strings.Unlimited;
 with Ada_Lib.Trace;
 with Camera;
 with Configuration.State;
-with GNOGA_Ada_Lib;
+--with GNOGA_Ada_Lib;
 
 package Configuration.Camera.State is
 
@@ -134,14 +134,15 @@ package Configuration.Camera.State is
 
 private
 
-   type State_Type               is new Configuration.State.State_Type with
-                                    record
-      CSS_Path                   : ADA_LIB.Strings.Unlimited.String_Type;
-      Default_Speed              : Speed_Type;
-      Images                     : Images_Access := Null;
-      Number_Columns             : Column_Type;
-      Number_Configurations      : Configuration_ID_Type;
-      Number_Rows                : Row_Type;
+   type State_Type            is new Configuration.State.State_Type with record
+      CSS_Path                : ADA_LIB.Strings.Unlimited.String_Type;
+      Default_Speed           : Speed_Type;
+      Images                  : Images_Access := Null;
+                                 -- pointer two dimensional array of image paths
+                                 -- 1st dimension is row, second is column
+      Number_Columns          : Column_Type;
+      Number_Configurations   : Configuration_ID_Type;
+      Number_Rows             : Row_Type;
    end record;
 
 

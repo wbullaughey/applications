@@ -49,11 +49,13 @@ package Configuration.Camera.Setup is
 
    type Presets_Access           is access Presets_Type;
 
-   type Setup_Type               is new Root_Setup_Type with record
-      Configurations             : Configurations_Access := Null;
-      Modified                   : Boolean := False;
-      Path                       : Ada_Lib.Strings.Unlimited.String_Type;
-      Presets                    : Presets_Access := Null;
+   type Setup_Type      is new Root_Setup_Type with record
+      Configurations    : Configurations_Access := Null;
+                           -- pointer to array of configurations
+      Modified          : Boolean := False;
+      Path              : Ada_Lib.Strings.Unlimited.String_Type;
+      Presets           : Presets_Access := Null;
+                           -- pointer to array of presets
    end record;
 
    type Setup_Access             is access all Setup_Type;
@@ -185,11 +187,11 @@ package Configuration.Camera.Setup is
       Label             => Ada_Lib.Strings.Unlimited.Null_String,
       Preset_ID         => Video.Lib.Null_Preset_ID);
 
-   Null_Preset                   : constant Preset_Type := (
-                                    Initial_Root_State with
-      Column            => Column_Not_Set,
-      Preset_ID         => Video.Lib.Null_Preset_ID,
-      Row               => Row_Not_Set);
+   Null_Preset    : constant Preset_Type := (
+                     Initial_Root_State with
+      Column      => Column_Not_Set,
+      Preset_ID   => Video.Lib.Null_Preset_ID,  -- ID field is 255 (last)
+      Row         => Row_Not_Set);
 
 
 end Configuration.Camera.Setup;

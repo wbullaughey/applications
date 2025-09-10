@@ -7,9 +7,9 @@ with Ada_Lib.Unit_Test;
 with AUnit.Assertions; use AUnit.Assertions;
 with AUnit.Test_Cases;
 with Base;
-with Configuration.Camera.State;
+--with Configuration.Camera.State;
 with Camera.Lib.Unit_Test;
-with Configuration.Camera.Setup;
+--with Configuration.Camera.Setup;
 --with Configuration.State;
 with Gnoga.Gui.View.Card;
 with Main;
@@ -45,7 +45,8 @@ package body Widgets.Control.Unit_Test is
 
    overriding
    procedure Tear_Down (
-      Test                       : in out Test_Type);
+      Test                       : in out Test_Type
+   ) with post => Test.Verify_Tear_Down;
 
    procedure Test_Create_Control (
       Test                       : in out AUnit.Test_Cases.Test_Case'class);
@@ -108,17 +109,17 @@ package body Widgets.Control.Unit_Test is
       Test                       : in out Test_Type) is
    ---------------------------------------------------------------
 
-      Options                    : Standard.Camera.Lib.Unit_Test.
-                                    Unit_Test_Program_Options_Type'class
-                                       renames Standard.Camera.Lib.Unit_Test.
-                                          Get_Camera_Unit_Test_Constant_Options.all;
-      State                      : Configuration.Camera.State.State_Type renames
-                                    Test.State;
+--    Options                    : Standard.Camera.Lib.Unit_Test.
+--                                  Unit_Test_Program_Options_Type'class
+--                                     renames Standard.Camera.Lib.Unit_Test.
+--                                        Get_Camera_Unit_Test_Constant_Options.all;
+--    State                      : Configuration.Camera.State.State_Type renames
+--                                  Test.State;
    begin
       Log_In (Debug or Trace_Set_Up);
-      State.Load (Options.Camera_Options.Location, State_Test_Path);
-      -- need to load state 1st
-      Test.Setup.Load (State, Setup_Test_Path);
+--    State.Load (Options.Camera_Options.Location, State_Test_Path);
+--    -- need to load state 1st
+--    Test.Setup.Load (State, Setup_Test_Path);
       Camera.Lib.Unit_Test.With_Camera_With_GNOGA_Test_Type (Test).Set_Up;
       Log_Out (Debug or Trace_Set_Up);
 
@@ -209,7 +210,10 @@ package body Widgets.Control.Unit_Test is
                Event                   : Button_Push_Event_Type;
 
             begin
-               Event.Start (0.25, "button timer");
+               Event.Start (
+                  Description    => "button timer",
+                  Dynamic        => False,
+                  Wait           => 0.25);
                delay 0.5;     -- wait for button to be pushed
             end;
          end;

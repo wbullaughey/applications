@@ -1,11 +1,13 @@
+with Ada_Lib.Lock;
 with Ada_Lib.Socket_IO.Client;
-with Ada_Lib.Strings;
+--with Ada_Lib.Strings;
 --with Configuration.Camera;
 with GNAT.Sockets;
 with Video.Lib;
 
 package Camera.Lib.Base is
 
+   Camera_Locked                 : exception;
    Failed                        : exception;
    Timed_Out                     : exception;
 
@@ -203,9 +205,9 @@ private
    Description                   : aliased constant String := "camera";
 
    type Base_Camera_Type is abstract new General_Camera_Type with record
+      Lock                       : Ada_Lib.Lock.Lock_Type (Description'access);
       Socket                     : Ada_Lib.Socket_IO.Client.Client_Socket_Type (
                                      Description'access);
---    Stream                     : Ada_Lib.Socket_IO.Stream_IO.Stream_Type;
    end record;
 
    Null_Option                   : constant Options_Type (1 .. 0) :=

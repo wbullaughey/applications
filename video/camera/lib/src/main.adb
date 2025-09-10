@@ -368,6 +368,7 @@ package body Main is
       State             : Configuration.Camera.State.State_Type renames
                            Configuration.Camera.State.Get_Read_Only_State.all;
    begin
+log_here;
       Log_In (Debug, "started " & Started'img);
       declare
          Main_Data                  : Main_Data_Type renames
@@ -640,7 +641,9 @@ package body Main is
       if Directory'length > 0 then
          Ada.Directories.Set_Directory (Directory);
       end if;
+log_here;
       GNOGA.Application.Open_URL;
+log_here;
       GNOGA_Ada_Lib.Base.Initialize_GNOGA (
          Application_Title    => "Camera",
          Handler              => On_Connect'Unrestricted_Access,
@@ -725,8 +728,8 @@ package body Main is
    end Trace_Button_Click_Handler;
 
 begin
---Debug := True;
+Debug := True;
 --Trace_Options := True;
    Include_Task := True;
-   Log_Here (Elaborate or Trace_Options);
+   Log_Here (Elaborate or Trace_Options or Debug);
 end Main;
