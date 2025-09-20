@@ -370,6 +370,6 @@ begin
    if Trace_Tests then
       Debug := True;
    end if;
-debug := True;
+--debug := True;
 
 end Configuration.Camera.State.Unit_Tests;

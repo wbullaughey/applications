@@ -1,7 +1,7 @@
 #!/bin/zsh
 export OUTPUT=list-camera.txt
 export PROGRAM=bin/camera_control
-export DO_TRACE=1
+export DO_TRACE=0
 export HELP_TEST=" \
       -E -h -P -r -v -@c -@i -@p -@t -@x \
       -a abcCehiIlmMoOpPrRsStT@c@d@D@e@E@l@o@s@t \

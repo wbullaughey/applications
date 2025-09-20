@@ -384,20 +384,20 @@ package body Widgets.Configured is
             State       : Configuration.Camera.State.State_Type renames
                            Configuration.Camera.State.Get_Read_Only_State.all;
          begin
-            Log_Here (Debug, " preset id" & Preset_ID.Image &
+            Log_Here (Debug, " preset " & Preset_ID.Image &
                " has preset " & Has_Preset'img);
+            Cell.Configuration_ID := Table_Row;
+
             if    Configuration_ID =
                      Configuration_ID_Type'first or else
                   Table_Column /= Control_Field then
-               Log_Here (Debug);
+               Log_Here (Debug, Quote ("cell id", Cell_ID));
                Cell.Create (Column, ID => Cell_ID);
             else -- its the cell for Control Widget
                Log_Out (Debug, "Configuration_ID" & Configuration_ID'img &
                   " Table_Column " & Table_Column'img);
                return;
             end if;
-
-            Cell.Configuration_ID := Table_Row;
 
             case Table_Column is
 
@@ -501,6 +501,8 @@ package body Widgets.Configured is
 
                when Preset_Field =>
                   declare
+                     ID             : constant Camera.Preset_Range_Type :=
+                                       Preset_ID.Get_ID;
                      Value          : constant String := (if Has_Preset then
                                        Trim (
                                           Global_Camera_Setup.Configuration_Preset (
@@ -508,12 +510,14 @@ package body Widgets.Configured is
                                     else
                                        "");
                   begin
-                     Log_Here (Debug, Quote ("field id", Field_ID) &
+                     Log_Here (Debug,  "ID" & ID'img &
+                        Quote (" cell id", Cell_ID) &
+                        Quote (" field id", Field_ID) &
                         Quote (" value", Value));
                      Cell.Preset_ID_Field.Create (
                         ID             => Field_ID,
                         Form           => Form.all,
-                        Value          => Value);
+                        Value          => ID'img);
 
                      Cell.Preset_Id := Preset_ID;
                      Cell.Preset_ID_Field.Class_Name (Preset_Style);
@@ -635,12 +639,16 @@ not_implemented;
             Put_Line ("dump cell called from " & From &
                " address: " & Image (Cell'address));
             Put_Line ("  Column:" & Cell.Column'img);
-            Put_Line ("  Configuration_ID:" & Cell.Configuration_ID'img);
+            Put_Line ((if Cell.Configuration_ID =
+                     Configuration.Camera.No_Configuration then
+                  "configuration id not set"
+               else
+                  "  Configuration_ID:" & Cell.Configuration_ID'img));
             case Cell.Column is
 
                when Column_Field=>
                   Put_Line ("  Column_Number:" & Cell.Column_Number'img);
-                  Put_Line (Quote ("  Column_Coordinate:",
+                  Put_Line (Quote ("  Column_Coordinate",
                      Cell.Column_Coordinate.Value));
 
                when Image_Field =>
@@ -1149,7 +1157,7 @@ not_implemented;
    end Preset_Package;
 
 begin
-Debug := True;
+--Debug := True;
    Log_Here (Debug or Elaborate);
 end Widgets.Configured;
 

@@ -109,46 +109,6 @@ not_implemented;
 
       ----------------------------------------------------------------
       overriding
-      function Get_Cell (
-         Column                  : in out Control_Column_Type
-      ) return Generic_Cell_Package.Cell_Class_Access is
-      ----------------------------------------------------------------
-
-      begin
-         return Generic_Cell_Package.Cell_Class_Access'(
-            Generic_Cell_Package.Cell_Class_Access (Column.Cell));
-      end Get_Cell;
-
-      ----------------------------------------------------------------
-      procedure Image_Click_Handler (
-         Object                     : in out Gnoga.Gui.Base.Base_Type'Class;
-         Mouse_Event                : in     Gnoga.Gui.Base.Mouse_Event_Record) is
-      ----------------------------------------------------------------
-         Connection_Data            : Base.Connection_Data_Type renames
-                                       Base.Connection_Data_Type (
-                                          Object.Connection_Data.all);
-         Main_Data                  : Main.Main_Data_Type renames
-                                        Connection_Data.Main_Data.all;
-         Cell                       : Cell_Type renames Cell_Type (
-                                       Object.Parent.all);
-
-      begin
-         Log_In (Debug, "preset" & Cell.Preset'img &
-            " message " & Mouse_Event.Message'img & " ID " & Object.ID);
-
-         Connection_Data.Camera.Set_Preset (Cell.Preset);
-
-         Log_Out (Debug);
-      exception
-         when Fault : others =>
-            Trace_Exception (Debug, Fault);
-            GNOGA_Ada_Lib.Report_Exception (Main_Data.Main_Window.all,
-               Fault, "call preset failed");
-
-      end Image_Click_Handler;
-
-      ----------------------------------------------------------------
-      overriding
       procedure Create_Cell (
          Cell                    : in out Cell_Type;
          Form                    : in     Gnoga.Gui.Element.Form.
@@ -166,7 +126,6 @@ not_implemented;
                                     Ada_Lib.Strings.Trim (Table_Row'img);
 
       begin
-log_here;
          Log_In (Debug, Quote ("name", Name) & " Row id " & Row.ID &
             " table column" & Table_Column'img);
          Cell.Create (Column, ID => Name & "_Cell_" &
@@ -231,13 +190,53 @@ log_here;
                if not Preset_ID.Is_Set then -- /= Configuration.Camera.Get_Preset_Not_Set then
                   Preset_Text.Create (
                      Parent   => Cell,
-                     Content  => Preset_ID.Get_ID'img);
+                     Content  => "no preset"); -- Preset_ID.Get_ID'img);
                   Preset_Text.Class_Name (Configuration.Camera.Control_Text_Style);
                end if;
             end;
          end if;
          Log_Out (Debug);
       end Create_Cell;
+
+      ----------------------------------------------------------------
+      overriding
+      function Get_Cell (
+         Column                  : in out Control_Column_Type
+      ) return Generic_Cell_Package.Cell_Class_Access is
+      ----------------------------------------------------------------
+
+      begin
+         return Generic_Cell_Package.Cell_Class_Access'(
+            Generic_Cell_Package.Cell_Class_Access (Column.Cell));
+      end Get_Cell;
+
+      ----------------------------------------------------------------
+      procedure Image_Click_Handler (
+         Object                     : in out Gnoga.Gui.Base.Base_Type'Class;
+         Mouse_Event                : in     Gnoga.Gui.Base.Mouse_Event_Record) is
+      ----------------------------------------------------------------
+         Connection_Data            : Base.Connection_Data_Type renames
+                                       Base.Connection_Data_Type (
+                                          Object.Connection_Data.all);
+         Main_Data                  : Main.Main_Data_Type renames
+                                        Connection_Data.Main_Data.all;
+         Cell                       : Cell_Type renames Cell_Type (
+                                       Object.Parent.all);
+
+      begin
+         Log_In (Debug, "preset" & Cell.Preset'img &
+            " message " & Mouse_Event.Message'img & " ID " & Object.ID);
+
+         Connection_Data.Camera.Set_Preset (Cell.Preset);
+
+         Log_Out (Debug);
+      exception
+         when Fault : others =>
+            Trace_Exception (Debug, Fault);
+            GNOGA_Ada_Lib.Report_Exception (Main_Data.Main_Window.all,
+               Fault, "call preset failed");
+
+      end Image_Click_Handler;
 
       ----------------------------------------------------------------
       procedure On_Submit (
@@ -267,7 +266,7 @@ not_implemented;
    end Control_Package;
 
 begin
-Debug := True;
+--Debug := True;
    Log_Here (Debug or Elaborate);
 end Widgets.Control;
 

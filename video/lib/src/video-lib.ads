@@ -209,7 +209,7 @@ private
                                     Preset_Range_Type'last;
    Null_Preset_ID                : constant Preset_ID_Type := (
                                     ID       => Null_Preset_ID_Number,
-                                    Is_Set   => True);
+                                    Is_Set   => False);
 
    overriding
    procedure Program_Help (

@@ -728,7 +728,7 @@ log_here;
    end Trace_Button_Click_Handler;
 
 begin
-Debug := True;
+--Debug := True;
 --Trace_Options := True;
    Include_Task := True;
    Log_Here (Elaborate or Trace_Options or Debug);

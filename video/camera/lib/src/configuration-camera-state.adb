@@ -421,7 +421,7 @@ log_here (row'img & column'img & (if State.Images = Null then " null images" els
    end Unload;
 
 begin
-Debug := True;
+--Debug := True;
 --Trace_Options := True;
    Log_Here (Debug or Trace_Options or Elaborate);
 

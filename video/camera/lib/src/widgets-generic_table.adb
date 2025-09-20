@@ -234,15 +234,14 @@ package body Widgets.Generic_Table is
       ) return Generic_Cell_Package.Cell_Class_Access is
       ----------------------------------------------------------------
 
-         Row                     : Row_Type'class renames Widget.Get_Row (
-                                    Row_Index).all;
-         Column                  : constant Generic_Cell_Package.
-                                    Generic_Column_Class_Access :=
-                                       Row.Columns (Column_Index);
-         Cell                    : constant Generic_Cell_Package.Cell_Class_Access :=
-                                    Column.Get_Cell;
-
+         Row      : Row_Type'class renames Widget.Get_Row (Row_Index).all;
+         Column   : constant Generic_Cell_Package.
+                     Generic_Column_Class_Access := Row.Columns (Column_Index);
+         Cell     : constant Generic_Cell_Package.Cell_Class_Access :=
+                     Column.Get_Cell;
       begin
+         Log_Here (Debug, "column " & Column_Index'img &
+            " row" & Row_Index'img);
          return Cell;
       end Get_Cell;
 

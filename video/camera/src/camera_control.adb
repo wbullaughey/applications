@@ -11,23 +11,22 @@ with Camera.Lib.Options;
 with Command_Name;
 with Configuration.Camera.Setup;
 with Configuration.Camera.State;
---with Configuration.State;
 with Emulator;
---with GNOGA.Application;
-with GNOGA_Ada_Lib;
 with Main;
---with Video.Lib;
 
 procedure Camera_Control is
 
    Camera_Setup                  : Configuration.Camera.Setup.Setup_Type;
-   Connection_Data               : constant Base.Connection_Data_Class_Access :=
-                                    Allocate_Connection_Data;
+-- Connection_Data               : constant Base.Connection_Data_Access :=
+--                                  Base.Allocate_Connection_Data;
    Options                       : aliased Camera.Lib.Options.Program_Options_Type;
    Debug                         : Boolean renames Options.Debug;
+   Configuration_State           : aliased Configuration.Camera.State.State_Type;
 
 begin
    Put_Line (Command_Name);
+   Configuration.Camera.State.Set_State (Configuration_State'unchecked_access);
+   Base.Allocate_Connection_Data;
    Ada_Lib.Options.Actual.Set_Ada_Lib_Program_Options (
       Options'unchecked_access);
    Ada_Lib.Options.Actual.Set_Ada_Lib_Nested_Options (
@@ -36,7 +35,7 @@ begin
 
    if Options.Initialize then
       Log_In (Debug, "Help_Test " & Ada_Lib.Help_Test'img);
-      Connection_Data.Initialize;
+--    Connection_Data.Initialize;
       if Options.Process (
          Include_Options      => True,
          Include_Non_Options  => False,
@@ -49,10 +48,10 @@ begin
                else
                   "completed"));
          else
-            Connection_Data.State.Load (
+            Configuration_state.Load (  -- state removed from connection
                Location => Options.Camera_Library.Location,
                Name     => Configuration.Camera.State.File_Path);
-            Camera_Setup.Load (Connection_Data.State,
+            Camera_Setup.Load (Configuration_state,
                Configuration.Camera.Setup.File_Path);
             Log_Here (Debug);
 

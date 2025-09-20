@@ -27,6 +27,9 @@ package Configuration.Camera is
    Control_Image_Style  : constant String := "Control_Image";
    Horizontal_Slider_Style
                         : constant String := "Horizontal_Slider_Style";
+   No_Configuration     : constant Configuration_ID_Type :=
+                           Configuration_ID_Type'last;
+
    Preset_Style         : constant String := "Preset_Style";
    Row_Not_Set          : constant := Row_Type'last;
    Vertical_Slider_Blank_Style: constant String := "Vertical_Slider_Blank_Style";

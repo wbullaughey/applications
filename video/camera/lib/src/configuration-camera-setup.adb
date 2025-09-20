@@ -42,8 +42,12 @@ package body Configuration.Camera.Setup is
    ) return Standard.Camera.Preset_ID_Type is
    ----------------------------------------------------------------
 
+      Result   : constant Standard.Camera.Preset_ID_Type :=
+                  Setup.Configurations (Configuration_ID).Preset_ID;
    begin
-      return Setup.Configurations (Configuration_ID).Preset_ID;
+      Log_Here (Debug, "Configuration_ID" & Configuration_ID'img &
+         " preset id" & Result'img);
+      return Result;
    end Configuration_Preset;
 
    ----------------------------------------------------------------
@@ -102,8 +106,10 @@ package body Configuration.Camera.Setup is
          else
             "") &
          Preset.Preset_ID.Image & " from " & From);
-      Put_Line ("  Column:" & Preset.Column'img);
-      Put_Line ("  Row:" & Preset.Row'img);
+      if Preset.Preset_ID.Is_Set then
+         Put_Line ("  Column:" & Preset.Column'img);
+         Put_Line ("  Row:" & Preset.Row'img);
+      end if;
    end Dump;
 
    ----------------------------------------------------------------
@@ -182,7 +188,8 @@ package body Configuration.Camera.Setup is
 
          begin
             if Preset.Row = Row and then Preset.Column = Column then
-               Log_Out (Debug, "preset" & Id'img);
+               Log_Out (Debug, "preset" & Id'img &
+                   " row" & Row'img & " column" & Column'img);
                return Preset.Preset_ID;
             end if;
          end;
@@ -316,7 +323,8 @@ package body Configuration.Camera.Setup is
                                        Do_Next => True));
 
                begin
-                  Log_Here (Debug, Quote ("value", Value) &
+                  Log_Here (Debug, "preset" & Preset_Number'img &
+                     Quote (" value", Value) &
                      " row" & Row'img & " column" & Column'img);
 
                   if Column > State.Get_Number_Columns then

@@ -28,7 +28,7 @@ package body Widgets.Video is
    end Create;
 
 begin
-Debug := True;
+--Debug := True;
 --Trace_Options := True;
    Log_Here (Elaborate or Trace_Options or Debug);
 end Widgets.Video;

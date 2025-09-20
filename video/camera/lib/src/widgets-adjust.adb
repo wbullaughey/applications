@@ -589,7 +589,7 @@ not_implemented;
    end Outer_Package;
 
 begin
-debug := True;
+--debug := True;
    Log_Here (Debug or Trace_Options or Elaborate);
 end Widgets.Adjust;
 

@@ -9,8 +9,16 @@ with Gnoga.Gui.Element.Table;
 with Gnoga.Gui.Element.Form;
 --with Gnoga.Gui.View;
 with Gnoga.GUI.Window;
---with Video.Lib;
 with Widgets.Generic_Table;
+
+------------------------------------------------------------------------------
+-- Control Card creates a grid of images from the camera
+-- configured in state.cfg to have number rows and columns
+-- for each row
+--    column 0 is the row number
+--    columns 1 .. <number columns> has:
+--       camera image, preset, preset text, image path
+------------------------------------------------------------------------------
 
 package Widgets.Control is
 
@@ -22,10 +30,6 @@ package Widgets.Control is
    Max_Rows                      : constant := 10;
    Widget_Name                   : constant String := "Control_Card";
 
--- type Cell_Type                is new Widgets.Generic_Table.
---                                  Root_Cell_Type with null record;
--- type Cell_class_Access        is access all Cell_Type'class;
---
    type Control_Column_Index_Type
                                  is new Natural;
 
@@ -69,6 +73,10 @@ package Widgets.Control is
                                              Generic_Column_Type'class;
          Table_Column            : in     Control_Column_Index_Type;
          Table_Row               : in     Row_Index_Type);
+
+      procedure Image_Click_Handler (
+         Object                     : in out Gnoga.Gui.Base.Base_Type'Class;
+         Mouse_Event                : in     Gnoga.Gui.Base.Mouse_Event_Record);
 
       overriding
       procedure Update_Cell (

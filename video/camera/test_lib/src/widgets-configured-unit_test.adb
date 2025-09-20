@@ -1,6 +1,7 @@
 with Ada.Exceptions;
 --with Ada_Lib.Configuration;
 with Ada_Lib.Directory.Compare_Files;
+with Ada_Lib.Strings;
 with Ada_Lib.Timer;
 --with Ada_Lib.GNOGA;
 --with Ada_Lib.Options;
@@ -146,7 +147,8 @@ package body Widgets.Configured.Unit_Test is
    Expected_Setup_Path           : constant String :=
                                     "expected_windows_setup.cfg";
    Invalid_Coordinate_Column_Field_Value
-                                 : constant := 2;  -- undefined preset
+                                 : constant := 3;  -- undefined preset
+   Modified_Row                  : constant := 2;  -- row in table - 1st data row
    Suite_Name                    : constant String := "Configured";
 
    Update_Setup_Path             : constant String :=
@@ -173,6 +175,8 @@ package body Widgets.Configured.Unit_Test is
                                     Cards.Card (Widget_Name);
       Configured_Card         : Configured_Card_Type renames
                                 Configured_Card_Type (Current_Card.all);
+      Modified_Value          : constant := 4;
+
    begin
       Log_In (Debug, "test field type " & Field'img &
          " Modified_Configuration_ID" & Modified_Configuration_ID'img &
@@ -193,14 +197,13 @@ package body Widgets.Configured.Unit_Test is
                                           Original_Preset_ID);
 
          begin
-            Log_Here (Debug, "test " & Field'img & " for no preset with " &
-               Modified_Coordinate_Value_No_Preset'img);
-Original_Configuration.Dump ("original configuration");
+            Log_Here (Debug, "test " & Field'img &
+               " modified value" & Modified_Value'img);
+--Original_Configuration.Dump ("original configuration");
             -- set the coordinate with no preset defined for the coordinate,column
             -- the preset should be set blank
             -- put the test value into the field
-            Update_Field (Cell, Coordinate_Type (
-               Modified_Coordinate_Value_No_Preset));
+            Update_Field (Cell, Modified_Value);
             Cell.Dump (Pause_Flag or Debug);
             Pause_On_Flag ("test coordinate value set before fire event");
             Connection_Data.Reset_Update_Event;
@@ -212,9 +215,7 @@ Original_Configuration.Dump ("original configuration");
             Pause_On_Flag ("test coordinate value after fire event");
             Check_Fields (Configured_Card,
                Expected_Column=> (case Field is
-                  when Column_Field =>
-                     Configuration.Camera.Column_Type (
-                        Modified_Coordinate_Value_No_Preset),
+                  when Column_Field => Modified_Value,
                   when Row_Field =>
                      Original_Preset.Column,
                   when others => -- should not happen
@@ -247,7 +248,7 @@ Original_Configuration.Dump ("original configuration");
       Coordinate_Type            => Configuration.Camera.Column_Type,
       Field                      => Column_Field,
       Fire                       => Column_Fire,
-      Modified_Configuration_ID  => 2,
+      Modified_Configuration_ID  => Modified_Row,
       Modified_Coordinate_Value_No_Preset
                                  => Invalid_Coordinate_Column_Field_Value,
       Update_Field               => Update_Column_Field);
@@ -424,21 +425,20 @@ Original_Configuration.Dump ("original configuration");
       From                       : in     String := Here) is
    ---------------------------------------------------------------
 
-      Field_Value                : constant Field_Type :=
-                                    (if Value'length = 0 then
-                                       Field_Type'last
-                                    else
-                                       Field_Type'value (Value));
-
+      Have_Value  : constant Boolean := Value'length > 0;
+      Field_Value : constant String := (if Have_Value then
+                        "field value " & Value'img
+                     else
+                        "no value");
    begin
-      Log_Here (Debug, "expected value " & Expected_Value'img &
-         " field_Value" & Field_Value'img &
-         Quote (" value", Value) & Quote (" field", Field) &
-         " from " & From);
+      Log_Here (Debug, Quote ("expected value", Value) &
+         Quote (" field", Field) & " " & Field_Value & " from " & From);
 
-      Assert (Expected_Value = Field_Value,
-         "Invalid value for " & Field &
-         Quote (" got", Value) & " (" & Field_Value'img & ")" &
+      Assert ((if Have_Value then
+            Expected_Value = Field_Type'value (Value)
+         else
+            False),
+         Field & Quote (" got", Value) & " (" & Field_Value & ")" &
          " expected" & Expected_Value'img & " check from " & Check_From &
          " from " & From);
    end Check_Integer;
@@ -599,14 +599,16 @@ Original_Configuration.Dump ("original configuration");
                                     Cell_Class_Access := Preset_Package.
                                           Cell_Class_Access (
                                        Configured_Card.Get_Cell (Column,
-                                          Configuration.Camera.Configuration_ID_Type (Row_Index)));
+                                          Modified_Row));
          begin
+            Cell.Dump (Debug);
             case Column is
                when Column_Field =>
                   declare
                      Value          : constant String :=
-                                       Cell.Column_Coordinate.Value;
+                                       Ada_Lib.Strings.Trim (Expected_Column'img);
                   begin
+log_here (quote ("value", value));
                      Check_Column (Expected_Column, Value, "column", From);
                   end;
 
@@ -662,6 +664,7 @@ Original_Configuration.Dump ("original configuration");
    ---------------------------------------------------------------
 
    begin
+      Log_Here (Debug);
       Cell.Column_Coordinate.Fire_On_Focus_Out;
    end Column_Fire;
 
@@ -1404,7 +1407,7 @@ begin
    if Trace_Tests then
       Debug := True;
    end if;
-Debug := True;
+--Debug := True;
    Log_Here (Elaborate or Trace_Options);
 end Widgets.Configured.Unit_Test;
 

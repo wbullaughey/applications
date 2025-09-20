@@ -1,8 +1,6 @@
---with Ada_Lib.GNOGA;
 with Ada_Lib.Strings.Unlimited;
 with ADA_LIB.Trace;
 with Camera;
---with Configuration.Camera.State;
 with GNOGA_Ada_Lib;
 with Gnoga.Gui.Base;
 with Gnoga.Gui.Element.Common;
@@ -13,9 +11,25 @@ with Gnoga.GUI.Window;
 with Widgets.Control;
 with Widgets.Generic_Table;
 
+------------------------------------------------------------------------------
+-- Configured Card has 2 grids layed out horizontally
+-- The left grid has one row per configuration.
+--    Each column is a cell type based on the column type
+--       1:Row_Header,   row header
+--       2:Label_Field,  label
+--       3:Preset_Field, preset
+--       4:Column_Field, column the preset is in the control grid
+--                       row the preset is in the control grid
+
+--       5:Row_Field,    image path for the preset
+--       6:Image_Field,
+--       7:control
+-- The right grid is the Widgets.Control grid
+------------------------------------------------------------------------------
+
 package Widgets.Configured is
 
--- use type Configuration.Camera.State.State_Access;
+   use type Configuration.Camera.Configuration_ID_Type;
 
    Failed                        : exception;
 
@@ -60,7 +74,8 @@ package Widgets.Configured is
       type Cell_Type (
          Column                  : Preset_Column_Index_Type) is new
                                     Generic_Cell_Package.Cell_Type with record
-         Configuration_ID        : Configuration.Camera.Configuration_ID_Type;
+         Configuration_ID        : Configuration.Camera.Configuration_ID_Type :=
+                                    Configuration.Camera.No_Configuration;
 
          case Column is
 
@@ -114,14 +129,16 @@ package Widgets.Configured is
          Cell                    : in out Cell_Type;
          Form                    : in     Gnoga.Gui.Element.Form.
                                           Pointer_To_Botton_Class;
-         Row                        : in out Gnoga.Gui.Element.Table.
-                                             Table_Row_Type'class;
+         Row                     : in out Gnoga.Gui.Element.Table.
+                                          Table_Row_Type'class;
          Column                  : in out Generic_Cell_Package.
                                              Generic_Column_Type'class;
          Table_Column            : in     Preset_Column_Index_Type;
          Table_Row               : in     Configuration.Camera.
                                              Configuration_ID_Type
-      ) with Pre => GNOGA_Ada_Lib.Has_Connection_Data;
+      ) with Pre  => GNOGA_Ada_Lib.Has_Connection_Data,
+             Post => Cell.Configuration_ID /=
+                        Configuration.Camera.No_Configuration;
 
       procedure Dump (
          Cell                    : in     Cell_Type;
@@ -202,7 +219,7 @@ package Widgets.Configured is
 
    package Configured_Package is new Widgets.    -- row for each preset
          Generic_Table.Generic_Table_Package (        -- 1st column description
-      Allocate_Column        => Preset_Package.Allocate_Column,
+      Allocate_Column      => Preset_Package.Allocate_Column,
       Column_Header        => True,
       Column_Index_Type    => Preset_Column_Index_Type,
       Create_Column_Labels => Create_Labels,
