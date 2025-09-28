@@ -258,12 +258,25 @@ package body Configuration.Camera.State is
    ----------------------------------------------------------------
 
    begin
-log_here (row'img & column'img & (if State.Images = Null then " null images" else "have image"));
-      return (if Add_Prefix then
-            "img/"
-         else
-            "") &
-         State.Images (Row, Column).Coerce;
+      Log_In (Debug, row'img & column'img &
+         " add prefix " & Add_Prefix'img &
+         (if State.Images = Null then " null images" else " have image"));
+
+      declare
+         Path     : constant String := State.Images (Row, Column).Coerce;
+         Result   : constant String := (if Add_Prefix then
+                        "img/"
+                     else
+                        "") &
+                     (if Path = "" then
+                        Blank_Preset_Root
+                     else
+                        Path);
+
+      begin
+         Log_Out (Debug, Quote ("result", Result));
+         return Result;
+      end;
    end Image_Path;
 
 -- ----------------------------------------------------------------

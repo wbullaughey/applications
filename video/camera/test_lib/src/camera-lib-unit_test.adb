@@ -686,9 +686,7 @@ procedure Setup_Camera (
 --          State                      : Configuration.Camera.State.State_Type renames
 --                                        Connection_Data.State;
             begin
-log_here;
                Camera_Lib_GNOGA_Test_Type (Test).Set_Up;
-log_here;
                Main.Run (
                   Directory            => Camera.Lib.Options.Current_Directory,
                   Port                 => Options.GNOGA_Options.HTTP_Port,

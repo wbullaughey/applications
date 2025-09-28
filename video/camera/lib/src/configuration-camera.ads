@@ -15,7 +15,8 @@ package Configuration.Camera is
    type Speed_Type      is new Positive;
 
    Adjust_Card_Style    : constant String := "Adjust_Card";
-   Blank_Preset         : constant String := "img/no_image.png";
+   Blank_Preset_Root    : constant String := "no_image.png";
+   Blank_Preset         : constant String := "img/" & Blank_Preset_Root;
    Center_Box_Style     : constant String := "Center_Box_Style";
    Column_Not_Set       : constant := Column_Type'last;
    Configuration_Not_Set: constant := Configuration_ID_Type'last;

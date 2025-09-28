@@ -24,7 +24,7 @@ with Video.Lib;
 package body Widgets.Configured.Unit_Test is
 
    use type Configuration.Camera.Column_Type;
-   use type Configuration.Camera.Configuration_ID_Type;
+-- use type Configuration.Camera.Configuration_ID_Type;
    use type Configuration.Camera.Row_Type;
    use type Camera.Preset_ID_Type;
 -- use type Gnoga.Gui.Plugin.Message_Boxes.Message_Box_Result;
@@ -92,6 +92,20 @@ package body Widgets.Configured.Unit_Test is
       Check_From                 : in     String;
       From                       : in     String := Here);
 
+   procedure Check_Fields (
+      Configured_Card            : in     Configured_Card_Type;
+      Row_Index                  : in     Row_Index_Type;
+      Expected_Configuration_ID  : in     Configuration.Camera.Configuration_ID_Type;
+      Expected_Column            : in     Configuration.Camera.Column_Type;
+      Expected_Row               : in     Configuration.Camera.Row_Type;
+      Expected_Label             : in     String;
+      Expected_Image             : in     String;
+      Expected_Preset_ID         : in     Camera.Preset_ID_Type;
+      From                       : in     String := Here);
+
+   procedure Column_Fire (
+      Cell                       : in     Preset_Package.Cell_Class_Access);
+
    generic
 
       with procedure Check_Fields (
@@ -106,32 +120,18 @@ package body Widgets.Configured.Unit_Test is
          Expected_Preset_ID         : in     Camera.Preset_ID_Type;
          From                       : in     String := Here);
       type Coordinate_Type is range <>;
+      Expected_Preset_ID         : Camera.Preset_ID_Type;
       Field                      : Preset_Column_Index_Type;
       with procedure Fire (
          Cell                    : in     Preset_Package.Cell_Class_Access);
       Modified_Configuration_ID  : Configuration.Camera.Configuration_ID_Type;
-      Modified_Coordinate_Value_No_Preset
-                                 : Integer;
+      Modified_Value             : Coordinate_Type;
       with procedure Update_Field (
          Cell                    : in     Preset_Package.Cell_Class_Access;
          Value                   : in     Coordinate_Type);
 
-   procedure Test_Update_Invalid_Coordinate (
+   procedure Generic_Test_Update_Coordinate (
       Test                       : in out AUnit.Test_Cases.Test_Case'class);
-
-   procedure Check_Fields (
-      Configured_Card            : in     Configured_Card_Type;
-      Row_Index                  : in     Row_Index_Type;
-      Expected_Configuration_ID  : in     Configuration.Camera.Configuration_ID_Type;
-      Expected_Column            : in     Configuration.Camera.Column_Type;
-      Expected_Row               : in     Configuration.Camera.Row_Type;
-      Expected_Label             : in     String;
-      Expected_Image             : in     String;
-      Expected_Preset_ID         : in     Camera.Preset_ID_Type;
-      From                       : in     String := Here);
-
-   procedure Column_Fire (
-      Cell                       : in     Preset_Package.Cell_Class_Access);
 
    procedure Row_Fire (
       Cell                       : in     Preset_Package.Cell_Class_Access);
@@ -155,7 +155,7 @@ package body Widgets.Configured.Unit_Test is
                                     "widgets_setup_update.cfg";
 
    ----------------------------------------------------------------
-   procedure Test_Update_Invalid_Coordinate (
+   procedure Generic_Test_Update_Coordinate (
       Test                    : in out AUnit.Test_Cases.Test_Case'class) is
    ----------------------------------------------------------------
 
@@ -175,10 +175,11 @@ package body Widgets.Configured.Unit_Test is
                                     Cards.Card (Widget_Name);
       Configured_Card         : Configured_Card_Type renames
                                 Configured_Card_Type (Current_Card.all);
-      Modified_Value          : constant := 4;
+--    Modified_Value          : constant := 4; made generic parameter
 
    begin
       Log_In (Debug, "test field type " & Field'img &
+         " modified value" & Modified_Value'img &
          " Modified_Configuration_ID" & Modified_Configuration_ID'img &
          " original configuration id" & Original_Configuration.
             Configuration_ID'img &
@@ -195,11 +196,9 @@ package body Widgets.Configured.Unit_Test is
                                     Preset_Type'class :=
                                        Local_Test.Setup.Get_Preset (
                                           Original_Preset_ID);
-
+         State                   : Configuration.Camera.State.State_Type renames
+                                    Local_Test.State;
          begin
-            Log_Here (Debug, "test " & Field'img &
-               " modified value" & Modified_Value'img);
---Original_Configuration.Dump ("original configuration");
             -- set the coordinate with no preset defined for the coordinate,column
             -- the preset should be set blank
             -- put the test value into the field
@@ -214,26 +213,50 @@ package body Widgets.Configured.Unit_Test is
             Cell.Dump (Pause_Flag);
             Pause_On_Flag ("test coordinate value after fire event");
             Check_Fields (Configured_Card,
-               Expected_Column=> (case Field is
-                  when Column_Field => Modified_Value,
-                  when Row_Field =>
-                     Original_Preset.Column,
-                  when others => -- should not happen
-                     Configuration.Camera.Column_Type'first
-               ),
+               Expected_Column   => (
+                  case Field is
+                     when Column_Field =>
+                        Configuration.Camera.Column_Type (Modified_Value),
+
+                     when Row_Field =>
+                        Original_Preset.Column,
+
+                     when others =>
+                        Configuration.Camera.Column_Type'first  -- should not happen
+                  ),
                Expected_Configuration_ID
                               => Modified_Configuration_ID,
-               Expected_Image => Configuration.Camera.Blank_Preset,
+               Expected_Image => State.Image_Path (
+                     Column => (case Field is
+                           when Column_Field =>
+                              Configuration.Camera.Column_Type (
+                                 Modified_Value),
+                           when Row_Field =>
+                              Original_Preset.Column,
+                           when others =>
+                              Configuration.Camera.Column_Type'first  -- should not happen
+                        ),
+                     Row   => (case Field is
+                           when Column_Field =>
+                              Original_Preset.Row,
+                           when Row_Field =>
+                              Configuration.Camera.Row_Type (
+                                 Modified_Value),
+                           when others =>
+                              Configuration.Camera.Row_Type'first  -- should not happen
+                        ),
+                     Add_Prefix  => True),
                Expected_Label => Original_Configuration.Label.Coerce,
-               Expected_Row   => (case Field is
-                                    when Column_Field =>
-                                       Original_Preset.Row,
-                                    when Row_Field =>
-                                       Configuration.Camera.Row_Type (
-                                          Modified_Coordinate_Value_No_Preset),
-                                    when others =>
-                                       Configuration.Camera.Row_Type'first  -- should not happen
-                                 ),
+               Expected_Row   => (
+                  case Field is
+                     when Column_Field => Original_Preset.Row,
+
+                     when Row_Field =>
+                        Configuration.Camera.Row_Type (Modified_Value),
+
+                     when others =>
+                        Configuration.Camera.Row_Type'first  -- should not happen
+                  ),
                Expected_Preset_ID
                               => Video.Lib.Null_Preset_ID,
                Row_Index      => Row_Index_Type (
@@ -241,179 +264,179 @@ package body Widgets.Configured.Unit_Test is
          end;   -- test seting a coordinate that is not used in a preset
 
       Log_Out (Debug);
-   end Test_Update_Invalid_Coordinate;
+   end Generic_Test_Update_Coordinate;
 
-   procedure Test_Update_Invalid_Column is new Test_Update_Invalid_Coordinate (
+   procedure Test_Update_Invalid_Column is new Generic_Test_Update_Coordinate (
       Check_Fields               => Check_Fields,
       Coordinate_Type            => Configuration.Camera.Column_Type,
+      Expected_Preset_ID         => Video.Lib.Null_Preset_ID,
       Field                      => Column_Field,
       Fire                       => Column_Fire,
       Modified_Configuration_ID  => Modified_Row,
-      Modified_Coordinate_Value_No_Preset
-                                 => Invalid_Coordinate_Column_Field_Value,
+      Modified_Value             => 4,
       Update_Field               => Update_Column_Field);
 
-   procedure Test_Update_Invalid_Row is new Test_Update_Invalid_Coordinate (
+   procedure Test_Update_Invalid_Row is new Generic_Test_Update_Coordinate (
       Check_Fields               => Check_Fields,
       Coordinate_Type            => Configuration.Camera.Row_Type,
+      Expected_Preset_ID         => Video.Lib.Null_Preset_ID,
       Field                      => Row_Field,
       Fire                       => Row_Fire,
       Modified_Configuration_ID  => 2,
-      Modified_Coordinate_Value_No_Preset
-                                 => 2,
+      Modified_Value             => 4,
       Update_Field               => Update_Row_Field);
 
-   generic
+-- generic
+--
+--    with procedure Check_Fields (
+--       Configured_Card            : in     Configured_Card_Type;
+--       Row_Index                  : in     Row_Index_Type;
+--       Expected_Configuration_ID  : in     Configuration.Camera.Configuration_ID_Type;
+--       Expected_Column            : in     Configuration.Camera.Column_Type;
+--       Expected_Row               : in     Configuration.Camera.Row_Type;
+--       Expected_Label             : in     String;
+--       Expected_Image             : in     String;
+--       Expected_Preset_ID         : in     Camera.Preset_ID_Type;
+--       From                       : in     String := Here);
+--    type Coordinate_Type is range <>;
+--    Expected_Preset_ID         : Camera.Preset_ID_Type;
+--    Field                      : Preset_Column_Index_Type;
+--    with procedure Fire (
+--       Cell                    : in     Preset_Package.Cell_Class_Access);
+--    Modified_Configuration_ID  : Configuration.Camera.Configuration_ID_Type;
+--    Modified_Field_Value_With_Preset
+--                               : Coordinate_Type;
+--    with procedure Update_Field (
+--       Cell                    : in     Preset_Package.Cell_Class_Access;
+--       Value                   : in     Coordinate_Type);
+--
+-- procedure Generic_Test_Update_Valid_Coordinate (
+--    Test                       : in out AUnit.Test_Cases.Test_Case'class);
+--
+--   ----------------------------------------------------------------
+--   procedure Generic_Test_Update_Valid_Coordinate (
+--      Test                       : in out AUnit.Test_Cases.Test_Case'class) is
+--   ----------------------------------------------------------------
+--
+--      Local_Test                 : Test_Type'class renames
+--                                   Test_Type'class (Test);
+--      Connection_Data            : constant Base.Connection_Data_Access :=
+--                                    Base.Connection_Data_Access (
+--                                       GNOGA_Ada_Lib.Get_Connection_Data);
+--      Cards                      : constant Main.Cards_Access_Type :=
+--                                    Connection_Data.Get_Cards;
+--      Original_Configuration     : constant Configuration.Camera.Setup.Configuration_Type'class :=
+--                                    Local_Test.Setup.Get_Configuration (
+--                                       Modified_Configuration_ID);
+--      Current_Card               : constant Gnoga.Gui.View.
+--                                    Pointer_To_View_Base_Class :=
+--                                       Cards.Card (Widget_Name);
+--      Configured_Card            : Configured_Card_Type renames
+--                                   Configured_Card_Type (Current_Card.all);
+--      State                      : Configuration.Camera.State.State_Type renames
+--                                    Local_Test.State;
+--   begin
+--      Log_In (Debug, "field " & Field'img &
+--         " Modified_Configuration_ID" & Modified_Configuration_ID'img &
+--         " original configuration id" & Original_Configuration.
+--            Configuration_ID'img &
+--         " original preset id" & Original_Configuration.Preset_ID.Image &
+--         " Modified_Field_Value_With_Preset" &
+--            Modified_Field_Value_With_Preset'img &
+--         " Expected_Preset_ID" & Expected_Preset_ID'img);
+--         -- test seting a row/column that is valid for a different preset
+--         -- preset field should be updated
+--         declare
+----          New_Preset           : constant Configuration.Camera.Setup.Preset_Type :=
+----                                  Local_Test.Setup.Get_Preset (Expected_Preset_ID);
+--            Cell                 : constant Preset_Package.Cell_Class_Access :=
+--                                     Preset_Package.Cell_Class_Access (
+--                                        Configured_Card.Get_Cell (Field,
+--                                           Modified_Configuration_ID));
+--            Original_Preset_ID   : Camera.Preset_ID_Type renames
+--                                    Original_Configuration.Preset_ID;
+--            Original_Preset      : constant Configuration.Camera.Setup.Preset_Type'class :=
+--                                    Local_Test.Setup.Get_Preset (Original_Preset_ID);
+--         begin
+--            Log_Here (Debug, "test " & Field'img & " for valid preset");
+--            Connection_Data.Reset_Update_Event;
+--            Update_Field (Cell, Modified_Field_Value_With_Preset);
+--
+--            Cell.Dump (Pause_Flag or Debug);
+--            Pause_On_Flag ("test " & Field'img & " value set before fire event");
+--            Fire (Cell);
+--            Log_Here (Debug, "wait for event");
+--            Connection_Data.Wait_For_Update_Event;
+--            delay 0.5;  -- let web page update
+--            Cell.Dump (Pause_Flag);
+--            Pause_On_Flag ("test " & Field'img & " value after fire event");
+--            Check_Fields (Configured_Card,
+--               Expected_Column=> (case Field is
+--                                    when Column_Field =>
+--                                       Configuration.Camera.Column_Type (
+--                                          Modified_Field_Value_With_Preset),
+--                                    when Row_Field =>
+--                                       Original_Preset.Column,
+--                                    when others =>
+--                                       Configuration.Camera.Column_Type'first  -- should not happen
+--                                 ),
+--               Expected_Configuration_ID
+--                              => Modified_Configuration_ID,
+--               Expected_Image => State.Image_Path (
+--                                    Column => (case Field is
+--                                          when Column_Field =>
+--                                             Configuration.Camera.Column_Type (
+--                                                Modified_Field_Value_With_Preset),
+--                                          when Row_Field =>
+--                                             Original_Preset.Column,
+--                                          when others =>
+--                                             Configuration.Camera.Column_Type'first  -- should not happen
+--                                       ),
+--                                    Row   => (case Field is
+--                                          when Column_Field =>
+--                                             Original_Preset.Row,
+--                                          when Row_Field =>
+--                                             Configuration.Camera.Row_Type (
+--                                                Modified_Field_Value_With_Preset),
+--                                          when others =>
+--                                             Configuration.Camera.Row_Type'first  -- should not happen
+--                                       ),
+--                                    Add_Prefix  => True),
+--               Expected_Label => Original_Configuration.Label.Coerce,
+--               Expected_Row   => (case Field is
+--                                    when Column_Field =>
+--                                       Original_Preset.Row,
+--                                    when Row_Field =>
+--                                       Configuration.Camera.Row_Type (
+--                                          Modified_Field_Value_With_Preset),
+--                                    when others =>
+--                                       Configuration.Camera.Row_Type'first  -- should not happen
+--                                 ),
+--               Expected_Preset_ID
+--                              => Expected_Preset_ID,
+--               Row_Index      => Row_Index_Type (Modified_Configuration_ID));
+--        end;   -- test seting a row/column that is not used in a preset
+--      Log_Out (Debug);
+--   end Generic_Test_Update_Valid_Coordinate;
 
-      with procedure Check_Fields (
-         Configured_Card            : in     Configured_Card_Type;
-         Row_Index                  : in     Row_Index_Type;
-         Expected_Configuration_ID  : in     Configuration.Camera.Configuration_ID_Type;
-         Expected_Column            : in     Configuration.Camera.Column_Type;
-         Expected_Row               : in     Configuration.Camera.Row_Type;
-         Expected_Label             : in     String;
-         Expected_Image             : in     String;
-         Expected_Preset_ID         : in     Camera.Preset_ID_Type;
-         From                       : in     String := Here);
-      type Coordinate_Type is range <>;
-      Expected_Preset_ID         : Camera.Preset_ID_Type;
-      Field                      : Preset_Column_Index_Type;
-      with procedure Fire (
-         Cell                    : in     Preset_Package.Cell_Class_Access);
-      Modified_Configuration_ID  : Configuration.Camera.Configuration_ID_Type;
-      Modified_Field_Value_With_Preset
-                                 : Coordinate_Type;
-      with procedure Update_Field (
-         Cell                    : in     Preset_Package.Cell_Class_Access;
-         Value                   : in     Coordinate_Type);
-
-   procedure Test_Update_Valid_Coordinate (
-      Test                       : in out AUnit.Test_Cases.Test_Case'class);
-
-   ----------------------------------------------------------------
-   procedure Test_Update_Valid_Coordinate (
-      Test                       : in out AUnit.Test_Cases.Test_Case'class) is
-   ----------------------------------------------------------------
-
-      Local_Test                 : Test_Type'class renames
-                                   Test_Type'class (Test);
-      Connection_Data            : constant Base.Connection_Data_Access :=
-                                    Base.Connection_Data_Access (
-                                       GNOGA_Ada_Lib.Get_Connection_Data);
-      Cards                      : constant Main.Cards_Access_Type :=
-                                    Connection_Data.Get_Cards;
-      Original_Configuration     : constant Configuration.Camera.Setup.Configuration_Type'class :=
-                                    Local_Test.Setup.Get_Configuration (
-                                       Modified_Configuration_ID);
-      Current_Card               : constant Gnoga.Gui.View.
-                                    Pointer_To_View_Base_Class :=
-                                       Cards.Card (Widget_Name);
-      Configured_Card            : Configured_Card_Type renames
-                                   Configured_Card_Type (Current_Card.all);
-      State                      : Configuration.Camera.State.State_Type renames
-                                    Local_Test.State;
-   begin
-      Log_In (Debug, "field " & Field'img &
-         " Modified_Configuration_ID" & Modified_Configuration_ID'img &
-         " original configuration id" & Original_Configuration.
-            Configuration_ID'img &
-         " original preset id" & Original_Configuration.Preset_ID.Image &
-         " Modified_Field_Value_With_Preset" &
-            Modified_Field_Value_With_Preset'img &
-         " Expected_Preset_ID" & Expected_Preset_ID'img);
-         -- test seting a row/column that is valid for a different preset
-         -- preset field should be updated
-         declare
---          New_Preset           : constant Configuration.Camera.Setup.Preset_Type :=
---                                  Local_Test.Setup.Get_Preset (Expected_Preset_ID);
-            Cell                 : constant Preset_Package.Cell_Class_Access :=
-                                     Preset_Package.Cell_Class_Access (
-                                        Configured_Card.Get_Cell (Field,
-                                           Modified_Configuration_ID));
-            Original_Preset_ID   : Camera.Preset_ID_Type renames
-                                    Original_Configuration.Preset_ID;
-            Original_Preset      : constant Configuration.Camera.Setup.Preset_Type'class :=
-                                    Local_Test.Setup.Get_Preset (Original_Preset_ID);
-         begin
-            Log_Here (Debug, "test " & Field'img & " for valid preset");
-            Connection_Data.Reset_Update_Event;
-            Update_Field (Cell, Modified_Field_Value_With_Preset);
-
-            Cell.Dump (Pause_Flag or Debug);
-            Pause_On_Flag ("test " & Field'img & " value set before fire event");
-            Fire (Cell);
-            Log_Here (Debug, "wait for event");
-            Connection_Data.Wait_For_Update_Event;
-            delay 0.5;  -- let web page update
-            Cell.Dump (Pause_Flag);
-            Pause_On_Flag ("test " & Field'img & " value after fire event");
-            Check_Fields (Configured_Card,
-               Expected_Column=> (case Field is
-                                    when Column_Field =>
-                                       Configuration.Camera.Column_Type (
-                                          Modified_Field_Value_With_Preset),
-                                    when Row_Field =>
-                                       Original_Preset.Column,
-                                    when others =>
-                                       Configuration.Camera.Column_Type'first  -- should not happen
-                                 ),
-               Expected_Configuration_ID
-                              => Modified_Configuration_ID,
-               Expected_Image => State.Image_Path (
-                                    Column => (case Field is
-                                          when Column_Field =>
-                                             Configuration.Camera.Column_Type (
-                                                Modified_Field_Value_With_Preset),
-                                          when Row_Field =>
-                                             Original_Preset.Column,
-                                          when others =>
-                                             Configuration.Camera.Column_Type'first  -- should not happen
-                                       ),
-                                    Row   => (case Field is
-                                          when Column_Field =>
-                                             Original_Preset.Row,
-                                          when Row_Field =>
-                                             Configuration.Camera.Row_Type (
-                                                Modified_Field_Value_With_Preset),
-                                          when others =>
-                                             Configuration.Camera.Row_Type'first  -- should not happen
-                                       ),
-                                    Add_Prefix  => True),
-               Expected_Label => Original_Configuration.Label.Coerce,
-               Expected_Row   => (case Field is
-                                    when Column_Field =>
-                                       Original_Preset.Row,
-                                    when Row_Field =>
-                                       Configuration.Camera.Row_Type (
-                                          Modified_Field_Value_With_Preset),
-                                    when others =>
-                                       Configuration.Camera.Row_Type'first  -- should not happen
-                                 ),
-               Expected_Preset_ID
-                              => Expected_Preset_ID,
-               Row_Index      => Row_Index_Type (Modified_Configuration_ID));
-        end;   -- test seting a row/column that is not used in a preset
-      Log_Out (Debug);
-   end Test_Update_Valid_Coordinate;
-
-   procedure Test_Update_Valid_Column is new Test_Update_Valid_Coordinate (
+   procedure Test_Update_Valid_Column is new Generic_Test_Update_Coordinate (
       Check_Fields                        => Check_Fields,
       Coordinate_Type                     => Configuration.Camera.Column_Type,
       Expected_Preset_ID                  => Video.Lib.Constructor (1),
       Field                               => Column_Field,
       Fire                                => Column_Fire,
       Modified_Configuration_ID           => 1,
-      Modified_Field_Value_With_Preset    => 2,
+      Modified_Value                      => 2,
       Update_Field                        => Update_Column_Field);
 
-   procedure Test_Update_Valid_Row is new Test_Update_Valid_Coordinate (
+   procedure Test_Update_Valid_Row is new Generic_Test_Update_Coordinate (
       Check_Fields                        => Check_Fields,
       Coordinate_Type                     => Configuration.Camera.Row_Type,
       Expected_Preset_ID                  => Video.Lib.Constructor (3),
       Field                               => Row_Field,
       Fire                                => Row_Fire,
       Modified_Configuration_ID           => 2,
-      Modified_Field_Value_With_Preset    => 3,
+      Modified_Value                      => 3,
       Update_Field                        => Update_Row_Field);
 
    ---------------------------------------------------------------
@@ -431,16 +454,17 @@ package body Widgets.Configured.Unit_Test is
                      else
                         "no value");
    begin
-      Log_Here (Debug, Quote ("expected value", Value) &
-         Quote (" field", Field) & " " & Field_Value & " from " & From);
+      Log_Here (Debug, "expected value" & Expected_Value'img &
+         Quote (" value", Value) & Quote (" field", Field) & " " &
+         Field_Value & " from " & From);
 
       Assert ((if Have_Value then
             Expected_Value = Field_Type'value (Value)
          else
             False),
          Field & Quote (" got", Value) & " (" & Field_Value & ")" &
-         " expected" & Expected_Value'img & " check from " & Check_From &
-         " from " & From);
+         " expected " & Expected_Value'img & "at " & Here &
+         " check from " & Check_From & " from " & From);
    end Check_Integer;
 
    ---------------------------------------------------------------
@@ -552,7 +576,8 @@ package body Widgets.Configured.Unit_Test is
                                     Preset_Package.Cell_Class_Access (Cell);
             begin
                Log_Here (Debug, Quote ("cell id", Cell.ID) &
-                  Quote ("label id", Configured_Cell.Label.ID));
+                  Quote ("label id", Configured_Cell.Label.ID) &
+                  Quote (" Updated_Label_Content", Updated_Label_Content));
 --             Configured_Cell.Update_Label (Updated_Label_Content);
                Configured_Cell.Label.Value (Updated_Label_Content);
                Configured_Cell.Label.Fire_On_Focus_Out;
@@ -608,7 +633,6 @@ package body Widgets.Configured.Unit_Test is
                      Value          : constant String :=
                                        Ada_Lib.Strings.Trim (Expected_Column'img);
                   begin
-log_here (quote ("value", value));
                      Check_Column (Expected_Column, Value, "column", From);
                   end;
 
@@ -854,6 +878,7 @@ log_here (quote ("value", value));
          Event                   : Button_Push_Event_Type;
 
       begin
+log_here;
          Event.Test_Case := Accept_Form;
          Event.Start (
             Wait           => 0.25,
@@ -908,6 +933,7 @@ log_here (quote ("value", value));
          Event                   : Button_Push_Event_Type;
 
       begin
+log_here;
          Event.Test_Case := Cancel_Form;
          Event.Start (
             Wait           => 0.25,
@@ -959,7 +985,7 @@ log_here (quote ("value", value));
                                           Configuration.Label;
             begin
                for Column_Index in Preset_Column_Index_Type'range loop
-                  if Column_Index /= Control_Field then
+                  if Column_Index /= Control_Grid_Field then
                      -- control field only for 1s row configuration table
                      Log_Here (Debug, "configuration" & Configuration_Index'img &
                         " column " & Column_Index'img);
@@ -1141,7 +1167,8 @@ log_here (quote ("value", value));
                                     Connection_Data.Get_Cards;
       Modified_Configuration_ID  : constant := 2;
       Modified_Preset_Value_No_Preset
-                                 : constant := 2;
+                                 : constant Video.Lib.Preset_Range_Type :=
+                                    Video.Lib.Null_Preset_ID_Number;
       Original_Configuration     : constant Configuration.Camera.Setup.Configuration_Type'class :=
                                     Local_Test.Setup.Get_Configuration (
                                        Modified_Configuration_ID);
@@ -1156,7 +1183,7 @@ log_here (quote ("value", value));
       Log_In (Debug, "Modified_Configuration_ID" & Modified_Configuration_ID'img &
          " original configuration id" & Original_Configuration.
             Configuration_ID'img &
-         " original preset id" & Original_Configuration.Preset_ID.Image);
+         " original preset " & Original_Configuration.Preset_ID.Image);
          -- test seting a preset that is not used in a preset
          declare
             Cell                 : constant Preset_Package.Cell_Class_Access :=
@@ -1165,15 +1192,18 @@ log_here (quote ("value", value));
                                           Modified_Configuration_ID));
             Original_Preset_ID   : Camera.Preset_ID_Type renames
                                     Original_Configuration.Preset_ID;
-            Original_Preset      : constant Configuration.Camera.Setup.Preset_Type'class :=
-                                    Local_Test.Setup.Get_Preset (Original_Preset_ID);
+            Original_Preset      : constant Configuration.Camera.Setup.
+                                    Preset_Type'class :=
+                                       Local_Test.Setup.Get_Preset (
+                                          Original_Preset_ID);
 
          begin
             Log_Here (Debug, "test preset for no preset");
             -- set the preset with no preset defined for the preset,column
             -- the preset should be set blank
             Update_Preset_Field (Local_Test.Setup, Cell,
-               Video.Lib.Constructor (Modified_Preset_Value_No_Preset));
+               Video.Lib.Null_Preset_ID);
+--             Video.Lib.Constructor (Modified_Preset_Value_No_Preset));
             Cell.Dump (Pause_Flag or Debug);
             Pause_On_Flag ("test preset value set before fire event");
             Connection_Data.Reset_Update_Event;
@@ -1187,10 +1217,7 @@ log_here (quote ("value", value));
                Expected_Column=> Original_Preset.Column,
                Expected_Configuration_ID
                               => Modified_Configuration_ID,
-               Expected_Image => State.Image_Path (
-                                    Original_Preset.Row,
-                                    Original_Preset.Column,
-                                    Add_Prefix => True),
+               Expected_Image => "",
                Expected_Label => Original_Configuration.Label.Coerce,
                Expected_Row   => Original_Preset.Row,
                Expected_Preset_ID
@@ -1235,11 +1262,11 @@ log_here (quote ("value", value));
          Event                   : Button_Push_Event_Type;
 
       begin
+         Event.Test_Case := Update_Label;
          Event.Start (
             Wait           => 0.25,
             Dynamic        => False,
             Description    => "update button");
---       Event.Test_Case := Update_Label;
          delay 0.5;     -- wait for focus to leave label
       end;
       declare
@@ -1380,11 +1407,9 @@ cell.dump(true);
       Log_Here (Debug, "Preset_ID" & Preset_ID'img);
 cell.dump(true);
       if Setup.Has_Preset (Preset_ID) then
-log_here;
          Cell.Preset_ID_Field.Value (Integer (Preset_Id.Get_ID));
          Cell.Preset_Set := True;
       else
-log_here;
          Cell.Preset_ID := Video.Lib.Null_Preset_ID;
             Cell.Preset_Set := False;
       end if;
@@ -1400,7 +1425,10 @@ cell.dump(true);
    ----------------------------------------------------------------
 
    begin
+      Log_Here (Debug, "value" & Value'img);
+cell.dump(true);
       Cell.Row_Coordinate.Value (Integer (Value));
+cell.dump(true);
    end Update_Row_Field;
 
 begin

@@ -390,7 +390,7 @@ package body Widgets.Configured is
 
             if    Configuration_ID =
                      Configuration_ID_Type'first or else
-                  Table_Column /= Control_Field then
+                  Table_Column /= Control_Grid_Field then
                Log_Here (Debug, Quote ("cell id", Cell_ID));
                Cell.Create (Column, ID => Cell_ID);
             else -- its the cell for Control Widget
@@ -415,7 +415,7 @@ package body Widgets.Configured is
                   Cell.Column_Coordinate.On_Focus_Out_Handler (
                      Update_Handler'access);
 
-               when Control_Field =>
+               when Control_Grid_Field =>
                   if Configuration_ID =
                         Configuration_ID_Type'first then
                      declare

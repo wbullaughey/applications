@@ -380,8 +380,6 @@ package body Configuration.Camera.Setup is
                                        ""
                                     else
                                        Iterator.Get_Value (Allow_Null => True));
-                  Name           : constant String :=
-                                    "configuration_" & Trim (Configuration_ID'img);
                begin
                   Log_Here (Debug, "configuration name " & Name &
                      " value " & Configuration_ID'img & " preset id " &

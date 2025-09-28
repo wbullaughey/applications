@@ -48,7 +48,8 @@ package Widgets.Configured is
       Row_Field,     -- select which row a preset image should be in
                      -- the preset grid
       Image_Field,   -- cell with path for image file
-      Control_Field);--
+      Control_Grid_Field);
+                     -- only 1st row has the control grid
    subtype Preset_Row_Index_Type
                               is Configuration.Camera.Configuration_ID_Type;
 
@@ -84,7 +85,7 @@ package Widgets.Configured is
                Column_Number     : Configuration.Camera.Column_Type :=
                                     Configuration.Camera.Column_Not_Set;
 
-            when Control_Field =>
+            when Control_Grid_Field =>
                Control_Table     : Widgets.Control.Control_Card_Type;
 
             when Image_Field =>
