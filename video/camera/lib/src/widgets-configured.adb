@@ -250,7 +250,7 @@ package body Widgets.Configured is
       ----------------------------------------------------------------
       procedure Allocate_Column (
          Column                  : in out Generic_Cell_Package.
-                                             Generic_Column_Class_Access;
+                                             GNOGA_Column_Class_Access;
          Column_Index            : in     Preset_Column_Index_Type;
          Table_Row               : in     Configuration_ID_Type) is
       ----------------------------------------------------------------
@@ -260,8 +260,8 @@ package body Widgets.Configured is
       begin
          Log_In (Debug, "column " & Column_Index'img &
             " row " & Table_Row'img);
-         Column := Generic_Cell_Package.Generic_Column_Class_Access (Local_Column);
-         Local_Column.Cell := new Cell_Type (Column_Index);
+         Column := Generic_Cell_Package.GNOGA_Column_Class_Access (Local_Column);
+         Local_Column.Cell := new Cell_Type; -- (Column_Index);
          Log_Out (Debug);
       end Allocate_Column;
 
@@ -305,12 +305,14 @@ package body Widgets.Configured is
          Coordinate           : in     Column_Type) is
       -------------------------------------------------------------
 
+         Column_Cell          : Column_Cell_Type renames
+                                 Column_Cell_Type (Cell.all);
          State                : Configuration.Camera.State.State_Type renames
                                  Configuration.Camera.State.
                                     Get_Read_Only_State.all;
       begin
-         Column_Package.Update (State, Cell.Column_Number,
-            Cell.Column_Coordinate, Coordinate);
+         Column_Package.Update (State, Column_Cell.Column_Number,
+            Column_Cell.Column_Coordinate, Coordinate);
       end Column_Package_Update;
 
       ----------------------------------------------------------------
@@ -344,22 +346,23 @@ package body Widgets.Configured is
          Row                     : in out Gnoga.Gui.Element.Table.
                                              Table_Row_Type'class;
          Column                  : in out Generic_Cell_Package.
-                                             Generic_Column_Type'class;
+                                             GNOGA_Column_Type'class;
          Table_Column            : in     Preset_Column_Index_Type;
-         Table_Row               : in     Preset_Row_Index_Type) is
+         Table_Row               : in     Configuration.Camera.
+                                             Configuration_ID_Type) is
       ----------------------------------------------------------------
 
-         Connection_Data         : Base.Connection_Data_Type renames
-                                    Base.Connection_Data_Type (
-                                       Form.Connection_Data.all);
+--       Connection_Data         : Base.Connection_Data_Type renames
+--                                  Base.Connection_Data_Type (
+--                                     Form.Connection_Data.all);
          Configuration_ID        : Preset_Row_Index_Type renames Table_Row;
          Name                    : constant String := Row.ID;
          Cell_ID                 : constant String := Name & "_Cell_" &
                                     Ada_Lib.Strings.Trim (Table_Row'img) & "_" &
                                     Ada_Lib.Strings.Trim (Table_Column'img);
-         Field_ID               : constant String := Name & "_Field_" &
-                                    Ada_Lib.Strings.Trim (Table_Row'img) & "_" &
-                                    Ada_Lib.Strings.Trim (Table_Column'img);
+--       Field_ID               : constant String := Name & "_Field_" &
+--                                  Ada_Lib.Strings.Trim (Table_Row'img) & "_" &
+--                                  Ada_Lib.Strings.Trim (Table_Column'img);
       begin
          Log_In (Debug, "row " & Table_Row'img &
             " Column " & Table_Column'img &
@@ -374,19 +377,19 @@ package body Widgets.Configured is
             Has_Preset  : constant Boolean :=
                            Global_Camera_Setup.
                               Has_Preset (Preset_ID);
-            Preset      : constant
-                           Preset_Type'class :=
-                              (if Has_Preset then
-                                 Global_Camera_Setup.Get_Preset (
-                                          Preset_ID)
-                              else
-                                  Null_Preset);
-            State       : Configuration.Camera.State.State_Type renames
-                           Configuration.Camera.State.Get_Read_Only_State.all;
+--          Preset      : constant
+--                         Preset_Type'class :=
+--                            (if Has_Preset then
+--                               Global_Camera_Setup.Get_Preset (
+--                                        Preset_ID)
+--                            else
+--                                Null_Preset);
+--          State       : Configuration.Camera.State.State_Type renames
+--                         Configuration.Camera.State.Get_Read_Only_State.all;
          begin
             Log_Here (Debug, " preset " & Preset_ID.Image &
                " has preset " & Has_Preset'img);
-            Cell.Configuration_ID := Table_Row;
+--          Cell.Table_Row := Table_Row;
 
             if    Configuration_ID =
                      Configuration_ID_Type'first or else
@@ -399,204 +402,540 @@ package body Widgets.Configured is
                return;
             end if;
 
-            case Table_Column is
+--          case Table_Column is
 
-               when Column_Field =>
-                  Cell.Column_Coordinate.Create (
-                     ID             => Field_ID,
-                     Form           => Form.all,
-                     Value          => (if Has_Preset then
-                                          Trim (Preset.Column'img)
-                                       else
-                                          ""));
-                  Cell.Column_Number := Preset.Column;
-                  Cell.Column_Coordinate.Class_Name (Coordinate_Style);
-                  Cell.Column_Coordinate.Parent (Cell'unchecked_access);
-                  Cell.Column_Coordinate.On_Focus_Out_Handler (
-                     Update_Handler'access);
+--             when Column_Field =>
+--                Cell.Column_Coordinate.Create (
+--                   ID             => Field_ID,
+--                   Form           => Form.all,
+--                   Value          => (if Has_Preset then
+--                                        Trim (Preset.Column'img)
+--                                     else
+--                                        ""));
+--                Cell.Column_Number := Preset.Column;
+--                Cell.Column_Coordinate.Class_Name (Coordinate_Style);
+--                Cell.Column_Coordinate.Parent (Cell'unchecked_access);
+--                Cell.Column_Coordinate.On_Focus_Out_Handler (
+--                   Update_Handler'access);
 
-               when Control_Grid_Field =>
-                  if Configuration_ID =
-                        Configuration_ID_Type'first then
-                     declare
-                        ID          : constant String := Name & "_Control_Table";
+--             when Control_Grid_Field =>
+--                if Configuration_ID =
+--                      Configuration_ID_Type'first then
+--                   declare
+--                      ID          : constant String := Name & "_Control_Table";
+--
+--                   begin
+--                      Log_Here (Debug, "preset id" & Preset_ID.Image &
+--                         Quote (" id", ID) &
+--                         Quote (" row id", Row.ID) &
+--                         Quote (" column id", Column.ID) &
+--                         " number presets" &
+--                            Video.Lib.Get_Last_Preset_ID'img);
+--                      Cell.Control_Table.Create (
+--                         Connection_Data.Get_Main_Window.all,
+--                         Parent   => Column,
+--                         ID       => ID);
+--                   end;
+--                end if;
 
-                     begin
-                        Log_Here (Debug, "preset id" & Preset_ID.Image &
-                           Quote (" id", ID) &
-                           Quote (" row id", Row.ID) &
-                           Quote (" column id", Column.ID) &
-                           " number presets" &
-                              Video.Lib.Get_Last_Preset_ID'img);
-                        Cell.Control_Table.Create (
-                           Connection_Data.Get_Main_Window.all,
-                           Parent   => Column,
-                           ID       => ID);
-                     end;
-                  end if;
+--             when Image_Field =>
+--                Log_Here (Debug, "Preset_ID" & Preset_ID.Image);
+--                if Global_Camera_Setup.Has_Preset (Preset_ID) then
+--                   declare
+--                      Configuration_Row_Index
+--                            : constant Row_Type :=
+--                               Global_Camera_Setup.Preset_Row (Preset_ID);
+--                      Configuration_Column_Index
+--                            : constant Column_Type :=
+--                               Global_Camera_Setup.Preset_Column (Preset_ID);
+--                      Image : Gnoga.Gui.Element.Common.IMG_Type
+--                               renames Cell.Image_Div.Image;
+--                      Image_Id
+--                            : constant String := Name & "_Image_" &
+--                                  Table_Column'img;
+--                   begin
+--                      Log_Here (Debug, "row" & Configuration_Row_Index'img &
+--                         " column" & Configuration_Column_Index'img);
+--                      if State.Has_Image (
+--                            Configuration_Row_Index,
+--                            Configuration_Column_Index) then
+--                         declare
+--                            Image_Path
+--                                  : constant String :=
+--                                     Image_Name (
+--                                        Row   => Configuration_Row_Index,
+--                                        Column=> Configuration_Column_Index);
+--                         begin
+--                            Log_Here (Debug,
+--                               "configuration row" & Configuration_Row_Index'img &
+--                               " column" & Configuration_Column_Index'img &
+--                               Quote (" image path", Image_Path));
+--                            Cell.Image_Div.Path.Construct (Image_Path);
+--                            Image.Create (
+--                               Cell, Image_Path, "", Image_Id);
+--                         end;
+--                      else
+--                         Image.Create (
+--                            Cell, Blank_Preset, "", Image_Id);
+--                      end if;
+--                      Image.Class_Name (Control_Image_Style);
+--                   end;
+--                end if;
 
-               when Image_Field =>
-                  Log_Here (Debug, "Preset_ID" & Preset_ID.Image);
-                  if Global_Camera_Setup.Has_Preset (Preset_ID) then
-                     declare
-                        Configuration_Row_Index
-                              : constant Row_Type :=
-                                 Global_Camera_Setup.Preset_Row (Preset_ID);
-                        Configuration_Column_Index
-                              : constant Column_Type :=
-                                 Global_Camera_Setup.Preset_Column (Preset_ID);
-                        Image : Gnoga.Gui.Element.Common.IMG_Type
-                                 renames Cell.Image_Div.Image;
-                        Image_Id
-                              : constant String := Name & "_Image_" &
-                                    Table_Column'img;
-                     begin
-                        Log_Here (Debug, "row" & Configuration_Row_Index'img &
-                           " column" & Configuration_Column_Index'img);
-                        if State.Has_Image (
-                              Configuration_Row_Index,
-                              Configuration_Column_Index) then
-                           declare
-                              Image_Path
-                                    : constant String :=
-                                       Image_Name (
-                                          Row   => Configuration_Row_Index,
-                                          Column=> Configuration_Column_Index);
-                           begin
-                              Log_Here (Debug,
-                                 "configuration row" & Configuration_Row_Index'img &
-                                 " column" & Configuration_Column_Index'img &
-                                 Quote (" image path", Image_Path));
-                              Cell.Image_Div.Path.Construct (Image_Path);
-                              Image.Create (
-                                 Cell, Image_Path, "", Image_Id);
-                           end;
-                        else
-                           Image.Create (
-                              Cell, Blank_Preset, "", Image_Id);
-                        end if;
-                        Image.Class_Name (Control_Image_Style);
-                     end;
-                  end if;
+--             when Label_Field =>
+--                declare
+--                   Value          : constant String := (if Has_Preset then
+--                                        Global_Camera_Setup.Configuration_Label (
+--                                           Configuration_ID)
+--                                     else
+--                                        "");
+--                begin
+--                   Log_Here (Debug, Quote ("field id", Field_ID) &
+--                      Quote (" value", Value));
+--                   Cell.Label.Create (
+--                      ID             => Field_ID,
+--                      Form           => Form.all,
+--                      Size           => 20,
+--                      Value          => Value);
+--
+--                   Cell.Label.Parent (Cell);
+--                   Cell.Label.On_Focus_Out_Handler (Update_Handler'access);
+--                end;
 
-               when Label_Field =>
-                  declare
-                     Value          : constant String := (if Has_Preset then
-                                          Global_Camera_Setup.Configuration_Label (
-                                             Configuration_ID)
-                                       else
-                                          "");
-                  begin
-                     Log_Here (Debug, Quote ("field id", Field_ID) &
-                        Quote (" value", Value));
-                     Cell.Label.Create (
-                        ID             => Field_ID,
-                        Form           => Form.all,
-                        Size           => 20,
-                        Value          => Value);
+--             when Preset_Field =>
+--                declare
+--                   ID             : constant Camera.Preset_Range_Type :=
+--                                     Preset_ID.Get_ID;
+--                   Value          : constant String := (if Has_Preset then
+--                                     Trim (
+--                                        Global_Camera_Setup.Configuration_Preset (
+--                                           Configuration_ID)'img)
+--                                  else
+--                                     "");
+--                begin
+--                   Log_Here (Debug,  "ID" & ID'img &
+--                      Quote (" cell id", Cell_ID) &
+--                      Quote (" field id", Field_ID) &
+--                      Quote (" value", Value));
+--                   Cell.Preset_ID_Field.Create (
+--                      ID             => Field_ID,
+--                      Form           => Form.all,
+--                      Value          => ID'img);
+--
+--                   Cell.Preset_Id := Preset_ID;
+--                   Cell.Preset_ID_Field.Class_Name (Preset_Style);
+--                   Cell.Preset_ID_Field.On_Focus_Out_Handler (
+--                      Update_Handler'access);
+--                   Cell.Preset_ID_Field.On_Mouse_Click_Handler (
+--                      Select_Handler'access);
+--                   Cell.Preset_ID_Field.Parent (Cell);
+--                end;
 
-                     Cell.Label.Parent (Cell);
-                     Cell.Label.On_Focus_Out_Handler (Update_Handler'access);
-                  end;
+--             when Row_Field =>
+--                Cell.Row_Coordinate.Create (
+--                   ID             => Field_ID,
+--                   Form           => Form.all,
+--                   Value          => (if Has_Preset then
+--                                        Trim (Preset.Row'img)
+--                                     else
+--                                        ""));
+--                Cell.Row_Number := Preset.Row;
+--                Cell.Row_Coordinate.Class_Name (Coordinate_Style);
+--                Cell.Row_Coordinate.Parent (Cell);
+--                Cell.Row_Coordinate.On_Focus_Out_Handler (Update_Handler'access);
 
-               when Preset_Field =>
-                  declare
-                     ID             : constant Camera.Preset_Range_Type :=
-                                       Preset_ID.Get_ID;
-                     Value          : constant String := (if Has_Preset then
-                                       Trim (
-                                          Global_Camera_Setup.Configuration_Preset (
-                                             Configuration_ID)'img)
-                                    else
-                                       "");
-                  begin
-                     Log_Here (Debug,  "ID" & ID'img &
-                        Quote (" cell id", Cell_ID) &
-                        Quote (" field id", Field_ID) &
-                        Quote (" value", Value));
-                     Cell.Preset_ID_Field.Create (
-                        ID             => Field_ID,
-                        Form           => Form.all,
-                        Value          => ID'img);
-
-                     Cell.Preset_Id := Preset_ID;
-                     Cell.Preset_ID_Field.Class_Name (Preset_Style);
-                     Cell.Preset_ID_Field.On_Focus_Out_Handler (
-                        Update_Handler'access);
-                     Cell.Preset_ID_Field.On_Mouse_Click_Handler (
-                        Select_Handler'access);
-                     Cell.Preset_ID_Field.Parent (Cell);
-                  end;
-
-               when Row_Field =>
-                  Cell.Row_Coordinate.Create (
-                     ID             => Field_ID,
-                     Form           => Form.all,
-                     Value          => (if Has_Preset then
-                                          Trim (Preset.Row'img)
-                                       else
-                                          ""));
-                  Cell.Row_Number := Preset.Row;
-                  Cell.Row_Coordinate.Class_Name (Coordinate_Style);
-                  Cell.Row_Coordinate.Parent (Cell);
-                  Cell.Row_Coordinate.On_Focus_Out_Handler (Update_Handler'access);
-
-               when Row_Header =>
-                  Cell.Button.Create (
-                     Content        => (if Has_Preset then
-                                          Configuration_ID'img
-                                       else
-                                          ""),
-                     ID             => Field_ID,
-                     Parent         => Cell);
-
-                  Cell.Button.On_Click_Handler (
-                     Button_Click_Handler'Unrestricted_Access);
-
-            end case;
+--             when Row_Header =>
+--                Cell.Button.Create (
+--                   Content        => (if Has_Preset then
+--                                        Configuration_ID'img
+--                                     else
+--                                        ""),
+--                   ID             => Field_ID,
+--                   Parent         => Cell);
+--
+--                Cell.Button.On_Click_Handler (
+----                   Button_Click_Handler'Unrestricted_Access);
+--
+--            end case;
             Cell.Dump (Debug);
          end;
          Log_Out (Debug);
-   exception
 
-      when Fault: others =>
-         Log_Exception (Debug, Fault);
-         raise;
+      exception
+
+         when Fault: others =>
+            Log_Exception (Debug, Fault);
+            raise;
 
       end Create_Cell;
 
       ----------------------------------------------------------------
       overriding
-      procedure Create_Column (
-         Column                     : in out Preset_Column_Type;
-         Row                        : in out Gnoga.Gui.Element.Table.
-                                                Table_Row_Type'class;
-         Number_Rows                : in     Preset_Row_Index_Type;
-         Row_Index                  : in     Preset_Row_Index_Type;
-         Column_Index               : in     Preset_Column_Index_Type;
-         ID                         : in     String) is
+      procedure Create_Cell (
+         Cell                    : in out Column_Cell_Type;
+         Form                    : in     Gnoga.Gui.Element.Form.
+                                          Pointer_To_Botton_Class;
+         Row                     : in out Gnoga.Gui.Element.Table.
+                                          Table_Row_Type'class;
+         Column                  : in out Generic_Cell_Package.
+                                             GNOGA_Column_Type'class;
+         Table_Column            : in     Preset_Column_Index_Type;
+         Table_Row               : in     Configuration.Camera.
+                                             Configuration_ID_Type) is
       ----------------------------------------------------------------
 
+         Configuration_ID        : Preset_Row_Index_Type renames Table_Row;
+         Name                    : constant String := Row.ID;
+         Field_ID               : constant String := Name & "_Field_" &
+                                    Ada_Lib.Strings.Trim (Table_Row'img) & "_" &
+                                    Ada_Lib.Strings.Trim (Table_Column'img);
+         Preset_ID   : constant Camera.Preset_ID_Type :=
+                        Global_Camera_Setup.
+                           Get_Preset_ID (Configuration_ID);
+         Has_Preset  : constant Boolean :=
+                        Global_Camera_Setup.
+                           Has_Preset (Preset_ID);
+         Preset      : constant
+                        Preset_Type'class :=
+                           (if Has_Preset then
+                              Global_Camera_Setup.Get_Preset (
+                                       Preset_ID)
+                           else
+                               Null_Preset);
       begin
-         Log_In (Debug, "number rows " & Number_Rows'img &
-            " row " & Row_Index'img &
-            " column " & Column_Index'img & " id " & ID);
-
-         Gnoga.Gui.Element.Table.Table_Column_Type (Column).Create (
-            Column_Span    => 1,
-            Content        => "",
-            ID             => ID,
-            Row            => Row,
-            Row_Span       => (if   Row_Index =
-                                       Preset_Row_Index_Type'first and then
-                                    Column_Index =
-                                       Preset_Column_Index_Type'last then
-                                 Positive (Number_Rows)
+         Cell.Column_Coordinate.Create (
+            ID             => Field_ID,
+            Form           => Form.all,
+            Value          => (if Has_Preset then
+                                 Trim (Preset.Column'img)
                               else
-                                 1));
+                                 ""));
+         Cell.Column_Number := Preset.Column;
+         Cell.Column_Coordinate.Class_Name (Coordinate_Style);
+         Cell.Column_Coordinate.Parent (Cell'unchecked_access);
+         Cell.Column_Coordinate.On_Focus_Out_Handler (
+            Update_Handler'access);
+         Cell_Type (Cell).Create_Cell (Form, Row, Column, Table_Column,
+            Table_Row);
+      end Create_Cell;
 
-         Log_Out (Debug);
-      end Create_Column;
+      ----------------------------------------------------------------
+      overriding
+      procedure Create_Cell (
+         Cell                    : in out Control_Grid_Cell_Type;
+         Form                    : in     Gnoga.Gui.Element.Form.
+                                          Pointer_To_Botton_Class;
+         Row                     : in out Gnoga.Gui.Element.Table.
+                                          Table_Row_Type'class;
+         Column                  : in out Generic_Cell_Package.
+                                             GNOGA_Column_Type'class;
+         Table_Column            : in     Preset_Column_Index_Type;
+         Table_Row               : in     Configuration.Camera.
+                                             Configuration_ID_Type) is
+      ----------------------------------------------------------------
+
+         Connection_Data         : Base.Connection_Data_Type renames
+                                    Base.Connection_Data_Type (
+                                       Form.Connection_Data.all);
+         Configuration_ID        : Preset_Row_Index_Type renames Table_Row;
+         Name                    : constant String := Row.ID;
+         Preset_ID   : constant Camera.Preset_ID_Type :=
+                        Global_Camera_Setup.
+                           Get_Preset_ID (Configuration_ID);
+
+      begin
+         Cell.Table_Row := Table_Row;
+         if Configuration_ID =
+               Configuration_ID_Type'first then
+            declare
+               ID          : constant String := Name & "_Control_Table";
+
+            begin
+               Log_Here (Debug, "preset id" & Preset_ID.Image &
+                  Quote (" id", ID) &
+                  Quote (" row id", Row.ID) &
+                  Quote (" column id", Column.ID) &
+                  " number presets" &
+                     Video.Lib.Get_Last_Preset_ID'img);
+               Cell.Control_Table.Create (
+                  Connection_Data.Get_Main_Window.all,
+                  Parent   => Column,
+                  ID       => ID);
+            end;
+         end if;
+         Cell_Type (Cell).Create_Cell (Form, Row, Column, Table_Column,
+            Table_Row);
+      end Create_Cell;
+
+      ----------------------------------------------------------------
+      overriding
+      procedure Create_Cell (
+         Cell                    : in out Image_Cell_Type;
+         Form                    : in     Gnoga.Gui.Element.Form.
+                                          Pointer_To_Botton_Class;
+         Row                     : in out Gnoga.Gui.Element.Table.
+                                          Table_Row_Type'class;
+         Column                  : in out Generic_Cell_Package.
+                                             GNOGA_Column_Type'class;
+         Table_Column            : in     Preset_Column_Index_Type;
+         Table_Row               : in     Configuration.Camera.
+                                             Configuration_ID_Type) is
+      ----------------------------------------------------------------
+
+         Configuration_ID        : Preset_Row_Index_Type renames Table_Row;
+         Name                    : constant String := Row.ID;
+         Preset_ID   : constant Camera.Preset_ID_Type :=
+                        Global_Camera_Setup.
+                           Get_Preset_ID (Configuration_ID);
+         State       : Configuration.Camera.State.State_Type renames
+                        Configuration.Camera.State.Get_Read_Only_State.all;
+
+      begin
+         Log_Here (Debug, "Preset_ID" & Preset_ID.Image);
+         if Global_Camera_Setup.Has_Preset (Preset_ID) then
+            declare
+               Configuration_Row_Index
+                     : constant Row_Type :=
+                        Global_Camera_Setup.Preset_Row (Preset_ID);
+               Configuration_Column_Index
+                     : constant Column_Type :=
+                        Global_Camera_Setup.Preset_Column (Preset_ID);
+               Image : Gnoga.Gui.Element.Common.IMG_Type
+                        renames Cell.Image_Div.Image;
+               Image_Id
+                     : constant String := Name & "_Image_" &
+                           Table_Column'img;
+            begin
+               Log_Here (Debug, "row" & Configuration_Row_Index'img &
+                  " column" & Configuration_Column_Index'img);
+               if State.Has_Image (
+                     Configuration_Row_Index,
+                     Configuration_Column_Index) then
+                  declare
+                     Image_Path
+                           : constant String :=
+                              Image_Name (
+                                 Row   => Configuration_Row_Index,
+                                 Column=> Configuration_Column_Index);
+                  begin
+                     Log_Here (Debug,
+                        "configuration row" & Configuration_Row_Index'img &
+                        " column" & Configuration_Column_Index'img &
+                        Quote (" image path", Image_Path));
+                     Cell.Image_Div.Path.Construct (Image_Path);
+                     Image.Create (
+                        Cell, Image_Path, "", Image_Id);
+                  end;
+               else
+                  Image.Create (
+                     Cell, Blank_Preset, "", Image_Id);
+               end if;
+               Image.Class_Name (Control_Image_Style);
+            end;
+         end if;
+         Cell_Type (Cell).Create_Cell (Form, Row, Column, Table_Column,
+            Table_Row);
+      end Create_Cell;
+
+      ----------------------------------------------------------------
+      overriding
+      procedure Create_Cell (
+         Cell                    : in out Label_Cell_Type;
+         Form                    : in     Gnoga.Gui.Element.Form.
+                                          Pointer_To_Botton_Class;
+         Row                     : in out Gnoga.Gui.Element.Table.
+                                          Table_Row_Type'class;
+         Column                  : in out Generic_Cell_Package.
+                                             GNOGA_Column_Type'class;
+         Table_Column            : in     Preset_Column_Index_Type;
+         Table_Row               : in     Configuration.Camera.
+                                             Configuration_ID_Type) is
+      ----------------------------------------------------------------
+
+         Configuration_ID        : Preset_Row_Index_Type renames Table_Row;
+         Name                    : constant String := Row.ID;
+         Field_ID               : constant String := Name & "_Field_" &
+                                    Ada_Lib.Strings.Trim (Table_Row'img) & "_" &
+                                    Ada_Lib.Strings.Trim (Table_Column'img);
+         Preset_ID   : constant Camera.Preset_ID_Type :=
+                        Global_Camera_Setup.
+                           Get_Preset_ID (Configuration_ID);
+         Has_Preset  : constant Boolean :=
+                        Global_Camera_Setup.
+                           Has_Preset (Preset_ID);
+      begin
+         declare
+            Value          : constant String := (if Has_Preset then
+                                 Global_Camera_Setup.Configuration_Label (
+                                    Configuration_ID)
+                              else
+                                 "");
+         begin
+            Log_Here (Debug, Quote ("field id", Field_ID) &
+               Quote (" value", Value));
+            Cell.Label.Create (
+               ID             => Field_ID,
+               Form           => Form.all,
+               Size           => 20,
+               Value          => Value);
+
+            Cell.Label.Parent (Cell);
+            Cell.Label.On_Focus_Out_Handler (Update_Handler'access);
+         end;
+         Cell_Type (Cell).Create_Cell (Form, Row, Column, Table_Column,
+            Table_Row);
+      end Create_Cell;
+
+      ----------------------------------------------------------------
+      overriding
+      procedure Create_Cell (
+         Cell                    : in out Preset_Cell_Type;
+         Form                    : in     Gnoga.Gui.Element.Form.
+                                          Pointer_To_Botton_Class;
+         Row                     : in out Gnoga.Gui.Element.Table.
+                                          Table_Row_Type'class;
+         Column                  : in out Generic_Cell_Package.
+                                             GNOGA_Column_Type'class;
+         Table_Column            : in     Preset_Column_Index_Type;
+         Table_Row               : in     Configuration.Camera.
+                                             Configuration_ID_Type) is
+      ----------------------------------------------------------------
+
+         Name                    : constant String := Row.ID;
+         Cell_ID                 : constant String := Name & "_Cell_" &
+                                    Ada_Lib.Strings.Trim (Table_Row'img) & "_" &
+                                    Ada_Lib.Strings.Trim (Table_Column'img);
+         Configuration_ID        : Preset_Row_Index_Type renames Table_Row;
+         Field_ID               : constant String := Name & "_Field_" &
+                                    Ada_Lib.Strings.Trim (Table_Row'img) & "_" &
+                                    Ada_Lib.Strings.Trim (Table_Column'img);
+         Preset_ID   : constant Camera.Preset_ID_Type :=
+                        Global_Camera_Setup.
+                           Get_Preset_ID (Configuration_ID);
+         Has_Preset  : constant Boolean :=
+                        Global_Camera_Setup.
+                           Has_Preset (Preset_ID);
+      begin
+         declare
+            ID             : constant Camera.Preset_Range_Type :=
+                              Preset_ID.Get_ID;
+            Value          : constant String := (if Has_Preset then
+                              Trim (
+                                 Global_Camera_Setup.Configuration_Preset (
+                                    Configuration_ID)'img)
+                           else
+                              "");
+         begin
+            Log_Here (Debug,  "ID" & ID'img &
+               Quote (" cell id", Cell_ID) &
+               Quote (" field id", Field_ID) &
+               Quote (" value", Value));
+            Cell.Preset_ID_Field.Create (
+               ID             => Field_ID,
+               Form           => Form.all,
+               Value          => ID'img);
+
+            Cell.Preset_Id := Preset_ID;
+            Cell.Preset_ID_Field.Class_Name (Preset_Style);
+            Cell.Preset_ID_Field.On_Focus_Out_Handler (
+               Update_Handler'access);
+            Cell.Preset_ID_Field.On_Mouse_Click_Handler (
+               Select_Handler'access);
+            Cell.Preset_ID_Field.Parent (Cell);
+         end;
+         Cell_Type (Cell).Create_Cell (Form, Row, Column, Table_Column,
+            Table_Row);
+      end Create_Cell;
+
+      ----------------------------------------------------------------
+      overriding
+      procedure Create_Cell (
+         Cell                    : in out Row_Cell_Type;
+         Form                    : in     Gnoga.Gui.Element.Form.
+                                          Pointer_To_Botton_Class;
+         Row                     : in out Gnoga.Gui.Element.Table.
+                                          Table_Row_Type'class;
+         Column                  : in out Generic_Cell_Package.
+                                             GNOGA_Column_Type'class;
+         Table_Column            : in     Preset_Column_Index_Type;
+         Table_Row               : in     Configuration.Camera.
+                                             Configuration_ID_Type) is
+      ----------------------------------------------------------------
+
+         Configuration_ID        : Preset_Row_Index_Type renames Table_Row;
+         Name                    : constant String := Row.ID;
+         Field_ID               : constant String := Name & "_Field_" &
+                                    Ada_Lib.Strings.Trim (Table_Row'img) & "_" &
+                                    Ada_Lib.Strings.Trim (Table_Column'img);
+         Preset_ID   : constant Camera.Preset_ID_Type :=
+                        Global_Camera_Setup.
+                           Get_Preset_ID (Configuration_ID);
+         Has_Preset  : constant Boolean :=
+                        Global_Camera_Setup.
+                           Has_Preset (Preset_ID);
+         Preset      : constant
+                        Preset_Type'class :=
+                           (if Has_Preset then
+                              Global_Camera_Setup.Get_Preset (
+                                       Preset_ID)
+                           else
+                               Null_Preset);
+      begin
+         Cell.Row_Coordinate.Create (
+            ID             => Field_ID,
+            Form           => Form.all,
+            Value          => (if Has_Preset then
+                                 Trim (Preset.Row'img)
+                              else
+                                 ""));
+         Cell.Row_Number := Preset.Row;
+         Cell.Row_Coordinate.Class_Name (Coordinate_Style);
+         Cell.Row_Coordinate.Parent (Cell);
+         Cell.Row_Coordinate.On_Focus_Out_Handler (Update_Handler'access);
+         Cell_Type (Cell).Create_Cell (Form, Row, Column, Table_Column,
+            Table_Row);
+      end Create_Cell;
+
+      ----------------------------------------------------------------
+      overriding
+      procedure Create_Cell (
+         Cell                    : in out Row_Header_Cell_Type;
+         Form                    : in     Gnoga.Gui.Element.Form.
+                                          Pointer_To_Botton_Class;
+         Row                     : in out Gnoga.Gui.Element.Table.
+                                          Table_Row_Type'class;
+         Column                  : in out Generic_Cell_Package.
+                                             GNOGA_Column_Type'class;
+         Table_Column            : in     Preset_Column_Index_Type;
+         Table_Row               : in     Configuration.Camera.
+                                             Configuration_ID_Type) is
+      ----------------------------------------------------------------
+
+         Configuration_ID        : Preset_Row_Index_Type renames Table_Row;
+         Name                    : constant String := Row.ID;
+         Field_ID               : constant String := Name & "_Field_" &
+                                    Ada_Lib.Strings.Trim (Table_Row'img) & "_" &
+                                    Ada_Lib.Strings.Trim (Table_Column'img);
+         Preset_ID   : constant Camera.Preset_ID_Type :=
+                        Global_Camera_Setup.
+                           Get_Preset_ID (Configuration_ID);
+         Has_Preset  : constant Boolean :=
+                        Global_Camera_Setup.
+                           Has_Preset (Preset_ID);
+      begin
+         Cell.Button.Create (
+            Content        => (if Has_Preset then
+                                 Configuration_ID'img
+                              else
+                                 ""),
+            ID             => Field_ID,
+            Parent         => Cell);
+
+         Cell.Button.On_Click_Handler (
+            Button_Click_Handler'Unrestricted_Access);
+         Cell_Type (Cell).Create_Cell (Form, Row, Column, Table_Column,
+            Table_Row);
+      end Create_Cell;
 
       ----------------------------------------------------------------
       overriding
@@ -611,6 +950,24 @@ package body Widgets.Configured is
          Log_In (Debug);
 not_implemented;
          return Log_Out (True, Debug);
+      end Create_Column;
+
+      -------------------------------------------------------------------
+      overriding
+      procedure Create_Column (
+         Column                     : in out Preset_Column_Type;
+         Row                        : in out Gnoga.Gui.Element.Table.
+                                                Table_Row_Type'class;
+         Number_Rows                : in     Configuration.Camera.Configuration_ID_Type;
+         Row_Index                  : in     Configuration.Camera.Configuration_ID_Type;
+         Column_Index               : in     Preset_Column_Index_Type;
+         ID                         : in     String) is
+      -------------------------------------------------------------------
+
+      begin
+         Log_In (Debug);
+not_implemented;
+         Log_Out (Debug);
       end Create_Column;
 
       ----------------------------------------------------------------
@@ -628,6 +985,7 @@ not_implemented;
       end Create_Row;
 
       ----------------------------------------------------------------
+      overriding
       procedure Dump (
          Cell                    : in     Cell_Type;
          Enable                  : in     Boolean;
@@ -638,13 +996,13 @@ not_implemented;
          if Enable then
             Put_Line ("dump cell called from " & From &
                " address: " & Image (Cell'address));
-            Put_Line ("  Column:" & Cell.Column'img);
+--          Put_Line ("  Column:" & Cell.Table_Column'img);
             Put_Line ((if Cell.Configuration_ID =
                      Configuration.Camera.No_Configuration then
                   "configuration id not set"
                else
                   "  Configuration_ID:" & Cell.Configuration_ID'img));
-            case Cell.Column is
+            case Cell.Table_Column is
 
                when Column_Field=>
                   Put_Line ("  Column_Number:" & Cell.Column_Number'img);
@@ -1033,7 +1391,7 @@ not_implemented;
             Package_Update          => Column_Package_Update);
 
       begin -- Update_Handler
-         Log_In (Debug, Quote ("update field column " & Cell.Column'img &
+         Log_In (Debug, Quote ("update field column " & Cell.Table_Column'img &
             " id", ID) & Quote (" object id", Object.ID) &
             " configuration id" & Cell.Configuration_ID'img);
 
@@ -1043,7 +1401,7 @@ not_implemented;
 
          Connection_Data.Reset_Update_Event;
 
-         case Cell.Column is
+         case Cell.Table_Column is
 
             when Column_Field =>
                Update_Column;
@@ -1068,7 +1426,7 @@ not_implemented;
             when others =>
                Log_Exception (Debug);
                raise Failed with "handler not implemmented for " &
-                  Cell.Column'img & " at " & Here;
+                  Cell.Table_Column'img & " at " & Here;
 
          end case;
 

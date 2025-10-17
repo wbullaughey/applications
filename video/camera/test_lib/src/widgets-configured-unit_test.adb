@@ -16,7 +16,7 @@ with Camera.Lib.Unit_Test;
 with Configuration.Camera.Setup;
 --with Events;
 with Configuration.Camera.State;
-with Gnoga.Gui.Base;
+--with Gnoga.Gui.Base;
 with Gnoga.Gui.View.Card;
 with Main;
 with Video.Lib;

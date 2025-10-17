@@ -1,5 +1,5 @@
 --with Ada_Lib.Strings.Unlimited;
---with ADA_LIB.Trace;
+with ADA_LIB.Trace;
 --with Configuration;
 with Gnoga.Gui.Base;
 with Gnoga.Gui.Element.Common;
@@ -84,9 +84,15 @@ package Widgets.Adjust is
          Row                        : in out Gnoga.Gui.Element.Table.
                                              Table_Row_Type'class;
          Column                  : in out Generic_Cell_Package.
-                                             Generic_Column_Type'class;
+                                             GNOGA_Column_Type'class;
          Table_Column            : in     Outer_Column_Index_Type;
          Table_Row               : in     Outer_Row_Index_Type);
+
+      overriding
+      procedure Dump (
+         Cell                    : in     Cell_Type;
+         Enable                  : in     Boolean;
+         From                    : in     String := Ada_LIB.Trace.Here);
 
       overriding
       procedure Update_Cell (
@@ -96,7 +102,7 @@ package Widgets.Adjust is
 
       type Outer_Column_Type is new
                                     Generic_Cell_Package.
-                                       Generic_Column_Type with record
+                                       GNOGA_Column_Type with record
          Cell                    : Cell_Class_Access := Null;
       end record;
 
@@ -109,7 +115,7 @@ package Widgets.Adjust is
 
       procedure Allocate_Column (
          Column                  : in out Generic_Cell_Package.
-                                             Generic_Column_Class_Access;
+                                             GNOGA_Column_Class_Access;
          Column_Index            : in     Outer_Column_Index_Type;
          Table_Row               : in     Outer_Row_Index_Type);
 

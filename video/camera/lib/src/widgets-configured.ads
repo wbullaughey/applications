@@ -54,12 +54,16 @@ package Widgets.Configured is
                               is Configuration.Camera.Configuration_ID_Type;
 
    package Generic_Cell_Package
-                              is new Widgets.Generic_Table.Cell_Package (
-                                 Preset_Column_Index_Type,
-                                 Configuration.Camera.Configuration_ID_Type);
+      is new Widgets.Generic_Table.Cell_Package (
+         Column_Index_Type => Preset_Column_Index_Type,
+         Row_Index_Type    => Configuration.Camera.Configuration_ID_Type);
+
+   -- package for web page with control grid
+-- package Control_Grid_Package is new Widgets.Generic_Table.Cell_Package (
+--                               Preset_Column_Index_Type,
+--                               Configuration.Camera.Configuration_ID_Type);
 
    package Preset_Package is
-
       procedure Create (
          Element                 : in out Gnoga.Gui.Element.Form.Text_Type;
          Form                    : in out Gnoga.Gui.Element.Form.Form_Type'Class;
@@ -72,58 +76,12 @@ package Widgets.Configured is
          Path                    : Ada_Lib.Strings.Unlimited.String_Type;
       end record;
 
-      type Cell_Type (
-         Column                  : Preset_Column_Index_Type) is new
-                                    Generic_Cell_Package.Cell_Type with record
-         Configuration_ID        : Configuration.Camera.Configuration_ID_Type :=
-                                    Configuration.Camera.No_Configuration;
-
-         case Column is
-
-            when Column_Field =>
-               Column_Coordinate : Gnoga.Gui.Element.Form.Number_Type;
-               Column_Number     : Configuration.Camera.Column_Type :=
-                                    Configuration.Camera.Column_Not_Set;
-
-            when Control_Grid_Field =>
-               Control_Table     : Widgets.Control.Control_Card_Type;
-
-            when Image_Field =>
-               Image_Div         : Image_Div_Type;
-
-            when Label_Field =>
-               Label             : Gnoga.Gui.Element.Form.Text_Type;
-
-            when Preset_Field =>
-               Preset_ID         : Camera.Preset_ID_Type;
-               Preset_ID_Field   : Gnoga.Gui.Element.Form.Number_Type;
-               Preset_Set        : Boolean := False;
-
-            when Row_Field =>
-               Row_Coordinate    : Gnoga.Gui.Element.Form.Number_Type;
-               Row_Number        : Configuration.Camera.Row_Type :=
-                                    Configuration.Camera.Row_Not_Set;
-
-            when Row_Header =>
-               Button            : Gnoga.Gui.Element.Common.Button_Type;
-
-         end case;
+      type Cell_Type is new Generic_Cell_Package.Cell_Type with record
+         Configuration_ID        : Configuration.Camera.Configuration_ID_Type;
       end record;
 
       type Cell_Access           is access all Cell_Type;
       type Cell_Class_Access     is access all Cell_Type'class;
-
-      type Configured_Update_Parameter_Type
-                                 is new Generic_Cell_Package.
-                                    Update_Parameter_Type with record
---       Label                   : Ada_Lib.Strings.Unlimited.String_Type;
-         Preset_ID               : Camera.Preset_ID_Type;
-      end record;
-
-      procedure Column_Package_Update (
-         Cell                 : in     Cell_Class_Access;
-         Coordinate           : in     Configuration.Camera.Column_Type
-      ) with Pre =>GNOGA_Ada_Lib.Has_Connection_Data;
 
       overriding
       procedure Create_Cell (
@@ -133,7 +91,7 @@ package Widgets.Configured is
          Row                     : in out Gnoga.Gui.Element.Table.
                                           Table_Row_Type'class;
          Column                  : in out Generic_Cell_Package.
-                                             Generic_Column_Type'class;
+                                             GNOGA_Column_Type'class;
          Table_Column            : in     Preset_Column_Index_Type;
          Table_Row               : in     Configuration.Camera.
                                              Configuration_ID_Type
@@ -141,6 +99,7 @@ package Widgets.Configured is
              Post => Cell.Configuration_ID /=
                         Configuration.Camera.No_Configuration;
 
+      overriding
       procedure Dump (
          Cell                    : in     Cell_Type;
          Enable                  : in     Boolean;
@@ -152,15 +111,214 @@ package Widgets.Configured is
          Update_Parameter        : in     Generic_Cell_Package.
                                              Update_Parameter_Type'class);
 
---    overriding
---    procedure Verify_Cell (
---       Cell                    : in out Cell_Type;
---       Verify_Parameter        : in     Generic_Cell_Package.
---                                           Verify_Parameter_Type'class);
+   --       Column                  : Preset_Column_Index_Type) is abstract new
+   --                                  Generic_Cell_Package.Cell_Type with record
+   --       Configuration_ID        : Configuration.Camera.Configuration_ID_Type :=
+   --                                  Configuration.Camera.No_Configuration;
+   --
+   --       case Column is
+   --
+   --          when Column_Field =>
+   --             Column_Coordinate : Gnoga.Gui.Element.Form.Number_Type;
+   --             Column_Number     : Configuration.Camera.Column_Type :=
+   --                                  Configuration.Camera.Column_Not_Set;
+   --
+   --          when Control_Grid_Field =>
+   --             Control_Table     : Widgets.Control.Control_Card_Type;
+   --
+   --          when Image_Field =>
+   --             Image_Div         : Image_Div_Type;
+   --
+   --          when Label_Field =>
+   --             Label             : Gnoga.Gui.Element.Form.Text_Type;
+   --
+   --          when Preset_Field =>
+   --             Preset_ID         : Camera.Preset_ID_Type;
+   --             Preset_ID_Field   : Gnoga.Gui.Element.Form.Number_Type;
+   --             Preset_Set        : Boolean := False;
+   --
+   --          when Row_Field =>
+   --             Row_Coordinate    : Gnoga.Gui.Element.Form.Number_Type;
+   --             Row_Number        : Configuration.Camera.Row_Type :=
+   --                                  Configuration.Camera.Row_Not_Set;
+   --
+   --          when Row_Header =>
+   --             Button            : Gnoga.Gui.Element.Common.Button_Type;
+   --
+   --       end case;
+   --    end record;
+
+      -- preset table cells
+
+      type Column_Cell_Type is new Cell_Type with record
+         Column_Coordinate : Gnoga.Gui.Element.Form.Number_Type;
+         Column_Number     : Configuration.Camera.Column_Type :=
+                              Configuration.Camera.Column_Not_Set;
+      end record;
+
+      overriding
+      procedure Create_Cell (
+         Cell                    : in out Column_Cell_Type;
+         Form                    : in     Gnoga.Gui.Element.Form.
+                                          Pointer_To_Botton_Class;
+         Row                     : in out Gnoga.Gui.Element.Table.
+                                          Table_Row_Type'class;
+         Column                  : in out Generic_Cell_Package.
+                                             GNOGA_Column_Type'class;
+         Table_Column            : in     Preset_Column_Index_Type;
+         Table_Row               : in     Configuration.Camera.
+                                             Configuration_ID_Type
+      ) with Pre  => GNOGA_Ada_Lib.Has_Connection_Data,
+             Post => Cell.Configuration_ID /=
+                        Configuration.Camera.No_Configuration;
+
+      -- used in only 1st row of preset table.
+      type Control_Grid_Cell_Type is new Cell_Type with record
+         Control_Table     : Widgets.Control.Control_Card_Type;
+         Table_Row         : Configuration.Camera.Configuration_ID_Type;
+      end record;
+
+      overriding
+      procedure Create_Cell (
+         Cell                    : in out Control_Grid_Cell_Type;
+         Form                    : in     Gnoga.Gui.Element.Form.
+                                          Pointer_To_Botton_Class;
+         Row                     : in out Gnoga.Gui.Element.Table.
+                                          Table_Row_Type'class;
+         Column                  : in out Generic_Cell_Package.
+                                             GNOGA_Column_Type'class;
+         Table_Column            : in     Preset_Column_Index_Type;
+         Table_Row               : in     Configuration.Camera.
+                                             Configuration_ID_Type
+      ) with Pre  => GNOGA_Ada_Lib.Has_Connection_Data,
+             Post => Cell.Configuration_ID /=
+                        Configuration.Camera.No_Configuration;
+
+      type Image_Cell_Type is new Cell_Type with record
+         Image_Div         : Image_Div_Type;
+      end record;
+
+      overriding
+      procedure Create_Cell (
+         Cell                    : in out Image_Cell_Type;
+         Form                    : in     Gnoga.Gui.Element.Form.
+                                          Pointer_To_Botton_Class;
+         Row                     : in out Gnoga.Gui.Element.Table.
+                                          Table_Row_Type'class;
+         Column                  : in out Generic_Cell_Package.
+                                             GNOGA_Column_Type'class;
+         Table_Column            : in     Preset_Column_Index_Type;
+         Table_Row               : in     Configuration.Camera.
+                                             Configuration_ID_Type
+      ) with Pre  => GNOGA_Ada_Lib.Has_Connection_Data,
+             Post => Cell.Configuration_ID /=
+                        Configuration.Camera.No_Configuration;
+
+      type Label_Cell_Type is new Cell_Type with record
+         Label             : Gnoga.Gui.Element.Form.Text_Type;
+      end record;
+
+      overriding
+      procedure Create_Cell (
+         Cell                    : in out Label_Cell_Type;
+         Form                    : in     Gnoga.Gui.Element.Form.
+                                          Pointer_To_Botton_Class;
+         Row                     : in out Gnoga.Gui.Element.Table.
+                                          Table_Row_Type'class;
+         Column                  : in out Generic_Cell_Package.
+                                             GNOGA_Column_Type'class;
+         Table_Column            : in     Preset_Column_Index_Type;
+         Table_Row               : in     Configuration.Camera.
+                                             Configuration_ID_Type
+      ) with Pre  => GNOGA_Ada_Lib.Has_Connection_Data,
+             Post => Cell.Configuration_ID /=
+                        Configuration.Camera.No_Configuration;
+
+      type Preset_Cell_Type is new Cell_Type with record
+         Preset_ID         : Camera.Preset_ID_Type;
+         Preset_ID_Field   : Gnoga.Gui.Element.Form.Number_Type;
+         Preset_Set        : Boolean := False;
+      end record;
+
+      overriding
+      procedure Create_Cell (
+         Cell                    : in out Preset_Cell_Type;
+         Form                    : in     Gnoga.Gui.Element.Form.
+                                          Pointer_To_Botton_Class;
+         Row                     : in out Gnoga.Gui.Element.Table.
+                                          Table_Row_Type'class;
+         Column                  : in out Generic_Cell_Package.
+                                             GNOGA_Column_Type'class;
+         Table_Column            : in     Preset_Column_Index_Type;
+         Table_Row               : in     Configuration.Camera.
+                                             Configuration_ID_Type
+      ) with Pre  => GNOGA_Ada_Lib.Has_Connection_Data,
+             Post => Cell.Configuration_ID /=
+                        Configuration.Camera.No_Configuration;
+
+      type Row_Cell_Type is new Cell_Type with record
+         Row_Coordinate    : Gnoga.Gui.Element.Form.Number_Type;
+         Row_Number        : Configuration.Camera.Row_Type :=
+                              Configuration.Camera.Row_Not_Set;
+      end record;
+
+      overriding
+      procedure Create_Cell (
+         Cell                    : in out Row_Cell_Type;
+         Form                    : in     Gnoga.Gui.Element.Form.
+                                          Pointer_To_Botton_Class;
+         Row                     : in out Gnoga.Gui.Element.Table.
+                                          Table_Row_Type'class;
+         Column                  : in out Generic_Cell_Package.
+                                             GNOGA_Column_Type'class;
+         Table_Column            : in     Preset_Column_Index_Type;
+         Table_Row               : in     Configuration.Camera.
+                                             Configuration_ID_Type
+      ) with Pre  => GNOGA_Ada_Lib.Has_Connection_Data,
+             Post => Cell.Configuration_ID /=
+                        Configuration.Camera.No_Configuration;
+
+      type Row_Header_Cell_Type is new Cell_Type with record
+         Button            : Gnoga.Gui.Element.Common.Button_Type;
+      end record;
+
+      overriding
+      procedure Create_Cell (
+         Cell                    : in out Row_Header_Cell_Type;
+         Form                    : in     Gnoga.Gui.Element.Form.
+                                          Pointer_To_Botton_Class;
+         Row                     : in out Gnoga.Gui.Element.Table.
+                                          Table_Row_Type'class;
+         Column                  : in out Generic_Cell_Package.
+                                             GNOGA_Column_Type'class;
+         Table_Column            : in     Preset_Column_Index_Type;
+         Table_Row               : in     Configuration.Camera.
+                                             Configuration_ID_Type
+      ) with Pre  => GNOGA_Ada_Lib.Has_Connection_Data,
+             Post => Cell.Configuration_ID /=
+                        Configuration.Camera.No_Configuration;
+
+      type Configured_Update_Parameter_Type
+                                 is new Generic_Cell_Package.
+                                    Update_Parameter_Type with record
+   --       Label                   : Ada_Lib.Strings.Unlimited.String_Type;
+         Preset_ID               : Camera.Preset_ID_Type;
+      end record;
+
+      procedure Column_Package_Update (
+         Cell                 : in     Cell_Class_Access;
+         Coordinate           : in     Configuration.Camera.Column_Type
+      ) with Pre =>GNOGA_Ada_Lib.Has_Connection_Data;
+
+   --    overriding
+   --    procedure Verify_Cell (
+   --       Cell                    : in out Cell_Type;
+   --       Verify_Parameter        : in     Generic_Cell_Package.
+   --                                           Verify_Parameter_Type'class);
 
       type Preset_Column_Type is new
                                     Generic_Cell_Package.
-                                       Generic_Column_Type with record
+                                       GNOGA_Column_Type with record
          Cell                    : Cell_Class_Access := Null;
       end record;
 
@@ -173,7 +331,7 @@ package Widgets.Configured is
 
       procedure Allocate_Column (
          Column                  : in out Generic_Cell_Package.
-                                             Generic_Column_Class_Access;
+                                             GNOGA_Column_Class_Access;
          Column_Index            : in     Preset_Column_Index_Type;
          Table_Row               : in     Preset_Row_Index_Type);
 

@@ -323,7 +323,7 @@ package body Outer_Package is
       ----------------------------------------------------------------
       procedure Allocate_Column (
          Column                  : in out Generic_Cell_Package.
-                                             Generic_Column_Class_Access;
+                                             GNOGA_Column_Class_Access;
          Column_Index            : in     Outer_Column_Index_Type;
          Table_Row               : in     Outer_Row_Index_Type) is
       ----------------------------------------------------------------
@@ -333,7 +333,7 @@ package body Outer_Package is
       begin
          Log_Here (Debug, "column " & Column_Index'img &
             " row " & Table_Row'img);
-         Column := Generic_Cell_Package.Generic_Column_Class_Access (Local_Column);
+         Column := Generic_Cell_Package.GNOGA_Column_Class_Access (Local_Column);
          Local_Column.Cell := new Cell_Type (Column_Index);
       end Allocate_Column;
 
@@ -389,7 +389,7 @@ package body Outer_Package is
            Row                     : in out Gnoga.Gui.Element.Table.
                                                Table_Row_Type'class;
            Column                  : in out Generic_Cell_Package.
-                                               Generic_Column_Type'class;
+                                               GNOGA_Column_Type'class;
            Table_Column            : in     Outer_Column_Index_Type;
            Table_Row               : in     Outer_Row_Index_Type) is
         ----------------------------------------------------------------

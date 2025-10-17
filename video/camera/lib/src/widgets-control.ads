@@ -1,4 +1,5 @@
 --with Ada_Lib.Socket_IO;
+with Ada_LIB.Trace;
 with Ada_Lib.Strings.Unlimited;
 with Camera;
 --with Configuration.Camera; use Configuration.Camera;
@@ -70,9 +71,15 @@ package Widgets.Control is
          Row                     : in out Gnoga.Gui.Element.Table.
                                              Table_Row_Type'class;
          Column                  : in out Generic_Cell_Package.
-                                             Generic_Column_Type'class;
+                                             GNOGA_Column_Type'class;
          Table_Column            : in     Control_Column_Index_Type;
          Table_Row               : in     Row_Index_Type);
+
+      overriding
+      procedure Dump (
+         Cell                    : in     Cell_Type;
+         Enable                  : in     Boolean;
+         From                    : in     String := Ada_LIB.Trace.Here);
 
       procedure Image_Click_Handler (
          Object                     : in out Gnoga.Gui.Base.Base_Type'Class;
@@ -91,7 +98,7 @@ package Widgets.Control is
 --                                           Verify_Parameter_Type'class);
 
       type Control_Column_Type   is new Generic_Cell_Package.
-                                    Generic_Column_Type with record
+                                    GNOGA_Column_Type with record
          Cell                    : Cell_Class_Access;
       end record;
 
@@ -104,7 +111,7 @@ package Widgets.Control is
 
       procedure Allocate_Column (
          Column                  : in out Generic_Cell_Package.
-                                             Generic_Column_Class_Access;
+                                             GNOGA_Column_Class_Access;
          Column_Index            : in     Control_Column_Index_Type;
          Table_Row               : in     Row_Index_Type);
 
@@ -128,7 +135,7 @@ package Widgets.Control is
       Create_Form          => False,
 --    Form_Field           => False,
 --    Formal_Column_Class_Access
---                         => Generic_Cell_Package.Generic_Column_Class_Access,
+--                         => Generic_Cell_Package.GNOGA_Column_Class_Access,
       Generic_Cell_Package => Generic_Cell_Package,
       Generic_Widget_Type  => Generic_Cell_Package.Widget_Type,
       Header_Type          => Gnoga.Gui.Element.Table.Table_Heading_Type,

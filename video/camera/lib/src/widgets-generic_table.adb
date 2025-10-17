@@ -7,7 +7,7 @@ package body Widgets.Generic_Table is
 
       ----------------------------------------------------------------
       procedure Create_Column (
-         Column                     : in out Generic_Column_Type;
+         Column                     : in out GNOGA_Column_Type;
          Row                        : in out Gnoga.Gui.Element.Table.
                                                 Table_Row_Type'class;
          Number_Rows                : in     Row_Index_Type;
@@ -131,7 +131,7 @@ package body Widgets.Generic_Table is
                   Log_Here (Debug, Name & " column " & Column_Index'img &
                      " number columns" & Number_Columns'img);
                   declare
-                     Column      : Generic_Cell_Package.Generic_Column_Class_Access
+                     Column      : Generic_Cell_Package.GNOGA_Column_Class_Access
                                     renames Row.Columns (Column_Index);
                   begin
                      Allocate_Column (Column, Column_Index, Row_Index);
@@ -236,7 +236,7 @@ package body Widgets.Generic_Table is
 
          Row      : Row_Type'class renames Widget.Get_Row (Row_Index).all;
          Column   : constant Generic_Cell_Package.
-                     Generic_Column_Class_Access := Row.Columns (Column_Index);
+                     GNOGA_Column_Class_Access := Row.Columns (Column_Index);
          Cell     : constant Generic_Cell_Package.Cell_Class_Access :=
                      Column.Get_Cell;
       begin
@@ -249,7 +249,7 @@ package body Widgets.Generic_Table is
       function Get_Column (
          Row                     : in     Row_Type;
          Column_Index            : in     Column_Index_Type
-      ) return Generic_Cell_Package.Generic_Column_Class_Access is
+      ) return Generic_Cell_Package.GNOGA_Column_Class_Access is
       ----------------------------------------------------------------
 
       begin
@@ -290,9 +290,9 @@ package body Widgets.Generic_Table is
             Cell                 : constant Generic_Cell_Package.
                                     Cell_Class_Access := Get_Cell (Object);
             Column               : constant Generic_Cell_Package.
-                                    Generic_Column_Class_Access :=
+                                    GNOGA_Column_Class_Access :=
                                        Generic_Cell_Package.
-                                          Generic_Column_Class_Access (
+                                          GNOGA_Column_Class_Access (
                                              Cell.Parent);
             Row                  : Row_Type renames Row_Type (Column.Parent.all);
             Table                : Table_Type renames Table_Type (Row.Parent.all);
