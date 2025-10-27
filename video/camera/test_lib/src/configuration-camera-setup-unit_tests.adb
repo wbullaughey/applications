@@ -320,15 +320,14 @@ package body Configuration.Camera.Setup.Unit_Tests is
       Test                       : in out AUnit.Test_Cases.Test_Case'class) is
    ---------------------------------------------------------------
 
---    Connection_Data            : Base.Connection_Data_Type renames
---                                  Base.Connection_Data_Type (
---                                     GNOGA_Ada_Lib.Get_Connection_Data.all);
       Local_Test                 : Configuration_Tests_Type renames
                                     Configuration_Tests_Type (Test);
       State                      : Configuration.Camera.State.State_Type renames
                                     Local_Test.State;
+      Number_Configurations      : constant Configuration_ID_Type :=
+                                       State.Get_Number_Configurations;
    begin
-      Log_In (Debug, "Number_Configurations" & State.Get_Number_Configurations'img);
+      Log_In (Debug, "Number_Configurations" & Number_Configurations'img);
 
       declare
          Expected_Number_Columns    : constant := 3;
@@ -366,29 +365,27 @@ package body Configuration.Camera.Setup.Unit_Tests is
                Row         => 1,
                Preset_ID   => Video.Lib.Constructor (0)),
             others => Null_Preset));
-         Number_Configurations      : constant Configuration_ID_Type :=
-                                       State.Get_Number_Configurations;
          Expected_Configurations    : constant Configurations_Type (
                                        1 .. Number_Configurations) := (
             1 => (
                Initial_Root_State with
                Configuration_ID  => 1,
-               Label             => Coerce ("Preset 5"),
+               Label             => Coerce ("Label 5"),
                Preset_ID         => Video.Lib.Constructor (5)),
             2 => (
                Initial_Root_State with
                Configuration_ID  => 2,
-               Label             => Coerce ("Preset 3"),
+               Label             => Coerce ("Label 3"),
                Preset_ID         => Video.Lib.Constructor (3)),
             3 => (
                Initial_Root_State with
                Configuration_ID  => 3,
-               Label             => Coerce ("Preset 1"),
+               Label             => Coerce ("Label 1"),
                Preset_ID         => Video.Lib.Constructor (1)),
             4 => (
                Initial_Root_State with
                Configuration_ID  => 4,
-               Label             => Coerce ("Preset 0"),
+               Label             => Coerce ("Label 0"),
                Preset_ID         => Video.Lib.Constructor (0)),
             others => Null_Configuration);
 

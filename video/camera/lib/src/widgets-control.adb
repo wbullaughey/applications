@@ -200,6 +200,18 @@ not_implemented;
 
       ----------------------------------------------------------------
       overriding
+      procedure Dump (
+         Cell                    : in     Cell_Type;
+         Enable                  : in     Boolean;
+         From                    : in     String := Ada_LIB.Trace.Here) is
+      ----------------------------------------------------------------
+
+      begin
+Not_Implemented;
+end Dump;
+
+      ----------------------------------------------------------------
+      overriding
       function Get_Cell (
          Column                  : in out Control_Column_Type
       ) return Generic_Cell_Package.Cell_Class_Access is

@@ -206,6 +206,7 @@ package body Main.Unit_Test is
             Description    => "halt wait");
             -- leave time for web page to display
 
+         Log_Here (Debug);
          Run (
             Directory            => Camera.Lib.Options.Current_Directory,
             Port                 => Options.GNOGA_Options.HTTP_Port,

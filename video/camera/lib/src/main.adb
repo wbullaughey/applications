@@ -640,7 +640,9 @@ package body Main is
       if Directory'length > 0 then
          Ada.Directories.Set_Directory (Directory);
       end if;
+      Log_Here (Debug);
       GNOGA.Application.Open_URL;
+      Log_Here (Debug);
       GNOGA_Ada_Lib.Base.Initialize_GNOGA (
          Application_Title    => "Camera",
          Handler              => On_Connect'Unrestricted_Access,

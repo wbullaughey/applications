@@ -242,6 +242,7 @@ package body Widgets.Generic_Table is
       begin
          Log_Here (Debug, "column " & Column_Index'img &
             " row" & Row_Index'img);
+         Tag_History (Debug, Cell.all'tag);
          return Cell;
       end Get_Cell;
 

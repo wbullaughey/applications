@@ -1,4 +1,3 @@
-Optional parameters: help
 camera_aunit
 
 
@@ -44,7 +43,7 @@ Camera Lib trace options (-2)
       a               all
       b               Base.debug
       B               Camera.Lib.Base.debug
-      c               camera configuration
+      c               Configuration.Camera.Debug
       C               camera commands
       g               Widgets.Generic_Table
       l               camera Library
@@ -144,6 +143,7 @@ CAC ada_lib trace library options (-a)
       @E              Template Expand
       @l              Template Load
       @o              Trace_Options
+      @p              Trace Pre and Post Condtion functions
       @s              Strings
       @S              Socket_IO IO
       @t              Ada_Lib.Text
@@ -154,7 +154,6 @@ Ada_Lib unit test library trace options (-U)
       E               Ada_Lib.Evemt.Unit_Test.Debug
       g               Ada_Lib.GNOGA.Unit_Test.Debug
       p               test programs
-      P               Trace Pre and Post Condtion functions
       r               Runtime_Options
       s               Trace Set_Up Tear_Down
       t               Ada_Lib.Test.Debug

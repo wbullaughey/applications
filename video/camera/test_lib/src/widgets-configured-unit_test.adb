@@ -1,4 +1,5 @@
 with Ada.Exceptions;
+with Ada.Tags;
 --with Ada_Lib.Configuration;
 with Ada_Lib.Directory.Compare_Files;
 with Ada_Lib.Strings;
@@ -23,12 +24,14 @@ with Video.Lib;
 
 package body Widgets.Configured.Unit_Test is
 
+   use type Ada.Tags.Tag;
    use type Configuration.Camera.Column_Type;
 -- use type Configuration.Camera.Configuration_ID_Type;
    use type Configuration.Camera.Row_Type;
    use type Camera.Preset_ID_Type;
 -- use type Gnoga.Gui.Plugin.Message_Boxes.Message_Box_Result;
    use type Gnoga.Gui.View.Pointer_To_View_Base_Class;
+-- use type Preset_Package.Column_Cell_Type;
 
    type Test_Type (
       Brand                      : Camera.Lib.Brand_Type) is new
@@ -146,8 +149,8 @@ package body Widgets.Configured.Unit_Test is
 
    Expected_Setup_Path           : constant String :=
                                     "expected_windows_setup.cfg";
-   Invalid_Coordinate_Column_Field_Value
-                                 : constant := 3;  -- undefined preset
+-- Invalid_Coordinate_Column_Field_Value
+--                               : constant := 3;  -- undefined preset
    Modified_Row                  : constant := 2;  -- row in table - 1st data row
    Suite_Name                    : constant String := "Configured";
 
@@ -572,16 +575,29 @@ package body Widgets.Configured.Unit_Test is
                Cell              : constant Generic_Cell_Package.Cell_Class_Access :=
                                        Configured_Card.Get_Cell (
                                           Updated_Column, Updated_Row);
-               Configured_Cell   : constant Preset_Package.Cell_Class_Access :=
-                                    Preset_Package.Cell_Class_Access (Cell);
             begin
-               Log_Here (Debug, Quote ("cell id", Cell.ID) &
-                  Quote ("label id", Configured_Cell.Label.ID) &
-                  Quote (" Updated_Label_Content", Updated_Label_Content));
---             Configured_Cell.Update_Label (Updated_Label_Content);
-               Configured_Cell.Label.Value (Updated_Label_Content);
-               Configured_Cell.Label.Fire_On_Focus_Out;
-               Pause_On_Flag ("field updated");
+               Log_Here (Debug, Tag_Name (Cell.all'tag));
+
+               declare
+                  Configured_Cell   : constant Preset_Package.Cell_Class_Access :=
+                                       Preset_Package.Cell_Class_Access (Cell);
+               begin
+                  Log_Here (Debug, Tag_Name (Configured_Cell.all'tag));
+
+                  declare
+                     Label_Cell     : Preset_Package.Label_Cell_Type renames
+                                       Preset_Package.Label_Cell_Type (
+                                          Configured_Cell.all);
+                  begin
+                     Log_Here (Debug, Quote ("cell id", Cell.ID) &
+                        Quote ("label id", Label_Cell.Label.ID) &
+                        Quote (" Updated_Label_Content", Updated_Label_Content));
+      --             Configured_Cell.Update_Label (Updated_Label_Content);
+                     Label_Cell.Label.Value (Updated_Label_Content);
+                     Label_Cell.Label.Fire_On_Focus_Out;
+                     Pause_On_Flag ("field updated");
+                  end;
+               end;
             end;
 
       end case;
@@ -637,23 +653,30 @@ package body Widgets.Configured.Unit_Test is
                   end;
 
                when Image_Field =>
-                  Assert (Expected_Image = Cell.Image_Div.Path.Coerce,
-                     Quote ("Invalid path ", Cell.Image_Div.Path) &
-                     Quote (" expected", Expected_Image) &
-                     " from " & From);
+                  declare
+                     Image_Cell  : Preset_Package.Image_Cell_Type renames
+                                    Preset_Package.Image_Cell_Type (Cell.all);
+                  begin
+                     Assert (Expected_Image = Image_Cell.Image_Div.Path.Coerce,
+                        Quote ("Invalid path ", Image_Cell.Image_Div.Path) &
+                        Quote (" expected", Expected_Image) &
+                        " from " & From);
+                  end;
 
                when Preset_Field =>
                   declare
-                     Value          : constant String :=
-                                       Cell.Preset_ID_Field.Value;
+                     Value : constant String :=
+                              Preset_Package.Preset_Cell_Type (
+                                 Cell.all).Preset_ID_Field.Value;
                   begin
                      Check_Preset (Expected_Preset_ID.Get_ID, Value, "preset", From);
                   end;
 
                when Row_Field =>
                   declare
-                     Value          : constant String :=
-                                       Cell.Row_Coordinate.Value;
+                     Value : constant String :=
+                              Preset_Package.Row_Cell_Type (
+                                 Cell.all).Row_Coordinate.Value;
                   begin
                      Check_Row (Expected_Row, Value, "row", From);
                   end;
@@ -689,7 +712,7 @@ package body Widgets.Configured.Unit_Test is
 
    begin
       Log_Here (Debug);
-      Cell.Column_Coordinate.Fire_On_Focus_Out;
+      Preset_Package.Column_Cell_Type (Cell.all).Column_Coordinate.Fire_On_Focus_Out;
    end Column_Fire;
 
    ---------------------------------------------------------------
@@ -766,7 +789,7 @@ package body Widgets.Configured.Unit_Test is
    ---------------------------------------------------------------
 
    begin
-      Cell.Row_Coordinate.Fire_On_Focus_Out;
+      Preset_Package.Row_Cell_Type (Cell.all).Row_Coordinate.Fire_On_Focus_Out;
    end Row_Fire;
 
 --   ---------------------------------------------------------------
@@ -878,7 +901,6 @@ package body Widgets.Configured.Unit_Test is
          Event                   : Button_Push_Event_Type;
 
       begin
-log_here;
          Event.Test_Case := Accept_Form;
          Event.Start (
             Wait           => 0.25,
@@ -933,7 +955,6 @@ log_here;
          Event                   : Button_Push_Event_Type;
 
       begin
-log_here;
          Event.Test_Case := Cancel_Form;
          Event.Start (
             Wait           => 0.25,
@@ -975,14 +996,14 @@ log_here;
          for Configuration_Index in Configuration.Camera.Configuration_ID_Type'first ..
                State.Get_Number_Configurations loop
             declare
-               Configuration     : Standard.Configuration.Camera.Setup.Configuration_Type
-                                    renames Standard.Configuration.Camera.Setup.Global_Camera_Setup.Configurations (
-                                       Configuration_Index);
+--             Configuration     : Standard.Configuration.Camera.Setup.Configuration_Type
+--                                  renames Standard.Configuration.Camera.Setup.Global_Camera_Setup.Configurations (
+--                                     Configuration_Index);
                Expected_Preset_ID: constant Camera.Preset_ID_Type :=
                                     Local_Test.Setup.Get_Preset_ID (
                                        Configuration_Index);
-               Expected_Label : Ada_Lib.Strings.Unlimited.String_Type renames
-                                          Configuration.Label;
+--             Expected_Label : Ada_Lib.Strings.Unlimited.String_Type renames
+--                                        Configuration.Label;
             begin
                for Column_Index in Preset_Column_Index_Type'range loop
                   if Column_Index /= Control_Grid_Field then
@@ -994,14 +1015,15 @@ log_here;
                                           Preset_Package.Cell_Type'class (
                                              Configured_Card.Get_Cell (Column_Index,
                                                 Configuration_Index).all);
+                        Cell_Tag       : constant Ada.Tags.Tag := Cell'tag;
                         Expected_Preset: constant
                                              Standard.Configuration.Camera.Setup.Preset_Type'class :=
                                           Local_Test.Setup.Get_Preset (
                                              Expected_Preset_ID);
                         Expected_Column: Standard.Configuration.Camera.Column_Type renames
                                           Expected_Preset.Column;
-                        Expected_Row   : Standard.Configuration.Camera.Row_Type renames
-                                          Expected_Preset.Row;
+--                      Expected_Row   : Standard.Configuration.Camera.Row_Type renames
+--                                        Expected_Preset.Row;
                      begin
                         Cell.Dump (Debug);
                         Assert (Cell.Configuration_ID = Configuration_Index,
@@ -1010,72 +1032,73 @@ log_here;
                            ") does not match configuration id (" &
                               Cell.Configuration_ID'img & ")");
 
-                        case Cell.Column is
-                           when Column_Field =>
-                              declare
-                                 Field_Contents
-                                       : constant String :=
-                                          Cell.Column_Coordinate.Value;
-                              begin
-                                 Assert (Cell.Column_Number = Expected_Column,
+                        if Cell_Tag = Preset_Package.Column_Cell_Type'tag then
+                           declare
+                              Column_Cell : Preset_Package.Column_Cell_Type renames
+                                 Preset_Package.Column_Cell_Type (Cell);
+                              Field_Contents : constant String :=
+                                    Column_Cell.Column_Coordinate.Value;
+                           begin
+                              Assert (Column_Cell.Column_Number = Expected_Column,
+                                 "expected column (" & Expected_Column'img &
+                                 ") does not match column (" &
+                                    Column_Cell.Column_Number'img & ")");
+
+                              if Expected_Column = Standard.Configuration.Camera.Column_Not_Set then
+                                 Assert (Field_Contents'length = 0,
+                                    "expected column coordinage is not blank," &
+                                    " got" & Field_Contents);
+                              else
+                                 Assert (Standard.Configuration.Camera.Column_Type'value (Field_Contents) =
+                                    Expected_Column,
                                     "expected column (" & Expected_Column'img &
                                     ") does not match column (" &
-                                       Cell.Column_Number'img & ")");
+                                       Field_Contents & ")");
+                              end if;
+                           end;
+                        end if;
 
-                                 if Expected_Column = Standard.Configuration.Camera.Column_Not_Set then
-                                    Assert (Field_Contents'length = 0,
-                                       "expected column coordinage is not blank," &
-                                       " got" & Field_Contents);
-                                 else
-                                    Assert (Standard.Configuration.Camera.Column_Type'value (Field_Contents) =
-                                       Expected_Column,
-                                       "expected column (" & Expected_Column'img &
-                                       ") does not match column (" &
-                                          Field_Contents & ")");
-                                 end if;
-                              end;
-
-                           when Label_Field =>
-                              Assert (Cell.Label.Value = Expected_Label.Coerce,
-                                 Quote ("expected label (", Expected_Label) &
-                                 Quote (") does not match label (",
-                                    Cell.Label.Value) &
-                                 ")");
-
-                           when Preset_Field =>
-                              Assert (Cell.Preset_ID = Expected_Preset_ID,
-                                 "expected preset id (" & Expected_Preset_ID'img &
-                                 ") does not match preset id (" &
-                                    Cell.Preset_ID.Image & ")");
-
-                           when Row_Field =>
-                              declare
-                                 Field_Contents
-                                       : constant String :=
-                                          Cell.Row_Coordinate.Value;
-                              begin
-                                 Assert (Cell.Row_Number = Expected_Row,
-                                    "expected Row (" & Expected_Row'img &
-                                    ") does not match Row (" &
-                                       Cell.Row_Number'img & ")");
-
-                                 if Expected_Row = Standard.Configuration.Camera.Row_Not_Set then
-                                    Assert (Field_Contents'length = 0,
-                                       "expected Row coordinage is not blank," &
-                                       " got" & Field_Contents);
-                                 else
-                                    Assert (Standard.Configuration.Camera.Row_Type'value (Field_Contents) =
-                                       Expected_Row,
-                                       "expected Row (" & Expected_Row'img &
-                                       ") does not match Row (" &
-                                          Field_Contents & ")");
-                                 end if;
-                              end;
-
-                           when others =>
-                              null; -- no checks
-
-                        end case;
+--                         when Label_Field =>
+--                            Assert (Cell.Label.Value = Expected_Label.Coerce,
+--                               Quote ("expected label (", Expected_Label) &
+--                               Quote (") does not match label (",
+--                                  Cell.Label.Value) &
+--                               ")");
+--
+--                         when Preset_Field =>
+--                            Assert (Cell.Preset_ID = Expected_Preset_ID,
+--                               "expected preset id (" & Expected_Preset_ID'img &
+--                               ") does not match preset id (" &
+--                                  Cell.Preset_ID.Image & ")");
+--
+--                         when Row_Field =>
+--                            declare
+--                               Field_Contents
+--                                     : constant String :=
+--                                        Cell.Row_Coordinate.Value;
+--                            begin
+--                               Assert (Cell.Row_Number = Expected_Row,
+--                                  "expected Row (" & Expected_Row'img &
+--                                  ") does not match Row (" &
+--                                     Cell.Row_Number'img & ")");
+--
+--                               if Expected_Row = Standard.Configuration.Camera.Row_Not_Set then
+--                                  Assert (Field_Contents'length = 0,
+--                                     "expected Row coordinage is not blank," &
+--                                     " got" & Field_Contents);
+--                               else
+--                                  Assert (Standard.Configuration.Camera.Row_Type'value (Field_Contents) =
+--                                     Expected_Row,
+--                                     "expected Row (" & Expected_Row'img &
+--                                     ") does not match Row (" &
+--                                        Field_Contents & ")");
+--                               end if;
+--                            end;
+--
+--                         when others =>
+--                            null; -- no checks
+--
+--                      end case;
                      end;
                   end if;
                end loop;
@@ -1128,8 +1151,10 @@ log_here;
                                      Preset_Package.Cell_Class_Access (
                                         Configured_Card.Get_Cell (Preset_Field,
                                           Modified_Configuration_ID));
+            Preset_Cell          : Preset_Package.Preset_Cell_Type renames
+                                    Preset_Package.Preset_Cell_Type (Cell.all);
             Preset_ID_Field      : Gnoga.Gui.Element.Form.Number_Type renames
-                                    Cell.Preset_ID_Field;
+                                    Preset_Cell.Preset_ID_Field;
          begin
             Log_Here (Debug, "test preset for no preset");
             -- set the preset with no preset defined for the preset,column
@@ -1166,9 +1191,9 @@ log_here;
       Cards                      : constant Main.Cards_Access_Type :=
                                     Connection_Data.Get_Cards;
       Modified_Configuration_ID  : constant := 2;
-      Modified_Preset_Value_No_Preset
-                                 : constant Video.Lib.Preset_Range_Type :=
-                                    Video.Lib.Null_Preset_ID_Number;
+--    Modified_Preset_Value_No_Preset
+--                               : constant Video.Lib.Preset_Range_Type :=
+--                                  Video.Lib.Null_Preset_ID_Number;
       Original_Configuration     : constant Configuration.Camera.Setup.Configuration_Type'class :=
                                     Local_Test.Setup.Get_Configuration (
                                        Modified_Configuration_ID);
@@ -1177,8 +1202,8 @@ log_here;
                                        Cards.Card (Widget_Name);
       Configured_Card            : Configured_Card_Type renames
                                    Configured_Card_Type (Current_Card.all);
-      State                      : Configuration.Camera.State.State_Type renames
-                                    Local_Test.State;
+--    State                      : Configuration.Camera.State.State_Type renames
+--                                  Local_Test.State;
    begin
       Log_In (Debug, "Modified_Configuration_ID" & Modified_Configuration_ID'img &
          " original configuration id" & Original_Configuration.
@@ -1196,6 +1221,8 @@ log_here;
                                     Preset_Type'class :=
                                        Local_Test.Setup.Get_Preset (
                                           Original_Preset_ID);
+            Preset_Cell          : Preset_Package.Preset_Cell_Type renames
+                                    Preset_Package.Preset_Cell_Type (Cell.all);
 
          begin
             Log_Here (Debug, "test preset for no preset");
@@ -1207,7 +1234,7 @@ log_here;
             Cell.Dump (Pause_Flag or Debug);
             Pause_On_Flag ("test preset value set before fire event");
             Connection_Data.Reset_Update_Event;
-            Cell.Preset_ID_Field.Fire_On_Focus_Out;
+            Preset_Cell.Preset_ID_Field.Fire_On_Focus_Out;
             Log_Here (Debug, "wait for event");
             Connection_Data.Wait_For_Update_Event;
 
@@ -1276,7 +1303,9 @@ log_here;
                                     Preset_Package.Cell_Class_Access (
                                        Configured_Card.Get_Cell (
                                          Updated_Column, Updated_Row));
-         Label                   : constant String := Cell.Label.Value;
+         Label_Cell              : Preset_Package.Label_Cell_Type renames
+                                    Preset_Package.Label_Cell_Type (Cell.all);
+         Label                   : constant String := Label_Cell.Label.Value;
 
       begin
          Log_Here (Debug, Quote ("update label", Label));
@@ -1352,6 +1381,8 @@ log_here;
 --                                  Original_Configuration.Preset_ID;
 --          Original_Preset      : constant Configuration.Camera.Setup.Preset_Type :=
 --                                  Local_Test.Setup.Get_Preset (Original_Preset_ID);
+            Preset_Cell          : Preset_Package.Preset_Cell_Type renames
+                                    Preset_Package.Preset_Cell_Type (Cell.all);
          begin
             Log_Here (Debug, "test preset field");
             Connection_Data.Reset_Update_Event;
@@ -1360,7 +1391,7 @@ log_here;
 
             Cell.Dump (Pause_Flag or Debug);
             Pause_On_Flag ("test preset Field value set before fire event");
-            Cell.Preset_ID_Field.Fire_On_Focus_Out;
+            Preset_Cell.Preset_ID_Field.Fire_On_Focus_Out;
             Log_Here (Debug, "wait for event");
             Connection_Data.Wait_For_Update_Event;
             delay 0.5;  -- let web page update
@@ -1389,11 +1420,18 @@ log_here;
       Value                      : in     Configuration.Camera.Column_Type) is
    ----------------------------------------------------------------
 
+begin
+tag_history (cell.all'tag);
+declare
+      Column_Cell          : Preset_Package.Column_Cell_Type renames
+                              Preset_Package.Column_Cell_Type (Cell.all);
    begin
-      Log_Here (Debug, "value" & Value'img & " column " & Cell.Column'img);
+      Log_Here (Debug, "value" & Value'img & " column " &
+         Column_Cell.Column_Number'img);
 cell.dump(true);
-      Cell.Column_Coordinate.Value (Integer (Value));
+      Column_Cell.Column_Coordinate.Value (Integer (Value));
 cell.dump(true);
+end;
    end Update_Column_Field;
 
    ----------------------------------------------------------------
@@ -1403,18 +1441,20 @@ cell.dump(true);
       Preset_ID                  : in     Camera.Preset_ID_Type) is
    ----------------------------------------------------------------
 
+      Preset_Cell          : Preset_Package.Preset_Cell_Type renames
+                              Preset_Package.Preset_Cell_Type (Cell.all);
    begin
       Log_Here (Debug, "Preset_ID" & Preset_ID'img);
 cell.dump(true);
       if Setup.Has_Preset (Preset_ID) then
-         Cell.Preset_ID_Field.Value (Integer (Preset_Id.Get_ID));
-         Cell.Preset_Set := True;
+         Preset_Cell.Preset_ID_Field.Value (Integer (Preset_Id.Get_ID));
+         Preset_Cell.Preset_Set := True;
       else
-         Cell.Preset_ID := Video.Lib.Null_Preset_ID;
-            Cell.Preset_Set := False;
+         Preset_Cell.Preset_ID := Video.Lib.Null_Preset_ID;
+            Preset_Cell.Preset_Set := False;
       end if;
 
-      Cell.Preset_ID := Preset_ID;
+      Preset_Cell.Preset_ID := Preset_ID;
 cell.dump(true);
    end Update_Preset_Field;
 
@@ -1424,10 +1464,12 @@ cell.dump(true);
       Value                      : in     Configuration.Camera.Row_Type) is
    ----------------------------------------------------------------
 
+      Row_Cell    : Preset_Package.Row_Cell_Type renames
+                     Preset_Package.Row_Cell_Type (Cell.all);
    begin
       Log_Here (Debug, "value" & Value'img);
 cell.dump(true);
-      Cell.Row_Coordinate.Value (Integer (Value));
+      Row_Cell.Row_Coordinate.Value (Integer (Value));
 cell.dump(true);
    end Update_Row_Field;
 
