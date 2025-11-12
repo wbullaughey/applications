@@ -57,6 +57,7 @@ Camera Lib trace options (-2)
       @c              Widgets.Control debug
       @C              Widgets.Configured debug
       @l              List camera commands
+      @p              Configuration.Camera.Setup.Debug
       @s              Configuration
       @S              Configuration.Camera.State.Debug
 

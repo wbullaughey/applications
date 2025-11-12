@@ -1,4 +1,5 @@
 with Ada.Exceptions;
+with Ada.Streams;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
 with Ada_Lib.Unit_Test;
 with AUnit.Assertions; use AUnit.Assertions;
@@ -10,6 +11,7 @@ with Video.Lib;
 
 package body Camera.Commands.Unit_Test is
 
+   use type Ada.Streams.Stream_Element;
    use type Interfaces.Integer_16;
 
    type Test_Type is new
@@ -48,6 +50,9 @@ package body Camera.Commands.Unit_Test is
       Test                       : in out AUnit.Test_Cases.Test_Case'class);
 
    procedure Test_Set_Preset (
+      Test                       : in out AUnit.Test_Cases.Test_Case'class);
+
+   procedure Test_Set_Preset_Speed (
       Test                       : in out AUnit.Test_Cases.Test_Case'class);
 
    procedure Test_Zoom (
@@ -114,6 +119,10 @@ package body Camera.Commands.Unit_Test is
       Test.Add_Routine (AUnit.Test_Cases.Routine_Spec'(
          Routine        => Test_Set_Preset'access,
          Routine_Name   => AUnit.Format ("Test_Set_Preset")));
+
+      Test.Add_Routine (AUnit.Test_Cases.Routine_Spec'(
+         Routine        => Test_Set_Preset_Speed'access,
+         Routine_Name   => AUnit.Format ("Test_Set_Preset_Speed")));
 
       Test.Add_Routine (AUnit.Test_Cases.Routine_Spec'(
          Routine        => Test_Zoom'access,
@@ -402,6 +411,28 @@ package body Camera.Commands.Unit_Test is
       Check_Coordinates (Pan, Pan_Set, Tilt, Tilt_Set);
       Log_Out (Debug);
    end Test_Set_Preset;
+
+   ----------------------------------------------------------------
+   procedure Test_Set_Preset_Speed (
+      Test                       : in out AUnit.Test_Cases.Test_Case'class) is
+   ----------------------------------------------------------------
+
+      Local_Test                 : Test_Type'class renames Test_Type'class (Test);
+      Preset_Speed               : constant Property_Type := 10;
+
+   begin
+      Log_In (Debug);
+      Local_Test.Camera_Info.Camera.Set_Preset_Speed (Preset_Speed);
+      -- no way to read back speed
+      -- could set 2 different speeds and measure the time
+      Log_Out (Debug);
+
+   exception
+      when Fault: others =>
+         Log_Exception (Debug, Fault);
+         raise;
+
+   end Test_Set_Preset_Speed;
 
    ----------------------------------------------------------------
    procedure Test_Zoom (

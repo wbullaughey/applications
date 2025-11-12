@@ -11,7 +11,7 @@ with ADA_LIB.Trace; use Ada_Lib.Trace;
 with Base;
 with Camera.Commands;
 with Camera.Lib.Base;
---with Configuration.Camera.State;
+with Configuration.Camera.Setup;
 with Configuration.Camera.State;
 with Configuration.State;
 with Emulator;
@@ -329,6 +329,7 @@ package body Camera.Lib is
          Put_Line ("      " & Trace_Prefix & "c              Widgets.Control debug");
          Put_Line ("      " & Trace_Prefix & "C              Widgets.Configured debug");
          Put_Line ("      " & Trace_Prefix & "l              List camera commands");
+         Put_Line ("      " & Trace_Prefix & "p              Configuration.Camera.Setup.Debug");
          Put_Line ("      " & Trace_Prefix & "s              Configuration");
          Put_Line ("      " & Trace_Prefix & "S              Configuration.Camera.State.Debug");
 
@@ -368,6 +369,7 @@ package body Camera.Lib is
                      Camera.Lib.Base.Debug := True;
                      Camera.Lib.Base.List_Commands := True;
                      Configuration.Camera.Debug := True;
+                     Configuration.Camera.Setup.Debug := True;
                      Configuration.Camera.State.Debug := True;
                      Configuration.State.Debug := True;
                      Configuration.Debug := True;
@@ -445,6 +447,9 @@ package body Camera.Lib is
 
                   when 'l' =>
                      Camera.Lib.Base.List_Commands := True;
+
+                  when 'p' =>
+                     Configuration.Camera.Setup.Debug := True;
 
                   when 's' =>
                      Configuration.Debug := True;

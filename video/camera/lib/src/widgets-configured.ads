@@ -77,7 +77,8 @@ package Widgets.Configured is
       end record;
 
       type Cell_Type is abstract new Generic_Cell_Package.Cell_Type with record
-         Configuration_ID        : Configuration.Camera.Configuration_ID_Type;
+         Configuration_ID        : Configuration.Camera.Configuration_ID_Type :=
+                                    Configuration.Camera.No_Configuration;
       end record;
 
       type Cell_Access           is access all Cell_Type;
@@ -103,13 +104,14 @@ package Widgets.Configured is
       procedure Dump (
          Cell                    : in     Cell_Type;
          Enable                  : in     Boolean;
+         Caller                  : in     String;
          From                    : in     String := ADA_LIB.Trace.Here);
 
       overriding
       procedure Update_Cell (
-         Cell                    : in out Cell_Type;
-         Update_Parameter        : in     Generic_Cell_Package.
-                                             Update_Parameter_Type'class);
+         Cell              : in out Cell_Type;
+         Update_Parameter  : in     Generic_Cell_Package.
+                                       Update_Parameter_Type'class) is abstract;
       -- preset table cells
 
       type Column_Cell_Type is new Cell_Type with record
@@ -138,8 +140,14 @@ package Widgets.Configured is
       procedure Dump (
          Cell                    : in     Column_Cell_Type;
          Enable                  : in     Boolean;
+         Caller                  : in     String;
          From                    : in     String := ADA_LIB.Trace.Here);
 
+      overriding
+      procedure Update_Cell (
+         Cell              : in out Column_Cell_Type;
+         Update_Parameter  : in     Generic_Cell_Package.
+                                       Update_Parameter_Type'class);
       -- used in only 1st row of preset table.
       type Control_Grid_Cell_Type is new Cell_Type with record
          Control_Table     : Widgets.Control.Control_Card_Type;
@@ -166,7 +174,14 @@ package Widgets.Configured is
       procedure Dump (
          Cell                    : in     Control_Grid_Cell_Type;
          Enable                  : in     Boolean;
+         Caller                  : in     String;
          From                    : in     String := ADA_LIB.Trace.Here);
+
+      overriding
+      procedure Update_Cell (
+         Cell              : in out Control_Grid_Cell_Type ;
+         Update_Parameter  : in     Generic_Cell_Package.
+                                       Update_Parameter_Type'class);
 
       type Image_Cell_Type is new Cell_Type with record
          Image_Div         : Image_Div_Type;
@@ -192,7 +207,14 @@ package Widgets.Configured is
       procedure Dump (
          Cell                    : in     Image_Cell_Type;
          Enable                  : in     Boolean;
+         Caller                  : in     String;
          From                    : in     String := ADA_LIB.Trace.Here);
+
+      overriding
+      procedure Update_Cell (
+         Cell              : in out Image_Cell_Type;
+         Update_Parameter  : in     Generic_Cell_Package.
+                                       Update_Parameter_Type'class);
 
       type Label_Cell_Type is new Cell_Type with record
          Label             : Gnoga.Gui.Element.Form.Text_Type;
@@ -218,7 +240,14 @@ package Widgets.Configured is
       procedure Dump (
          Cell                    : in     Label_Cell_Type;
          Enable                  : in     Boolean;
+         Caller                  : in     String;
          From                    : in     String := Ada_Lib.Trace.Here);
+
+      overriding
+      procedure Update_Cell (
+         Cell              : in out Label_Cell_Type;
+         Update_Parameter  : in     Generic_Cell_Package.
+                                       Update_Parameter_Type'class);
 
       type Preset_Cell_Type is new Cell_Type with record
          Preset_ID         : Camera.Preset_ID_Type;
@@ -230,6 +259,7 @@ package Widgets.Configured is
       procedure Dump (
          Cell                    : in     Preset_Cell_Type;
          Enable                  : in     Boolean;
+         Caller                  : in     String;
          From                    : in     String := ADA_LIB.Trace.Here);
 
       overriding
@@ -247,6 +277,12 @@ package Widgets.Configured is
       ) with Pre  => GNOGA_Ada_Lib.Has_Connection_Data,
              Post => Cell.Configuration_ID /=
                         Configuration.Camera.No_Configuration;
+
+      overriding
+      procedure Update_Cell (
+         Cell              : in out Preset_Cell_Type;
+         Update_Parameter  : in     Generic_Cell_Package.
+                                       Update_Parameter_Type'class);
 
       type Row_Cell_Type is new Cell_Type with record
          Row_Coordinate    : Gnoga.Gui.Element.Form.Number_Type;
@@ -274,7 +310,14 @@ package Widgets.Configured is
       procedure Dump (
          Cell                    : in     Row_Cell_Type;
          Enable                  : in     Boolean;
+         Caller                  : in     String;
          From                    : in     String := ADA_LIB.Trace.Here);
+
+      overriding
+      procedure Update_Cell (
+         Cell              : in out Row_Cell_Type;
+         Update_Parameter  : in     Generic_Cell_Package.
+                                       Update_Parameter_Type'class);
 
       type Row_Header_Cell_Type is new Cell_Type with record
          Button            : Gnoga.Gui.Element.Common.Button_Type;
@@ -300,7 +343,14 @@ package Widgets.Configured is
       procedure Dump (
          Cell                    : in     Row_Header_Cell_Type;
          Enable                  : in     Boolean;
+         Caller                  : in     String;
          From                    : in     String := ADA_LIB.Trace.Here);
+
+      overriding
+      procedure Update_Cell (
+         Cell              : in out Row_Header_Cell_Type;
+         Update_Parameter  : in     Generic_Cell_Package.
+                                       Update_Parameter_Type'class);
 
       type Configured_Update_Parameter_Type
                                  is new Generic_Cell_Package.
@@ -311,16 +361,11 @@ package Widgets.Configured is
 
       type Preset_Column_Type is new
                                     Generic_Cell_Package.
-                                       GNOGA_Column_Type with record
-         Cell                    : Cell_Class_Access := Null;
-      end record;
+                                       GNOGA_Column_Type with null record;
+--       Cell                    : Cell_Class_Access := Null;
+--    end record;
 
       type Preset_Column_Access is access Preset_Column_Type;
-
-      overriding
-      function Get_Cell (
-         Column                  : in out Preset_Column_Type
-      ) return Generic_Cell_Package.Cell_Class_Access;
 
       procedure Allocate_Column (
          Column                  : in out Generic_Cell_Package.

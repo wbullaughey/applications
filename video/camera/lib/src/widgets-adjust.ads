@@ -92,6 +92,7 @@ package Widgets.Adjust is
       procedure Dump (
          Cell                    : in     Cell_Type;
          Enable                  : in     Boolean;
+         Caller                  : in     String;
          From                    : in     String := Ada_LIB.Trace.Here);
 
       overriding
@@ -102,16 +103,11 @@ package Widgets.Adjust is
 
       type Outer_Column_Type is new
                                     Generic_Cell_Package.
-                                       GNOGA_Column_Type with record
-         Cell                    : Cell_Class_Access := Null;
-      end record;
+                                       GNOGA_Column_Type with null record;
+--       Cell                    : Cell_Class_Access := Null;
+--    end record;
 
       type Outer_Column_Access is access all Outer_Column_Type;
-
-      overriding
-      function Get_Cell (
-         Column                  : in out Outer_Column_Type
-      ) return Generic_Cell_Package.Cell_Class_Access;
 
       procedure Allocate_Column (
          Column                  : in out Generic_Cell_Package.

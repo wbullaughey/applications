@@ -6,6 +6,7 @@ Basic_Video Test_Open
 Commands Test_Position_Relative
 Commands Test_Set_Absolute
 Commands Test_Set_Preset
+Commands Test_Set_Preset_Speed
 Commands Test_Zoom
 Configured Test_Accept_Configured
 Configured Test_Cancel_Configured

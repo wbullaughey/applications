@@ -1,4 +1,3 @@
---with Ada.Streams;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
 with Hex_IO;
 --with Ada_Lib.Socket_IO.Stream_IO;

@@ -368,7 +368,16 @@ package body Main is
       State             : Configuration.Camera.State.State_Type renames
                            Configuration.Camera.State.Get_Read_Only_State.all;
    begin
-      Log_In (Debug, "started " & Started'img);
+      Log_In (Debug, "started " & Started'img &
+         " main window " & Image (Main_Window'address) &
+         " connection data " & Image (Connection_Data'address));
+      if Started then
+         Log_Out (Debug);
+         return;
+      end if;
+
+      Started := True;
+
       declare
          Main_Data                  : Main_Data_Type renames
                                        Connection_Data.Main_Data.all;
@@ -389,14 +398,7 @@ package body Main is
                                        Cards.Video_Card;
 
       begin
-         if not Started then
-            Open_Camera (Connection_Data.Camera, Description'access);
-         end if;
-
---       if Started then
---          raise Failed with "already started";
---       end if;
-         Started := True;
+         Open_Camera (Connection_Data.Camera, Description'access);
 
          Main_Window.Connection_Data (Connection_Data'unchecked_access);
          Connection_Data.Set_Main_Window (Main_Window'unchecked_access);

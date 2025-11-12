@@ -1,7 +1,20 @@
+with Ada.Text_IO; use Ada.Text_IO;
 with Ada_Lib.Strings; use Ada_Lib.Strings;
 with ADA_LIB.Trace; use ADA_LIB.Trace;
 
 package body Widgets.Generic_Table is
+
+   use type Gnoga.Gui.Base.Pointer_To_Base_Class;
+
+      ----------------------------------------------------------------
+   function Has_Parent (
+      Cell                    : in     Root_Cell_Type
+   ) return Boolean is
+      ----------------------------------------------------------------
+
+   begin
+      return Cell.Parent /= Null;
+   end Has_Parent;
 
    package body Cell_Package is
 
@@ -137,8 +150,6 @@ package body Widgets.Generic_Table is
                      Allocate_Column (Column, Column_Index, Row_Index);
 
                      declare
-                        Cell     : constant Generic_Cell_Package.Cell_Class_Access :=
-                                    Column.Get_Cell;
                         ID       : constant String :=  Name & "-" &
                                     Trim (Row_Index'img) & "-"  &
                                     Trim (Column_Index'img);
@@ -154,7 +165,8 @@ package body Widgets.Generic_Table is
                            Number_Rows    => Number_Rows,
                            Row            => Row,
                            Row_Index      => Row_Index);
-                        Cell.Create_Cell (Grid.Form'unchecked_access,
+
+                        Column.Cell.Create_Cell (Grid.Form'unchecked_access,
                            Row, Column.all, Column_Index, Row_Index);
                      end;
                   end;
@@ -196,6 +208,24 @@ package body Widgets.Generic_Table is
       end Create;
 
       ----------------------------------------------------------------
+      procedure Dump (
+         Row                     : in     Row_Type;
+         Enable                  : in     Boolean;
+         Caller                  : in     String;
+         From                    : in     String := Ada_Lib.Trace.Here) is
+      ----------------------------------------------------------------
+
+      begin
+         if Enable then
+            Put_Line ("dump row called from " & Caller & " dump " & From);
+            for Column in Row.Columns'range loop
+               Put_Line ("   " & Column'img);
+               Row.Columns (Column).Cell.Dump (Enable, Caller, From);
+            end loop;
+         end if;
+      end Dump;
+
+      ----------------------------------------------------------------
       function Get_Accept_Button (
          Widget                     : in out Widget_Type
       ) return Gnoga.Gui.Element.Form.Pointer_To_Submit_Button_Class is
@@ -217,12 +247,13 @@ package body Widgets.Generic_Table is
 
       ----------------------------------------------------------------
       function Get_Cell (     -- from form field
-         Object                  : in out Gnoga.Gui.Base.Base_Type'Class
+         Object                  : in out Gnoga.Gui.Base.Base_Type'Class;
+         From                    : in     String := Ada_Lib.Trace.Here
       ) return Generic_Cell_Package.Cell_Class_Access is
       ----------------------------------------------------------------
 
       begin
-         Log_Here (Debug, "object tag " & Tag_Name (Object'tag));
+         Log_Here (Debug, "object tag " & Tag_Name (Object'tag) & " from " & From);
          return Generic_Cell_Package.Cell_Class_Access (Object.Parent);
       end Get_Cell;
 
@@ -238,10 +269,12 @@ package body Widgets.Generic_Table is
          Column   : constant Generic_Cell_Package.
                      GNOGA_Column_Class_Access := Row.Columns (Column_Index);
          Cell     : constant Generic_Cell_Package.Cell_Class_Access :=
-                     Column.Get_Cell;
+                     Column.Cell;
       begin
          Log_Here (Debug, "column " & Column_Index'img &
             " row" & Row_Index'img);
+         Row.Dump (Debug, "");
+         Cell.Dump (Debug, "");
          Tag_History (Debug, Cell.all'tag);
          return Cell;
       end Get_Cell;

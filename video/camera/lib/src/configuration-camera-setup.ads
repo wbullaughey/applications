@@ -178,6 +178,7 @@ package Configuration.Camera.Setup is
       State                      : in     Configuration.Camera.State.State_Type'class
    ) with Pre => State.Is_Loaded;
 
+   Debug                         : Boolean := False;
    Default_Setup                 : constant String := "setup.cfg";
 
    Global_Camera_Setup           : Setup_Access := Null;

@@ -1,5 +1,5 @@
 --with AUnit.Test_Suites;
-with Ada_lib.Lock;
+--with Ada_lib.Lock;
 with Ada_Lib.Strings;
 with Ada_Lib.Time;
 --with Configuration.Camera;
@@ -9,6 +9,7 @@ with Camera.Lib.Base;
 package Camera.Commands is
 
    Failed                        : exception;
+   Invalid_Parameter             : exception;
    Timeout                       : exception;
 
    type Camera_Type (
@@ -103,8 +104,9 @@ private
       Description                : Ada_Lib.Strings.String_Constant_Access
    ) is abstract new Standard.Camera.Lib.Base.
                                     Base_Camera_Type with record
-      Lock                       : Ada_lib.Lock.Lock_Type (
-                                    Lock_Description'access);
+      Current_Speed              : Property_Type := 0;   -- not set yet
+--    Lock                       : Ada_lib.Lock.Lock_Type (
+--                                  Lock_Description'access);
    end record;
 
 

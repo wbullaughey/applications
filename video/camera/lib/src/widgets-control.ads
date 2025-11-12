@@ -79,6 +79,7 @@ package Widgets.Control is
       procedure Dump (
          Cell                    : in     Cell_Type;
          Enable                  : in     Boolean;
+         Caller                  : in     String;
          From                    : in     String := Ada_LIB.Trace.Here);
 
       procedure Image_Click_Handler (
@@ -98,16 +99,11 @@ package Widgets.Control is
 --                                           Verify_Parameter_Type'class);
 
       type Control_Column_Type   is new Generic_Cell_Package.
-                                    GNOGA_Column_Type with record
-         Cell                    : Cell_Class_Access;
-      end record;
+                                    GNOGA_Column_Type with null record;
+--       Cell                    : Cell_Class_Access;
+--    end record;
 
       type Control_Column_Access is access Control_Column_Type;
-
-      overriding
-      function Get_Cell (
-         Column                  : in out Control_Column_Type
-      ) return Generic_Cell_Package.Cell_Class_Access;
 
       procedure Allocate_Column (
          Column                  : in out Generic_Cell_Package.

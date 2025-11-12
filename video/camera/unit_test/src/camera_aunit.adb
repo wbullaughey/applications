@@ -3,11 +3,9 @@ with Ada.Text_IO; use Ada.Text_IO;
 with Ada_Lib.Help;
 with Ada_Lib.Options.Actual;
 with Ada_Lib.OS;
---with Ada_lib.Timer;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
 with Ada_Lib.Trace_Tasks;
 with Ada_Lib.Unit_Test;
---with Camera.Lib.Options;
 with Camera.Lib.Unit_Test;
 with Camera.Command_Queue;
 with Command_Name;
@@ -83,3 +81,5 @@ exception
       Ada_Lib.OS.Immediate_Halt (Ada_Lib.OS.No_Error);
 
 end Camera_AUnit;
+
+

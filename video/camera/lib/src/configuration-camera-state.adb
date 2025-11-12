@@ -32,7 +32,8 @@ package body Configuration.Camera.State is
       Number_Columns    : constant Column_Type := State.Get_Number_Columns;
 
    begin
-      return Log_Here (Column <= Number_Columns,
+      return Log_Here (State.Images /= Null and then
+         Column <= Number_Columns,  -- column number starts at 0
          Trace_Pre_Post_Conditions, "column" & Column'img &
             " number columns" & Number_Columns'img);
    end Check_Column;
@@ -60,7 +61,8 @@ package body Configuration.Camera.State is
       Number_Rows : constant Row_Type := State.Get_Number_Rows;
 
    begin
-      return Log_Here (Row <= State.Number_Rows, Trace_Pre_Post_Conditions,
+      return Log_Here (State.Images /= Null and then
+         Row <= State.Number_Rows, Trace_Pre_Post_Conditions,
          "row" & Row'img &
             " number rows" & Number_Rows'img);
    end Check_Row;
@@ -258,9 +260,10 @@ package body Configuration.Camera.State is
    ----------------------------------------------------------------
 
    begin
-      Log_In (Debug, row'img & column'img &
+      Log_In (Debug, "row" & row'img & " column" & column'img &
          " add prefix " & Add_Prefix'img &
          (if State.Images = Null then " null images" else " have image"));
+
 
       declare
          Path     : constant String := State.Images (Row, Column).Coerce;

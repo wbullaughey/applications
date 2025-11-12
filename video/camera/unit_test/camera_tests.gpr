@@ -40,7 +40,7 @@ project Camera_Tests is
    package Builder is
       case ALR_Environment.Build_Mode is
 
-         when "execute" =>
+         when "aunit" | "execute" =>
             for Executable ("camera_aunit.adb") use "camera_aunit";
 
          when "help_test" =>

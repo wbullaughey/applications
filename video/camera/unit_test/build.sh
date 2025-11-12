@@ -7,6 +7,7 @@ export WHICH=$1
 #   execute    - build application or library for subdirectory level
 #   help_test  - builds help_test at level
 
-echo build WHICH $WHICH
+export ALR_OPTIONS=-O0
+echo build WHICH $WHICH ALR_OPTIONS $ALR_OPTIONS
 
 ../../../../global_build.sh $WHICH program

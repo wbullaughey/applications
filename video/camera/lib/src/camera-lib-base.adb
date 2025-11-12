@@ -274,7 +274,7 @@ package body Camera.Lib.Base is
                                  Video.Lib.Dump ("response", Response (Response'first ..
                                     End_Read), Natural (Ack_Length + 1));
                               end if;
-                              Log_Here (Debug, "error code" & Hex (Response (3)));
+                              Log_Here (Debug, "error code " & Hex (Response (3)));
                               case Error_Code is
 
                                  when 2 =>      -- bad format

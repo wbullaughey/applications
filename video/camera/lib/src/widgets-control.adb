@@ -203,24 +203,13 @@ not_implemented;
       procedure Dump (
          Cell                    : in     Cell_Type;
          Enable                  : in     Boolean;
+         Caller                  : in     String;
          From                    : in     String := Ada_LIB.Trace.Here) is
       ----------------------------------------------------------------
 
       begin
 Not_Implemented;
 end Dump;
-
-      ----------------------------------------------------------------
-      overriding
-      function Get_Cell (
-         Column                  : in out Control_Column_Type
-      ) return Generic_Cell_Package.Cell_Class_Access is
-      ----------------------------------------------------------------
-
-      begin
-         return Generic_Cell_Package.Cell_Class_Access'(
-            Generic_Cell_Package.Cell_Class_Access (Column.Cell));
-      end Get_Cell;
 
       ----------------------------------------------------------------
       procedure Image_Click_Handler (

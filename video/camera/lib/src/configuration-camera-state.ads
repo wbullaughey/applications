@@ -100,7 +100,9 @@ package Configuration.Camera.State is
       Add_Prefix                 : in     Boolean := False
    ) return String
    with Pre => State.Is_Loaded and then
-               Check_Image (Column, Row);
+               Check_Image (
+                  Column   => Column,
+                  Row      => Row);
 
 -- overriding
 -- function Is_Loaded (

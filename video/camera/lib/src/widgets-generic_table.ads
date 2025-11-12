@@ -11,9 +11,19 @@ with Gnoga.GUI.Window;
 
 package Widgets.Generic_Table is
 
-   type Root_Cell_Type              is new Gnoga.Gui.Element.Common.DIV_Type
+   type Root_Cell_Type              is abstract new Gnoga.Gui.Element.Common.DIV_Type
                                        with null record;
    type Root_Cell_Class_Access      is access all Root_Cell_Type'class;
+
+   procedure Dump (
+      Cell                    : in     Root_Cell_Type;
+      Enable                  : in     Boolean;
+      Caller                  : in     String;
+      From                    : in     String := ADA_LIB.Trace.Here) is abstract;
+
+   function Has_Parent (
+      Cell                    : in     Root_Cell_Type
+   ) return Boolean;
 
    generic
 
@@ -27,10 +37,13 @@ package Widgets.Generic_Table is
       type Cell_Class_Access        is access all Cell_Type'class;
 
       type GNOGA_Column_Type        is abstract new Gnoga.Gui.Element.Table.
-                                       Table_Column_Type with null record;
+                                       Table_Column_Type with record
+         Cell                       : Cell_Class_Access := Null;
+      end record;
+
       type GNOGA_Column_Class_Access
                                     is access all GNOGA_Column_Type'class;
-      type Update_Parameter_Type is tagged null record;
+      type Update_Parameter_Type is tagged limited null record;
 --    type Verify_Parameter_Type is tagged null record;
 
       procedure Create_Cell (
@@ -42,16 +55,6 @@ package Widgets.Generic_Table is
          Column                  : in out GNOGA_Column_Type'class;
          Table_Column            : in     Column_Index_Type;
          Table_Row               : in     Row_Index_Type) is abstract;
-
-      procedure Dump (
-         Cell                    : in     Cell_Type;
-         Enable                  : in     Boolean;
-         From                    : in     String := ADA_LIB.Trace.Here
-      ) is abstract;
-
-      function Get_Cell (
-         Column                  : in out GNOGA_Column_Type
-      ) return Cell_Class_Access is abstract;
 
       procedure Update_Cell (
          Cell                    : in out Cell_Type;
@@ -136,6 +139,12 @@ package Widgets.Generic_Table is
                                     with private;
       type Row_Class_Access      is access all Row_Type'class;
 
+      procedure Dump (
+         Row                     : in     Row_Type;
+         Enable                  : in     Boolean;
+         Caller                  : in     String;
+         From                    : in     String := Ada_Lib.Trace.Here);
+
       procedure Update_Row (
          Row                     : in     Row_Type);
 
@@ -181,7 +190,8 @@ package Widgets.Generic_Table is
       ) return Generic_Cell_Package.Cell_Class_Access;
 
       function Get_Cell (     -- from form field
-         Object                  : in out Gnoga.Gui.Base.Base_Type'Class
+         Object                  : in out Gnoga.Gui.Base.Base_Type'Class ;
+         From                    : in     String := Ada_Lib.Trace.Here
       ) return Generic_Cell_Package.Cell_Class_Access;
 
       function Get_Column (
@@ -214,6 +224,10 @@ package Widgets.Generic_Table is
                                     Generic_Cell_Package.
                                        GNOGA_Column_Class_Access;
       type Columns_Access        is access Columns_Type;
+
+--    procedure Dump (
+--       Row                     : in     Row_Type;
+--       From                    : in     String := Ada_Lib.Trace.Here);
 
       type Headers_Type          is array (Column_Index_Type range <>) of
                                     Header_Type;

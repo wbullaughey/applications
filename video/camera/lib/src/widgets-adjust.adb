@@ -132,7 +132,7 @@ package body Widgets.Adjust is
                                     Outer_Package.Outer_Column_Access (
                                        Row.Get_Column (Column_Index));
       begin
-         return Column.Cell;
+         return Cell_Class_Access (Column.Cell);
       end;
    end Get_Cell;
 
@@ -543,24 +543,13 @@ not_implemented;
       procedure Dump (
          Cell                    : in     Cell_Type;
          Enable                  : in     Boolean;
+         Caller                  : in     String;
          From                    : in     String := Ada_LIB.Trace.Here) is
       ----------------------------------------------------------------
 
       begin
 Not_Implemented;
 end Dump;
-
-      ----------------------------------------------------------------
-      overriding
-      function Get_Cell (
-         Column                  : in out Outer_Column_Type
-      ) return Generic_Cell_Package.Cell_Class_Access is
-      ----------------------------------------------------------------
-
-      begin
-         return Generic_Cell_Package.Cell_Class_Access'(
-            Generic_Cell_Package.Cell_Class_Access (Column.Cell));
-      end Get_Cell;
 
       ----------------------------------------------------------------
       procedure On_Submit (

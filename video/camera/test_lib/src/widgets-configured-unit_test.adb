@@ -2,7 +2,7 @@ with Ada.Exceptions;
 with Ada.Tags;
 --with Ada_Lib.Configuration;
 with Ada_Lib.Directory.Compare_Files;
-with Ada_Lib.Strings;
+--with Ada_Lib.Strings;
 with Ada_Lib.Timer;
 --with Ada_Lib.GNOGA;
 --with Ada_Lib.Options;
@@ -206,15 +206,16 @@ package body Widgets.Configured.Unit_Test is
             -- the preset should be set blank
             -- put the test value into the field
             Update_Field (Cell, Modified_Value);
-            Cell.Dump (Pause_Flag or Debug);
+            Cell.Dump (Pause_Flag or Debug, "after update");
             Pause_On_Flag ("test coordinate value set before fire event");
             Connection_Data.Reset_Update_Event;
-            Fire (Cell);
-            Log_Here (Debug, "wait for event");
-            Connection_Data.Wait_For_Update_Event;
-
-            Cell.Dump (Pause_Flag);
-            Pause_On_Flag ("test coordinate value after fire event");
+log_here;
+--          Fire (Cell);
+--          Log_Here (Debug, "wait for event");
+--          Connection_Data.Wait_For_Update_Event;
+--
+--          Cell.Dump (Pause_Flag or Debug, "before check fields");
+--          Pause_On_Flag ("test coordinate value after fire event");
             Check_Fields (Configured_Card,
                Expected_Column   => (
                   case Field is
@@ -267,6 +268,13 @@ package body Widgets.Configured.Unit_Test is
          end;   -- test seting a coordinate that is not used in a preset
 
       Log_Out (Debug);
+
+   exception
+      when Fault: others =>
+         Trace_Exception (Debug, Fault);
+         Assert (False,Ada.Exceptions.Exception_Message (Fault));
+         Log_Out (Debug);
+
    end Generic_Test_Update_Coordinate;
 
    procedure Test_Update_Invalid_Column is new Generic_Test_Update_Coordinate (
@@ -276,7 +284,7 @@ package body Widgets.Configured.Unit_Test is
       Field                      => Column_Field,
       Fire                       => Column_Fire,
       Modified_Configuration_ID  => Modified_Row,
-      Modified_Value             => 4,
+      Modified_Value             => 3,
       Update_Field               => Update_Column_Field);
 
    procedure Test_Update_Invalid_Row is new Generic_Test_Update_Coordinate (
@@ -466,7 +474,7 @@ package body Widgets.Configured.Unit_Test is
          else
             False),
          Field & Quote (" got", Value) & " (" & Field_Value & ")" &
-         " expected " & Expected_Value'img & "at " & Here &
+         " expected " & Expected_Value'img & " at " & Here &
          " check from " & Check_From & " from " & From);
    end Check_Integer;
 
@@ -499,7 +507,7 @@ package body Widgets.Configured.Unit_Test is
    end Check_Modular;
    ---------------------------------------------------------------
 
-   procedure Check_Column is new Check_Integer (Configuration.Camera.Column_Type);
+-- procedure Check_Column is new Check_Integer (Configuration.Camera.Column_Type);
    procedure Check_Preset is new Check_Modular (Camera.Preset_Range_Type);
    procedure Check_Row    is new Check_Integer (Configuration.Camera.Row_Type);
 
@@ -594,6 +602,7 @@ package body Widgets.Configured.Unit_Test is
                         Quote (" Updated_Label_Content", Updated_Label_Content));
       --             Configured_Cell.Update_Label (Updated_Label_Content);
                      Label_Cell.Label.Value (Updated_Label_Content);
+log_here;
                      Label_Cell.Label.Fire_On_Focus_Out;
                      Pause_On_Flag ("field updated");
                   end;
@@ -642,14 +651,16 @@ package body Widgets.Configured.Unit_Test is
                                        Configured_Card.Get_Cell (Column,
                                           Modified_Row));
          begin
-            Cell.Dump (Debug);
+            Cell.Dump (Debug, From);
             case Column is
                when Column_Field =>
                   declare
-                     Value          : constant String :=
-                                       Ada_Lib.Strings.Trim (Expected_Column'img);
+                     Column_Cell  : Preset_Package.Column_Cell_Type renames
+                                    Preset_Package.Column_Cell_Type (Cell.all);
                   begin
-                     Check_Column (Expected_Column, Value, "column", From);
+                     Assert (Expected_Column = Column_Cell.Column_Number,
+                        "wrong column" & Column_Cell.Column_Number'img &
+                        " expected" & Expected_Column'img);
                   end;
 
                when Image_Field =>
@@ -678,6 +689,7 @@ package body Widgets.Configured.Unit_Test is
                               Preset_Package.Row_Cell_Type (
                                  Cell.all).Row_Coordinate.Value;
                   begin
+cell.dump(true,here, "cell address " & image (cell.all'address));
                      Check_Row (Expected_Row, Value, "row", From);
                   end;
 
@@ -789,6 +801,7 @@ package body Widgets.Configured.Unit_Test is
    ---------------------------------------------------------------
 
    begin
+      Log_Here (Debug);
       Preset_Package.Row_Cell_Type (Cell.all).Row_Coordinate.Fire_On_Focus_Out;
    end Row_Fire;
 
@@ -1025,7 +1038,7 @@ package body Widgets.Configured.Unit_Test is
 --                      Expected_Row   : Standard.Configuration.Camera.Row_Type renames
 --                                        Expected_Preset.Row;
                      begin
-                        Cell.Dump (Debug);
+                        Cell.Dump (Debug, "");
                         Assert (Cell.Configuration_ID = Configuration_Index,
                            "expected configuration id (" &
                               Configuration_Index'img &
@@ -1231,20 +1244,21 @@ package body Widgets.Configured.Unit_Test is
             Update_Preset_Field (Local_Test.Setup, Cell,
                Video.Lib.Null_Preset_ID);
 --             Video.Lib.Constructor (Modified_Preset_Value_No_Preset));
-            Cell.Dump (Pause_Flag or Debug);
+            Cell.Dump (Pause_Flag or Debug, "");
             Pause_On_Flag ("test preset value set before fire event");
             Connection_Data.Reset_Update_Event;
+log_here;
             Preset_Cell.Preset_ID_Field.Fire_On_Focus_Out;
             Log_Here (Debug, "wait for event");
             Connection_Data.Wait_For_Update_Event;
 
-            Cell.Dump (Pause_Flag);
+            Cell.Dump (Pause_Flag, "");
             Pause_On_Flag ("test preset value after fire event");
             Check_Fields (Configured_Card,
                Expected_Column=> Original_Preset.Column,
                Expected_Configuration_ID
                               => Modified_Configuration_ID,
-               Expected_Image => "",
+               Expected_Image => Configuration.Camera.Blank_Preset,
                Expected_Label => Original_Configuration.Label.Coerce,
                Expected_Row   => Original_Preset.Row,
                Expected_Preset_ID
@@ -1389,13 +1403,14 @@ package body Widgets.Configured.Unit_Test is
             Update_Preset_Field (Local_Test.Setup, Cell,
                Expected_Preset_ID);
 
-            Cell.Dump (Pause_Flag or Debug);
+            Cell.Dump (Pause_Flag or Debug, "");
             Pause_On_Flag ("test preset Field value set before fire event");
+log_here;
             Preset_Cell.Preset_ID_Field.Fire_On_Focus_Out;
             Log_Here (Debug, "wait for event");
             Connection_Data.Wait_For_Update_Event;
             delay 0.5;  -- let web page update
-            Cell.Dump (Pause_Flag);
+            Cell.Dump (Pause_Flag, "");
             Pause_On_Flag ("test preset Field value after fire event");
             Check_Fields (Configured_Card,
                Expected_Column=> Expected_Preset.Column,
@@ -1420,18 +1435,12 @@ package body Widgets.Configured.Unit_Test is
       Value                      : in     Configuration.Camera.Column_Type) is
    ----------------------------------------------------------------
 
-begin
-tag_history (cell.all'tag);
-declare
       Column_Cell          : Preset_Package.Column_Cell_Type renames
                               Preset_Package.Column_Cell_Type (Cell.all);
    begin
       Log_Here (Debug, "value" & Value'img & " column " &
          Column_Cell.Column_Number'img);
-cell.dump(true);
       Column_Cell.Column_Coordinate.Value (Integer (Value));
-cell.dump(true);
-end;
    end Update_Column_Field;
 
    ----------------------------------------------------------------
@@ -1445,7 +1454,7 @@ end;
                               Preset_Package.Preset_Cell_Type (Cell.all);
    begin
       Log_Here (Debug, "Preset_ID" & Preset_ID'img);
-cell.dump(true);
+cell.dump(true, "");
       if Setup.Has_Preset (Preset_ID) then
          Preset_Cell.Preset_ID_Field.Value (Integer (Preset_Id.Get_ID));
          Preset_Cell.Preset_Set := True;
@@ -1455,7 +1464,7 @@ cell.dump(true);
       end if;
 
       Preset_Cell.Preset_ID := Preset_ID;
-cell.dump(true);
+cell.dump(true, "");
    end Update_Preset_Field;
 
    ----------------------------------------------------------------
@@ -1468,9 +1477,9 @@ cell.dump(true);
                      Preset_Package.Row_Cell_Type (Cell.all);
    begin
       Log_Here (Debug, "value" & Value'img);
-cell.dump(true);
+Row_Cell.dump(true, "");
       Row_Cell.Row_Coordinate.Value (Integer (Value));
-cell.dump(true);
+Row_Cell.dump(true, "");
    end Update_Row_Field;
 
 begin

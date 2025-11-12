@@ -527,20 +527,26 @@ package body Camera.Commands is
    ---------------------------------------------------------------
 
       ID                      : constant Preset_Range_Type := Preset_ID.Get_ID;
+      Update_Speed            : Property_Type := Speed;
 
    begin
       Log_In (Debug, "preset id" & ID'img &
          " speed " & Speed'img &
          " wait " & Wait_Until_Finished'img);
 
-      if Speed = 0 then
-         declare
-            Speed             : constant Property_Type := Property_Type (
-                                 Configuration.Camera.State.Get_Default_Speed);
-         begin
-            Log_Here (Debug, "configure speed " & Speed'img);
-            Camera.Set_Preset_Speed (Speed);
-         end;
+      if Camera.Current_Speed = 0 or else -- no speed set yet
+            Speed /= 0 then               -- requested speed
+         if Speed = 0 then                -- use configured speed
+            declare
+               Speed             : constant Property_Type := Property_Type (
+                                    Configuration.Camera.State.Get_Default_Speed);
+            begin
+               Log_Here (Debug, "configure speed " & Speed'img);
+               Update_Speed := Speed;
+            end;
+         end if;
+
+         Camera.Set_Preset_Speed (Update_Speed);
       end if;
 
       Camera.Process_Command (Standard.Camera.Lib.Base.Memory_Recall,
@@ -579,16 +585,27 @@ package body Camera.Commands is
    ----------------------------------------------------------------------------
 
    begin
-      Log_In (Debug, "speed " & Speed'img);
-      Camera.Process_Command (Standard.Camera.Lib.Base.Recall_Speed,
-         Options     => ( 1 =>
-               (
-                  Data           => Speed,
-                  Start          => 5,
-                  Mode           => Standard.Camera.Lib.Base.Fixed
-               )
-            ));
+      Log_In (Debug, "speed " & Speed'img &
+         " Current_Speed" & Camera.Current_Speed'img);
 
+      if Speed < 1 or else Speed > 16#18# then
+         raise Invalid_Parameter with "bad speed " & Hex (Speed) &
+            " limit 1 .. 0x18";
+      end if;
+
+      if Speed /= Camera.Current_Speed then
+         Log_Here (Debug, "update speed" & Speed'img);
+         Camera.Process_Command (Standard.Camera.Lib.Base.Recall_Speed,
+            Options     => ( 1 =>
+                  (
+                     Data           => Speed,
+                     Start          => 5,
+                     Mode           => Standard.Camera.Lib.Base.Fixed
+                  )
+               ));
+
+         Camera.Current_Speed := Speed;
+      end if;
       Log_Out (Debug);
    end Set_Preset_Speed;
 
