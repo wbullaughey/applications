@@ -118,8 +118,8 @@ package Configuration.Camera.Setup is
           Post => Setup.Is_Loaded;
 
    function Make_Image_Name (
-      Row                        : in     Configuration.Camera.Row_Type;
-      Column                     : in     Configuration.Camera.Column_Type
+      Row                        : in     Row_Type;
+      Column                     : in     Column_Type
    ) return String;
 
    function Configuration_Label (

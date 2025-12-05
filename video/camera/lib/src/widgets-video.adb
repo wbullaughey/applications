@@ -1,4 +1,4 @@
-with ADA_LIB.Trace; use ADA_LIB.Trace;
+with Ada_Lib.Trace; use Ada_Lib.Trace;
 --with GNOGA_Ada_Lib;
 --with Main;
 
@@ -30,6 +30,6 @@ package body Widgets.Video is
 begin
 --Debug := True;
 --Trace_Options := True;
-   Log_Here (Elaborate or Trace_Options or Debug);
+   Log_Here (Elaborate or Trace_Options or Debug, "elaborate");
 end Widgets.Video;
 

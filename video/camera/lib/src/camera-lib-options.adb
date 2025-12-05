@@ -10,7 +10,7 @@ with Ada_Lib.Options;
 with ADA_LIB.OS;
 with Ada_Lib.Options.Runstring;
 --with ADA_LIB.Text;
-with ADA_LIB.Trace; use ADA_LIB.Trace;
+with Ada_Lib.Trace; use Ada_Lib.Trace;
 with Command_Name;
 --with Configuration.Camera.State;
 --with Configuration.State;
@@ -94,7 +94,7 @@ package body Camera.Lib.Options is
          Ada_Lib.Options.Runstring.Without_Parameters,
          Options_Without_Parameters);
 
---    Configuration.Camera.State.Global_Camera_State :=
+--    Configuration.Camera.State.Read_Only_Global_Camera_State :=
 --       new Configuration.Camera.State.State_Type;
 
       return Log_Out (

@@ -2,7 +2,7 @@ with ADA_LIB.Command_Line_Iterator;
 with GNOGA_Options;
 with Ada_Lib.Options.Actual;
 with ADA_LIB.Strings.Unlimited;
---with ADA_LIB.Trace;
+--with Ada_Lib.Trace;
 --with Ada_Lib.Socket_IO;
 with Gnoga.Gui.Base;
 --with Camera.Lib;
@@ -25,7 +25,7 @@ package Camera.Lib.Options is
    -- type used for application options
    type Program_Options_Type     is limited new Ada_Lib.Options.Actual.
                                     Program_Options_Type with record
-      Camera_Library             : aliased Camera.Lib.Options_Type;
+      Camera_Library             : aliased Camera.Lib.Library_Options_Type;
       Setup_Path                 : Ada_Lib.Strings.Unlimited.String_Type;
       State_Path                 : Ada_Lib.Strings.Unlimited.String_Type;
       Debug                      : Boolean := False;

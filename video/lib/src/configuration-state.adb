@@ -8,10 +8,12 @@ package body Configuration.State is
 
    Address_Key                   : constant Address_Key_Type := (
                                     Local    => new String'("local_camera"),
-                                    Remote   => new String'("remote_camera"));
+                                    Remote   => new String'("remote_camera"),
+                                    No_Location => new String' ("no camera"));
    Port_Key                      : constant Address_Key_Type := (
                                     Local    => new String'("local_port"),
-                                    Remote   => new String'("remote_port"));
+                                    Remote   => new String'("remote_port"),
+                                    No_Location => new String' ("no camera"));
 
    ----------------------------------------------------------------
    procedure Dump (
@@ -235,6 +237,7 @@ package body Configuration.State is
       Log_Here (Debug,
          Quote ("video address", State.Video_Address.Image) &
          Quote ("video port", State.Video_Port'img));
+
 
       State.Loaded := True;
       Log_Out (Debug);

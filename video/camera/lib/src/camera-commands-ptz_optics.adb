@@ -1,6 +1,6 @@
 with Ada_Lib.Trace; use Ada_Lib.Trace;
+with Camera.Lib.Base;
 with Hex_IO;
---with Ada_Lib.Socket_IO.Stream_IO;
 
 package body Camera.Commands.PTZ_Optics is
 
@@ -11,40 +11,38 @@ package body Camera.Commands.PTZ_Optics is
    Position_Request_Timeout      : constant Duration := 0.75;
    Position_Timeout              : constant Duration := 60.0;
    Power_Inquire_Timeout         : constant Duration := 120.0;
-   Commands                      : constant Array (Standard.Camera.Lib.Base.
-                                    Commands_Type) of Standard.Camera.Lib.Base.
-                                       Command_Type := (
-      Standard.Camera.Lib.Base.Auto_Focus           => ( 6, ( 16#81#,16#01#,16#04#,16#38#,16#02#,16#FF#, others => 0 ), True, Default_Response_Timeout, False, 0),
-      Standard.Camera.Lib.Base.Manual_Focus         => ( 6, ( 16#81#,16#01#,16#04#,16#38#,16#03#,16#FF#, others => 0 ), True, Default_Response_Timeout, False, 0),
-      Standard.Camera.Lib.Base.Position_Absolute    => ( 15, ( 16#81#,16#01#,16#06#,16#02#,
+   Commands                      : constant Array (Commands_Type) of Camera.Lib.Base.Command_Type := (
+      Auto_Focus           => ( 6, ( 16#81#,16#01#,16#04#,16#38#,16#02#,16#FF#, others => 0 ), True, Default_Response_Timeout, False, 0),
+      Manual_Focus         => ( 6, ( 16#81#,16#01#,16#04#,16#38#,16#03#,16#FF#, others => 0 ), True, Default_Response_Timeout, False, 0),
+      Position_Absolute    => ( 15, ( 16#81#,16#01#,16#06#,16#02#,
          16#00#, 16#00#, 16#00#, 16#00#, 16#00#, 16#00#, 16#00#, 16#00#, 16#00#, 16#00#,
          16#FF#, others => 0), False, Position_Timeout, False, 3),
-      Standard.Camera.Lib.Base.Position_Down_Left   => ( 9, ( 16#81#,16#01#,16#06#,16#01#,16#00#,16#00#,16#01#,16#02#,16#FF#, others => 0 ), True, Default_Response_Timeout, False, 0),
-      Standard.Camera.Lib.Base.Position_Down_Right  => ( 9, ( 16#81#,16#01#,16#06#,16#01#,16#00#,16#00#,16#02#,16#02#,16#FF#, others => 0 ), True, Default_Response_Timeout, False, 0),
-      Standard.Camera.Lib.Base.Position_Down        => ( 9, ( 16#81#,16#01#,16#06#,16#01#,16#00#,16#00#,16#03#,16#02#,16#FF#, others => 0 ), True, Default_Response_Timeout, False, 0),
-      Standard.Camera.Lib.Base.Position_Left        => ( 9, ( 16#81#,16#01#,16#06#,16#01#,16#00#,16#00#,16#01#,16#03#,16#FF#, others => 0 ), True, Default_Response_Timeout, False, 0),
-      Standard.Camera.Lib.Base.Position_Relative    => ( 15, ( 16#81#,16#01#,16#06#,16#03#,
+      Position_Down_Left   => ( 9, ( 16#81#,16#01#,16#06#,16#01#,16#00#,16#00#,16#01#,16#02#,16#FF#, others => 0 ), True, Default_Response_Timeout, False, 0),
+      Position_Down_Right  => ( 9, ( 16#81#,16#01#,16#06#,16#01#,16#00#,16#00#,16#02#,16#02#,16#FF#, others => 0 ), True, Default_Response_Timeout, False, 0),
+      Position_Down        => ( 9, ( 16#81#,16#01#,16#06#,16#01#,16#00#,16#00#,16#03#,16#02#,16#FF#, others => 0 ), True, Default_Response_Timeout, False, 0),
+      Position_Left        => ( 9, ( 16#81#,16#01#,16#06#,16#01#,16#00#,16#00#,16#01#,16#03#,16#FF#, others => 0 ), True, Default_Response_Timeout, False, 0),
+      Position_Relative    => ( 15, ( 16#81#,16#01#,16#06#,16#03#,
          16#00#, 16#00#, 16#00#, 16#00#, 16#00#, 16#00#, 16#00#, 16#00#, 16#00#, 16#00#,
          16#FF#, others => 0 ), True, Position_Timeout, False, 0),
-      Standard.Camera.Lib.Base.Position_Request     => ( 5, ( 16#81#,16#09#,16#06#,16#12#,16#FF#, others => 0 ), False, Position_Request_Timeout, True, 11),
-      Standard.Camera.Lib.Base.Position_Right       => ( 9, ( 16#81#,16#01#,16#06#,16#01#,16#00#,16#00#,16#02#,16#03#,16#FF#, others => 0 ), True, Default_Response_Timeout, False, 0),
-      Standard.Camera.Lib.Base.Position_Stop        => ( 9, ( 16#81#,16#01#,16#06#,16#01#,16#00#,16#00#,16#03#,16#03#,16#FF#, others => 0 ), True, Default_Response_Timeout, False, 0),
-      Standard.Camera.Lib.Base.Position_Up          => ( 9, ( 16#81#,16#01#,16#06#,16#01#,16#00#,16#00#,16#03#,16#01#,16#FF#, others => 0 ), True, Default_Response_Timeout, False, 0),
-      Standard.Camera.Lib.Base.Position_Up_Left     => ( 9, ( 16#81#,16#01#,16#06#,16#01#,16#00#,16#00#,16#01#,16#01#,16#FF#, others => 0 ), True, Default_Response_Timeout, False, 0),
-      Standard.Camera.Lib.Base.Position_Up_Right    => ( 9, ( 16#81#,16#01#,16#06#,16#01#,16#00#,16#00#,16#02#,16#01#,16#FF#, others => 0 ), True, Default_Response_Timeout, False, 0),
-      Standard.Camera.Lib.Base.Memory_Recall        => ( 7, ( 16#81#,16#01#,16#04#,16#3F#,16#02#,16#02#,16#FF#, others => 0 ), True, Position_Timeout, False, 0),
-      Standard.Camera.Lib.Base.Memory_Set           => ( 7, ( 16#81#,16#01#,16#04#,16#3F#,16#02#,16#01#,16#FF#, others => 0 ), True, Default_Response_Timeout, False, 0),
-      Standard.Camera.Lib.Base.Memory_Reset         => ( 7, ( 16#81#,16#01#,16#04#,16#3F#,16#02#,16#00#,16#FF#, others => 0 ), True, Default_Response_Timeout, False, 0),
-      Standard.Camera.Lib.Base.Power                => ( 6, ( 16#81#,16#01#,16#04#,16#00#,16#00#,16#FF#, others => 0 ), False, Default_Response_Timeout, true, 3),
-      Standard.Camera.Lib.Base.Power_Inquire        => ( 5, ( 16#81#,16#09#,16#04#,16#00#,16#FF#, others => 0 ), False, Power_Inquire_Timeout, True, 4),
-      Standard.Camera.Lib.Base.Recall_Speed         => ( 6, ( 16#81#,16#01#,16#06#,16#01#,16#00#,16#FF#, others => 0 ), True, Default_Response_Timeout, False, 0),
-      Standard.Camera.Lib.Base.Zoom_Direct          => ( 9, ( 16#81#,16#01#,16#04#,16#47#,16#00#,16#00#,16#00#,16#00#,16#FF#, others => 0 ), True, Default_Response_Timeout, False, 0),
-      Standard.Camera.Lib.Base.Zoom_Stop            => ( 6, ( 16#81#,16#01#,16#04#,16#07#,16#00#,16#FF#, others => 0 ), True, Default_Response_Timeout, False, 0),
-      Standard.Camera.Lib.Base.Zoom_Inquire         => ( 5, ( 16#81#,16#09#,16#04#,16#47#,16#FF#, others => 0 ), False, Default_Response_Timeout, True, 7),
-      Standard.Camera.Lib.Base.Zoom_Tele_Standard   => ( 6, ( 16#81#,16#01#,16#04#,16#07#,16#02#,16#FF#, others => 0 ), True, Position_Timeout, False, 0),
-      Standard.Camera.Lib.Base.Zoom_Tele_Variable   => ( 6, ( 16#81#,16#01#,16#04#,16#07#,16#20#,16#FF#, others => 0 ), True, Position_Timeout, False, 0),
-      Standard.Camera.Lib.Base.Zoom_Wide_Standard   => ( 6, ( 16#81#,16#01#,16#04#,16#07#,16#03#,16#FF#, others => 0 ), True, Position_Timeout, False, 0),
-      Standard.Camera.Lib.Base.Zoom_Wide_Variable   => ( 6, ( 16#81#,16#01#,16#04#,16#07#,16#30#,16#FF#, others => 0 ), True, Position_Timeout, False, 0)
+      Position_Request     => ( 5, ( 16#81#,16#09#,16#06#,16#12#,16#FF#, others => 0 ), False, Position_Request_Timeout, True, 11),
+      Position_Right       => ( 9, ( 16#81#,16#01#,16#06#,16#01#,16#00#,16#00#,16#02#,16#03#,16#FF#, others => 0 ), True, Default_Response_Timeout, False, 0),
+      Position_Stop        => ( 9, ( 16#81#,16#01#,16#06#,16#01#,16#00#,16#00#,16#03#,16#03#,16#FF#, others => 0 ), True, Default_Response_Timeout, False, 0),
+      Position_Up          => ( 9, ( 16#81#,16#01#,16#06#,16#01#,16#00#,16#00#,16#03#,16#01#,16#FF#, others => 0 ), True, Default_Response_Timeout, False, 0),
+      Position_Up_Left     => ( 9, ( 16#81#,16#01#,16#06#,16#01#,16#00#,16#00#,16#01#,16#01#,16#FF#, others => 0 ), True, Default_Response_Timeout, False, 0),
+      Position_Up_Right    => ( 9, ( 16#81#,16#01#,16#06#,16#01#,16#00#,16#00#,16#02#,16#01#,16#FF#, others => 0 ), True, Default_Response_Timeout, False, 0),
+      Memory_Recall        => ( 7, ( 16#81#,16#01#,16#04#,16#3F#,16#02#,16#02#,16#FF#, others => 0 ), True, Position_Timeout, False, 0),
+      Memory_Set           => ( 7, ( 16#81#,16#01#,16#04#,16#3F#,16#02#,16#01#,16#FF#, others => 0 ), True, Default_Response_Timeout, False, 0),
+      Memory_Reset         => ( 7, ( 16#81#,16#01#,16#04#,16#3F#,16#02#,16#00#,16#FF#, others => 0 ), True, Default_Response_Timeout, False, 0),
+      Power                => ( 6, ( 16#81#,16#01#,16#04#,16#00#,16#00#,16#FF#, others => 0 ), False, Default_Response_Timeout, true, 3),
+      Power_Inquire        => ( 5, ( 16#81#,16#09#,16#04#,16#00#,16#FF#, others => 0 ), False, Power_Inquire_Timeout, True, 4),
+      Recall_Speed         => ( 6, ( 16#81#,16#01#,16#06#,16#01#,16#00#,16#FF#, others => 0 ), True, Default_Response_Timeout, False, 0),
+      Zoom_Direct          => ( 9, ( 16#81#,16#01#,16#04#,16#47#,16#00#,16#00#,16#00#,16#00#,16#FF#, others => 0 ), True, Default_Response_Timeout, False, 0),
+      Zoom_Stop            => ( 6, ( 16#81#,16#01#,16#04#,16#07#,16#00#,16#FF#, others => 0 ), True, Default_Response_Timeout, False, 0),
+      Zoom_Inquire         => ( 5, ( 16#81#,16#09#,16#04#,16#47#,16#FF#, others => 0 ), False, Default_Response_Timeout, True, 7),
+      Zoom_Tele_Standard   => ( 6, ( 16#81#,16#01#,16#04#,16#07#,16#02#,16#FF#, others => 0 ), True, Position_Timeout, False, 0),
+      Zoom_Tele_Variable   => ( 6, ( 16#81#,16#01#,16#04#,16#07#,16#20#,16#FF#, others => 0 ), True, Position_Timeout, False, 0),
+      Zoom_Wide_Standard   => ( 6, ( 16#81#,16#01#,16#04#,16#07#,16#03#,16#FF#, others => 0 ), True, Position_Timeout, False, 0),
+      Zoom_Wide_Variable   => ( 6, ( 16#81#,16#01#,16#04#,16#07#,16#30#,16#FF#, others => 0 ), True, Position_Timeout, False, 0)
    );
 
    ----------------------------------------------------------------------------
@@ -115,7 +113,7 @@ package body Camera.Commands.PTZ_Optics is
 
    ----------------------------------------------------------------------------
    overriding
-   function Get_Camera_Speed (
+   function Get_Camera_Speed_Range (
       Camera            : in     PTZ_Optics_Type;
       Which             : in     Which_Speed_Type := Select_Default_Speed
    ) return Data_Type is
@@ -129,13 +127,13 @@ package body Camera.Commands.PTZ_Optics is
 
    begin
       return Speeds (Which);
-   end Get_Camera_Speed;
+   end Get_Camera_Speed_Range;
 
    ----------------------------------------------------------------------------
    overriding
    function Get_Timeout (
       Camera                     : in     PTZ_Optics_Type;
-      Command                    : in     Standard.Camera.Lib.Base.Commands_Type
+      Command                    : in     Commands_Type
    ) return Duration is
    ----------------------------------------------------------------------------
 
@@ -215,7 +213,7 @@ package body Camera.Commands.PTZ_Optics is
    overriding
    procedure Send_Command (
       Camera                     : in out PTZ_Optics_Type;
-      Command                    : in     Standard.Camera.Lib.Base.Commands_Type;
+      Command                    : in     Commands_Type;
       Get_Ack                    :    out Boolean;
       Has_Response               :    out Boolean;
       Response_Length            :    out Index_Type) is
@@ -223,7 +221,7 @@ package body Camera.Commands.PTZ_Optics is
 
    begin
       Log_In (Debug, "Command " & Command'img);
-      Send_Command (Camera, Command, Standard.Camera.Lib.Base.Null_Option,
+      Send_Command (Camera, Command, Lib.Base.Null_Option,
          Get_Ack, Has_Response, Response_Length);
       Log_Out (Debug);
    end Send_Command;
@@ -232,21 +230,21 @@ package body Camera.Commands.PTZ_Optics is
    overriding
    procedure Send_Command (
       Camera                     : in out PTZ_Optics_Type;
-      Command                    : in     Standard.Camera.Lib.Base.Commands_Type;
-      Options                    : in     Standard.Camera.Lib.Base.Options_Type;
+      Command                    : in     Commands_Type;
+      Options                    : in     Command_Options_Type;
       Get_Ack                    :    out Boolean;
       Has_Response               :    out Boolean;
       Response_Length            :    out Index_Type) is
    ----------------------------------------------------------------------------
 
-      Selected_Command           : Standard.Camera.Lib.Base.Command_Type renames
+      Selected_Command           : Lib.Base.Command_Type renames
                                     Commands (Command);
       Buffer                     : Video.Lib.Maximum_Command_Type :=
                                     Selected_Command.Command;
 
    begin
       Log_In (Debug, "Command " & Command'img);
-      Standard.Camera.Lib.Base.Apply_Parameters (Buffer, Options);
+      Lib.Base.Apply_Parameters (Buffer, Options);
       Camera.Write (Buffer ( 1 .. Selected_Command.Length));
       Get_Ack := Selected_Command.Get_Ack;
       Has_Response := Selected_Command.Has_Response;

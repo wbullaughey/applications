@@ -1,6 +1,6 @@
 with Ada.Text_IO; use Ada.Text_IO;
 with Ada_Lib.Strings; use Ada_Lib.Strings;
-with ADA_LIB.Trace; use ADA_LIB.Trace;
+with Ada_Lib.Trace; use Ada_Lib.Trace;
 
 package body Widgets.Generic_Table is
 

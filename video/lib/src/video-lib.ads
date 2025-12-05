@@ -26,7 +26,7 @@ package Video.Lib is
    subtype Buffer_Type           is Ada_Lib.Socket_IO.Buffer_Type;
    subtype Data_Type             is Ada_Lib.Socket_IO.Data_Type;
    subtype Index_Type            is Ada_Lib.Socket_IO.Index_Type;
-   type Location_Type            is (Local, Remote);
+   type Location_Type            is (Local, Remote, No_Location);
    type Port_Type                is new Ada_Lib.Socket_IO.Port_Type;
    subtype Maximum_Command_Type is Buffer_Type (1 .. 20);
    subtype Maximum_Response_Type
@@ -126,10 +126,14 @@ package Video.Lib is
    type Options_Type             is limited new Ada_Lib.Options.Actual.
                                     Nested_Options_Type with record
       Address_Kind               : Address_Kind_Type;
+      Directory                  : ADA_LIB.Strings.Unlimited.String_Type;
+                                    -- set by runstring option 'c'
       If_Emulation               : Boolean := False;
       Location                   : Location_Type := Remote;
-      Camera_Address             : Ada_Lib.Socket_IO.Address_Access := Null;
-      Port_Number                : Port_Type;
+-- should be in state
+--    Camera_Address             : Ada_Lib.Socket_IO.Address_Access := Null;
+--    Port_Number                : Port_Type;
+      Simulate                   : Boolean := False;
    end record;
 
    type Options_Access           is access all Options_Type;
@@ -191,7 +195,6 @@ package Video.Lib is
       Which_Preset               : in     Which_Preset_Type;
       Preset_ID                  : in     Preset_ID_Type);
 
-   Debug                         : Boolean := False;
    Null_Preset_ID                : constant Preset_ID_Type;
    Null_Preset_ID_Number         : constant Preset_Range_Type;
 -- Global_Video_Lib_Options      : Options_Constant_Class_Access := Null;

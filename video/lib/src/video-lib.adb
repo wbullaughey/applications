@@ -15,14 +15,15 @@ package body Video.Lib is
    use type Index_Type;
 
    Debug_Option                  : constant Character := 'V';
-   Options_Debug                 : Boolean := False;
+   Debug                         : Boolean := False;
    Options_With_Parameters       : aliased constant
                                     Ada_Lib.Options.Options_Type :=
                                        Ada_Lib.Options.Create_Options (
-                                          "V", Ada_Lib.Options.Unmodified);
+                                          "dV", Ada_Lib.Options.Unmodified);
    Options_Without_Parameters    : aliased constant
                                     Ada_Lib.Options.Options_Type :=
-                                       Ada_Lib.Options.Null_Options;
+                                       Ada_Lib.Options.Create_Options (
+                                          "rS", Ada_Lib.Options.Unmodified);
    Presets                       : array (Which_Preset_Type) of
                                     Preset_ID_Type := (
                                        others => (
@@ -39,7 +40,9 @@ package body Video.Lib is
       return (case Options.Location is
          when Video.Lib.Remote => URL,
 
-         when Video.Lib.Local => IP);
+         when Video.Lib.Local => IP,
+
+         when Video.Lib.No_Location => NOT_SET);
    end Address_Kind;
 
    ---------------------------------------------------------------
@@ -187,15 +190,18 @@ package body Video.Lib is
    -------------------------------------------------------------------------
 
    begin
-      Log_In (Options_Debug or Trace_Options, "from " & From);
+      Log_In (Debug or Trace_Options, "from " & From);
 
       Ada_Lib.Options.Runstring.Options.Register (
          Ada_Lib.Options.Runstring.With_Parameters,
          Options_With_Parameters);
+      Ada_Lib.Options.Runstring.Options.Register (
+         Ada_Lib.Options.Runstring.Without_Parameters,
+         Options_Without_Parameters);
 
       return Log_Out (Ada_Lib.Options.Actual.Nested_Options_Type (
             Options).Initialize,
-         Options_Debug or Trace_Options);
+         Debug or Trace_Options);
    end Initialize;
 
    -------------------------------------------------------------------------
@@ -238,7 +244,7 @@ package body Video.Lib is
    ----------------------------------------------------------------------------
 
    begin
-      Log_In (Options_Debug or Trace_Options, Option.Image);
+      Log_In (Debug or Trace_Options, Option.Image);
 
       if Ada_Lib.Options.Has_Option (Option, Options_With_Parameters,
             Options_Without_Parameters) then
@@ -247,18 +253,44 @@ package body Video.Lib is
             when Debug_Option =>
                Options.Trace_Parse (Iterator);
 
+            when 'd' =>
+               Options.Directory.Construct (Iterator.Get_Parameter);
+
+--          when 'p' => get it from configuration state
+--             Options.Port_Number := Port_Type (
+--                Ada_Lib.Socket_IO.Port_Type (Iterator.Get_Integer));
+
+            when 'r' =>    -- remote camera
+               if    Options.Simulate and then
+                     not Ada_Lib.Help_Test then
+                  Options.Bad_Option (
+                     "Remote option (r) and Simulate (E) are incompatable at " &
+                     Here);
+               end if;
+               Options.Location := Remote;
+--log_here ("remote " & Image (Options.Remote'address));
+
+            when 'S' =>    -- simulate Standard.Camera
+               if    Options.Location = Remote and then
+                     not Ada_Lib.Help_Test then
+                  Options.Bad_Option (
+                     "Remote option (r) and Simulate (E) are incompatable at " &
+                     Here);
+               end if;
+               Options.Simulate := True;
+
             when Others =>
-               Log_Exception (Options_Debug or Trace_Options);
+               Log_Exception (Debug or Trace_Options);
                raise Failed with "Has_Option incorrectly passed " & Option.Image;
 
          end case;
 
-         return Log_Out (True, Options_Debug or Trace_Options,
+         return Log_Out (True, Debug or Trace_Options,
             " option" & Option.Image & " handled");
       else
          return Log_Out (Ada_Lib.Options.Actual.Nested_Options_Type (
             Options).Process_Option (Iterator, Option),
-            Trace_Options or Options_Debug, "other option" & Option.Image);
+            Trace_Options or Debug, "other option" & Option.Image);
       end if;
    end Process_Option;
 
@@ -272,13 +304,19 @@ package body Video.Lib is
       Component                  : constant String := "Video Lib";
 
    begin
-      Log_In (Options_Debug or Trace_Options, "help mode " & Help_Mode'img);
+      Log_In (Debug or Trace_Options, "help mode " & Help_Mode'img);
 
       case Help_Mode is
 
       when Ada_Lib.Options.Program =>
-         Log_Here (Options_Debug or Trace_Options, Quote ("Component", Component));
+         Log_Here (Debug or Trace_Options, Quote ("Component", Component));
 
+         Ada_Lib.Help.Add_Option ('d', "directory", "current directory",
+            Component);
+--       Ada_Lib.Help.Add_Option ('p', "port option",
+--          "port option", Component);
+         Ada_Lib.Help.Add_Option ('r', "", "remote camera", Component);
+         Ada_Lib.Help.Add_Option ('s', "", "simulate camera", Component);
          Ada_Lib.Help.Add_Option (Debug_Option, "trace options",
             "trace options", Component);
          New_Line;
@@ -288,15 +326,12 @@ package body Video.Lib is
 
          Put_Line (Component & " trace options (-" & Debug_Option & ")");
          Put_Line ("      a               all");
---       Put_Line ("      c               Configuration.State debug");
-         Put_Line ("      l               library debug");
-         Put_Line ("      o               options debug");
---       Put_Line ("      s               Trace simulator");
+         Put_Line ("      d               Debug_Option");
 
       end case;
 
       Ada_Lib.Options.Actual.Nested_Options_Type (Options).Program_Help (Help_Mode);
-      Log_Out (Options_Debug or Trace_Options);
+      Log_Out (Debug or Trace_Options);
    end Program_Help;
 
    ----------------------------------------------------------------------------
@@ -333,23 +368,19 @@ package body Video.Lib is
       Parameter                  : constant String := Iterator.Get_Parameter;
 
    begin
-      Log (Trace_Options or Options_Debug, Here, Who & Quote (" Parameter", Parameter));
+      Log (Trace_Options or Debug, Here, Who & Quote (" Parameter", Parameter));
 
       for Trace of Parameter loop
-         Log_Here (Trace_Options or Options_Debug, Quote ("Trace", Trace));
+         Log_Here (Trace_Options or Debug, Quote ("Trace", Trace));
+
          case Trace is
 
             when 'a' =>
                Debug := True;
-               Options_Debug := True;
-
---          when 'C' =>
-
-            when 'l' =>
                Debug := True;
 
-            when 'o' =>
-               Options_Debug := True;
+            when 'd' =>
+               Debug := True;
 
             when others =>
                Options.Bad_Option (Quote (
@@ -362,10 +393,10 @@ package body Video.Lib is
 
 begin
 --Elaborate := True;
-   Options_Debug := Debug_Options.Debug_All;
---Debug := True;
+   Debug := Debug_Options.Debug_All;
+--Debug_Option := True;
 --Trace_Options := True;
-   Log_Here (Elaborate or Options_Debug or Debug or Trace_Options);
+   Log_Here (Elaborate or Debug or Trace_Options);
 
 exception
    when Fault: others =>

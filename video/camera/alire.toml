@@ -9,6 +9,8 @@ licenses = "MIT OR Apache-2.0 WITH LLVM-exception"
 website = ""
 tags = []
 
+project-files = "../../../alire/templates/alr_environment_config.gpr"
+
 executables = ["camera_control"]
 
 [[depends-on]]

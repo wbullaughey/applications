@@ -296,10 +296,10 @@ package body Configuration.Camera.Setup is
       Setup.Path.Construct (Name);
       -- allocate array for presets
       Setup.Presets := new Presets_Type (
-         Standard.Camera.Preset_Range_Type'first .. Last_Preset_ID_Range);
+         Video.Lib.Preset_Range_Type'first .. Last_Preset_ID_Range);
 
       -- lookup preset names in config
-      for Preset_Number in Standard.Camera.Preset_Range_Type'first ..
+      for Preset_Number in Video.Lib.Preset_Range_Type'first ..
             Last_Preset_ID_Range loop
          declare
             Name                 : constant String :=
@@ -373,7 +373,7 @@ package body Configuration.Camera.Setup is
                                        Video.Lib.Null_Preset_ID
                                     else
                                        Video.Lib.Constructor (
-                                          Standard.Camera.Preset_Range_Type (
+                                          Video.Lib.Preset_Range_Type (
                                              Iterator.Get_Number (
                                                 Do_Next => True))));
                   Label          : constant String := (if Iterator.At_End then
@@ -552,7 +552,7 @@ package body Configuration.Camera.Setup is
          Quote ("Current_Directory", Current_Directory) &
          Quote (" path", Setup.Path));
 
-      for Preset_Number in Standard.Camera.Preset_Range_Type'first ..
+      for Preset_Number in Video.Lib.Preset_Range_Type'first ..
             Video.Lib.Get_Last_Preset_ID.Get_ID loop
          declare
             Name                 : constant String :=

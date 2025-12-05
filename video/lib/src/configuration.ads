@@ -5,13 +5,21 @@ package Configuration is
 
    subtype Address_Kind_Type     is Ada_Lib.Socket_IO.Address_Kind_Type;
 
-   IP                            : Address_Kind_Type renames
-                                    Ada_Lib.Socket_IO.IP;
-   NOT_SET                            : Address_Kind_Type renames
-                                    Ada_Lib.Socket_IO.NOT_SET;
-   URL                            : Address_Kind_Type renames
-                                    Ada_Lib.Socket_IO.URL;
-   type Root_Setup_Type          is tagged private;
+   type Column_Type           is new Positive;
+   type Configuration_ID_Type is new Positive;
+   type Row_Type              is new Positive;
+   type Speed_Type            is new Positive;
+
+   IP                         : Address_Kind_Type renames
+                                 Ada_Lib.Socket_IO.IP;
+   No_Configuration           : constant Configuration_ID_Type :=
+                                 Configuration_ID_Type'last;
+   NOT_SET                    : Address_Kind_Type renames
+                                 Ada_Lib.Socket_IO.NOT_SET;
+   Row_Not_Set                : constant := Row_Type'last;
+   URL                        : Address_Kind_Type renames
+                                 Ada_Lib.Socket_IO.URL;
+   type Root_Setup_Type       is tagged private;
 
    function Is_Loaded (
       Setup                      : in     Root_Setup_Type;

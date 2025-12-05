@@ -1,7 +1,8 @@
 with Ada.Streams;
 with Ada.Text_IO; use Ada.Text_IO;
-with ADA_LIB.Trace; use ADA_LIB.Trace;
+with Ada_Lib.Trace; use Ada_Lib.Trace;
 with Camera.Lib;
+--with Camera.Main;
 with Configuration.Camera.State;
 with Hex_IO;
 with Interfaces;
@@ -100,8 +101,8 @@ package body Camera.Commands is
             Response_Buffer      : Maximum_Response_Type;
 
          begin
-            Camera.Process_Command (Standard.Camera.Lib.Base.Position_Request,
-               Options           => Standard.Camera.Lib.Base.Null_Option,
+            Camera.Process_Command (Position_Request,
+               Options           => Lib.Base.Null_Option,
                Response          => Response_Buffer);
 
             if Debug then
@@ -177,8 +178,8 @@ package body Camera.Commands is
 
    begin
       Log_In (Debug);
-      Camera.Process_Command (Standard.Camera.Lib.Base.Power_Inquire,
-         Options           => Standard.Camera.Lib.Base.Null_Option,
+      Camera.Process_Command (Power_Inquire,
+         Options           => Lib.Base.Null_Option,
          Response          => Response_Buffer);
 
       if Debug then
@@ -228,8 +229,8 @@ package body Camera.Commands is
             Timeout              : constant Ada_Lib.Time.Time_Type :=
                                     Ada_Lib.Time.Now + 60.0;
          begin
-            Camera.Process_Command (Standard.Camera.Lib.Base.Zoom_Inquire,
-               Options           => Standard.Camera.Lib.Base.Null_Option,
+            Camera.Process_Command (Zoom_Inquire,
+               Options           => Lib.Base.Null_Option,
                Response          => Response_Buffer);
 
             if Debug then
@@ -280,26 +281,26 @@ package body Camera.Commands is
 
    begin
       Log_In (Debug, "pan " & Pan'img & " tilt " & Tilt'img);
-      Camera.Process_Command (Standard.Camera.Lib.Base.Position_Relative,
+      Camera.Process_Command (Position_Relative,
          Options     => (
             (
                Data           => Pan_Speed,
-               Mode           => Standard.Camera.Lib.Base.Fixed,
+               Mode           => Fixed,
                Start          => 5
             ),
             (
                Data           => Tilt_Speed,
-               Mode           => Standard.Camera.Lib.Base.Fixed,
+               Mode           => Fixed,
                Start          => 6
             ),
             (
-               Mode           => Standard.Camera.Lib.Base.Variable,
+               Mode           => Variable,
                Start          => 7,
                Value          => Convert (Pan),
                Width          => 4
             ),
             (
-               Mode           => Standard.Camera.Lib.Base.Variable,
+               Mode           => Variable,
                Start          => 11,
                Value          => Convert (Tilt),
                Width          => 4
@@ -334,27 +335,27 @@ package body Camera.Commands is
 
    begin
       Log_In (Debug, "pan" & Pan'img & " tilt" & Tilt'img);
-      Camera.Process_Command (Standard.Camera.Lib.Base.Position_Absolute,
+      Camera.Process_Command (Position_Absolute,
          Options     => (
             (
                Data           => Pan_Speed,
                Start          => 5,
-               Mode           => Standard.Camera.Lib.Base.Fixed
+               Mode           => Fixed
             ),
             (
                Data           => Tilt_Speed,
                Start          => 6,
-               Mode           => Standard.Camera.Lib.Base.Fixed
+               Mode           => Fixed
             ),
             (
                Start          => 7,
-               Mode           => Standard.Camera.Lib.Base.Variable,
+               Mode           => Variable,
                Value          => Convert (Pan),
                Width          => 4
             ),
             (
                Start          => 11,
-               Mode           => Standard.Camera.Lib.Base.Variable,
+               Mode           => Variable,
                Value          => Convert (Tilt),
                Width          => 4
             )
@@ -384,11 +385,11 @@ package body Camera.Commands is
 
    begin
       Log_In (Debug, "Zoom" & Value'img);
-      Camera.Process_Command (Standard.Camera.Lib.Base.Zoom_Direct,
+      Camera.Process_Command (Zoom_Direct,
          Options     => (
             1  => (
                   Start          => 5,
-                  Mode           => Standard.Camera.Lib.Base.Variable,
+                  Mode           => Variable,
                   Value          => Convert (Value),
                   Width          => 4
                )
@@ -415,16 +416,17 @@ package body Camera.Commands is
       Wait_For_Complete          : in     Boolean := True) is
    ---------------------------------------------------------------
 
+
    Command  : constant array (Zoom_Mode_Type) of
-               Standard.Camera.Lib.Base.Commands_Type := (
-                  Standard.Camera.Lib.Base.Zoom_Tele_Standard,
-                  Standard.Camera.Lib.Base.Zoom_Wide_Standard);
+               Standard.Camera.Commands_Type := (
+                  Zoom_Tele_Standard,
+                  Zoom_Wide_Standard);
 
    begin
       Log_In (Debug, "mode " & Mode'img &
          " Wait_For_Complete " & Wait_For_Complete'img);
       Camera.Process_Command (Command (Mode),
-         Options           => Standard.Camera.Lib.Base.Null_Option);
+         Options           => Lib.Base.Null_Option);
 
       if Wait_For_Complete then
          delay Delay_After_Move;
@@ -468,12 +470,12 @@ package body Camera.Commands is
 
             when False  => -- turning power off
                -- normal command processing
-               Camera.Process_Command (Standard.Camera.Lib.Base.Power,
+               Camera.Process_Command (Power,
                   Options     => ( 1 =>
                         (
                            Data           => Data (On),
                            Start          => 5,
-                           Mode           => Standard.Camera.Lib.Base.Fixed
+                           Mode           => Fixed
                         )
                      ));
 
@@ -486,7 +488,7 @@ package body Camera.Commands is
 
                begin
                   Camera_Type'class (Camera).Send_Command (
-                     Standard.Camera.Lib.Base.Power,
+                     Power,
                      Get_Ack, Has_Response, Response_Length);
                   Log_Here (Debug, "Get_Ack " & Get_Ack'img &
                      " Has_Response " & Has_Response'img &
@@ -498,7 +500,7 @@ package body Camera.Commands is
                   Camera_Type'class (Camera).Get_Response (Get_Ack,
                      Has_Response, Response, Response_Length,
                      Camera_Type'class (Camera).Get_Timeout (
-                        Standard.Camera.Lib.Base.Power));
+                        Power));
                end;
 
          end case;
@@ -549,12 +551,12 @@ package body Camera.Commands is
          Camera.Set_Preset_Speed (Update_Speed);
       end if;
 
-      Camera.Process_Command (Standard.Camera.Lib.Base.Memory_Recall,
+      Camera.Process_Command (Memory_Recall,
          Options     => ( 1 =>
                (
                   Data           => ID,
                   Start          => 6,
-                  Mode           => Standard.Camera.Lib.Base.Fixed
+                  Mode           => Fixed
                )
             ));
 
@@ -595,12 +597,12 @@ package body Camera.Commands is
 
       if Speed /= Camera.Current_Speed then
          Log_Here (Debug, "update speed" & Speed'img);
-         Camera.Process_Command (Standard.Camera.Lib.Base.Recall_Speed,
+         Camera.Process_Command (Recall_Speed,
             Options     => ( 1 =>
                   (
                      Data           => Speed,
                      Start          => 5,
-                     Mode           => Standard.Camera.Lib.Base.Fixed
+                     Mode           => Fixed
                   )
                ));
 
@@ -618,9 +620,9 @@ package body Camera.Commands is
    ---------------------------------------------------------------
 
    Command  : constant array (Zoom_Mode_Type) of
-               Standard.Camera.Lib.Base.Commands_Type := (
-                  Standard.Camera.Lib.Base.Zoom_Tele_Variable,
-                  Standard.Camera.Lib.Base.Zoom_Wide_Variable);
+               Standard.Camera.Commands_Type := (
+                  Zoom_Tele_Variable,
+                  Zoom_Wide_Variable);
 
    begin
       Log_In (Debug, "Zoom" & Value'img);
@@ -629,7 +631,7 @@ package body Camera.Commands is
                (
                   Data           => Data_Type (Value),
                   Start          => 5,
-                  Mode           => Standard.Camera.Lib.Base.Fixed
+                  Mode           => Fixed
                )
             ));
 

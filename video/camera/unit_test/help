@@ -3,47 +3,46 @@ camera_aunit
 
 
 camera_aunit command line options:
-    -1 <trace options>             : Camera Lib unit test            (Camera.Lib.Unit_Test)
-    -2 <trace options>             : Camera Lib Debug                (Camera Lib)
-    -?                             : this message                    (Ada_Lib)
-    -a <trace options>             : Ada_Lib library trace options   (Ada_Lib)
-    -c <directory>                 : current directory               (Camera Lib)
-    -e <routine>                   : routine to test.                (test_ada_lib)
-    -E                             : simulate camera                 (Camera Lib)
-    -g <trace options>             : GNOGA Unit Test traces          (Ada_Lib.GNOGA)
-    -G <trace options>             : GNOGA traces                    (GNOGA library)
-    -h                             : this message                    (Ada_Lib)
-    -p <port option>               : port option                     (Camera Lib)
-    -P                             : pause                           (Ada_Lib)
-    -r                             : remote camera                   (Camera Lib)
-    -s <suite to test>             : select test suite to run.       (test_ada_lib)
-    -t <trace options>             : ada_lib trace options           (Ada_Lib Unit Test)
-    -U <unit test trace Ada_Lib.>  : select trace                    (test_ada_lib)
-    -v                             : verbose                         (Ada_Lib)
-    -V <trace options>             : trace options                   (Video Lib)
-    -w <port number>               : Web server port                 (GNOGA library)
-    -x                             : exit on tests complete          (test_ada_lib)
-    -@c                            : trace test condition            (Ada_Lib)
-    -@d                            : driver suites                   (test_ada_lib)
-    -@D <suites>                   : enable default disabled suites. (test_ada_lib)
-    -@i                            : indent trace                    (Ada_Lib)
-    -@l                            : List test suites                (test_ada_lib)
-    -@m                            : manual operations.              (test_ada_lib)
-    -@n <number of random seeds>   : number seeds.                   (test_ada_lib)
-    -@p                            : include program in trace        (Ada_Lib)
-    -@P                            : Print test suites.              (test_ada_lib)
-    -@R <seed>                     : set random seed                 (test_ada_lib)
-    -@S                            : report random seed              (test_ada_lib)
-    -@t                            : include task in trace           (Ada_Lib)
-    -@u                            : use random seed                 (test_ada_lib)
-    -@x                            : exclude time in trace           (Ada_Lib)
+    -1 <trace options>            : Camera Lib unit test            (Camera.Lib.Unit_Test)
+    -2 <trace options>            : Camera Lib Debug                (Camera Lib)
+    -?                            : this message                    (Ada_Lib)
+    -a <trace options>            : Ada_Lib library trace options   (Ada_Lib)
+    -d <directory>                : current directory               (Video Lib)
+    -e <routine>                  : routine to test.                (test_ada_lib)
+    -g <trace options>            : GNOGA Unit Test traces          (Ada_Lib.GNOGA)
+    -G <trace options>            : GNOGA traces                    (GNOGA library)
+    -h                            : this message                    (Ada_Lib)
+    -P                            : pause                           (Ada_Lib)
+    -r                            : remote camera                   (Video Lib)
+    -s <suite to test>            : select test suite to run.       (test_ada_lib)
+    -s                            : simulate camera                 (Video Lib)
+    -t <trace options>            : ada_lib trace options           (Ada_Lib Unit Test)
+    -U <unit test trace Ada_Lib>  : select trace                    (test_ada_lib)
+    -v                            : verbose                         (Ada_Lib)
+    -V <trace options>            : trace options                   (Video Lib)
+    -w <port number>              : Web server port                 (GNOGA library)
+    -x                            : exit on tests complete          (test_ada_lib)
+    -@A <suites>                  : enable default disabled suites. (test_ada_lib)
+    -@c                           : trace test condition            (Ada_Lib)
+    -@d                           : driver suites                   (test_ada_lib)
+    -@i                           : indent trace                    (Ada_Lib)
+    -@l                           : List test suites                (test_ada_lib)
+    -@m                           : manual operations.              (test_ada_lib)
+    -@n <number of random seeds>  : number seeds.                   (test_ada_lib)
+    -@p                           : include program in trace        (Ada_Lib)
+    -@P                           : Print test suites.              (test_ada_lib)
+    -@R <seed>                    : set random seed                 (test_ada_lib)
+    -@S                           : report random seed              (test_ada_lib)
+    -@t                           : include task in trace           (Ada_Lib)
+    -@u                           : use random seed                 (test_ada_lib)
+    -@x                           : exclude time in trace           (Ada_Lib)
 
 
 Camera Lib trace options (-2)
       a               all
       b               Base.debug
       B               Camera.Lib.Base.debug
-      c               Configuration.Camera.Debug
+      c               camera configuration
       C               camera commands
       g               Widgets.Generic_Table
       l               camera Library
@@ -51,21 +50,19 @@ Camera Lib trace options (-2)
       m               Main Window
       s               Trace simulator
       S               configuration.state.Debug
-      T               Windows.Top
+      t               Camera.States.Debug
       V               Trace Video widgets
-      @a              Widgets.Adjust debug
-      @c              Widgets.Control debug
+      @a              Adjust Window
+      @c              Widgets.Control debyg
       @C              Widgets.Configured debug
       @l              List camera commands
-      @p              Configuration.Camera.Setup.Debug
       @s              Configuration
       @S              Configuration.Camera.State.Debug
 
 Video Lib trace options (-V)
       a               all
-      l               library debug
-      o               options debug
-Camera Lib Unit Test trace options (1)
+      d               Debug_Option
+Camera Lib Unit Test trace options -(1)
       a               all
       A               Widgets.Adjust unit test trace
       b               Base Command_Tests
@@ -112,7 +109,8 @@ GNOGA_Options unit test trace options (-g)
 
 GNOGA_Options library trace options (-G)
       a               all
-      m               GNOGA_Ada_Lib Debug
+      b               GNOGA_Ada_Lib Base_Debug
+      d               GNOGA_Ada_Lib Debug
       o               GNOGA options
 
 CAC ada_lib trace library options (-a)
@@ -145,6 +143,7 @@ CAC ada_lib trace library options (-a)
       @l              Template Load
       @o              Trace_Options
       @p              Trace Pre and Post Condtion functions
+      @P              Trace Pre and Post Condtion false
       @s              Strings
       @S              Socket_IO IO
       @t              Ada_Lib.Text
@@ -161,6 +160,7 @@ Ada_Lib unit test library trace options (-U)
       T               Ada_Lib.Trace.Debug_Trace
       u               Ada_Lib.Unit_Test.Debug Library
       U               Ada_Lib.Unit_Test.Test_Cases.Debug Library
+      @a              AUnit.Ada_Lib.Debug
 
 Enable suites disabled by default (-S)
       a               enable all

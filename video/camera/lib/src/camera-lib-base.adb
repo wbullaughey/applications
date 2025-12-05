@@ -20,13 +20,13 @@ package body Camera.Lib.Base is
    ----------------------------------------------------------------------------
    procedure Apply_Parameters (
       Buffer                     : in out Maximum_Command_Type;
-      Options                    : in     Options_Type) is
+      Options                    : in     Command_Options_Type) is
    ----------------------------------------------------------------------------
 
    begin
       for Index in Options'range loop
          declare
-            Option               : Option_Type renames Options (Index);
+            Option               : Command_Option_Type renames Options (Index);
 
          begin
             Log_Here (Debug, "Index " & Index'img & " Start " & Option.Start'img &
@@ -71,7 +71,7 @@ package body Camera.Lib.Base is
    procedure Apply_Parameters (
       Buffer                     : in out Maximum_Command_Type;
       Command                    : in     Buffer_Type;
-      Options                    : in     Options_Type) is
+      Options                    : in     Command_Options_Type) is
    ----------------------------------------------------------------------------
 
    begin
@@ -399,7 +399,7 @@ package body Camera.Lib.Base is
    procedure Process_Command (
       Camera                     : in out Base_Camera_Type;
       Command                    : in     Commands_Type;
-      Options                    : in     Options_Type;
+      Options                    : in     Command_Options_Type;
       Timeout_Time               : in     Duration := 0.0) is
                                           -- when 0 use command default
    ---------------------------------------------------------------
@@ -417,7 +417,7 @@ package body Camera.Lib.Base is
    procedure Process_Command (
       Camera                     : in out Base_Camera_Type;
       Command                    : in     Commands_Type;
-      Options                    : in     Options_Type;
+      Options                    : in     Command_Options_Type;
       Response                   :    out Maximum_Response_Type;
       Timeout_Time               : in     Duration := 0.0) is
                                           -- when 0 use command default

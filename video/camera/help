@@ -71,7 +71,7 @@ Camera Lib trace options (-2)
       a               all
       b               Base.debug
       B               Camera.Lib.Base.debug
-      c               Configuration.Camera.Debug
+      c               camera configuration
       C               camera commands
       g               Widgets.Generic_Table
       l               camera Library
@@ -79,10 +79,10 @@ Camera Lib trace options (-2)
       m               Main Window
       s               Trace simulator
       S               configuration.state.Debug
-      T               Windows.Top
+      t               Camera.States.Debug
       V               Trace Video widgets
-      @a              Widgets.Adjust debug
-      @c              Widgets.Control debug
+      @a              Adjust Window
+      @c              Widgets.Control debyg
       @C              Widgets.Configured debug
       @l              List camera commands
       @s              Configuration

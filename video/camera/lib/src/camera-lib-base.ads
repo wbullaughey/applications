@@ -13,55 +13,6 @@ package Camera.Lib.Base is
 
    use type Video.Lib.Port_Type;
 
-   type Commands_Type is (
-      Auto_Focus,
-      Manual_Focus,
-      Position_Absolute,
-      Position_Down_Left,
-      Position_Down_Right,
-      Position_Down,
-      Position_Left,
-      Position_Relative,
-      Position_Request,
-      Position_Right,
-      Position_Stop,
-      Position_Up,
-      Position_Up_Left,
-      Position_Up_Right,
-      Memory_Recall,
-      Memory_Set,
-      Memory_Reset,
-      Power,
-      Power_Inquire,
-      Recall_Speed,
-      Zoom_Direct,
-      Zoom_Inquire,
-      Zoom_Stop,
-      Zoom_Tele_Standard,
-      Zoom_Tele_Variable,
-      Zoom_Wide_Standard,
-      Zoom_Wide_Variable
-   );
-
-   type Options_Mode_Type        is (Add, Fixed, Variable);
-   type Option_Type (
-      Mode                       : Options_Mode_Type := Fixed) is record
-      Start                      : Index_Type;
-
-      case Mode is
-
-         when Add | Fixed =>
-            Data                 : Data_Type;
-
-         when Variable =>
-            Value                : Value_Type;
-            Width                : Index_Type;
-
-      end case;
-   end record;
-
-   type Options_Type             is array (Index_Type range  <>) of Option_Type;
-
    type Command_Type             is record
       Length                     : Index_Type;
       Command                    : Maximum_Command_Type;
@@ -72,7 +23,7 @@ package Camera.Lib.Base is
    end record;
 
    type Base_Camera_Type is abstract new General_Camera_Type with private;
-
+   type Base_Camera_Access is access all Base_Camera_Type;
    type Base_Camera_Class_Access is access all Base_Camera_Type'class;
 
    procedure Acked (
@@ -146,7 +97,7 @@ package Camera.Lib.Base is
    procedure Send_Command (
       Camera                     : in out Base_Camera_Type;
       Command                    : in     Commands_Type;
-      Options                    : in     Options_Type;
+      Options                    : in     Command_Options_Type;
       Get_Ack                    :    out Boolean;
       Has_Response               :    out Boolean;
       Response_Length            :    out Index_Type) is abstract;
@@ -154,14 +105,14 @@ package Camera.Lib.Base is
    procedure Process_Command (
       Camera                     : in out Base_Camera_Type;
       Command                    : in     Commands_Type;
-      Options                    : in     Options_Type;
+      Options                    : in     Command_Options_Type;
       Timeout_Time               : in     Duration := 0.0);
                                           -- when 0 use command default
 
    procedure Process_Command (
       Camera                     : in out Base_Camera_Type;
       Command                    : in     Commands_Type;
-      Options                    : in     Options_Type;
+      Options                    : in     Command_Options_Type;
       Response                   :    out Maximum_Response_Type;
       Timeout_Time               : in     Duration := 0.0);
                                           -- when 0 use command default
@@ -188,16 +139,16 @@ package Camera.Lib.Base is
 
    procedure Apply_Parameters (
       Buffer                     : in out Maximum_Command_Type;
-      Options                    : in     Options_Type);
+      Options                    : in     Command_Options_Type);
 
    procedure Apply_Parameters (
       Buffer                     : in out Maximum_Command_Type;
       Command                    : in     Buffer_Type;
-      Options                    : in     Options_Type);
+      Options                    : in     Command_Options_Type);
 
    Debug                         : Boolean := False;
    List_Commands                 : Boolean := False;
-   Null_Option                   : constant Options_Type;
+   Null_Option                   : constant Command_Options_Type;
    Power_On_Preset               : constant := 0;
 
 private
@@ -210,7 +161,7 @@ private
                                      Description'access);
    end record;
 
-   Null_Option                   : constant Options_Type (1 .. 0) :=
+   Null_Option                   : constant Command_Options_Type (1 .. 0) :=
                                     ( others => (
                                        Data              => 0,
                                        Start             => 0,

@@ -9,7 +9,7 @@ with Ada_Lib.Trace_Tasks;
 --with GNAT.Sockets;
 with Hex_IO;
 --with Runtime_Options;
-with Camera.Lib;
+--with Camera.Lib.Base;
 
 package body Emulator is
 
@@ -94,7 +94,7 @@ package body Emulator is
 --       procedure Send_Response (
 --          Code_1               : in     Camera.Data_Type;
 --          Code_2               : in     Camera.Data_Type;
---          Options              : in     Camera.Lib.Options_Type) is
+--          Options              : in     Camera.Options_Type) is
 --       ----------------------------------------------------------------------
 --
 --          Response             : Camera.Maximum_Response_Type;
@@ -164,29 +164,29 @@ hex_io.dump_8 (command'address, command'size, 32);
                         when 16#12# =>           -- pan tilt position
                            declare
                               Length      : constant := 11;
-                              Options     : constant Camera.Lib.Base.Options_Type := (
+                              Options     : constant Camera.Command_Options_Type := (
                                  (
                                     Data           => 16#90#,
                                     Start          => 1,
-                                    Mode => Camera.lib.base.fixed
+                                    Mode => Camera.Fixed
                                  ),(
                                     Data           => 16#50#,
                                     Start          => 2,
-                                    Mode => Camera.lib.base.fixed
+                                    Mode => Camera.Fixed
                                  ),(
                                     Start          => 3,
                                     Value          => Pan,
-                                    Mode => Camera.lib.base.variable,
+                                    Mode => Camera.Variable,
                                     Width          => 4
                                  ),(
                                     Start          => 7,
                                     Value          => Tilt,
-                                    Mode => Camera.lib.base.variable,
+                                    Mode => Camera.Variable,
                                     Width          => 4
                                  ),(
                                     Data           => 16#FF#,
                                     Start          => Length,
-                                    Mode => Camera.lib.base.fixed
+                                    Mode => Camera.Fixed
                                  )
                               );
                               Response    : Camera.Maximum_Response_Type;

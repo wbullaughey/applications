@@ -1,16 +1,17 @@
 --with Ada.Text_IO;
-with ADA_LIB.Trace; use ADA_LIB.Trace;
+with Ada_Lib.Trace; use Ada_Lib.Trace;
 with Ada_Lib.Trace_Tasks;
-with Camera.Lib.Base;
+--with Camera.Lib.Base;
+--with Camera.Main;
 
 package body Camera.Command_Queue is
 
    type Parameters_Type (
-      Command                    : Camera.Lib.Base.Commands_Type) is record
+      Command                    : Commands_Type) is record
 
       case Command is
 
-         when Camera.Lib.Base.Position_Relative =>
+         when Position_Relative =>
             Pan                  : Relative_Type;
             Tilt                 : Relative_Type;
             Pan_Speed            : Property_Type;
@@ -54,7 +55,7 @@ package body Camera.Command_Queue is
       Log_In (Debug, "pan " & Pan'img & " speed" & Pan_Speed'img &
          " tilt " & Tilt'img & Tilt_Speed'img);
       Process_Queue_Task.Command (Camera, Parameters_Type'(
-         Command     => Standard.Camera.Lib.Base.Position_Relative,
+         Command     => Position_Relative,
          Pan         => Pan,
          Tilt        => Tilt,
          Pan_Speed   => Pan_Speed,
@@ -78,7 +79,7 @@ package body Camera.Command_Queue is
 
                case Parameters.Command is
 
-                  when Standard.Camera.Lib.Base.Position_Relative =>
+                  when Position_Relative =>
                      Camera.Position_Relative (Parameters.Pan,
                         Parameters.Tilt, True, Parameters.Pan_Speed,
                         Parameters.Tilt_Speed);

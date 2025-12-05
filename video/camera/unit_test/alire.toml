@@ -11,6 +11,7 @@ tags = []
 
 executables = ["camera_tests"]
 
+project-files = "../../alire/templates/alr_environment_config.gpr"
 
 [[depends-on]]
 alr_environment = "~0.1.0-dev"
@@ -23,12 +24,6 @@ ada_lib = "~0.1.0-dev"
 
 [[pins]]
 ada_lib = { path='../../../../ada_lib' }
-
-[[depends-on]]
-ada_lib_test_lib = "~0.1.0-dev"
-
-[[pins]]
-ada_lib_test_lib = { path='../../../../ada_lib/ada_lib_test_lib' }
 
 [[depends-on]]
 gnoga = "~0.1.0-dev"

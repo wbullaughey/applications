@@ -4,15 +4,7 @@ package Configuration.Camera is
 
    Failed               : exception;
 
-   type Column_Type     is new Positive;
-
-   type Configuration_ID_Type
-                        is new Positive;
-
 -- type Preset_ID_Type  is new Natural;
-
-   type Row_Type        is new Positive;
-   type Speed_Type      is new Positive;
 
    Adjust_Card_Style    : constant String := "Adjust_Card";
    Blank_Preset_Root    : constant String := "no_image.png";
@@ -28,11 +20,8 @@ package Configuration.Camera is
    Control_Image_Style  : constant String := "Control_Image";
    Horizontal_Slider_Style
                         : constant String := "Horizontal_Slider_Style";
-   No_Configuration     : constant Configuration_ID_Type :=
-                           Configuration_ID_Type'last;
 
    Preset_Style         : constant String := "Preset_Style";
-   Row_Not_Set          : constant := Row_Type'last;
    Vertical_Slider_Blank_Style: constant String := "Vertical_Slider_Blank_Style";
    Vertical_Slider_Solid_Style: constant String := "Vertical_Slider_Solid_Style";
 

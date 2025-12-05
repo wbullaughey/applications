@@ -1,5 +1,5 @@
 --with Ada_Lib.Strings.Unlimited;
-with ADA_LIB.Trace;
+with Ada_Lib.Trace;
 --with Configuration;
 with Gnoga.Gui.Base;
 with Gnoga.Gui.Element.Common;
@@ -93,7 +93,7 @@ package Widgets.Adjust is
          Cell                    : in     Cell_Type;
          Enable                  : in     Boolean;
          Caller                  : in     String;
-         From                    : in     String := Ada_LIB.Trace.Here);
+         From                    : in     String := Ada_Lib.Trace.Here);
 
       overriding
       procedure Update_Cell (
@@ -192,21 +192,11 @@ package Widgets.Adjust is
       Row_Index                  : in     Outer_Row_Index_Type
    ) return Cell_Class_Access;
 
-   overriding
-   procedure Verify_Widget (
-      Widget                     : in     Adjust_Card_Type;
-      Verify_Parameter           : in     Adjust_Package.
-                                             Verify_Parameter_Class_Access);
-
--- type Verify_Parameter_Type    is new Adjust_Package.Verify_Parameter_Type with
---                                  null record;
---
--- type Verify_Parameter_Class_Access
---                               is access all Verify_Parameter_Type'class;
---
+-- overriding
 -- procedure Verify_Widget (
 --    Widget                     : in     Adjust_Card_Type;
---    Verify_Parameter           : in     Verify_Parameter_Class_Access);
+--    Verify_Parameter           : in     Widgets.Generic_Table.
+--                                           Verify_Parameter_Class_Access);
 
 end Widgets.Adjust;
 

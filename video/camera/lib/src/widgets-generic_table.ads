@@ -1,6 +1,6 @@
 --with Ada_Lib.Socket_IO;
 with Ada_Lib.Strings; -- .Unlimited;
-with ADA_LIB.Trace;
+with Ada_Lib.Trace;
 --with Camera.Lib;
 with Gnoga.Gui.Base;
 with Gnoga.Gui.Element.Common;
@@ -15,11 +15,14 @@ package Widgets.Generic_Table is
                                        with null record;
    type Root_Cell_Class_Access      is access all Root_Cell_Type'class;
 
+   type Verify_Parameter_Type is tagged null record;
+   type Verify_Parameter_Class_Access
+                              is access all Verify_Parameter_Type'class;
    procedure Dump (
       Cell                    : in     Root_Cell_Type;
       Enable                  : in     Boolean;
       Caller                  : in     String;
-      From                    : in     String := ADA_LIB.Trace.Here) is abstract;
+      From                    : in     String := Ada_Lib.Trace.Here) is abstract;
 
    function Has_Parent (
       Cell                    : in     Root_Cell_Type
@@ -44,17 +47,16 @@ package Widgets.Generic_Table is
       type GNOGA_Column_Class_Access
                                     is access all GNOGA_Column_Type'class;
       type Update_Parameter_Type is tagged limited null record;
---    type Verify_Parameter_Type is tagged null record;
 
       procedure Create_Cell (
-         Cell                    : in out Cell_Type;
-         Form                    : in     Gnoga.Gui.Element.Form.
-                                          Pointer_To_Botton_Class;
-         Row                     : in out Gnoga.Gui.Element.Table.
-                                             Table_Row_Type'class;
-         Column                  : in out GNOGA_Column_Type'class;
-         Table_Column            : in     Column_Index_Type;
-         Table_Row               : in     Row_Index_Type) is abstract;
+         Cell           : in out Cell_Type;
+         Form           : in     Gnoga.Gui.Element.Form.
+                                    Pointer_To_Botton_Class;
+         Row            : in out Gnoga.Gui.Element.Table.
+                                    Table_Row_Type'class;
+         Column         : in out GNOGA_Column_Type'class;
+         Table_Column   : in     Column_Index_Type;
+         Table_Row      : in     Row_Index_Type) is abstract;
 
       procedure Update_Cell (
          Cell                    : in out Cell_Type;
@@ -151,9 +153,10 @@ package Widgets.Generic_Table is
       type Table_Type            is new Gnoga.Gui.Element.Table.Table_Type with
                                     private;
 
-      type Verify_Parameter_Type is tagged;
-      type Verify_Parameter_Class_Access
-                                 is access all Verify_Parameter_Type'class;
+      type Generic_Verify_Parameter_Type is new Verify_Parameter_Type with
+                                    null record;
+      type Generic_Verify_Parameter_Class_Access
+                                 is access all Generic_Verify_Parameter_Type'class;
 
       type Widget_Type           is abstract new Generic_Widget_Type
                                     with private;
@@ -204,9 +207,9 @@ package Widgets.Generic_Table is
          Row_Index               : in     Row_Index_Type
       ) return Row_Class_Access;
 
-      procedure Verify_Widget (
-         Widget                  : in     Widget_Type;
-         Verify_Parameter        : in     Verify_Parameter_Class_Access) is abstract;
+--    procedure Verify_Widget (
+--       Widget                  : in     Widget_Type;
+--       Verify_Parameter        : in     Verify_Parameter_Class_Access) is abstract;
 
       function Get_Widget (    -- from form field
          Object                  : in out Gnoga.Gui.Base.Base_Type'Class
@@ -214,9 +217,9 @@ package Widgets.Generic_Table is
 
       type Verify_Parameter_Type is abstract tagged null record;
 
-      procedure Verify_Widget (
-         Verify_Parameter        : in     Verify_Parameter_Type;
-         Widget                  : in     Widget_Type'class) is abstract;
+--    procedure Verify_Widget (
+--       Verify_Parameter        : in     Verify_Parameter_Type;
+--       Widget                  : in     Verify_Parameter_Class_Access) is abstract;
 
    private
 

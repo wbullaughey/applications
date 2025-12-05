@@ -22,7 +22,7 @@ begin
    Put_Line (Command_Name);
    Ada_Lib.Options.Actual.Set_Ada_Lib_Nested_Options (
       Ada_Lib.Options.Actual.Nested_Options_Type (
-         Options.Camera_Options)'unchecked_access);
+         Options.Camera_Library_Options)'unchecked_access);
    Ada_Lib.Options.Actual.Set_Ada_Lib_Program_Options (
       Ada_Lib.Options.Actual.Program_Options_Type (
          Options)'unchecked_access);

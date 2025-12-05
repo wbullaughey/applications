@@ -12,13 +12,14 @@ package Configuration.State is
 -- use type Video.Lib.Preset_ID_Type;
 
    subtype Location_Type   is Video.Lib.Location_Type;
-   Local                    : Location_Type renames Video.Lib.Local;
-   Remote                   : Location_Type renames Video.Lib.Remote;
+   Local                   : Location_Type renames Video.Lib.Local;
+   No_Location             : Location_Type renames Video.Lib.No_Location;
+   Remote                  : Location_Type renames Video.Lib.Remote;
 
    type Address_Key_Type    is array (Location_Type) of
                                ADA_LIB.Strings.String_Access;
 
-   type State_Type   is new Root_State_Type with record
+   type State_Type   is abstract new Root_State_Type with record
       Video_Address  : aliased Ada_Lib.Socket_IO.Address_Constant_Access :=
                         Null;
       Video_Port     : Video.Lib.Port_Type :=
@@ -40,6 +41,22 @@ package Configuration.State is
       State                      : in     State_Type
    ) return Video.Lib.Port_Type
    with Pre => State.Video_Port /= Video.Lib.Port_Type'last;
+
+   function Get_Number_Columns (
+      State                      : in     State_Type
+   ) return Column_Type is abstract;
+
+   function Get_Number_Configurations (
+      State                      : in     State_Type
+   ) return Configuration_ID_Type is abstract;
+
+   function Get_Number_Presets (
+      State                      : in     State_Type
+   ) return Natural is abstract;
+
+   function Get_Number_Rows (
+      State                      : in     State_Type
+   ) return Row_Type is abstract;
 
    function Have_Video_Address (
       State                      : in     State_Type
@@ -65,6 +82,6 @@ package Configuration.State is
       State                      : in out State_Type);
 
    Debug                         : Boolean := False;
-   Global_Video_State            : State_Access := Null;
+-- Global_Configuration_State            : State_Access := Null;
 
 end Configuration.State;

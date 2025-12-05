@@ -1,6 +1,8 @@
 #!/bin/zsh
 source ~/.zshrc
 export WHICH=$1
+export NO_WARNINGS=$2
+
 
 # WHICH values
 #   all     - build everything (help_tests, driver unit tests, applications)
@@ -10,4 +12,4 @@ export WHICH=$1
 export ALR_OPTIONS=-O0
 echo build WHICH $WHICH ALR_OPTIONS $ALR_OPTIONS
 
-../../../../global_build.sh $WHICH program
+../../../../global_build.sh $WHICH program $NO_WARNINGS

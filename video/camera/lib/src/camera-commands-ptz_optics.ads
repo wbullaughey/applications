@@ -1,5 +1,4 @@
 with Ada_Lib.Strings;
-with Camera.Lib.Base;
 --with Configuration.Camera;
 with Video.Lib;
 package Camera.Commands.PTZ_Optics is
@@ -16,7 +15,7 @@ package Camera.Commands.PTZ_Optics is
 
    type PTZ_Optics_Type(
       Description                : Ada_Lib.Strings.String_Constant_Access
-   ) is new Standard.Camera.Commands.Camera_Type (
+   ) is new Commands.Camera_Type (
       Description) with null record;
 
    Default_Read_Timeout          : constant Ada_Lib.Socket_IO.Timeout_Type := 0.2;
@@ -58,7 +57,7 @@ private
    ) return Index_Type;
 
    overriding
-   function Get_Camera_Speed (
+   function Get_Camera_Speed_Range (
       Camera                     : in     PTZ_Optics_Type;
       Which                      : in     Which_Speed_Type := Select_Default_Speed
    ) return Data_Type;
@@ -66,7 +65,7 @@ private
    overriding
    function Get_Timeout (
       Camera                     : in     PTZ_Optics_Type;
-      Command                    : in     Standard.Camera.Lib.Base.Commands_Type
+      Command                    : in     Commands_Type
    ) return Duration;
 
    overriding
@@ -83,7 +82,7 @@ private
    overriding
    procedure Send_Command (
       Camera                     : in out PTZ_Optics_Type;
-      Command                    : in    Standard.Camera.Lib.Base.Commands_Type;
+      Command                    : in     Commands_Type;
       Get_Ack                    :    out Boolean;
       Has_Response               :    out Boolean;
       Response_Length            :    out Index_Type);
@@ -91,8 +90,8 @@ private
    overriding
    procedure Send_Command (
       Camera                     : in out PTZ_Optics_Type;
-      Command                    : in    Standard.Camera.Lib.Base.Commands_Type;
-      Options                    : in    Standard.Camera.Lib.Base.Options_Type;
+      Command                    : in     Commands_Type;
+      Options                    : in     Command_Options_Type;
       Get_Ack                    :    out Boolean;
       Has_Response               :    out Boolean;
       Response_Length            :    out Index_Type);

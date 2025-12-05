@@ -12,12 +12,6 @@ package Camera.Commands is
    Invalid_Parameter             : exception;
    Timeout                       : exception;
 
-   type Camera_Type (
-      Description                : Ada_Lib.Strings.String_Constant_Access
-   ) is abstract new Standard.Camera.Lib.Base.Base_Camera_Type with private;
-
-   type Camera_Class_Access      is access all Camera_Type'class;
-
    type Which_Speed_Type         is (
                                     Select_Minimum_Speed,
                                     Select_Default_Speed,
@@ -27,6 +21,12 @@ package Camera.Commands is
 
    Wait_Until_Finished_Time     : constant := 60.0;
 
+   type Camera_Type (
+      Description                : Ada_Lib.Strings.String_Constant_Access
+   ) is abstract new Lib.Base.Base_Camera_Type with private;
+
+   type Camera_Class_Access      is access all Camera_Type'class;
+
    procedure Get_Absolute (
       Camera                     : in out Camera_Type;
       Pan                        :    out Absolute_Type;
@@ -34,7 +34,7 @@ package Camera.Commands is
       Stabalize_Time             : in     Ada_Lib.Time.Duration_Type :=
                                              Wait_Until_Finished_Time);
 
-   function Get_Camera_Speed (
+   function Get_Camera_Speed_Range (
       Camera            : in     Camera_Type;
       Which             : in     Which_Speed_Type := Select_Default_Speed
    ) return Data_Type is abstract;
