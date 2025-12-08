@@ -29,12 +29,12 @@ package body Driver.Unit_Test is
    Debug_Options                 : Boolean := False;
    Trace_Option                  : constant Character := 'T';
    Options_With_Parameters       : aliased constant
-                                    Ada_Lib.Options.Options_Type :=
+                                    Ada_Lib.Options.Actual.Options_Type :=
                                        Ada_Lib.Options.Create_Options (
                                           "", -- renived Trace_Option,
                                           Ada_Lib.Options.Unmodified);
    Options_Without_Parameters    : aliased constant
-                                    Ada_Lib.Options.Options_Type :=
+                                    Ada_Lib.Options.Actual.Options_Type :=
                                        Ada_Lib.Options.Null_Options;
 --                                     Ada_Lib.Options.
 --                                        Create_Options ("r");

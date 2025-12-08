@@ -30,17 +30,17 @@ with Widgets.Video;
 package body Camera.Lib is
 
 -- use type Configuration.State.Location_Type;
--- use type Ada_Lib.Options.Options_Type;
+-- use type Ada_Lib.Options.Actual.Options_Type;
 -- use type Ada_Lib.Options.Interface_Options_Constant_Class_Access;
 
    Trace_Option                  : constant Character := '2';
    Trace_Prefix                  : constant Character := Ada_Lib.Help.Modifier;
    Options_With_Parameters       : aliased constant
-                                    Ada_Lib.Options.Options_Type :=
+                                    Ada_Lib.Options.Actual.Options_Type :=
                                        Ada_Lib.Options.Create_Options (
                                           Trace_Option, Ada_Lib.Options.Unmodified);
 -- Options_Without_Parameters    : aliased constant
---                                  Ada_Lib.Options.Options_Type :=
+--                                  Ada_Lib.Options.Actual.Options_Type :=
 --                                     Ada_Lib.Options.Create_Options (
 --                                        Trace_Option,  -- local is default
 --                                        Ada_Lib.Options.Unmodified) &

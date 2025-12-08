@@ -29,15 +29,15 @@ with Command_Name;
 package body Camera.Lib.Options is
 
 -- use type Ada_Lib.Options.Interface_Options_Constant_Class_Access;
--- use type Ada_Lib.Options.Options_Type;
+-- use type Ada_Lib.Options.Actual.Options_Type;
 
    Trace_Option                  : constant Character := 'T';
    Options_With_Parameters       : aliased constant
-                                    Ada_Lib.Options.Options_Type :=
+                                    Ada_Lib.Options.Actual.Options_Type :=
                                        Ada_Lib.Options.Create_Options (
                                           Trace_Option, Ada_Lib.Options.Unmodified);
    Options_Without_Parameters    : aliased constant
-                                    Ada_Lib.Options.Options_Type :=
+                                    Ada_Lib.Options.Actual.Options_Type :=
                                        Ada_Lib.Options.Null_Options;
 --                                     Ada_Lib.Options.Create_Options (
 --                                        "m", Ada_Lib.Options.Unmodified) &

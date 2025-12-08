@@ -14,7 +14,7 @@ with Command_Name;
 package body Driver is
 
    use Ada_Lib.Strings.Unlimited;
-   use type Ada_Lib.Options.Options_Type;
+   use type Ada_Lib.Options.Actual.Options_Type;
    use type Ada_Lib.OS.OS_Exit_Code_Type;
 
 -- subtype String_Type           is String_Type;
@@ -56,7 +56,7 @@ package body Driver is
    Parameters  : constant Parameters_Type := (
                   False    => (     -- driver
                      With_Parameters      =>
-                        new Ada_Lib.Options.Options_Type'(
+                        new Ada_Lib.Options.Actual.Options_Type'(
                            Ada_Lib.Options.Create_Options (Driver_Directory &
                               Directory_Option & "Ru", Option_Modifier) &
                            Ada_Lib.Options.Create_Options (
@@ -65,13 +65,13 @@ package body Driver is
                               "op", Ada_Lib.Options.Unmodified)
                         ),
                      Without_Parameters   =>
-                        new Ada_Lib.Options.Options_Type'(
+                        new Ada_Lib.Options.Actual.Options_Type'(
                            Ada_Lib.Options.Create_Options ("l", Option_Modifier)
                         )
                   ),
                   True    => (      -- unit test
                      With_Parameters      =>
-                        new Ada_Lib.Options.Options_Type'(
+                        new Ada_Lib.Options.Actual.Options_Type'(
                            Ada_Lib.Options.Create_Options (
                               Driver_Test_Trace_Option,
                               Ada_Lib.Options.Unmodified) &
@@ -79,7 +79,7 @@ package body Driver is
                               Directory_Option & "u", Option_Modifier)
                         ),
                      Without_Parameters   =>
-                        new Ada_Lib.Options.Options_Type'(
+                        new Ada_Lib.Options.Actual.Options_Type'(
                            Ada_Lib.Options.Create_Options ("l", Option_Modifier)
                         )
                   )

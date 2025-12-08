@@ -1,11 +1,11 @@
 with "ada_lib.gpr";
 --with "ada_lib_tests.gpr";
-with "default_config.gpr";
+-- with "default_config.gpr";
 with "alr_environment.gpr";
 with "aunit.gpr";
 with "camera_lib.gpr";
 --with "camera_test_lib.gpr";
-with "config/camera_tests_config.gpr";
+-- with "config/camera_tests_config.gpr";
 with "gnatcoll.gpr";
 with "gnoga.gpr";
 with "video_lib.gpr";

@@ -7,7 +7,7 @@ with Ada_Lib.Options.Runstring;
 with Ada_Lib.Socket_IO.Stream_IO;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
 --with Configuration.State;
-with Debug_Options;
+-- with Debug_Options;
 with Interfaces;
 
 package body Video.Lib is
@@ -17,11 +17,11 @@ package body Video.Lib is
    Debug_Option                  : constant Character := 'V';
    Debug                         : Boolean := False;
    Options_With_Parameters       : aliased constant
-                                    Ada_Lib.Options.Options_Type :=
+                                    Ada_Lib.Options.Actual.Options_Type :=
                                        Ada_Lib.Options.Create_Options (
                                           "dV", Ada_Lib.Options.Unmodified);
    Options_Without_Parameters    : aliased constant
-                                    Ada_Lib.Options.Options_Type :=
+                                    Ada_Lib.Options.Actual.Options_Type :=
                                        Ada_Lib.Options.Create_Options (
                                           "rS", Ada_Lib.Options.Unmodified);
    Presets                       : array (Which_Preset_Type) of
@@ -393,7 +393,7 @@ package body Video.Lib is
 
 begin
 --Elaborate := True;
-   Debug := Debug_Options.Debug_All;
+   Debug := Ada_Lib.Options.Debug_All;
 --Debug_Option := True;
 --Trace_Options := True;
    Log_Here (Elaborate or Debug or Trace_Options);
