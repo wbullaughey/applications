@@ -29,18 +29,18 @@ with Command_Name;
 package body Camera.Lib.Options is
 
 -- use type Ada_Lib.Options.Interface_Options_Constant_Class_Access;
--- use type Ada_Lib.Options.Actual.Options_Type;
+-- use type Ada_Lib.Options.Actual.Flag_Option_Type;
 
    Trace_Option                  : constant Character := 'T';
    Options_With_Parameters       : aliased constant
-                                    Ada_Lib.Options.Actual.Options_Type :=
+                                    Ada_Lib.Options.Actual.Flag_Option_Type :=
                                        Ada_Lib.Options.Create_Options (
-                                          Trace_Option, Ada_Lib.Options.Unmodified);
+                                          Trace_Option, Ada_Lib.Options.Unmodified_Flag);
    Options_Without_Parameters    : aliased constant
-                                    Ada_Lib.Options.Actual.Options_Type :=
-                                       Ada_Lib.Options.Null_Options;
+                                    Ada_Lib.Options.Actual.Flag_Option_Type :=
+                                       Ada_Lib.Options.Null_Flag_List;
 --                                     Ada_Lib.Options.Create_Options (
---                                        "m", Ada_Lib.Options.Unmodified) &
+--                                        "m", Ada_Lib.Options.Unmodified_Flag) &
 --                                     Ada_Lib.Options.Create_Options (
 --                                        'q', Ada_Lib.Help.Modifier);
 -- Protected_Options             : Ada_Lib.Options.Actual.

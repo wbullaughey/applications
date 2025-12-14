@@ -17,13 +17,13 @@ package body Video.Lib is
    Debug_Option                  : constant Character := 'V';
    Debug                         : Boolean := False;
    Options_With_Parameters       : aliased constant
-                                    Ada_Lib.Options.Actual.Options_Type :=
+                                    Ada_Lib.Options.Actual.Flag_Option_Type :=
                                        Ada_Lib.Options.Create_Options (
-                                          "dV", Ada_Lib.Options.Unmodified);
+                                          "dV", Ada_Lib.Options.Unmodified_Flag);
    Options_Without_Parameters    : aliased constant
-                                    Ada_Lib.Options.Actual.Options_Type :=
+                                    Ada_Lib.Options.Actual.Flag_Option_Type :=
                                        Ada_Lib.Options.Create_Options (
-                                          "rS", Ada_Lib.Options.Unmodified);
+                                          "rS", Ada_Lib.Options.Unmodified_Flag);
    Presets                       : array (Which_Preset_Type) of
                                     Preset_ID_Type := (
                                        others => (

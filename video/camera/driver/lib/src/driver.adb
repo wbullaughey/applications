@@ -14,7 +14,7 @@ with Command_Name;
 package body Driver is
 
    use Ada_Lib.Strings.Unlimited;
-   use type Ada_Lib.Options.Actual.Options_Type;
+   use type Ada_Lib.Options.Actual.Flag_Option_Type;
    use type Ada_Lib.OS.OS_Exit_Code_Type;
 
 -- subtype String_Type           is String_Type;
@@ -56,30 +56,30 @@ package body Driver is
    Parameters  : constant Parameters_Type := (
                   False    => (     -- driver
                      With_Parameters      =>
-                        new Ada_Lib.Options.Actual.Options_Type'(
+                        new Ada_Lib.Options.Actual.Flag_Option_Type'(
                            Ada_Lib.Options.Create_Options (Driver_Directory &
                               Directory_Option & "Ru", Option_Modifier) &
                            Ada_Lib.Options.Create_Options (
-                              "s",Ada_Lib.Options.Unmodified) &
+                              "s",Ada_Lib.Options.Unmodified_Flag) &
                            Ada_Lib.Options.Create_Options (Driver_Trace_Option &
-                              "op", Ada_Lib.Options.Unmodified)
+                              "op", Ada_Lib.Options.Unmodified_Flag)
                         ),
                      Without_Parameters   =>
-                        new Ada_Lib.Options.Actual.Options_Type'(
+                        new Ada_Lib.Options.Actual.Flag_Option_Type'(
                            Ada_Lib.Options.Create_Options ("l", Option_Modifier)
                         )
                   ),
                   True    => (      -- unit test
                      With_Parameters      =>
-                        new Ada_Lib.Options.Actual.Options_Type'(
+                        new Ada_Lib.Options.Actual.Flag_Option_Type'(
                            Ada_Lib.Options.Create_Options (
                               Driver_Test_Trace_Option,
-                              Ada_Lib.Options.Unmodified) &
+                              Ada_Lib.Options.Unmodified_Flag) &
                            Ada_Lib.Options.Create_Options (Driver_Directory &
                               Directory_Option & "u", Option_Modifier)
                         ),
                      Without_Parameters   =>
-                        new Ada_Lib.Options.Actual.Options_Type'(
+                        new Ada_Lib.Options.Actual.Flag_Option_Type'(
                            Ada_Lib.Options.Create_Options ("l", Option_Modifier)
                         )
                   )
@@ -479,7 +479,7 @@ package body Driver is
       Options     : in out Program_Options_Type;
       Iterator    : in out Ada_Lib.Options.
                               Command_Line_Iterator_Interface'class;
-      Option      : in     Ada_Lib.Options.Option_Type'class
+      Option      : in     Ada_Lib.Options.Base_Flag_Option_Type'class
    ) return Boolean is
    ---------------------------------------------------------------
 

@@ -30,22 +30,22 @@ with Widgets.Video;
 package body Camera.Lib is
 
 -- use type Configuration.State.Location_Type;
--- use type Ada_Lib.Options.Actual.Options_Type;
+-- use type Ada_Lib.Options.Actual.Flag_Option_Type;
 -- use type Ada_Lib.Options.Interface_Options_Constant_Class_Access;
 
    Trace_Option                  : constant Character := '2';
    Trace_Prefix                  : constant Character := Ada_Lib.Help.Modifier;
    Options_With_Parameters       : aliased constant
-                                    Ada_Lib.Options.Actual.Options_Type :=
+                                    Ada_Lib.Options.Actual.Flag_Option_Type :=
                                        Ada_Lib.Options.Create_Options (
-                                          Trace_Option, Ada_Lib.Options.Unmodified);
+                                          Trace_Option, Ada_Lib.Options.Unmodified_Flag);
 -- Options_Without_Parameters    : aliased constant
---                                  Ada_Lib.Options.Actual.Options_Type :=
+--                                  Ada_Lib.Options.Actual.Flag_Option_Type :=
 --                                     Ada_Lib.Options.Create_Options (
 --                                        Trace_Option,  -- local is default
---                                        Ada_Lib.Options.Unmodified) &
+--                                        Ada_Lib.Options.Unmodified_Flag) &
 --                                     Ada_Lib.Options.Create_Options (
---                                        "", Ada_Lib.Options.Unmodified);
+--                                        "", Ada_Lib.Options.Unmodified_Flag);
    Recursed                      : Boolean := False;
 
    -------------------------------------------------------------------------
@@ -224,7 +224,7 @@ package body Camera.Lib is
          " help test " & Ada_Lib.Help_Test'img);
 
       if Ada_Lib.Options.Has_Option (Option, Options_With_Parameters,
-            Ada_Lib.Options.Null_Options) then
+            Ada_Lib.Options.Null_Flag_List) then
          case Option.Option is
 
             when Trace_Option =>
