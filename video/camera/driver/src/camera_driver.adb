@@ -38,7 +38,7 @@ begin
             Protected_Options.Driver_Options.Camera_Directory));
 
          Put_Line (Command_Name);
-         if Ada_Lib.Help_Test then
+         if Ada_Lib.Options.Ada_Lib_Environment.Help_Test then
             Put_Line ("help test " & (if Ada_Lib.Exception_Occured then
                   "failed"
                else

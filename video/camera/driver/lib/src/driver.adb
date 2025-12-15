@@ -14,7 +14,7 @@ with Command_Name;
 package body Driver is
 
    use Ada_Lib.Strings.Unlimited;
-   use type Ada_Lib.Options.Actual.Flag_Option_Type;
+   use type Ada_Lib.Options.Base_Flag_Option_Type;
    use type Ada_Lib.OS.OS_Exit_Code_Type;
 
 -- subtype String_Type           is String_Type;

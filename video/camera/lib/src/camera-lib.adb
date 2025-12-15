@@ -221,7 +221,7 @@ package body Camera.Lib is
 
    begin
       Log_In (Trace_Options or Debug_Options, Option.Image &
-         " help test " & Ada_Lib.Help_Test'img);
+         " help test " & Ada_Lib.Options.Ada_Lib_Environment.Help_Test'img);
 
       if Ada_Lib.Options.Has_Option (Option, Options_With_Parameters,
             Ada_Lib.Options.Null_Flag_List) then
@@ -318,7 +318,7 @@ package body Camera.Lib is
    ----------------------------------------------------------------------------
 
       Parameter                  : constant String := Iterator.Get_Parameter;
-      Suboption                  : Ada_Lib.Options.Suboption_Type :=
+      Suboption                  : Ada_Lib.Options.Flag_Option_Kind_Type :=
                                     Ada_Lib.Options.Plain;
 
    begin

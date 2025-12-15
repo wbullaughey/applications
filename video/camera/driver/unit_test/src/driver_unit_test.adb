@@ -32,7 +32,7 @@ begin
    end if;
 
    Options.Post_Process;
-   if Ada_Lib.Help_Test then
+   if Ada_Lib.Options.Ada_Lib_Environment.Help_Test then
       Put_Line ("help test " & (if Ada_Lib.Exception_Occured then
             "failed"
          else

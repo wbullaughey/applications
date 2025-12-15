@@ -262,7 +262,7 @@ package body Video.Lib is
 
             when 'r' =>    -- remote camera
                if    Options.Simulate and then
-                     not Ada_Lib.Help_Test then
+                     not Ada_Lib.Options.Ada_Lib_Environment.Help_Test then
                   Options.Bad_Option (
                      "Remote option (r) and Simulate (E) are incompatable at " &
                      Here);
@@ -272,7 +272,7 @@ package body Video.Lib is
 
             when 'S' =>    -- simulate Standard.Camera
                if    Options.Location = Remote and then
-                     not Ada_Lib.Help_Test then
+                     not Ada_Lib.Options.Ada_Lib_Environment.Help_Test then
                   Options.Bad_Option (
                      "Remote option (r) and Simulate (E) are incompatable at " &
                      Here);
