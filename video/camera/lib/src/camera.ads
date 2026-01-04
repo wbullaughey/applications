@@ -1,5 +1,6 @@
 with Ada.Containers;
-with Ada_Lib.Options.Actual;
+--with Ada_Lib.Options.Flags;
+with Ada_Lib.Options.Nested;
 with Ada_Lib.Socket_IO.Stream_IO;
 with Ada_Lib.Trace;
 with Gnoga_Ada_Lib;
@@ -27,7 +28,7 @@ package Camera is
    type Camera_ID_Type           is tagged private;
 
    function Camera_ID (
-      Address                    : in        Ada_Lib.Socket_IO.Address_Type
+      Address                    : in        Address_Type
    ) return Camera_ID_Type
    with Pre => Address.Address_Kind /= Ada_Lib.Socket_IO.Not_Set;
 
@@ -99,7 +100,7 @@ package Camera is
 
    type Command_Options_Type     is array (Index_Type range  <>) of Command_Option_Type;
 
-   type Camera_Options_Type is limited new Ada_Lib.Options.Actual.
+   type Camera_Options_Type is limited new Ada_Lib.Options.Nested.
          Nested_Options_Type with record
       Brand                      : Brand_Type := PTZ_Optics_Camera;
    end record;
@@ -117,11 +118,9 @@ package Camera is
 
    overriding
    function Process_Option (  -- process one option
-     Options                     : in out Camera_Options_Type;
-      Iterator                   : in out Ada_Lib.Options.
-                                             Command_Line_Iterator_Interface'class;
-      Option                     : in     Ada_Lib.Options.
-                                             Option_Type'class
+      Options  : in out Camera_Options_Type;
+      Iterator : in out Ada_Lib.Options.Command_Line_Iterator_Interface'class;
+      Option   : in     Ada_Lib.Options.Base_Flag_Option_Type'class
    ) return Boolean
    with pre => Options.Was_Initialized;
 
@@ -168,6 +167,10 @@ package Camera is
 
    function Camera_ID_Hash (
       Key                        : in     Camera_ID_Type
+   ) return Ada.Containers.Hash_Type;
+
+   function Camera_Hash (
+      Address                    : in     Address_Type
    ) return Ada.Containers.Hash_Type;
 
    procedure Dump (

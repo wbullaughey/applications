@@ -3,18 +3,16 @@ with Ada.Text_IO; use Ada.Text_IO;
 with Ada.Unchecked_Deallocation;
 --with Ada_Lib.Address;
 with Ada_Lib.Configuration;
-with Ada_Lib.Options.Actual;
+with Ada_Lib.Options;
 with Ada_Lib.Parser;
+with Ada_Lib.String_Quote; use Ada_Lib.String_Quote;
 with ADA_LIB.Strings.Unlimited; use Ada_Lib.Strings; use Ada_Lib.Strings.Unlimited;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
 with Camera.Lib.Options;
 
 package body Configuration.Camera.Setup is
 
--- use type System.Address;
-
--- package Configuration_Address_Converter is new
---    System.Address_To_Access_Conversions (Configuration_Type);
+--pragma Elaborate (Ada_Lib.Parser);
 
    procedure Free is new Ada.Unchecked_Deallocation (
       Configurations_Type,
@@ -120,7 +118,7 @@ package body Configuration.Camera.Setup is
       Setup_Path     : Ada_Lib.Strings.Unlimited.String_Type
                      renames Standard.Camera.Lib.Options.
                         Program_Options_Constant_Class_Access (
-                           Ada_Lib.Options.Actual.Get_Ada_Lib_Read_Only_Program_Options).
+                           Ada_Lib.Options.Get_Ada_Lib_Read_Only_Program_Options).
                               Setup_Path;
 
    begin

@@ -8,8 +8,11 @@ with Ada_Lib.Help;
 with Ada_Lib.OS.Run;
 with Ada_Lib.Parser;
 with Ada_Lib.Options.Runstring;
+with Ada_Lib.Options.Nested;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
 with Command_Name;
+
+pragma Elaborate (Ada_Lib.Parser);
 
 package body Driver is
 
@@ -56,7 +59,7 @@ package body Driver is
    Parameters  : constant Parameters_Type := (
                   False    => (     -- driver
                      With_Parameters      =>
-                        new Ada_Lib.Options.Actual.Flag_Option_Type'(
+                        new Ada_Lib.Options.Flag_List_Type'(
                            Ada_Lib.Options.Create_Options (Driver_Directory &
                               Directory_Option & "Ru", Option_Modifier) &
                            Ada_Lib.Options.Create_Options (
@@ -65,13 +68,13 @@ package body Driver is
                               "op", Ada_Lib.Options.Unmodified_Flag)
                         ),
                      Without_Parameters   =>
-                        new Ada_Lib.Options.Actual.Flag_Option_Type'(
+                        new Ada_Lib.Options.Flag_List_Type'(
                            Ada_Lib.Options.Create_Options ("l", Option_Modifier)
                         )
                   ),
                   True    => (      -- unit test
                      With_Parameters      =>
-                        new Ada_Lib.Options.Actual.Flag_Option_Type'(
+                        new Ada_Lib.Options.Flag_List_Type'(
                            Ada_Lib.Options.Create_Options (
                               Driver_Test_Trace_Option,
                               Ada_Lib.Options.Unmodified_Flag) &
@@ -79,7 +82,7 @@ package body Driver is
                               Directory_Option & "u", Option_Modifier)
                         ),
                      Without_Parameters   =>
-                        new Ada_Lib.Options.Actual.Flag_Option_Type'(
+                        new Ada_Lib.Options.Flag_List_Type'(
                            Ada_Lib.Options.Create_Options ("l", Option_Modifier)
                         )
                   )
@@ -205,7 +208,7 @@ package body Driver is
    begin
       Log_Here (Debug_Options or Trace_Options, "from " & From);
       return Driver_Options_Class_Access (
-         Ada_Lib.Options.Actual.Get_Ada_Lib_Modifiable_Nested_Options);
+         Ada_Lib.Options.Nested.Get_Ada_Lib_Modifiable_Nested_Options);
    end Get_Modifiable_Options;
 
    ---------------------------------------------------------------
@@ -246,7 +249,7 @@ package body Driver is
             Selected_Parameters.Without_Parameters.all);
 
       return Log_Out (
-         Ada_Lib.Options.Actual.Nested_Options_Type (Options).Initialize,
+         Ada_Lib.Options.Nested.Nested_Options_Type (Options).Initialize,
          Debug_Options or Trace_Options);
 
    end Initialize;
@@ -262,7 +265,7 @@ package body Driver is
    begin
       Log_In (Debug_Options or Trace_Options, "from " & From);
       return Log_Out (Options.Driver_Options.Initialize and then
-         Ada_Lib.Options.Actual.Program_Options_Type (Options).Initialize,
+         Ada_Lib.Options.Program.Program_Options_Type (Options).Initialize,
          Debug_Options or Trace_Options);
    end Initialize;
 
@@ -328,11 +331,9 @@ package body Driver is
    ---------------------------------------------------------------
    overriding
    function Process_Option (  -- process one option
-     Options                     : in out Driver_Options_Type;
-      Iterator                   : in out Ada_Lib.Options.
-                                          Command_Line_Iterator_Interface'class;
-      Option                     : in     Ada_Lib.Options.
-                                             Option_Type'class
+     Options   : in out Driver_Options_Type;
+      Iterator : in out Ada_Lib.Options.Command_Line_Iterator_Interface'class;
+      Option   : in     Ada_Lib.Options.Base_Flag_Option_Type'class
    ) return Boolean is
    ---------------------------------------------------------------
 
@@ -460,7 +461,7 @@ package body Driver is
          return Log_Out (True, Debug_Options or Trace_Options, Option.Image &
             " handled");
       else
-         return Log_Out (Ada_Lib.Options.Actual.Nested_Options_Type (
+         return Log_Out (Ada_Lib.Options.Nested.Nested_Options_Type (
             Options).Process_Option (Iterator, Option), Debug or Trace_Options,
             "not handled");
       end if;
@@ -487,7 +488,7 @@ package body Driver is
       Log_In (Debug_Options or Trace_Options);
       return Log_Out (
          Options.Driver_Options.Process_Option (Iterator, Option) or else
-         Ada_Lib.Options.Actual.Program_Options_Type (Options).Process_Option (
+         Ada_Lib.Options.Program.Program_Options_Type (Options).Process_Option (
             Iterator, Option),
          Debug_Options or Trace_Options);
    end Process_Option;
@@ -503,34 +504,34 @@ package body Driver is
 
    begin
       Log_In (Debug_Options or Trace_Options, "help mode " & Help_Mode'img &
-         Quote (" component", Component));
-      Ada_Lib.Options.Actual.Nested_Options_Type (Options).Program_Help (Help_Mode);
+         Quote (" component", Component, Ada_Lib.Help.Unmodified_Flag));
+      Ada_Lib.Options.Nested.Nested_Options_Type (Options).Program_Help (Help_Mode);
 
       case Help_Mode is
 
-      when Ada_Lib.Options.Program =>
-         Ada_Lib.Help.Add_Option (Directory_Option, "subdirectory",
+      when Ada_Lib.Options.Program_Mode =>
+         Ada_Lib.Help.Create_Option (Directory_Option, "subdirectory",
             "subdirectory to run camera app from", Component, Option_Modifier);
-         Ada_Lib.Help.Add_Option ('l', "", "list output from camera app",
-            Component);
---       Ada_Lib.Help.Add_Option ('r', "",
---          "remote camera", Component);
-         Ada_Lib.Help.Add_Option ('R', "routine",
+         Ada_Lib.Help.Create_Option ('l', "", "list output from camera app",
+            Component, Ada_Lib.Help.Unmodified_Flag);
+--       Ada_Lib.Help.Create_Option ('r', "",
+--          "remote camera", Component, Ada_Lib.Help.Unmodified_Flag);
+         Ada_Lib.Help.Create_Option ('R', "routine",
             "routine to run, multiple allowed", Component, Option_Modifier);
 
-         Ada_Lib.Help.Add_Option ('u', "suite",
+         Ada_Lib.Help.Create_Option ('u', "suite",
             "suite to run, multiple allowed", Component, Option_Modifier);
 
-         Ada_Lib.Help.Add_Option (
+         Ada_Lib.Help.Create_Option (
             (if Options.Testing then
                Driver_Test_Trace_Option
             else
                Driver_Trace_Option
-            ), "Trace Options", "driver trace options", Component);
-         Ada_Lib.Help.Add_Option (Driver_Directory, "options", "options to pass",
+            ), "Trace Options", "driver trace options", Component, Ada_Lib.Help.Unmodified_Flag);
+         Ada_Lib.Help.Create_Option (Driver_Directory, "options", "options to pass",
             Component, Option_Modifier);
 
-      when Ada_Lib.Options.Traces =>
+      when Ada_Lib.Options.Trace_Mode =>
          New_Line;
          Put_Line ("driver trace options (-" &
             (if Options.Testing then
@@ -559,8 +560,8 @@ package body Driver is
 
    begin
       Log_In (Debug_Options or Trace_Options, "help mode " & Help_Mode'img &
-         Quote (" component", Component));
-      Ada_Lib.Options.Actual.Program_Options_Type (Options).Program_Help (Help_Mode);
+         Quote (" component", Component, Ada_Lib.Help.Unmodified_Flag));
+      Ada_Lib.Options.Program.Program_Options_Type (Options).Program_Help (Help_Mode);
       Options.Driver_Options.Program_Help (Help_Mode);
       Log_Out (Debug_Options or Trace_Options);
 
@@ -684,6 +685,6 @@ begin
 --Elaborate := True;
 --Trace_Options := True;
    Include_Program := True;
-   Include_Task := True;
+-- Include_Task := True;
    Log_Here (Debug_Options or Trace_Options or Elaborate);
 end Driver;

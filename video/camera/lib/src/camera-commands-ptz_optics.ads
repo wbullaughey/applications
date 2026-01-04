@@ -63,6 +63,11 @@ private
    ) return Data_Type;
 
    overriding
+   function Get_Default_Speed (
+      Camera                     : in     PTZ_Optics_Type  -- dispatch only
+   ) return Property_Type;
+
+   overriding
    function Get_Timeout (
       Camera                     : in     PTZ_Optics_Type;
       Command                    : in     Commands_Type

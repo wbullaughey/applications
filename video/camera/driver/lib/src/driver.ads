@@ -1,5 +1,5 @@
 ﻿--with Ada_Lib.Command_Line_Iterator;
-with Ada_Lib.Options.Actual;
+with Ada_Lib.Options.Flags;
 with Ada_Lib.Strings.Unlimited;
 with Ada_Lib.Trace;
 
@@ -9,7 +9,7 @@ package Driver is
 
    type Driver_Options_Type (
          Testing                 : Boolean) is limited new Ada_Lib.Options.
-                                    Actual.Nested_Options_Type with record
+                                    Nested.Nested_Options_Type with record
       Camera_Directory           : Ada_Lib.Strings.Unlimited.String_Type;
       Camera_Options             : Ada_Lib.Strings.Unlimited.String_Type;
       Driver_Debug               : Boolean := False;
@@ -35,11 +35,10 @@ package Driver is
 
    overriding
    function Process_Option (  -- process one option
-     Options                    : in out Driver_Options_Type;
-      Iterator                   : in out Ada_Lib.Options.
-                                          Command_Line_Iterator_Interface'class;
-      Option                     : in     Ada_Lib.Options.
-                                             Option_Type'class
+     Options   : in out Driver_Options_Type;
+      Iterator : in out Ada_Lib.Options.
+                        Command_Line_Iterator_Interface'class;
+      Option   : in     Ada_Lib.Options.Base_Flag_Option_Type'class
    ) return Boolean
    with pre => Options.Initialized;
 
@@ -49,7 +48,7 @@ package Driver is
       Iterator                   : in out Ada_Lib.Options.
                                           Command_Line_Iterator_Interface'class);
 
-   type Program_Options_Type     is limited new Ada_Lib.Options.Actual.
+   type Program_Options_Type     is limited new Ada_Lib.Options.Program.
                                     Program_Options_Type with record
       Driver_Options             : Driver_Options_Type (False);
    end record;
@@ -62,11 +61,9 @@ package Driver is
 
    overriding
    function Process_Option (  -- process one option
-     Options                    : in out Program_Options_Type;
-      Iterator                   : in out Ada_Lib.Options.
-                                          Command_Line_Iterator_Interface'class;
-      Option                     : in     Ada_Lib.Options.
-                                             Option_Type'class
+     Options   : in out Program_Options_Type;
+      Iterator : in out Ada_Lib.Options.Command_Line_Iterator_Interface'class;
+      Option   : in     Ada_Lib.Options.Base_Flag_Option_Type'class
    ) return Boolean
    with pre => Options.Initialized;
 

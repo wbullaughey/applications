@@ -11,7 +11,7 @@ tags = []
 
 executables = ["camera_tests"]
 
-project-files = "../../alire/templates/alr_environment_config.gpr"
+project-files = "camera_tests.gpr"
 
 [[depends-on]]
 alr_environment = "~0.1.0-dev"
@@ -54,12 +54,6 @@ camera_lib = "~0.1.0-dev"
 
 [[pins]]
 camera_lib = { path='../lib' }
-
-[[depends-on]]
-camera_test_lib = "~0.1.0-dev"
-
-[[pins]]
-camera_test_lib = { path='../test_lib' }
 
 [[depends-on]]
 video_lib = "~0.1.0-dev"

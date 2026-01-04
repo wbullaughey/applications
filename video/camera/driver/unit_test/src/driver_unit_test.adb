@@ -8,6 +8,8 @@ with Ada_Lib.Trace_Tasks;
 with Command_Name;
 with Driver.Unit_Test;
 
+-- pragma Elaborate (Ada_Lib.OS);
+
 procedure Driver_Unit_Test is
 
    Options     : constant Driver.Unit_Test.Driver_Unit_Test_Option_Class_Access :=

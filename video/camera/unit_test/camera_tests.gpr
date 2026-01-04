@@ -1,15 +1,11 @@
+with "alr_environment.gpr";
 with "ada_lib.gpr";
---with "ada_lib_tests.gpr";
--- with "default_config.gpr";
 with "alr_environment.gpr";
 with "aunit.gpr";
 with "camera_lib.gpr";
---with "camera_test_lib.gpr";
--- with "config/camera_tests_config.gpr";
 with "gnatcoll.gpr";
 with "gnoga.gpr";
 with "video_lib.gpr";
---with "video_lib_Unit_Test.gpr";
 
 project Camera_Tests is
 
@@ -20,7 +16,8 @@ project Camera_Tests is
    for Main use ("camera_aunit.adb");
 
    package Compiler is
-      for Default_Switches ("Ada") use Default_Config.Ada_Compiler_Switches;
+      for Default_Switches ("Ada") use
+         Alr_Environment.Ada_Compiler_Switches;
    end Compiler;
 
    package Binder is
@@ -30,7 +27,7 @@ project Camera_Tests is
    package Linker is
       for Default_Switches ("Ada") use (
           "-Wl,-map,camera_test") &
-          Default_Config.Linker_Options;
+          ALR_Environment.Linker_Options;
    end Linker;
 
    package Install is

@@ -6,7 +6,8 @@ with Ada.Text_IO; use  Ada.Text_IO;
 with Ada_Lib.Help;
 with Ada_Lib.Options;
 with Ada_Lib.OS;
---with Ada_Lib.Strings;
+with Ada_Lib.String_Quote; use Ada_Lib.String_Quote;
+with Ada_Lib.Strings; use Ada_Lib.Strings;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
 with Ask;
 --with AUnit.Test_Suites;
@@ -25,6 +26,8 @@ with Widgets.Adjust;
 with Widgets.Control; -- causes hang
 with Widgets.Configured;
 with Widgets.Video;
+
+-- pragma Elaborate (Ada_Lib.OS);
 
 package body Camera.Main is
 
@@ -563,9 +566,11 @@ return Null;
    ) return Boolean is
    ---------------------------------------------------------------
 
+      Result   : constant Boolean :=
+                              Window_Connection.Camera_State /= Null;
    begin
-      return Log_Here (Window_Connection.Camera_State /= Null,
-         Trace_Pre_Post_Conditions, "Camera state not set");
+      return Log_Here (Result,
+         Trace_Pre_Post_Conditions or not Result, "Camera state not set");
    end Has_Camera_State;
 
    ---------------------------------------------------------------
@@ -1185,6 +1190,6 @@ return Ada.Containers.Hash_Type'first;
 begin
 --Debug := True;
 --Trace_Options := True;
-   Include_Task := True;
+-- Include_Task := True;
    Log_Here (Elaborate or Trace_Options or Debug);
 end Camera.Main;

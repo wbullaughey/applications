@@ -81,7 +81,6 @@ package Configuration.State is
    procedure Unload (
       State                      : in out State_Type);
 
-   Debug                         : Boolean := False;
 -- Global_Configuration_State            : State_Access := Null;
 
 end Configuration.State;

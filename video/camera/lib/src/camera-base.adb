@@ -1,12 +1,15 @@
 with Ada.Text_IO; use  Ada.Text_IO;
 with Ada_Lib.Options;
 with Ada_Lib.OS;
+with Ada_Lib.String_Quote; use Ada_Lib.String_Quote;
 with Ada_Lib.Strings.Unlimited;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
 with Camera.Commands.PTZ_Optics;
 with Camera.States;
 with Configuration.Camera.State;
 with GNAT.Sockets;
+
+-- pragma Elaborate (Ada_Lib.OS);
 
 package body Camera.Base is
 
@@ -21,7 +24,7 @@ package body Camera.Base is
       Camera_Tilt       : Absolute_Type;
       Camera_Tilt_Speed : Property_Type;
       Camera_Zoom       : Property_Type;
-      Options           : Ada_Lib.Options.Interface_Options_Class_Access :=
+      Options           : Ada_Lib.Options.Base_Flag_Option_Class_Access :=
                            Null;
    end record;
 
@@ -414,6 +417,6 @@ not_implemented;
 
 begin
 --Debug := True;
-   Include_Task := True;
+-- Include_Task := True;
    Log_Here (Elaborate or Trace_Options);
 end Camera.Base;

@@ -1,49 +1,31 @@
---with Ada.Command_Line;
---with Ada.Exceptions;
 with Ada.Text_IO;use Ada.Text_IO;
---with Ada_Lib.Command_Line_Iterator;
 with Ada_Lib.Help;
-with Ada_Lib.Options;
---with GNOGA_Options;
---with ADA_LIB.Strings.Unlimited;
---with Ada_Lib.Test;
+with Ada_Lib.Options.Create;
+with Ada_Lib.String_Quote; use Ada_Lib.String_Quote;
+with Ada_Lib.Strings; use Ada_Lib.Strings;
 with ADA_LIB.OS;
 with Ada_Lib.Options.Runstring;
---with ADA_LIB.Text;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
 with Command_Name;
---with Configuration.Camera.State;
---with Configuration.State;
---with Controller;
---with Debug_Options;
---with Emulator;
---with Gnoga.Gui.Window;
---with Main;
---with Video.Lib;
---with Camera.Commands.PTZ_Optics;
---with Widgets.Control;
---with Widgets.Configured;
---with Widgets.Video;
---with Windows.Top;
 
 package body Camera.Lib.Options is
 
 -- use type Ada_Lib.Options.Interface_Options_Constant_Class_Access;
--- use type Ada_Lib.Options.Actual.Flag_Option_Type;
+-- use type Ada_Lib.Options.Flag_List_Type;
 
    Trace_Option                  : constant Character := 'T';
    Options_With_Parameters       : aliased constant
-                                    Ada_Lib.Options.Actual.Flag_Option_Type :=
-                                       Ada_Lib.Options.Create_Options (
+                                    Ada_Lib.Options.Flag_List_Type :=
+                                       Ada_Lib.Options.Create.Create_One (
                                           Trace_Option, Ada_Lib.Options.Unmodified_Flag);
-   Options_Without_Parameters    : aliased constant
-                                    Ada_Lib.Options.Actual.Flag_Option_Type :=
-                                       Ada_Lib.Options.Null_Flag_List;
+-- Options_Without_Parameters    : aliased constant
+--                                  Ada_Lib.Options.Flag_List_Type :=
+--                                     Ada_Lib.Options.Null_Flag_List;
 --                                     Ada_Lib.Options.Create_Options (
 --                                        "m", Ada_Lib.Options.Unmodified_Flag) &
 --                                     Ada_Lib.Options.Create_Options (
 --                                        'q', Ada_Lib.Help.Modifier);
--- Protected_Options             : Ada_Lib.Options.Actual.
+-- Protected_Options             : Ada_Lib.Options.Flags.
 --                                  Program_Options_Class_Access := Null;
 
    -------------------------------------------------------------------------
@@ -57,7 +39,7 @@ package body Camera.Lib.Options is
 
 --   -------------------------------------------------------------------------
 --   function Get_Camera_Modifyable_Options
---   return Ada_Lib.Options.Actual.Verification_Options_Class_Access is
+--   return Ada_Lib.Options.Flags.Verification_Options_Class_Access is
 --   -------------------------------------------------------------------------
 --
 --   begin
@@ -67,13 +49,13 @@ package body Camera.Lib.Options is
 --
 --   -------------------------------------------------------------------------
 --   function Get_Camera_Read_Only_Options
---   return Ada_Lib.Options.Actual.Verification_Options_Constant_Class_Access is
+--   return Ada_Lib.Options.Flags.Verification_Options_Constant_Class_Access is
 --   -------------------------------------------------------------------------
 --
 --   begin
 --log_here ("unit testing " & Ada_Lib.Unit_Testing'img);
 --      return (if Ada_Lib.Unit_Testing then
---         Ada_Lib.Options.Actual.Verification_Options_Constant_Class_Access);
+--         Ada_Lib.Options.Flags.Verification_Options_Constant_Class_Access);
 --   end Get_Camera_Read_Only_Options;
 
    -------------------------------------------------------------------------
@@ -92,7 +74,7 @@ package body Camera.Lib.Options is
          Options_With_Parameters);
       Ada_Lib.Options.Runstring.Options.Register (
          Ada_Lib.Options.Runstring.Without_Parameters,
-         Options_Without_Parameters);
+         Ada_Lib.Options.Null_Flag_List);
 
 --    Configuration.Camera.State.Read_Only_Global_Camera_State :=
 --       new Configuration.Camera.State.State_Type;
@@ -100,7 +82,7 @@ package body Camera.Lib.Options is
       return Log_Out (
          Options.GNOGA.Initialize and then
          Options.Camera_Library.Initialize and then
-         Ada_Lib.Options.Actual.Program_Options_Type (Options).Initialize,
+         Ada_Lib.Options.Program.Program_Options_Type (Options).Initialize,
          Debug_Options or Trace_Options);
    end Initialize;
 
@@ -108,11 +90,9 @@ package body Camera.Lib.Options is
    -- processes options it knows about and calls parent for others
    overriding
    function Process_Option (
-      Options                    : in out Program_Options_Type;
-      Iterator                   : in out Ada_Lib.Options.
-                                    Command_Line_Iterator_Interface'class;
-      Option                     : in     Ada_Lib.Options.
-                                             Option_Type'class
+      Options  : in out Program_Options_Type;
+      Iterator : in out Ada_Lib.Options.Command_Line_Iterator_Interface'class;
+      Option   : in     Ada_Lib.Options.Base_Flag_Option_Type'class
    ) return Boolean is
    ----------------------------------------------------------------------------
 
@@ -120,7 +100,7 @@ package body Camera.Lib.Options is
       Log_In (Trace_Options or Debug_Options, Option.Image);
 
       if Ada_Lib.Options.Has_Option (Option, Options_With_Parameters,
-            Options_Without_Parameters) then
+            Ada_Lib.Options.Null_Flag_List) then
          case Option.Option is
             when Trace_Option =>
                declare
@@ -168,7 +148,7 @@ package body Camera.Lib.Options is
          Log_Out (Trace_Options or Debug_Options, "other " & Option.Image);
          return Options.GNOGA.Process_Option (Iterator, Option) or else
             Options.Camera_Library.Process_Option (Iterator, Option) or else
-            ADA_LIB.Options.Actual.Program_Options_Type (Options).Process_Option (
+            Ada_Lib.Options.Program.Program_Options_Type (Options).Process_Option (
                Iterator, Option);
       end if;
 
@@ -190,11 +170,11 @@ package body Camera.Lib.Options is
 
       case Help_Mode is
 
-      when Ada_Lib.Options.Program =>
-         Ada_Lib.Help.Add_Option (Trace_Option,
-            "trace options", "trace options", Component);
+      when Ada_Lib.Options.Program_Mode =>
+         Ada_Lib.Help.Create_Option (Trace_Option,
+            "trace options", "trace options", Component, Ada_Lib.Help.Unmodified_Flag);
 
-      when Ada_Lib.Options.Traces =>
+      when Ada_Lib.Options.Trace_Mode =>
          New_Line;
 
          Put_Line (Command_Name & " trace options -" &
@@ -206,7 +186,7 @@ package body Camera.Lib.Options is
 
       end case;
 
-      Ada_Lib.Options.Actual.Program_Options_Type (Options).Program_Help (Help_Mode);
+      Ada_Lib.Options.Program.Program_Options_Type (Options).Program_Help (Help_Mode);
       Options.GNOGA.Program_Help (Help_Mode);
       Options.Camera_Library.Program_Help (Help_Mode);
       Log_Out (Debug_Options or Trace_Options);
@@ -214,7 +194,7 @@ package body Camera.Lib.Options is
 
 -- ----------------------------------------------------------------------------
 -- procedure Set_Protected_Options (
---    Options  : in not null Ada_Lib.Options.Actual.
+--    Options  : in not null Ada_Lib.Options.Flags.
 --                            Program_Options_Class_Access) is
 -- ----------------------------------------------------------------------------
 --

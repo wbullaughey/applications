@@ -1,6 +1,7 @@
 with ADA_LIB.Command_Line_Iterator;
 with GNOGA_Options;
-with Ada_Lib.Options.Actual;
+--with Ada_Lib.Options.Flags;
+with Ada_Lib.Options.Program;
 with ADA_LIB.Strings.Unlimited;
 --with Ada_Lib.Trace;
 --with Ada_Lib.Socket_IO;
@@ -12,7 +13,7 @@ package Camera.Lib.Options is
    Failed                        : Exception;
 
 -- use type Ada_Lib.Options.Interface_Options_Constant_Class_Access;
--- use type Ada_Lib.Options.Actual.Program_Options_Class_Access;
+-- use type Ada_Lib.Options.Flags.Program_Options_Class_Access;
 
    subtype Runtime_Iterator_Type is Ada_Lib.Command_Line_Iterator.
                                     Abstract_Package.Abstract_Iterator_Type;
@@ -23,7 +24,7 @@ package Camera.Lib.Options is
    end record;
 
    -- type used for application options
-   type Program_Options_Type     is limited new Ada_Lib.Options.Actual.
+   type Program_Options_Type     is limited new Ada_Lib.Options.Program.
                                     Program_Options_Type with record
       Camera_Library             : aliased Camera.Lib.Library_Options_Type;
       Setup_Path                 : Ada_Lib.Strings.Unlimited.String_Type;
@@ -48,7 +49,7 @@ package Camera.Lib.Options is
 -- with Pre => Have_Options;
 --
 -- function Get_Camera_Read_Only_Options
--- return  Ada_Lib.Options.Actual.Verification_Options_Constant_Class_Access
+-- return  Ada_Lib.Options.Flags.Verification_Options_Constant_Class_Access
 -- with Pre => Have_Options;
 
    overriding
@@ -60,23 +61,33 @@ package Camera.Lib.Options is
 
    overriding
    function Process_Option (  -- process one option
-     Options         : in out Program_Options_Type;
-      Iterator       : in out Ada_Lib.Options.
-                        Command_Line_Iterator_Interface'class;
-      Option         : in     Ada_Lib.Options.
-                                             Option_Type'class
+      Options  : in out Program_Options_Type;
+      Iterator : in out Ada_Lib.Options.Command_Line_Iterator_Interface'class;
+      Option   : in     Ada_Lib.Options.Base_Flag_Option_Type'class
    ) return Boolean
    with pre => Options.Initialized;
 -- with Pre => not Ada_Lib.Options.Have_Options;
 
 -- procedure Set_Protected_Options (
---    Options                    : in not null Ada_Lib.Options.Actual.
+--    Options                    : in not null Ada_Lib.Options.Flags.
 --                                  Program_Options_Class_Access
 -- ) with Pre => Options /= Null and then
 --               not Have_Options;
 
-   Debug                         : aliased Boolean := False;  -- not set as option
+   package Camera_Options is
+      Commands_Debug             : Boolean := False;
+      Configuration_State_Debug  : Boolean := False;
+      Main_Debug                 : Boolean := False;
+      Options_Debug              : Boolean := False;
+   end Camera_Options;
 
+-- package Camera_Main is
+--    Debug                      : Boolean := False;
+-- end Camera_Main;
+--
+-- package Configuration_Camera_State is
+--    Debug                      : aliased Boolean := False;
+-- end Configuration_Camera_State;
 private
 
 -- overriding

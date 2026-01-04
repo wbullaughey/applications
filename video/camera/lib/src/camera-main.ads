@@ -159,9 +159,6 @@ package Camera.Main is
 
    function Unit_Test_Suite return AUnit.Test_Suites.Access_Test_Suite;
 
-   Debug                         : Boolean := False;
-   Unit_Test_Debug               : Boolean := False;
-
 private
 
    type Window_Connection_Type   is abstract new Abstract_Window_Connection_Type with

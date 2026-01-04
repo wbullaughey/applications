@@ -1,5 +1,6 @@
 with Ada_Lib.Trace; use Ada_Lib.Trace;
 with Camera.Lib.Base;
+with Camera.Lib.Options;
 with Hex_IO;
 
 package body Camera.Commands.PTZ_Optics is
@@ -7,11 +8,13 @@ package body Camera.Commands.PTZ_Optics is
 -- use type Ada.Streams.Stream_Element;
    use type Video.Lib.Index_Type;
 
-   Default_Response_Timeout      : constant Duration := 0.6;
-   Position_Request_Timeout      : constant Duration := 0.75;
-   Position_Timeout              : constant Duration := 60.0;
-   Power_Inquire_Timeout         : constant Duration := 120.0;
-   Commands                      : constant Array (Commands_Type) of Camera.Lib.Base.Command_Type := (
+   Debug                   : Boolean renames
+                              Camera.Lib.Options.Camera_Options.Commands_Debug;
+   Default_Response_Timeout: constant Duration := 0.6;
+   Position_Request_Timeout: constant Duration := 0.75;
+   Position_Timeout        : constant Duration := 60.0;
+   Power_Inquire_Timeout   : constant Duration := 120.0;
+   Commands                : constant Array (Commands_Type) of Camera.Lib.Base.Command_Type := (
       Auto_Focus           => ( 6, ( 16#81#,16#01#,16#04#,16#38#,16#02#,16#FF#, others => 0 ), True, Default_Response_Timeout, False, 0),
       Manual_Focus         => ( 6, ( 16#81#,16#01#,16#04#,16#38#,16#03#,16#FF#, others => 0 ), True, Default_Response_Timeout, False, 0),
       Position_Absolute    => ( 15, ( 16#81#,16#01#,16#06#,16#02#,
@@ -128,6 +131,18 @@ package body Camera.Commands.PTZ_Optics is
    begin
       return Speeds (Which);
    end Get_Camera_Speed_Range;
+
+   ----------------------------------------------------------------------------
+   overriding
+   function Get_Default_Speed (
+      Camera                     : in     PTZ_Optics_Type
+   ) return Property_Type is
+   pragma Unreferenced (Camera);
+   ----------------------------------------------------------------------------
+
+   begin
+      return Default_Speed;
+   end Get_Default_Speed;
 
    ----------------------------------------------------------------------------
    overriding

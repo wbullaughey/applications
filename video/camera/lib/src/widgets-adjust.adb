@@ -1,16 +1,14 @@
 --with Ada.Text_IO; use  Ada.Text_IO;
 --with Ada_Lib.GNOGA;
 with Ada_Lib.Parser;
+with Ada_Lib.String_Quote; use Ada_Lib.String_Quote;
 with Ada_Lib.Strings; use Ada_Lib.Strings;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
 with Camera.Base;
 with Camera.Main;
 with Camera.Command_Queue;
---with Camera.Commands;
---with Configuration.Camera.Setup;
---with Configuration.State; use Configuration;
---with Main;
---with Camera.Lib.Base;
+
+pragma Elaborate (Ada_Lib.Parser);
 
 package body Widgets.Adjust is
 

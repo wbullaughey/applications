@@ -1,5 +1,6 @@
 with Ada.Tags;
 with Ada.Text_IO; use  Ada.Text_IO;
+with Ada_Lib.String_Quote; use Ada_Lib.String_Quote;
 with Ada_Lib.Strings; use Ada_Lib.Strings;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
 with Camera.States; use Camera.States;
@@ -956,8 +957,9 @@ not_implemented;
       begin
          if Enable then
             Cell_Type (Cell).Dump (Enable, Caller, From);
-               Put_Line (Quote ("  Image path", Cell.Image_Div.Path) &
-               " dump " & Here);
+               Put_Line (Ada_Lib.Strings.Unlimited.Quote (
+                  "  Image path", Cell.Image_Div.Path) &
+                  " dump " & Here);
          end if;
       end Dump;
 

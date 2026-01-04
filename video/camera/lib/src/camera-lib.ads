@@ -1,8 +1,7 @@
 with ADA_LIB.Command_Line_Iterator;
 --with Ada_Lib.Configuration;
-with Ada_Lib.Options.Actual;
---with Camera.Commands;
---with GNAT.Source_Info;
+--with Ada_Lib.Options.Flags;
+with Ada_Lib.Options.Nested;
 with Hex_IO;
 with Gnoga.Gui.Base;
 with Video.Lib;
@@ -44,12 +43,12 @@ package Camera.Lib is
    function Get_Camera_Modifiable_Options
    return Library_Options_Class_Access
    with Pre => Have_Options and then
-               Ada_Lib.Options.Actual.Have_Ada_Lib_Nested_Options;
+               Ada_Lib.Options.Nested.Have_Ada_Lib_Nested_Options;
 
    function Get_Camera_Readonly_Options
    return Library_Options_Constant_Class_Access
    with Pre => Have_Options and then
-               Ada_Lib.Options.Actual.Have_Ada_Lib_Nested_Options;
+               Ada_Lib.Options.Nested.Have_Ada_Lib_Nested_Options;
 
    function Have_Options
    return Boolean;
@@ -63,11 +62,9 @@ package Camera.Lib is
 
    overriding
    function Process_Option (  -- process one option
-     Options                     : in out Library_Options_Type;
-      Iterator                   : in out Ada_Lib.Options.
-                                             Command_Line_Iterator_Interface'class;
-      Option                     : in     Ada_Lib.Options.
-                                             Option_Type'class
+      Options  : in out Library_Options_Type;
+      Iterator : in out Ada_Lib.Options.Command_Line_Iterator_Interface'class;
+      Option   : in     Ada_Lib.Options.Base_Flag_Option_Type'class
    ) return Boolean
    with pre => Options.Initialized;
 

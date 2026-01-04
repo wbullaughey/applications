@@ -1,4 +1,5 @@
 with Ada.Tags;
+with Ada_Lib.Strings; use Ada_Lib.Strings;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
 
 package body Configuration is
@@ -11,7 +12,8 @@ package body Configuration is
    ----------------------------------------------------------------
 
    begin
-      return Log_Here (State.Loaded, Debug or Trace_Pre_Post_Conditions,
+      return Log_Here (State.Loaded,
+         Debug or Trace_Pre_Post_Conditions,
          "state from " & From & " " &
          "address " & Image (State'address) &
          " class " & Ada.Tags.Expanded_Name (Root_State_Type'class (State)'tag));
@@ -25,7 +27,8 @@ package body Configuration is
    ----------------------------------------------------------------
 
    begin
-      return Log_Here (Setup.Loaded, Debug or Trace_Pre_Post_Conditions,
+      return Log_Here (Setup.Loaded,
+         Debug or Trace_Pre_Post_Conditions,
          "setup from " & From & " " &
          "address " & Image (Setup'address) &
          " class " & Ada.Tags.Expanded_Name (Root_Setup_Type'class (Setup)'tag));

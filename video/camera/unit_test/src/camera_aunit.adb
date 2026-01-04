@@ -1,7 +1,8 @@
 with Ada.Exceptions;
 with Ada.Text_IO; use Ada.Text_IO;
 with Ada_Lib.Help;
-with Ada_Lib.Options.Actual;
+with Ada_Lib.Options.Nested;
+with Ada_Lib.Options.Program;
 with Ada_Lib.OS;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
 with Ada_Lib.Trace_Tasks;
@@ -9,6 +10,8 @@ with Ada_Lib.Unit_Test;
 with Camera.Lib.Unit_Test;
 with Camera.Command_Queue;
 with Command_Name;
+
+-- pragma Elaborate (Ada_Lib.OS);
 
 procedure Camera_AUnit is
 
@@ -20,18 +23,20 @@ begin
 --Trace_Tests := True;
    Log_In (Debug);
    Put_Line (Command_Name);
-   Ada_Lib.Options.Actual.Set_Ada_Lib_Nested_Options (
-      Ada_Lib.Options.Actual.Nested_Options_Type (
+   Ada_Lib.Options.Nested.Set_Ada_Lib_Nested_Options (
+      Ada_Lib.Options.Nested.Nested_Options_Type (
          Options.Camera_Library_Options)'unchecked_access);
-   Ada_Lib.Options.Actual.Set_Ada_Lib_Program_Options (
-      Ada_Lib.Options.Actual.Program_Options_Type (
+   Ada_Lib.Options.Set_Ada_Lib_Program_Options (
+      Ada_Lib.Options.Program.Program_Options_Type (
          Options)'unchecked_access);
    if Options.Initialize then
+      Log_Here (Debug);
       if Options.Process (
          Include_Options      => True,
          Include_Non_Options  => False,
          Modifiers            => Ada_Lib.Help.Modifiers) then
 
+         Log_Here (Debug);
          Options.Post_Process;
          if Ada_Lib.Options.Ada_Lib_Environment.Help_Test then
             Put_Line ("help test " & (if Ada_Lib.Exception_Occured then

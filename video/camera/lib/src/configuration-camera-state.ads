@@ -34,10 +34,10 @@ package Configuration.Camera.State is
 
    procedure Clear_Global_Camera_State (
       State                      : in out State_Type
-   ) with Pre  => Standard.Camera.States.Has_Camera_Configuration_State (
-                  State.Get_Camera_ID),
-          Post => not Standard.Camera.States.Has_Camera_Configuration_State (
-                   State.Get_Camera_ID);
+   ) with Pre  => State.Has_Camera_ID and then
+                  Standard.Camera.States.Has_Camera_Configuration_State (
+                     State.Get_Camera_ID),
+          Post => not State.Has_Camera_ID;
 
    procedure Copy (
       Destination                : in out State_Type;
@@ -142,15 +142,14 @@ package Configuration.Camera.State is
 
    Default_State                 : constant String := "state.cfg";
 
-   Debug                         : Boolean := False;
-
 private
 
    type State_Type            is new Configuration.State.State_Type with record
       Camera_ID               : Standard.Camera.Camera_ID_Type;
       Camera_Name             : Ada_Lib.Strings.Unlimited.String_Type;
       CSS_Path                : ADA_LIB.Strings.Unlimited.String_Type;
-      Default_Speed           : Speed_Type;
+      Default_Speed           : Speed_Type :=
+                                 (Speed_Type'last - Speed_Type'first)/2;
       Images                  : Images_Access := Null;
                                  -- pointer two dimensional array of image paths
                                  -- 1st dimension is row, second is column

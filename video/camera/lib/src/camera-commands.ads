@@ -39,6 +39,10 @@ package Camera.Commands is
       Which             : in     Which_Speed_Type := Select_Default_Speed
    ) return Data_Type is abstract;
 
+   function Get_Default_Speed (
+      Camera            : in     Camera_Type
+   ) return Property_Type is abstract;
+
    function Get_Power (
       Camera                     : in out Camera_Type
    ) return Boolean;
@@ -93,8 +97,6 @@ package Camera.Commands is
       Mode                       : in     Zoom_Mode_Type;
       Value                      : in     Absolute_Type;
       Wait_For_Complete          : in     Boolean := True);
-
-   Debug                         : Boolean := False;
 
 private
 

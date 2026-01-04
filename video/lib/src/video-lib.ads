@@ -1,6 +1,5 @@
-with Ada_Lib.Options;
+with Ada_Lib.Options.Nested;
 with Ada_Lib.Trace;
-with ADA_LIB.Options.Actual;
 with Ada_Lib.Socket_IO; -- .Stream_IO;
 with Ada_Lib.Strings.Unlimited;
 with GNAT.Sockets;
@@ -123,7 +122,7 @@ package Video.Lib is
    type Relative_Type            is new Integer;
    type Value_Type               is mod 2**32;
 
-   type Options_Type             is limited new Ada_Lib.Options.Actual.
+   type Options_Type             is limited new Ada_Lib.Options.Nested.
                                     Nested_Options_Type with record
       Address_Kind               : Address_Kind_Type;
       Directory                  : ADA_LIB.Strings.Unlimited.String_Type;
@@ -154,11 +153,9 @@ package Video.Lib is
 
    overriding
    function Process_Option (  -- process one option
-     Options                     : in out Options_Type;
-      Iterator                   : in out Ada_Lib.Options.
-                                    Command_Line_Iterator_Interface'class;
-      Option                     : in     Ada_Lib.Options.
-                                             Option_Type'class
+     Options   : in out Options_Type;
+      Iterator : in out Ada_Lib.Options.Command_Line_Iterator_Interface'class;
+      Option   : in     Ada_Lib.Options.Base_Flag_Option_Type'class
    ) return Boolean
    with pre => Options.Initialized;
 -- with Pre => not Ada_Lib.Options.Have_Options;

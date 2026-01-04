@@ -1,7 +1,7 @@
 with Ada.Streams;
 with Ada.Text_IO; use Ada.Text_IO;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
-with Camera.Lib;
+with Camera.Lib.OPTIONS;
 --with Camera.Main;
 with Configuration.Camera.State;
 with Hex_IO;
@@ -17,6 +17,8 @@ package body Camera.Commands is
    use type Interfaces.Unsigned_16;
 -- use type Value_Type;
 
+   Debug                : Boolean renames
+                           Camera.Lib.Options.Camera_Options.Commands_Debug;
    Delay_After_Move     : constant := 0.5;
    Power_On_Delay       : constant := 120.0;
    Zoom_Stabalize_Time  : constant := 15.0;
@@ -95,7 +97,7 @@ package body Camera.Commands is
       Tries          : Natural := 0;
 
    begin
-      Log_In (Debug, "timeout time " & From_Start (Timeout_Time));
+      Log_In (Debug, "timeout time " & Ada_Lib.Time.From_Start (Timeout_Time));
       loop
          declare
             Response_Buffer      : Maximum_Response_Type;
@@ -144,7 +146,7 @@ package body Camera.Commands is
             Now      : constant Ada_Lib.Time.Time_Type := Ada_Lib.Time.Now;
 
          begin
-            Log_Here (Debug, "now " & From_Start (Now));
+            Log_Here (Debug, "now " & Ada_Lib.Time.From_Start (Now));
             if Ada_Lib.Time.Now > Timeout_Time then
                declare
                   Message  : constant String :=

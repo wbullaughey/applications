@@ -2,6 +2,7 @@
 source ~/.zshrc
 export WHICH=$1
 export NO_WARNINGS=$2
+export TRACE=1
 
 
 # WHICH values
@@ -12,4 +13,4 @@ export NO_WARNINGS=$2
 export ALR_OPTIONS=-O0
 echo build WHICH $WHICH ALR_OPTIONS $ALR_OPTIONS
 
-../../../../global_build.sh $WHICH program $NO_WARNINGS
+../../../../global_build.sh $WHICH program $NO_WARNINGS $TRACE

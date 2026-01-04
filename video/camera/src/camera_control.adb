@@ -2,7 +2,7 @@
 with Ada.Text_IO; use Ada.Text_IO;
 --with ADA_LIB.GNOGA;
 with Ada_Lib.Help;
-with Ada_Lib.Options.Actual;
+with Ada_Lib.Options.Flags;
 with ADA_LIB.OS;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
 with Ada_Lib.Trace_Tasks;
@@ -18,20 +18,20 @@ with Emulator;
 
 procedure Camera_Control is
 
-   Camera_Setup                  : Configuration.Camera.Setup.Setup_Type;
+-- Camera_Setup                  : Configuration.Camera.Setup.Setup_Type;
 -- Connection_Data               : constant Camera.GNOGA_Ada_lib.Connection_Data_Class_Access :=
 --                                  Camera.Base.Allocate_Connection_Data;
-   Options                       : aliased Camera.Lib.Options.Program_Options_Type;
+   Options                       : aliased Camera.Lib.Program.Program_Options_Type;
    Debug                         : Boolean renames Options.Debug;
-   Loaded_Configuration_State    : aliased Configuration.Camera.State.State_Type;
+-- Loaded_Configuration_State    : aliased Configuration.Camera.State.State_Type;
 
 begin
 --Debug := true;
    Put_Line (Command_Name);
-   Ada_Lib.Options.Actual.Set_Ada_Lib_Program_Options (
+   Ada_Lib.Options.Flags.Set_Ada_Lib_Program_Options (
       Options'unchecked_access);
-   Ada_Lib.Options.Actual.Set_Ada_Lib_Nested_Options (
-      Ada_Lib.Options.Actual.Nested_Options_Type (
+   Ada_Lib.Options.Flags.Set_Ada_Lib_Nested_Options (
+      Ada_Lib.Options.Nested.Nested_Options_Type (
          Options.Camera_Library)'unchecked_access);
 
    if Options.Initialize then
@@ -49,11 +49,12 @@ begin
                else
                   "completed"));
          else
-            Loaded_Configuration_State.Load (  -- state removed from connection
-               Location => Options.Camera_Library.Location,
-               Name     => Configuration.Camera.State.File_Path);
-            Camera_Setup.Load (Loaded_Configuration_State,
-               Configuration.Camera.Setup.File_Path);
+--          Loaded_Configuration_State.Load (  -- state removed from connection
+--             Location => Options.Camera_Library.Location,
+--             Name     => Configuration.Camera.State.File_Path);
+--          Camera_Setup.Load (Loaded_Configuration_State,
+--             Configuration.Camera.Setup.File_Path);
+            Camera.State.Load (Options.Location);
             Log_Here (Debug);
 
             declare

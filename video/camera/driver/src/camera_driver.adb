@@ -2,7 +2,7 @@
 with Ada.Text_IO; use Ada.Text_IO;
 with Ada.Directories;
 with Ada_Lib.Help;
-with Ada_Lib.Options.Actual;
+with Ada_Lib.Options.Flags;
 with Ada_Lib.OS;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
 with Ada_Lib.Trace_Tasks;
@@ -15,6 +15,8 @@ with Driver;
 --with Camera.Lib.Unit_Test;
 --with Runtime_Options;
 
+-- pragma Elaborate (Ada_Lib.OS);
+
 procedure Camera_Driver is
 
    Protected_Options             : aliased Driver.Program_Options_Type;
@@ -22,7 +24,7 @@ procedure Camera_Driver is
                                     Driver_Options.Main_Debug;
 
 begin
-   Ada_Lib.Options.Actual.Set_Ada_Lib_Program_Options (
+   Ada_Lib.Options.Flags.Set_Ada_Lib_Program_Options (
          Protected_Options'unchecked_access);
 
    Protected_Options.Driver_Options.Camera_Directory.Construct (

@@ -3,22 +3,26 @@ with Ada.Text_IO;use Ada.Text_IO;
 with Ada_Lib.Help;
 --with Ada_Lib.Options;
 with ADA_LIB.OS;
---with Ada_Lib.Options.Actual;
+with Ada_Lib.Options.Create;
+--with Ada_Lib.Options.Nested;
 with Ada_Lib.Options.Runstring;
 with Ada_Lib.Socket_IO;
 --with Ada_Lib.Strings;
+with ADA_LIB.String_Quote; use ADA_LIB.String_Quote;
 with ADA_LIB.Strings.Unlimited;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
 with Camera.Base;
 with Camera.Commands;
 with Camera.Lib.Base;
+with Camera.Lib.Options;
 with Camera.States;
 --with Configuration.Camera.Setup;
 with Configuration.Camera.State;
 with Configuration.State;
 with Emulator;
 with Camera.Main;
---with Camera.Commands.PTZ_Optics;
+with Camera.Options;
+with Video.Lib.Options;
 with Widgets.Adjust;
 with Widgets.Control;
 with Widgets.Configured;
@@ -30,17 +34,17 @@ with Widgets.Video;
 package body Camera.Lib is
 
 -- use type Configuration.State.Location_Type;
--- use type Ada_Lib.Options.Actual.Flag_Option_Type;
+-- use type Ada_Lib.Options.Flag_List_Type;
 -- use type Ada_Lib.Options.Interface_Options_Constant_Class_Access;
 
    Trace_Option                  : constant Character := '2';
    Trace_Prefix                  : constant Character := Ada_Lib.Help.Modifier;
    Options_With_Parameters       : aliased constant
-                                    Ada_Lib.Options.Actual.Flag_Option_Type :=
-                                       Ada_Lib.Options.Create_Options (
+                                    Ada_Lib.Options.Flag_List_Type :=
+                                       Ada_Lib.Options.Create.Create_One (
                                           Trace_Option, Ada_Lib.Options.Unmodified_Flag);
 -- Options_Without_Parameters    : aliased constant
---                                  Ada_Lib.Options.Actual.Flag_Option_Type :=
+--                                  Ada_Lib.Options.Flag_List_Type :=
 --                                     Ada_Lib.Options.Create_Options (
 --                                        Trace_Option,  -- local is default
 --                                        Ada_Lib.Options.Unmodified_Flag) &
@@ -53,9 +57,9 @@ package body Camera.Lib is
    return Library_Options_Class_Access is
    -------------------------------------------------------------------------
 
-      Options  : constant Ada_Lib.Options.Actual.
+      Options  : constant Ada_Lib.Options.Nested.
                   Nested_Options_Class_Access :=
-                     Ada_Lib.Options.Actual.
+                     Ada_Lib.Options.Nested.
                         Get_Ada_Lib_Modifiable_Nested_Options;
    begin
       if Debug then
@@ -72,7 +76,7 @@ package body Camera.Lib is
 
    begin
       return Library_Options_Constant_Class_Access (
-         Ada_Lib.Options.Actual.Get_Ada_Lib_Read_Only_Nested_Options);
+         Ada_Lib.Options.Nested.Get_Ada_Lib_Read_Only_Nested_Options);
    end Get_Camera_Readonly_Options;
 
    -------------------------------------------------------------------------
@@ -80,9 +84,11 @@ package body Camera.Lib is
    return Boolean is
    -------------------------------------------------------------------------
 
+      Result   : constant Boolean :=
+                           Ada_Lib.Options.Have_Ada_Lib_Program_Options;
    begin
-      return Log_Here (Ada_Lib.Options.Actual.Have_Ada_Lib_Program_Options,
-         Debug or else Trace_Pre_Post_Conditions);
+      return Log_Here (Result,
+         Debug or else Trace_Pre_Post_Conditions or else not Result);
    end Have_Options;
 
    -------------------------------------------------------------------------
@@ -95,8 +101,7 @@ package body Camera.Lib is
 
    begin
       Log_In_Checked (Recursed, Debug_Options or Trace_Options,
-         "With Parameters " & Ada_Lib.Options.Image (
-            Options_With_Parameters, False));
+         "With Parameters " & Options_With_Parameters.Image);
 --       " Without Parameters " & Ada_Lib.Options.Image (
 --          Options_Without_Parameters, False) & " from " & From);
 
@@ -146,13 +151,13 @@ package body Camera.Lib is
       exception
          when Fault: Ada_Lib.Options.Failed =>
             Trace_Exception (Debug_Options or Trace_Options, Fault);
---          Ada_Lib.Options.Actual.Display_Help (
+--          Ada_Lib.Options.Flags.Display_Help (
 --             Ada.Exceptions.Exception_Message (Fault), True);
             raise;
 
          when Fault: others =>
             Trace_Exception (Debug_Options or Trace_Options, Fault);
---          Ada_Lib.Options.Actual.Display_Help (Ada.Exceptions.Exception_Message (Fault), True);
+--          Ada_Lib.Options.Flags.Display_Help (Ada.Exceptions.Exception_Message (Fault), True);
             raise;
       end;
 
@@ -211,11 +216,9 @@ package body Camera.Lib is
    -- processes options it knows about and calls parent for others
    overriding
    function Process_Option (
-      Options                    : in out Library_Options_Type;
-      Iterator                   : in out Ada_Lib.Options.
-                                             Command_Line_Iterator_Interface'class;
-      Option                     : in     Ada_Lib.Options.
-                                             Option_Type'class
+      Options  : in out Library_Options_Type;
+      Iterator : in out Ada_Lib.Options.Command_Line_Iterator_Interface'class;
+      Option   : in     Ada_Lib.Options.Base_Flag_Option_Type'class
    ) return Boolean is
    ----------------------------------------------------------------------------
 
@@ -269,15 +272,16 @@ package body Camera.Lib is
 
       case Help_Mode is
 
-      when Ada_Lib.Options.Program =>
-         Log_Here (Debug_Options or Trace_Options, Quote ("Component", Component));
+      when Ada_Lib.Options.Program_Mode =>
+         Log_Here (Debug_Options or Trace_Options,
+            Quote ("Component", Component));
 
-         Ada_Lib.Help.Add_Option (Trace_Option, "trace options", "Camera Lib Debug",
-            Component);
---       Ada_Lib.Help.Add_Option ('u', "camera URL", "URL", Component);
+         Ada_Lib.Help.Create_Option (Trace_Option, "trace options", "Camera Lib Debug",
+            Component, Ada_Lib.Help.Unmodified_Flag);
+--       Ada_Lib.Help.Create_Option ('u', "camera URL", "URL", Component, Ada_Lib.Help.Unmodified_Flag);
          New_Line;
 
-      when Ada_Lib.Options.Traces =>
+      when Ada_Lib.Options.Trace_Mode =>
          New_Line;
 
          Put_Line (Component & " trace options (-" &
@@ -334,19 +338,20 @@ package body Camera.Lib is
 
                   when 'a' =>
                      Camera.Base.Debug := True;
-                     Camera.Commands.Debug := True;
                      Camera.Lib.Base.Debug := True;
                      Camera.Lib.Base.List_Commands := True;
+                     Camera.Lib.Options.
+                        Camera_Options.Configuration_State_Debug := True;
+                     Camera.Lib.Options.Camera_Options.Commands_Debug := True;
                      Camera.States.Debug := True;
                      Configuration.Camera.Debug := True;
-                     Configuration.Camera.State.Debug := True;
-                     Configuration.State.Debug := True;
                      Configuration.Debug := True;
                      Debug_Options := True;
                      Debug := True;
                      Emulator.Debug := True;
-                     Main.Debug := True;
                      Options.Lib_Debug := True;
+                     Video.Lib.Options.Video_Options.
+                        Configuration_State_Debug := True;
                      Widgets.Adjust.Debug := True;
                      Widgets.Control.Debug := True;
                      Widgets.Configured.Debug := True;
@@ -359,10 +364,11 @@ package body Camera.Lib is
                      Camera.Lib.Base.Debug := True;
 
                   when 'c' =>
-                     Configuration.Camera.Debug := True;
+                     Camera.Lib.Options.Camera_Options.
+                        Configuration_State_Debug := True;
 
                   when 'C' =>
-                     Camera.Commands.Debug := True;
+                     Camera.Lib.Options.Camera_Options.Commands_Debug := True;
 
                   when 'g' =>
                      Widgets.Generic_Table.Debug := True;
@@ -374,13 +380,13 @@ package body Camera.Lib is
                      Debug_Options := True;
 
                   when 'm' =>
-                     Main.Debug := True;
+                     Camera.Lib.Options.Camera_Options.Main_Debug := True;
 
                   when 's' =>
                      Emulator.Debug := True;
 
                   when 'S' =>
-                     Configuration.State.Debug := True;
+                     Video.Lib.Options.Video_Options.Configuration_State_Debug := True;
 
                   when 't' =>
                      Camera.States.Debug := True;
@@ -421,7 +427,7 @@ package body Camera.Lib is
                      Configuration.Debug := True;
 
                   when 'S' =>
-                     Configuration.Camera.State.Debug := True;
+                     Camera.Lib.Options.Camera_Options.Configuration_State_Debug := True;
 
                   when others =>
                      Options.Bad_Option (Quote (
@@ -432,6 +438,10 @@ package body Camera.Lib is
 
                end case;
                Suboption := Ada_Lib.Options.Plain;
+
+            when Ada_Lib.Options.Nil_Option =>
+               not_implemented;
+
          end case;
       end loop;
    end Trace_Parse;

@@ -2,9 +2,11 @@ with Ada.Exceptions;
 with Ada.Unchecked_Deallocation;
 with Ada_Lib.Configuration;
 with Ada_Lib.Directory;
-with Ada_Lib.Options.Actual;
+with Ada_Lib.Options.Flags;
 with Ada_Lib.Socket_IO;
+with Ada_Lib.Strings; use Ada_Lib.Strings;
 with Ada_Lib.Strings.Unlimited; use Ada_Lib.Strings; use Ada_Lib.Strings.Unlimited;
+with Ada_Lib.String_Quote; use Ada_Lib.String_Quote;
 with Ada.Text_IO; use Ada.Text_IO;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
 with AUnit.Assertions; use AUnit.Assertions;
@@ -20,6 +22,9 @@ package body Configuration.Camera.State is
       Images_Type,
       Images_Access);
 
+   Debug : Boolean renames Standard.Camera.Lib.Options.
+            Camera_Options.Configuration_State_Debug;
+
    ----------------------------------------------------------------
    function Check_Column (
       Column                     : in     Column_Type
@@ -31,11 +36,11 @@ package body Configuration.Camera.State is
       State          : Configuration.Camera.State.State_Type renames
                         State_Pointer.all;
       Number_Columns : constant Column_Type := State.Get_Number_Columns;
-
+      Result         : constant Boolean := State.Images /= Null and then
+                        Column <= Number_Columns;  -- column number starts at 0
    begin
-      return Log_Here (State.Images /= Null and then
-         Column <= Number_Columns,  -- column number starts at 0
-         Trace_Pre_Post_Conditions, "column" & Column'img &
+      return Log_Here (Result,
+         Trace_Pre_Post_Conditions or not Result, "column" & Column'img &
             " number columns" & Number_Columns'img);
    end Check_Column;
 
@@ -46,10 +51,13 @@ package body Configuration.Camera.State is
    ) return Boolean is
    ----------------------------------------------------------------
 
+      Result         : constant Boolean := Check_Column (Column) and then
+                                             Check_Row (Row);
    begin
-      return Log_Here (Check_Column (Column) and then Check_Row (Row),
-         Trace_Pre_Post_Conditions, "no image for column" & Column'img &
-         " row" & Row'img);
+      return Log_Here (Result,
+         Trace_Pre_Post_Conditions or not Result,
+         "no image for column" & Column'img &
+            " row" & Row'img);
    end Check_Image;
 
    ----------------------------------------------------------------
@@ -63,10 +71,11 @@ package body Configuration.Camera.State is
       State          : Configuration.Camera.State.State_Type renames
                         State_Pointer.all;
       Number_Rows : constant Row_Type := State.Get_Number_Rows;
+      Result         : constant Boolean := State.Images /= Null and then
+                                             Row <= State.Number_Rows;
 
    begin
-      return Log_Here (State.Images /= Null and then
-         Row <= State.Number_Rows, Trace_Pre_Post_Conditions,
+      return Log_Here (Result, Trace_Pre_Post_Conditions or not Result,
          "row" & Row'img &
             " number rows" & Number_Rows'img);
    end Check_Row;
@@ -121,7 +130,7 @@ package body Configuration.Camera.State is
       State_Path                 : Ada_Lib.Strings.Unlimited.String_Type
                                     renames Standard.Camera.Lib.Options.
                                        Program_Options_Constant_Class_Access (
-                                          Ada_Lib.Options.Actual.Get_Ada_Lib_Read_Only_Program_Options).
+                                          Ada_Lib.Options.Get_Ada_Lib_Read_Only_Program_Options).
                                              Setup_Path;
 
    begin
@@ -171,6 +180,8 @@ package body Configuration.Camera.State is
       State          : Configuration.Camera.State.State_Type renames
                         State_Pointer.all;
    begin
+log_here ("State_Pointer " & Image (State_Pointer.all'address) & " State " & Image (State'address));
+      Log_Here (Debug, State.Default_Speed'img);
       return State.Default_Speed;
    end Get_Default_Speed;
 

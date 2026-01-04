@@ -3,12 +3,16 @@ with Ada.Text_IO;use Ada.Text_IO;
 with Ada_Lib.Help;
 with ADA_LIB.OS;
 with Ada_Lib.Parser;
+with Ada_Lib.Options.Create;
 with Ada_Lib.Options.Runstring;
 with Ada_Lib.Socket_IO.Stream_IO;
+with Ada_Lib.String_Quote; use Ada_Lib.String_Quote;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
 --with Configuration.State;
 -- with Debug_Options;
 with Interfaces;
+
+pragma Elaborate (Ada_Lib.Parser);
 
 package body Video.Lib is
 
@@ -17,12 +21,12 @@ package body Video.Lib is
    Debug_Option                  : constant Character := 'V';
    Debug                         : Boolean := False;
    Options_With_Parameters       : aliased constant
-                                    Ada_Lib.Options.Actual.Flag_Option_Type :=
-                                       Ada_Lib.Options.Create_Options (
+                                    Ada_Lib.Options.Flag_List_Type :=
+                                       Ada_Lib.Options.Create.Create_Multiple (
                                           "dV", Ada_Lib.Options.Unmodified_Flag);
    Options_Without_Parameters    : aliased constant
-                                    Ada_Lib.Options.Actual.Flag_Option_Type :=
-                                       Ada_Lib.Options.Create_Options (
+                                    Ada_Lib.Options.Flag_List_Type :=
+                                       Ada_Lib.Options.Create.Create_Multiple (
                                           "rS", Ada_Lib.Options.Unmodified_Flag);
    Presets                       : array (Which_Preset_Type) of
                                     Preset_ID_Type := (
@@ -155,9 +159,11 @@ package body Video.Lib is
    ) return Boolean is
    -------------------------------------------------------------------------
 
+      Result         : constant Boolean := Presets (Which_Preset).Is_Set;
+
    begin
-      return Log_Here (Presets (Which_Preset).Is_Set,
-         Debug or Trace_Pre_Post_Conditions,
+      return Log_Here (Result,
+         Debug or Trace_Pre_Post_Conditions or not Result,
          "Preset_ID " & Presets (Which_Preset).Image);
    end Have_Preset;
 
@@ -199,7 +205,7 @@ package body Video.Lib is
          Ada_Lib.Options.Runstring.Without_Parameters,
          Options_Without_Parameters);
 
-      return Log_Out (Ada_Lib.Options.Actual.Nested_Options_Type (
+      return Log_Out (Ada_Lib.Options.Nested.Nested_Options_Type (
             Options).Initialize,
          Debug or Trace_Options);
    end Initialize;
@@ -212,7 +218,8 @@ package body Video.Lib is
    -------------------------------------------------------------------------
 
    begin
-      return Log_Here (Preset_ID.Is_Set, Debug or Trace_Pre_Post_Conditions,
+      return Log_Here (Preset_ID.Is_Set,
+         Debug or Trace_Pre_Post_Conditions,
          "Preset_ID " & Preset_ID.Image & " from " & From);
    end Is_Set;
 
@@ -235,11 +242,9 @@ package body Video.Lib is
    -- processes options it knows about and calls parent for others
    overriding
    function Process_Option (
-      Options                    : in out Options_Type;
-      Iterator                   : in out Ada_Lib.Options.
-                                    Command_Line_Iterator_Interface'class;
-      Option                     : in     Ada_Lib.Options.
-                                             Option_Type'class
+      Options  : in out Options_Type;
+      Iterator : in out Ada_Lib.Options.Command_Line_Iterator_Interface'class;
+      Option   : in     Ada_Lib.Options.Base_Flag_Option_Type'class
    ) return Boolean is
    ----------------------------------------------------------------------------
 
@@ -288,7 +293,7 @@ package body Video.Lib is
          return Log_Out (True, Debug or Trace_Options,
             " option" & Option.Image & " handled");
       else
-         return Log_Out (Ada_Lib.Options.Actual.Nested_Options_Type (
+         return Log_Out (Ada_Lib.Options.Nested.Nested_Options_Type (
             Options).Process_Option (Iterator, Option),
             Trace_Options or Debug, "other option" & Option.Image);
       end if;
@@ -308,20 +313,20 @@ package body Video.Lib is
 
       case Help_Mode is
 
-      when Ada_Lib.Options.Program =>
+      when Ada_Lib.Options.Program_Mode =>
          Log_Here (Debug or Trace_Options, Quote ("Component", Component));
 
-         Ada_Lib.Help.Add_Option ('d', "directory", "current directory",
-            Component);
---       Ada_Lib.Help.Add_Option ('p', "port option",
---          "port option", Component);
-         Ada_Lib.Help.Add_Option ('r', "", "remote camera", Component);
-         Ada_Lib.Help.Add_Option ('s', "", "simulate camera", Component);
-         Ada_Lib.Help.Add_Option (Debug_Option, "trace options",
-            "trace options", Component);
+         Ada_Lib.Help.Create_Option ('d', "directory", "current directory",
+            Component, Ada_Lib.Help.Unmodified_Flag);
+--       Ada_Lib.Help.Create_Option ('p', "port option",
+--          "port option", Component, Ada_Lib.Help.Unmodified_Flag);
+         Ada_Lib.Help.Create_Option ('r', "", "remote camera", Component, Ada_Lib.Help.Unmodified_Flag);
+         Ada_Lib.Help.Create_Option ('s', "", "simulate camera", Component, Ada_Lib.Help.Unmodified_Flag);
+         Ada_Lib.Help.Create_Option (Debug_Option, "trace options",
+            "trace options", Component, Ada_Lib.Help.Unmodified_Flag);
          New_Line;
 
-      when Ada_Lib.Options.Traces =>
+      when Ada_Lib.Options.Trace_Mode =>
          New_Line;
 
          Put_Line (Component & " trace options (-" & Debug_Option & ")");
@@ -330,7 +335,7 @@ package body Video.Lib is
 
       end case;
 
-      Ada_Lib.Options.Actual.Nested_Options_Type (Options).Program_Help (Help_Mode);
+      Ada_Lib.Options.Nested.Nested_Options_Type (Options).Program_Help (Help_Mode);
       Log_Out (Debug or Trace_Options);
    end Program_Help;
 
@@ -393,7 +398,7 @@ package body Video.Lib is
 
 begin
 --Elaborate := True;
-   Debug := Ada_Lib.Options.Debug_All;
+   Debug := Ada_Lib.Options.Ada_Lib_Options.Debug_All;
 --Debug_Option := True;
 --Trace_Options := True;
    Log_Here (Elaborate or Debug or Trace_Options);
