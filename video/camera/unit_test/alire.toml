@@ -53,12 +53,12 @@ aunit = { path='../../../../aunit' }
 camera_lib = "~0.1.0-dev"
 
 [[pins]]
-camera_lib = { path='../lib' }
+camera_lib = { path='../library' }
 
 [[depends-on]]
 video_lib = "~0.1.0-dev"
 
 [[pins]]
-video_lib = { path='../../lib' }
+video_lib = { path='../../library' }
 
 

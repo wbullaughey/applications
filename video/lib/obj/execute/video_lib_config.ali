@@ -1,0 +1,51 @@
+V "GNAT Lib v13"
+A -gnatA
+A -gnatwa
+A -gnat2022
+A -g
+A -gnata
+A -gnatn
+A -gnatw.X
+A -gnatwa
+A -gnatwl
+A -gnatVa
+A -gnatyA
+A -gnatyB
+A -gnaty-
+A -gnatyd
+A -gnatye
+A -gnatyf
+A -gnatyp
+A -gnatyS
+A -gnatyx
+A -gnatwJ
+A -gnatE
+A -mmacosx-version-min=12.0.0
+A -mtune=core2
+A -fPIC
+A -feliminate-unused-debug-symbols
+P ZX
+
+RN
+RV NO_IMPLEMENTATION_PRAGMAS
+RV NO_IMPLEMENTATION_RESTRICTIONS
+RR NO_ELABORATION_CODE
+
+U video_lib_config%s	video_lib_config.ads	6b90ee41 DE NE OO PU PK
+
+D system.ads		20230727081304 24b500cb system%s
+D video_lib_config.ads	20251229011324 6b90ee41 video_lib_config%s
+G a e
+X 2 video_lib_config.ads
+5K9*Video_Lib_Config 20l5 20e21
+8a4*Crate_Version{string}
+9a4*Crate_Name{string}
+11a4*Alire_Host_OS{string}
+13a4*Alire_Host_Arch{string}
+15a4*Alire_Host_Distro{string}
+17E9*Build_Profile_Kind 17e65 18r29
+17n32*release{17E9} 18r51
+17n41*validation{17E9}
+17n53*development{17E9}
+18e4*Build_Profile{17E9}
+

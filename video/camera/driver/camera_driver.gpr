@@ -1,13 +1,7 @@
 with "ada_lib.gpr";
---with "ada_lib_tests.gpr";
 with "alr_environment.gpr";
--- with "default_config.gpr";
---with "applications.gpr";
---with "aunit.gpr";
 with "camera_lib.gpr";
--- with "config/camera_driver_config.gpr";
 with "gnoga.gpr";
---with "../../../../../local.gpr";
 with "video_lib.gpr";
 
 project Camera_Driver is
@@ -19,7 +13,7 @@ project Camera_Driver is
    for Main use ("camera_driver.adb");
 
    package Compiler is
-      for Default_Switches ("Ada") use Default_Config.Ada_Compiler_Switches;
+      for Default_Switches ("Ada") use ALR_Environment.Ada_Compiler_Switches;
    end Compiler;
 
    package Binder is
@@ -37,7 +31,7 @@ project Camera_Driver is
    package Builder is
       case ALR_Environment.Build_Mode is
 
-         when "execute" =>
+         when "aunit" | "execute" =>
             for Executable ("camera_driver.adb") use "camera_driver";
 
          when "help_test" =>

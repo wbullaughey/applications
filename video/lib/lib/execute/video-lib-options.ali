@@ -1,0 +1,115 @@
+V "GNAT Lib v13"
+A -gnatA
+A -gnatwa
+A -gnat2022
+A -g
+A -gnata
+A -gnatn
+A -gnatw.X
+A -gnatwa
+A -gnatwl
+A -gnatVa
+A -gnatyA
+A -gnatyB
+A -gnaty-
+A -gnatyd
+A -gnatye
+A -gnatyf
+A -gnatyp
+A -gnatyS
+A -gnatyx
+A -gnatwJ
+A -gnatE
+A -mmacosx-version-min=12.0.0
+A -mtune=core2
+A -fPIC
+A -feliminate-unused-debug-symbols
+P SS ZX
+
+RN
+RV NO_IMPLEMENTATION_PRAGMAS
+
+U video.lib.options%s	video-lib-options.ads	a152a684 DE NE OO PK
+Z ada.strings.text_buffers%s  a-sttebu.adb	a-sttebu.ali
+W video.lib%s		video-lib.adb		video-lib.ali
+
+D ada.ads		20230727081304 76789da1 ada%s
+D a-calend.ads		20230727081303 f55c50a3 ada.calendar%s
+D a-charac.ads		20230727081303 2d3ec45b ada.characters%s
+D a-chlat1.ads		20230727081303 e0d72e76 ada.characters.latin_1%s
+D a-except.ads		20230727081304 2a7d8d70 ada.exceptions%s
+D a-finali.ads		20230727081304 bf4f806b ada.finalization%s
+D a-ioexce.ads		20230727081304 40018c65 ada.io_exceptions%s
+D a-stream.ads		20230727081304 119b8fb3 ada.streams%s
+D a-string.ads		20230727081304 90ac6797 ada.strings%s
+D a-strfix.ads		20230727081304 d8832344 ada.strings.fixed%s
+D a-strmap.ads		20230727081304 ed8acfdb ada.strings.maps%s
+D a-stmaco.ads		20230727081304 4b1f2a0b ada.strings.maps.constants%s
+D a-strsea.ads		20230727081304 2d394feb ada.strings.search%s
+D a-sttebu.ads		20230727081304 f1ad67a2 ada.strings.text_buffers%s
+D a-strunb.ads		20230727081304 7bfb7010 ada.strings.unbounded%s
+D a-stuten.ads		20230727081304 c6ced0ae ada.strings.utf_encoding%s
+D a-tags.ads		20230727081304 9eaa38c6 ada.tags%s
+D a-textio.ads		20230727081304 5c2c6153 ada.text_io%s
+D a-unccon.ads		20230727081304 0e9b276f ada.unchecked_conversion%s
+D a-uncdea.ads		20230727081304 c3a8ac65 ada.unchecked_deallocation%s
+D ada_lib.ads		20251220012952 47d0f6c4 ada_lib%s
+D ada_lib-options.ads	20251231185855 1c48b913 ada_lib.options%s
+D ada_lib-options-nested.ads  20251231132448 9e43b2d1 ada_lib.options.nested%s
+D ada_lib-options-verification.ads  20251219145853 e2cc738b ada_lib.options.verification%s
+D ada_lib-socket_io.ads	20251214125355 b08cd913 ada_lib.socket_io%s
+D ada_lib-specifications.ads  20251208153049 5f9ec7e0 ada_lib.specifications%s
+D ada_lib-strings.ads	20251220001434 0cdd15cd ada_lib.strings%s
+D ada_lib-strings-unlimited.ads  20251219180552 69621bf0 ada_lib.strings.unlimited%s
+D ada_lib-trace.ads	20251224224934 278263d2 ada_lib.trace%s
+D gnat.ads		20230727081304 b5988c27 gnat%s
+D g-socket.ads		20230727081304 e27e154b gnat.sockets%s
+D g-souinf.ads		20230727081304 265ae3bd gnat.source_info%s
+D hex_io.ads		20251224224224 567d9c10 hex_io%s
+D interfac.ads		20230727081304 15f799c2 interfaces%s
+D i-c.ads		20230727081304 5c5a6c17 interfaces.c%s
+D i-cstrea.ads		20230727081304 e53d8b8e interfaces.c_streams%s
+D system.ads		20230727081304 24b500cb system%s
+D s-atocou.ads		20230727081304 dc18efc3 system.atomic_counters%s
+D s-crtl.ads		20230727081304 8a0692f8 system.crtl%s
+D s-exctab.ads		20230727081304 91bef6ef system.exception_table%s
+D s-ficobl.ads		20230727081304 dc5161d4 system.file_control_block%s
+D s-finmas.ads		20230727081304 bd688734 system.finalization_masters%s
+D s-finroo.ads		20230727081304 4ff27390 system.finalization_root%s
+D s-imgcha.ads		20230727081304 9c3458e7 system.img_char%s
+D s-oscons.ads		20231016200120 ae559dca system.os_constants%s
+D s-parame.ads		20230727081304 d494a4a6 system.parameters%s
+D s-pooglo.ads		20230727081304 91708d21 system.pool_global%s
+D s-putima.ads		20230727081304 17291fe4 system.put_images%s
+D s-retsta.ads		20230727081304 0f6b06cb system.return_stack%s
+D s-secsta.ads		20230727081304 578279f5 system.secondary_stack%s
+D s-soflin.ads		20230727081304 df77073e system.soft_links%s
+D s-stache.ads		20230727081304 0b81c1fe system.stack_checking%s
+D s-stalib.ads		20230727081304 1c9580f6 system.standard_library%s
+D s-stoele.ads		20230727081304 ab5468e4 system.storage_elements%s
+D s-stoele.adb		20230727081304 8f5a9db6 system.storage_elements%b
+D s-stopoo.ads		20230727081304 e9fa2dd8 system.storage_pools%s
+D s-stratt.ads		20230727081304 f7dfd786 system.stream_attributes%s
+D s-string.ads		20230727081304 582aac7d system.strings%s
+D s-ststop.ads		20230727081304 c569db7c system.strings.stream_ops%s
+D s-traent.ads		20230727081304 c81cbf8c system.traceback_entries%s
+D s-unstyp.ads		20230727081304 fa2a7f59 system.unsigned_types%s
+D s-wchcon.ads		20230727081304 d9032363 system.wch_con%s
+D s-wchstw.ads		20230727081304 2d112c01 system.wch_stw%s
+D video.ads		20250816033948 0ca9b697 video%s
+D video-lib.ads		20251228121945 7e30632d video.lib%s
+D video-lib-options.ads	20260101113834 df62c5a9 video.lib.options%s
+G a e
+X 22 ada_lib-options.ads
+179h9*Abstract_Runtime_Options_Type
+X 25 ada_lib-socket_io.ads
+59h9*Socket_Interface
+X 64 video.ads
+1K9*Video 3e10 66|1r9 9r5
+X 65 video-lib.ads
+8K15*Lib 64|1k9 65|219e14 66|1r15 9r11
+X 66 video-lib-options.ads
+1K19*Options 65|8k15 66|9l15 9e22
+3K12*Video_Options 7l8 7e21
+5b7*Configuration_State_Debug{boolean}
+

@@ -1,0 +1,24 @@
+[[depends-on]]
+camera_lib = "~0.1.0-dev"
+
+[[pins]]
+camera_lib = { path='../../library' }
+
+[[depends-on]]
+video_lib = "~0.1.0-dev"
+
+[[pins]]
+video_lib = { path='../../../library' }
+
+[[depends-on]]
+gnoga = "~0.1.0-dev"
+
+[[pins]]
+gnoga = { path='../../../../../vendor/github.com/gnoga' }
+
+[[depends-on]]
+aunit = "~0.1.0-dev"
+
+[[pins]]
+aunit = { path='../../../../../aunit' }
+

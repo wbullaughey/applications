@@ -1,0 +1,39 @@
+V "GNAT Lib v13"
+A -gnatA
+A -gnatwa
+A -gnat2022
+A -g
+A -gnata
+A -gnatn
+A -gnatw.X
+A -gnatwa
+A -gnatwl
+A -gnatVa
+A -gnatyA
+A -gnatyB
+A -gnaty-
+A -gnatyd
+A -gnatye
+A -gnatyf
+A -gnatyp
+A -gnatyS
+A -gnatyx
+A -gnatwJ
+A -gnatE
+A -mmacosx-version-min=12.0.0
+A -mtune=core2
+A -fPIC
+A -feliminate-unused-debug-symbols
+P ZX
+
+RN
+RV NO_IMPLEMENTATION_PRAGMAS
+
+U video_lib%s		video_lib.ads		e80b00d3 DE NE OO PK
+
+D system.ads		20230727081304 24b500cb system%s
+D video_lib.ads		20250816033948 e80b00d3 video_lib%s
+G a e
+X 2 video_lib.ads
+1K9*Video_Lib 3l5 3e14
+

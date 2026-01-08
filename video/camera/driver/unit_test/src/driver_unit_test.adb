@@ -1,6 +1,6 @@
 with Ada.Text_IO; use Ada.Text_IO;
 with Ada_Lib.Help;
---with Ada_Lib.Options;
+with Ada_Lib.Options.Program;
 with Ada_Lib.OS;
 --with Ada_lib.Timer;
 with Ada_Lib.Trace; use Ada_Lib.Trace;

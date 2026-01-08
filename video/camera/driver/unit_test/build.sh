@@ -7,5 +7,6 @@ export WHICH=$1
 #   help_test  - builds help_test at level
 
 echo build WHICH $WHICH
+pwd
 
-../../../../../global_build.sh $WHICH program
+../../../../../global_build.sh $WHICH library

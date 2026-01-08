@@ -23,7 +23,7 @@ alr_environment = { path='../../..' }
 camera_lib = "~0.1.0-dev"
 
 [[pins]]
-camera_lib = { path='lib' }
+camera_lib = { path='library' }
 
 [[depends-on]]
 gnoga = "~0.1.0-dev"

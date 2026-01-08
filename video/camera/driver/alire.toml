@@ -36,13 +36,13 @@ ada_lib_test_lib = "~0.1.0-dev"
 driver_lib = "~0.1.0-dev"
 
 [[pins]]
-driver_lib = { path='lib' }
+driver_lib = { path='library' }
 
 [[depends-on]]
 camera_lib = "~0.1.0-dev"
 
 [[pins]]
-camera_lib = { path='../lib' }
+camera_lib = { path='../library' }
 
 [[depends-on]]
 gnoga = "~0.1.0-dev"

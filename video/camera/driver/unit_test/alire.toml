@@ -9,6 +9,8 @@ licenses = "MIT OR Apache-2.0 WITH LLVM-exception"
 website = ""
 tags = []
 
+project-files = "driver_unit_test.gpr"
+
 executables = ["driver_unit_test"]
 
 [[depends-on]]
@@ -24,35 +26,9 @@ ada_lib = "~0.1.0-dev"
 ada_lib = { path='../../../../../ada_lib' }
 
 [[depends-on]]
-ada_lib_aunit = "~0.1.0-dev"
-
-[[pins]]
-ada_lib_aunit = { path='../../../../../ada_lib/aunit' }
-
-[[depends-on]]
-ada_lib_test_lib = "~0.1.0-dev"
-
-[[depends-on]]
-camera_lib = "~0.1.0-dev"
-
-[[pins]]
-camera_lib = { path='../../lib' }
-
-[[depends-on]]
 driver_lib = "~0.1.0-dev"
 
 [[pins]]
-driver_lib = { path='../lib' }
+driver_lib = { path='../library' }
 
-[[depends-on]]
-gnoga = "~0.1.0-dev"
-
-[[pins]]
-gnoga = { path='../../../../../vendor/github.com/gnoga' }
-
-[[depends-on]]
-gnoga_ada_lib = "~0.1.0-dev"
-
-[[pins]]
-gnoga_ada_lib = { path='../../../../../gnoga_lib/gnoga_ada_lib' }
 
