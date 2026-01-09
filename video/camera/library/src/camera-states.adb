@@ -1,4 +1,4 @@
-with Ada.Containers.Indefinite_Hashed_Maps;
+--with Ada.Containers.Indefinite_Hashed_Maps;
 with Ada_Lib.Strings; use Ada_Lib.Strings;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
 with Camera.Base;
@@ -20,10 +20,10 @@ package body Camera.States is
 
 --    State       : constant Camera.Base.Camera_State_Access :=
 --                   Allocate_Camera_State (Camera_ID);
-      pragma Unreferenced (State);
+--    pragma Unreferenced (State);
 
    begin
-      null;
+not_implemented;
    end Allocate_Connection_Data;
 
    ----------------------------------------------------------------
@@ -57,7 +57,7 @@ return null;
    ) return Camera_Configuration_State_Access is
    ----------------------------------------------------------------
 
-      State                : constant State_Access := Allocate_State (Camera_ID);
+      State    : constant State_Access := State.Allocate_State (Camera_ID);
 
    begin
       Log_In (Debug, "ID:" &Camera_ID'img);
@@ -108,7 +108,7 @@ return null;
 
    begin
 not_implemented;
-return "";
+return Camera_Names_Type (1 .. 0);
 --    for State of States loop
 --       Index := Index + 1;
 --       Result (Index).Construct (State.Camera_State.Get_Camera_Name);
@@ -116,6 +116,15 @@ return "";
 --
 --    return Result;
    end Get_Camera_Names;
+
+   ----------------------------------------------------------------
+   function Get_Current_Camera_ID
+   return Camera_ID_Type is
+   ----------------------------------------------------------------
+
+   begin
+      return Current_Camera_ID;
+   end Get_Current_Camera_ID;
 
    ----------------------------------------------------------------
    function Get_Read_Only_Camera_State (
@@ -169,7 +178,7 @@ return null;
    ----------------------------------------------------------------
   function Get_Writeable_Global_State (
       Camera_ID   : Camera_ID_Type'class := Null_Camera_ID
-  ) return Get_Writeable_Global_State is
+   ) return State.State_Access is
    ----------------------------------------------------------------
 
    begin
@@ -190,31 +199,16 @@ return null;
          Debug or else Trace_Pre_Post_Conditions or else not Result);
    end Has_Camera_Configuration_State;
 
-   ----------------------------------------------------------------
-   function Has_Camera_Configuration_State (
-      Camera_ID            : in        Camera_ID_Type'class := Null_Camera_ID
-   ) return Boolean is
-   ----------------------------------------------------------------
-
-      State    : constant State_Access := Allocate_State (Camera_ID);
-      Result   : constant Boolean := State /= Null;
-
-   begin
-      return Log_Here (Result,
-         Debug or else Trace_Pre_Post_Conditions or else not Result,
-            "camera configuration for" & Camera_ID'img & " not set");
-   end Has_Camera_Configuration_State;
-
-   ----------------------------------------------------------------
-   function Has_Camera_ID
-   return Boolean is
-   ----------------------------------------------------------------
-
-   begin
-      return Log_Here (Current_Camera_ID.Set,
-         Debug or else Trace_Pre_Post_Conditions or else
-         not Current_Camera_ID.Set, Current_Camera_ID.Image);
-   end Has_Camera_ID;
+-- ----------------------------------------------------------------
+-- function Has_Camera_ID
+-- return Boolean is
+-- ----------------------------------------------------------------
+--
+-- begin
+--    return Log_Here (Current_Camera_ID.Set,
+--       Debug or else Trace_Pre_Post_Conditions or else
+--       not Current_Camera_ID.Set, Current_Camera_ID.Image);
+-- end Has_Camera_ID;
 
    ----------------------------------------------------------------
    function Has_Camera_ID (
@@ -233,7 +227,7 @@ return null;
 
    ----------------------------------------------------------------
    function Has_Camera_State (
-      Camera_ID            : in        Camera_ID_Type'class
+      Camera_ID            : in        Camera_ID_Type'class := Null_Camera_ID
    ) return Boolean is
    ----------------------------------------------------------------
 
@@ -257,7 +251,7 @@ return null;
 
    begin
 not_implemented;
-return fa;se;
+return False;
 --    return Log_Here (Result,
 --       Debug or else Trace_Pre_Post_Conditions or else not Result,
 --       "Window Connection for " & Camera_ID'img & " not allocated");
@@ -281,6 +275,16 @@ return fa;se;
 -- begin
 --    Current_Camera_ID := Camera_ID;
 -- end Set_Current_Camera_ID;
+
+   ----------------------------------------------------------------
+   function State_Equal (
+      Left, Right       : State.State_Access
+   ) return Boolean is
+   ----------------------------------------------------------------
+
+   begin
+      return Left = Right;
+   end State_Equal;
 
 begin
    --Debug := False;

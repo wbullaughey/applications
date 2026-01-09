@@ -1,16 +1,12 @@
-with Ada.Containers.Indefinite_Hashed_Maps;
+--with Ada.Containers.Indefinite_Hashed_Maps;
 with Ada_Lib.Strings; use Ada_Lib.Strings;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
-with Camera.Base;
+--with Camera.Base;
+with Camera.Lib.Options;
 --with Camera.Main;
 --with Configuration.Camera.State;
 
 package body Camera.State is
-
-   procedure Load (
-      State                : in out State_Type;
-      Setup_Name           : in     String;
-      State_Name           : in     String);
 
    procedure Load (
       State                : in out State_Type;
@@ -34,7 +30,7 @@ package body Camera.State is
          return State_Access (States.Element (Lookup_Camera_ID));
       else
          declare
-            State    : constant State_Access := new State_Type;
+            State    : constant State_Access := new State.State_Type;
 
          begin
             States.Insert (Lookup_Camera_ID, State);
@@ -114,17 +110,6 @@ package body Camera.State is
       State.Configuration_Setup.Load (State_Name);
       State.Configuration_State.Load (State_Name);
    end Load;
-
-   ----------------------------------------------------------------
-   function State_Equal (
-      Left, Right       : State_Access
-   ) return Boolean is
-   ----------------------------------------------------------------
-
-   begin
-      return Left = Right;
-   end State_Equal;
-
 
 begin
    --Debug := False;

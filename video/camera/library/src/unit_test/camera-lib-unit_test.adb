@@ -25,7 +25,7 @@ with Camera.State;
 with Configuration.Camera.Setup.Unit_Tests;
 with Configuration.Camera.State.Unit_Tests;
 with Gnoga.Application.Multi_Connect;
-with Gnoga_Ada_Lib.Base;
+--with Gnoga_Ada_Lib.Base;
 with Widgets.Adjust.Unit_Test;
 with Widgets.Control.Unit_Test;
 

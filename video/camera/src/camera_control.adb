@@ -3,16 +3,18 @@ with Ada.Text_IO; use Ada.Text_IO;
 --with ADA_LIB.GNOGA;
 with Ada_Lib.Help;
 with Ada_Lib.Options.Flags;
+with Ada_Lib.Options.Nested;
 with ADA_LIB.OS;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
 with Ada_Lib.Trace_Tasks;
 with Camera.Base;
 with Camera.Lib.Options;
+with Camera.State;
 with GNOGA_Ada_Lib.Base;
 with Command_Name;
 with Camera.Main;
 with Camera.States;
-with Configuration.Camera.Setup;
+--with Configuration.Camera.Setup;
 with Configuration.Camera.State;
 with Emulator;
 
@@ -21,7 +23,7 @@ procedure Camera_Control is
 -- Camera_Setup                  : Configuration.Camera.Setup.Setup_Type;
 -- Connection_Data               : constant Camera.GNOGA_Ada_lib.Connection_Data_Class_Access :=
 --                                  Camera.Base.Allocate_Connection_Data;
-   Options                       : aliased Camera.Lib.Program.Program_Options_Type;
+   Options                       : aliased Camera.Lib.Options.Program_Options_Type;
    Debug                         : Boolean renames Options.Debug;
 -- Loaded_Configuration_State    : aliased Configuration.Camera.State.State_Type;
 
@@ -30,7 +32,7 @@ begin
    Put_Line (Command_Name);
    Ada_Lib.Options.Flags.Set_Ada_Lib_Program_Options (
       Options'unchecked_access);
-   Ada_Lib.Options.Flags.Set_Ada_Lib_Nested_Options (
+   Ada_Lib.Options.Nested.Set_Ada_Lib_Nested_Options (
       Ada_Lib.Options.Nested.Nested_Options_Type (
          Options.Camera_Library)'unchecked_access);
 

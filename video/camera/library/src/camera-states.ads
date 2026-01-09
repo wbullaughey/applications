@@ -3,9 +3,9 @@ with Ada_Lib.Strings.Unlimited;
 limited with Camera.Base;
 --limited with Camera.Lib.Base;
 limited with Camera.Main;
-limited with Camera.State;
+with Camera.State;
 limited with Configuration.Camera.State;
-limited with Configuration.Camera.Setup;
+--limited with Configuration.Camera.Setup;
 
 package Camera.States is
 
@@ -34,7 +34,7 @@ package Camera.States is
 
    function Get_Writeable_Global_State (
       Camera_ID   : Camera_ID_Type'class := Null_Camera_ID
-   ) return Camera.State.State_Access
+   ) return State.State_Access
    with Pre    => Has_Camera_Configuration_State;
 
    function Has_Camera_Configuration_State (
@@ -45,11 +45,11 @@ package Camera.States is
       Camera_ID            : in        Camera_ID_Type'class := Null_Camera_ID
    ) return Boolean;
 
-   function Has_Camera_ID
-   return Boolean;
+-- function Has_Camera_ID
+-- return Boolean;
 
    function Has_Camera_ID (
-      Camera_ID            : in        Camera_ID_Type'class
+      Camera_ID            : in        Camera_ID_Type'class := Null_Camera_ID
    ) return Boolean;
 
    function Has_Window_Connection (
@@ -58,6 +58,10 @@ package Camera.States is
 
    function Get_Camera_Names
    return Camera_Names_Type;
+
+   function Get_Current_Camera_ID
+   return Camera_ID_Type
+   with Pre    => Has_Camera_ID;
 
    function Get_Read_Only_Configuration_State (
       Camera_ID   : Camera_ID_Type'class := Null_Camera_ID
@@ -79,13 +83,13 @@ package Camera.States is
    ) return Configuration.Camera.State.State_Access;
 
    function State_Equal (
-      Left, Right       : State_Access
+      Left, Right       : State.State_Access
    ) return Boolean;
 
    package State_Package  is new Ada.Containers.Indefinite_Hashed_Maps (
       Key_Type       => Camera_ID_Type'class,
       Element_Type   => State.State_Access,
-      Hash           => Camera_Hash,
+      Hash           => Camera_ID_Hash,
       Equivalent_Keys=> Camera_ID_Equal,
       "="            => State_Equal);
 

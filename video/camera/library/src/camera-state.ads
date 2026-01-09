@@ -1,11 +1,11 @@
 --with Ada_Lib.Strings.Unlimited;
 with Camera.Base;
-with Camera.Main;
+--with Camera.Main;
 --limited with Camera.States;
 --limited with Camera.Lib.Base;
---limited with Camera.Main;
-with Configuration.Camera.State;
-with Configuration.Camera.Setup;
+limited with Camera.Main;
+limited with Configuration.Camera.State;
+limited with Configuration.Camera.Setup;
 
 package Camera.State is
 
@@ -24,8 +24,8 @@ private
 
    type State_Type         is tagged record
       Camera_State         : Base.Camera_State_Access := Null;
-      Configuration_Setup  : Configuration.Camera.Setup.Setup_Type;
-      Configuration_State  : Configuration.Camera.State.State_Type;
+      Configuration_Setup  : access Configuration.Camera.Setup.Setup_Type;
+      Configuration_State  : access Configuration.Camera.State.State_Type;
       Window_Connection    : access Main.Window_Connection_Type'class := Null;
    end record;
 
