@@ -1,7 +1,7 @@
 with Ada_Lib.Options.Nested;
 with Ada_Lib.Trace;
 with Ada_Lib.Socket_IO; -- .Stream_IO;
-with Ada_Lib.Strings.Unlimited;
+with Ada_Lib.Strings.Unlimited;use Ada_Lib.Strings.Unlimited;
 with GNAT.Sockets;
 with Hex_IO;
 

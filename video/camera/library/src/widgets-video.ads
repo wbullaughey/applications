@@ -1,5 +1,5 @@
 --with Ada_Lib.Socket_IO;
---with Ada_Lib.Strings.Unlimited;
+--with Ada_Lib.Strings.Unlimited;use Ada_Lib.Strings.Unlimited;
 with Gnoga.Gui.Base;
 with Gnoga.Gui.Element.Common;
 --with Gnoga.Gui.Element.Form;

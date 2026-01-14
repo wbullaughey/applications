@@ -126,7 +126,7 @@ package body Camera.Lib.Base.Test is
 --
 --   begin
 --      Put_Line ("test port scan");
---      for Port in First_Port .. Last_Port loop
+--      for Port in First_Port . Last_Port loop
 --         begin
 --            Log_Here (Debug, "Port" & Port'img);
 --            Local_Test.Camera_Info.Camera.Open (Local_Test.Camera_Info.Camera_Address.all, Port);
@@ -238,8 +238,8 @@ package body Camera.Lib.Base.Test is
          begin
             Log_Here (Debug, "Port" & Ports.all (Port)'img);
             Local_Test.Camera_Info.Camera.URL_Open (
-               Local_Test.Camera_Info.Camera_Address.URL_Address.Coerce,
-               Local_Test.Camera_Info.Port_Number);
+               Local_Test.Camera_Info.Camera_Options.Camera_Address.URL_Address.Coerce,
+               Local_Test.Camera_Info.Camera_Options.Port_Number);
             Test_Port (Ports.all (Port));
             Local_Test.Camera_Info.Camera.Close ;
 
@@ -353,8 +353,8 @@ package body Camera.Lib.Base.Test is
 
    begin
       Put_Line ("test open");
-      Local_Test.Camera_Info.Camera.Open (Local_Test.Camera_Info.Camera_Address.all,
-         Local_Test.Camera_Info.Port_Number);
+      Local_Test.Camera_Info.Camera.Open (Local_Test.Camera_Info.Camera_Options.Camera_Address.all,
+         Local_Test.Camera_Info.Camera_Options.Port_Number);
 
    exception
       when Fault: others =>
@@ -396,7 +396,7 @@ package body Camera.Lib.Base.Test is
 --
 --   begin
 --      Put_Line ("test unit scan");
---      for Unit in First_Unit .. Last_Unit loop
+--      for Unit in First_Unit . Last_Unit loop
 ----       IP_Address (4) := Unit;
 --         begin
 --            Local_Test.Camera_Info.Camera.Open (Local_Test.Camera_Info.Camera_Address.all, Unit);

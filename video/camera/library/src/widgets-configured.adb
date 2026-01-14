@@ -258,11 +258,11 @@ package body Widgets.Configured is
          Object                  : in out Gnoga.Gui.Base.Base_Type'Class
       ) with Pre  => GNOGA_Ada_Lib.Has_Parent (Object);
 
-      procedure Update_Preset_Cell (
-         Configured_Card            : in out Configured_Card_Type;
-         Configuration_ID           : in     Configuration.Configuration_ID_Type;
-         Preset_Cell                : in out Preset_Package.Preset_Cell_Type
-      ) with Pre => Camera.Main.Has_Main_Window_Connection;
+--    procedure Update_Preset_Cell (
+--       Configured_Card            : in out Configured_Card_Type;
+--       Configuration_ID           : in     Configuration.Configuration_ID_Type;
+--       Preset_Cell                : in out Preset_Package.Preset_Cell_Type
+--    ) with Pre => Camera.Main.Has_Main_Window_Connection;
 
       ----------------------------------------------------------------
       procedure Allocate_Column (
@@ -1267,16 +1267,16 @@ not_implemented;
             return Column_Cell.Column_Coordinate.Value;
          end Column_Cell_Coordinate;
 
-         -------------------------------------------------------------
-         function Column_Cell_Number
-         return Configuration.Column_Type is
-         -------------------------------------------------------------
-
-            Column_Cell    : Column_Cell_Type renames Column_Cell_Type (Cell.all);
-
-         begin
-            return Column_Cell.Column_Number;
-         end Column_Cell_Number;
+--       -------------------------------------------------------------
+--       function Column_Cell_Number
+--       return Configuration.Column_Type is
+--       -------------------------------------------------------------
+--
+--          Column_Cell    : Column_Cell_Type renames Column_Cell_Type (Cell.all);
+--
+--       begin
+--          return Column_Cell.Column_Number;
+--       end Column_Cell_Number;
 
 --         -------------------------------------------------------------
 --         procedure Row_Package_Update (

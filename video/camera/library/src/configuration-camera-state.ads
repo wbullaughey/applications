@@ -1,4 +1,4 @@
-with ADA_LIB.Strings.Unlimited;
+with ADA_LIB.Strings.Unlimited;use Ada_Lib.Strings.Unlimited;
 with Ada_Lib.Trace;
 with Camera.States;
 with Configuration.State;

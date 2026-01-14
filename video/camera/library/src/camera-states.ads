@@ -1,10 +1,11 @@
 with Ada.Containers.Indefinite_Hashed_Maps;
-with Ada_Lib.Strings.Unlimited;
+with Ada_Lib.Strings.Unlimited;use Ada_Lib.Strings.Unlimited;
 limited with Camera.Base;
 --limited with Camera.Lib.Base;
 limited with Camera.Main;
 with Camera.State;
 limited with Configuration.Camera.State;
+--with Configuration.State;
 --limited with Configuration.Camera.Setup;
 
 package Camera.States is
@@ -31,6 +32,10 @@ package Camera.States is
 --    Camera_ID   : Camera_ID_Type'class := Null_Camera_ID
 -- ) return access Camera.State.State_Type'class
 -- with Pre    => Has_Camera_Configuration_State (Camera_ID);
+
+   function Allocate_State (
+      Camera_ID   : in        Camera_ID_Type'class := Camera.Null_Camera_ID
+   ) return State.State_Access;
 
    function Get_Writeable_Global_State (
       Camera_ID   : Camera_ID_Type'class := Null_Camera_ID
@@ -59,10 +64,6 @@ package Camera.States is
    function Get_Camera_Names
    return Camera_Names_Type;
 
-   function Get_Current_Camera_ID
-   return Camera_ID_Type
-   with Pre    => Has_Camera_ID;
-
    function Get_Read_Only_Configuration_State (
       Camera_ID   : Camera_ID_Type'class := Null_Camera_ID
    ) return Configuration.Camera.State.State_Constant_Access
@@ -87,7 +88,7 @@ package Camera.States is
    ) return Boolean;
 
    package State_Package  is new Ada.Containers.Indefinite_Hashed_Maps (
-      Key_Type       => Camera_ID_Type'class,
+      Key_Type       => Camera_ID_Type,
       Element_Type   => State.State_Access,
       Hash           => Camera_ID_Hash,
       Equivalent_Keys=> Camera_ID_Equal,

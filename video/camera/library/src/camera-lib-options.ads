@@ -2,7 +2,7 @@ with ADA_LIB.Command_Line_Iterator;
 with GNOGA_Options;
 --with Ada_Lib.Options.Flags;
 with Ada_Lib.Options.Program;
-with ADA_LIB.Strings.Unlimited;
+with ADA_LIB.Strings.Unlimited;use Ada_Lib.Strings.Unlimited;
 --with Ada_Lib.Trace;
 --with Ada_Lib.Socket_IO;
 with Gnoga.Gui.Base;

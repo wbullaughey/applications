@@ -1,5 +1,5 @@
 with Ada_Lib.String_Quote; use Ada_Lib.String_Quote;
-with Ada_Lib.Strings.Unlimited;
+with Ada_Lib.Strings.Unlimited;use Ada_Lib.Strings.Unlimited;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
 with Camera.Commands;
 with Camera.Base;
@@ -18,8 +18,8 @@ with Widgets.Generic_Table;
 package body Widgets.Control is
 
    Header_Column                 : constant := 0;
-   Max_Columns                   : constant := 10;
-   Max_Rows                      : constant := 10;
+-- Max_Columns                   : constant := 10;
+-- Max_Rows                      : constant := 10;
 
    type Control_Column_Index_Type
                                  is new Natural;
@@ -30,8 +30,8 @@ package body Widgets.Control is
 
    package Control_Package is
 
-      type Header_Type           is new Gnoga.Gui.Element.Table.Table_Header_Type
-                                    with null record;
+--    type Header_Type           is new Gnoga.Gui.Element.Table.Table_Header_Type
+--                                  with null record;
 
       type Cell_Type (
          Column                  : Control_Column_Index_Type) is new
@@ -50,8 +50,8 @@ package body Widgets.Control is
          end case;
       end record;
 
-      type Cell_Access           is access all Cell_Type;
-      type Cell_Class_Access     is access all Cell_Type'class;
+--    type Cell_Access           is access all Cell_Type;
+--    type Cell_Class_Access     is access all Cell_Type'class;
 
       overriding
       procedure Create_Cell (
@@ -143,8 +143,8 @@ package body Widgets.Control is
       Card                       : Card_Type;
    end record;
 
-   type Full_Control_Card_Class_Access
-                                 is access all Full_Control_Card_Type'class;
+-- type Full_Control_Card_Class_Access
+--                               is access all Full_Control_Card_Type'class;
 
    overriding
    procedure Create (

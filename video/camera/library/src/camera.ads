@@ -3,6 +3,7 @@ with Ada.Containers;
 with Ada_Lib.Options.Nested;
 with Ada_Lib.Socket_IO.Stream_IO;
 with Ada_Lib.Trace;
+with Configuration.State;
 with Gnoga_Ada_Lib;
 with Hex_IO;
 with Interfaces;
@@ -100,9 +101,16 @@ package Camera is
 
    type Command_Options_Type     is array (Index_Type range  <>) of Command_Option_Type;
 
+   subtype Port_Type             is Video.Lib.Port_Type;
+
    type Camera_Options_Type is limited new Ada_Lib.Options.Nested.
          Nested_Options_Type with record
-      Brand                      : Brand_Type := PTZ_Optics_Camera;
+      Brand          : Brand_Type := PTZ_Optics_Camera;
+      Camera_Address : Address_Constant_Access := Null;
+      Camera_ID      : Camera_ID_Type;
+      Location       : Configuration.State.Location_Type :=
+                        Video.Lib.No_Location;
+      Port_Number    : Port_Type; -- := Standard.Camera.Commands.PTZ_Optics.Port;
    end record;
 
    type Camera_Options_Access           is access all Camera_Options_Type;
@@ -154,7 +162,6 @@ package Camera is
 
    subtype Maximum_Command_Type  is Video.Lib.Maximum_Command_Type;
    subtype Response_Type         is Video.Lib.Response_Type;
-   subtype Port_Type             is Video.Lib.Port_Type;
    subtype Preset_ID_Type        is Video.Lib.Preset_ID_Type;
    subtype Preset_Range_Type     is Video.Lib.Preset_Range_Type;
    subtype Property_Type         is Data_Type range 0 .. 255; -- 2**8;

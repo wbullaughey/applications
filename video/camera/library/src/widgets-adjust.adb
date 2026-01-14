@@ -7,6 +7,7 @@ with Ada_Lib.Trace; use Ada_Lib.Trace;
 with Camera.Base;
 with Camera.Main;
 with Camera.Command_Queue;
+with Configuration.Camera;
 
 pragma Elaborate (Ada_Lib.Parser);
 

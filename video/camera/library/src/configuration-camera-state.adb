@@ -2,10 +2,9 @@ with Ada.Exceptions;
 with Ada.Unchecked_Deallocation;
 with Ada_Lib.Configuration;
 with Ada_Lib.Directory;
-with Ada_Lib.Options.Flags;
+with Ada_Lib.Options;
 with Ada_Lib.Socket_IO;
 with Ada_Lib.Strings; use Ada_Lib.Strings;
-with Ada_Lib.Strings.Unlimited; use Ada_Lib.Strings; use Ada_Lib.Strings.Unlimited;
 with Ada_Lib.String_Quote; use Ada_Lib.String_Quote;
 with Ada.Text_IO; use Ada.Text_IO;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
@@ -245,6 +244,7 @@ return Null;
    ----------------------------------------------------------------
 
    begin
+log_here ("state " & Ada_Lib.Strings.Image (State'address));
       return Log_Here (State.Camera_ID.Is_Set,
          Debug or else Trace_Pre_Post_Conditions,
          "camera id" & State.Camera_ID'img);
@@ -384,7 +384,8 @@ return Null;
          Video.Lib.Constructor (Last_Preset_Number));
 
       Log_Here (Debug,
-         Quote ("video address", State.Video_Address.Image) &
+         "camera id " & State.Camera_ID.Image &
+         Quote (" video address", State.Video_Address.Image) &
          " camera id" & State.Camera_ID.Image &
          Quote ("video port", State.Video_Port'img) &
          Quote (" CSS_Path", State.CSS_Path) &
@@ -426,7 +427,7 @@ return Null;
 
       Config.Close;
       State.Set_Loaded (True);
---Hex_IO.Dump_32 (State.Number_Columns'address, 32, 1, "number columns");
+log_here ("state " & Ada_Lib.Strings.Image (State'address));
       Log_Out (Debug, "loaded " & State.Is_Loaded'img);
 
    exception

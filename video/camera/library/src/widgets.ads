@@ -1,4 +1,4 @@
-with Configuration.Camera;
+with Configuration;
 
 package Widgets is
 

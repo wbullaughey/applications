@@ -2,7 +2,7 @@
 with Ada_Lib.Options.Flags;
 with Ada_Lib.Options.Nested;
 with Ada_Lib.Options.Program;
-with Ada_Lib.Strings.Unlimited;
+with Ada_Lib.Strings.Unlimited;use Ada_Lib.Strings.Unlimited;
 with Ada_Lib.Trace;
 
 package Driver is

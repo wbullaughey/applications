@@ -1,10 +1,13 @@
 --with Ada.Containers.Indefinite_Hashed_Maps;
+with Ada_Lib.Configuration;
+with Ada_Lib.Options.Program;
 with Ada_Lib.Strings; use Ada_Lib.Strings;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
 --with Camera.Base;
 with Camera.Lib.Options;
 --with Camera.Main;
---with Configuration.Camera.State;
+with Configuration.Camera.State;
+with Configuration.Camera.Setup;
 
 package body Camera.State is
 
@@ -13,33 +16,48 @@ package body Camera.State is
       Setup_Name           : in     String;
       State_Name           : in     String);
 
+   Current_Camera_ID       : Camera_ID_Type := Null_Camera_ID;
+
    ----------------------------------------------------------------
-   function Allocate_State (
-      Camera_ID            : in        Camera_ID_Type := Camera.Null_Camera_ID
-   ) return State_Access is
+   procedure Allocate (
+      State    : in out State_Type) is
    ----------------------------------------------------------------
 
-      Lookup_Camera_ID     : constant Camera_ID_Type := (if Camera_ID.Set then
-                                 Camera_ID
-                              else
-                                 Current_Camera_ID);
    begin
-      Log_In (Debug, "ID:" &Lookup_Camera_ID'img);
-      if States.Contains (Lookup_Camera_ID) then
-         Log_Out (Debug, "current state");
-         return State_Access (States.Element (Lookup_Camera_ID));
-      else
-         declare
-            State    : constant State_Access := new State.State_Type;
+      Log_In (Debug);
+      State.Configuration_Setup := new Configuration.Camera.Setup.Setup_Type;
+      State.Configuration_State := new Configuration.Camera.State.State_Type;
+      Log_Out (Debug);
+   end Allocate;
 
-         begin
-            States.Insert (Lookup_Camera_ID, State);
-            Log_Out (Debug, "new state");
-            return State;
-         end;
-      end if;
+   ----------------------------------------------------------------
+   function Get_Configuration_Setup (
+      State       : in     State_Type
+   ) return access Configuration.Camera.Setup.Setup_Type is
+   ----------------------------------------------------------------
 
-   end Allocate_State;
+   begin
+      return State.Configuration_Setup;
+   end Get_Configuration_Setup;
+
+   ----------------------------------------------------------------
+   function Get_Configuration_State (
+      State       : in     State_Type
+   ) return access Configuration.Camera.State.State_Type is
+   ----------------------------------------------------------------
+
+   begin
+      return State.Configuration_State;
+   end Get_Configuration_State;
+
+   ----------------------------------------------------------------
+   function Get_Current_Camera_ID
+   return Camera_ID_Type is
+   ----------------------------------------------------------------
+
+   begin
+      return Current_Camera_ID;
+   end Get_Current_Camera_ID;
 
 -- ----------------------------------------------------------------
 -- function Get_Read_Only_Global_State (
@@ -52,14 +70,33 @@ package body Camera.State is
 -- end Get_Read_Only_Global_State;
 --
    ----------------------------------------------------------------
-   function Get_Writeable_Global_State (
-      Camera_ID   : Camera_ID_Type'class := Null_Camera_ID
-   ) return State_Access is
+   function Has_Configuration_Setup (
+      State       : in     State_Type
+   ) return Boolean is
    ----------------------------------------------------------------
 
    begin
-      return Allocate_State (Camera_ID);
-   end Get_Writeable_Global_State;
+      return Log_Here (State.Configuration_Setup /= Null, Debug);
+   end Has_Configuration_Setup;
+
+   ----------------------------------------------------------------
+   function Has_Configuration_State (
+      State       : in     State_Type
+   ) return Boolean is
+   ----------------------------------------------------------------
+
+   begin
+      return Log_Here (State.Configuration_State /= Null, Debug);
+   end Has_Configuration_State;
+
+   ----------------------------------------------------------------
+   function Has_Current_Camera_ID
+   return Boolean is
+   ----------------------------------------------------------------
+
+   begin
+      return Current_Camera_ID.Set;
+   end Has_Current_Camera_ID;
 
    ----------------------------------------------------------------
    procedure Load (
@@ -69,6 +106,7 @@ package body Camera.State is
       Cameras           : Ada_Lib.Configuration.Configuration_Type;
       Current_Directory : constant String :=
                            Standard.Camera.Lib.Options.Current_Directory;
+      File_Name         : constant String := "cameras.cfg";
       Path              : constant String :=
                            (if Current_Directory'length > 0 then
                               Current_Directory & "/"
@@ -80,15 +118,15 @@ package body Camera.State is
       Cameras.Load (Path, Create => False);
       declare
          Number_Cameras : constant Natural :=
-                           Config.Get_Integer ("number_cameras");
+                           Cameras.Get_Integer ("number_cameras");
       begin
          for Camera in 1 .. Number_Cameras loop
             declare
                Camera_Number     : constant String :=
                                     Ada_Lib.Strings.Trim (Camera'img);
-               State_Name        : constant String := Config.Get_String (
+               State_Name        : constant String := Cameras.Get_String (
                                     "state_" & Camera_Number);
-               Setup_Name        : constant String := Config.Get_String (
+               Setup_Name        : constant String := Cameras.Get_String (
                                     "setup_" & Camera_Number);
             begin
                Load (State.all, Setup_Name, State_Name);
@@ -104,11 +142,14 @@ package body Camera.State is
       State_Name           : in     String) is
    ----------------------------------------------------------------
 
-      State                : constant Stage_Access := new State_Type;
+      Options  : Camera.Lib.Options.Program_Options_Constant_Class_Access :=
+                  Camera.Lib.Options.Program_Options_Constant_Class_Access (
+                     Ada_Lib.Options.Program.Get_Read_Only_Program_Options);
 
    begin
-      State.Configuration_Setup.Load (State_Name);
-      State.Configuration_State.Load (State_Name);
+      State.Configuration_State.Load (
+         Options.Camera_Library.Camera_Options.Location, State_Name);
+      State.Configuration_Setup.Load (State.Configuration_State.all, State_Name);
    end Load;
 
 begin

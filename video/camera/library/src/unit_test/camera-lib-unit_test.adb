@@ -13,19 +13,21 @@ with Ada_Lib.Unit_Test.Reporter;
 with AUnit.Assertions; use AUnit.Assertions;
 with AUnit.Options;
 with AUnit.Test_Results;
-with Camera.Base;
+--with Camera.Base;
 with Camera.Command_Queue;
+with Camera.Commands.PTZ_Optics;
 with Camera.Commands.Unit_Test;
 with Camera.Lib.Base.Command_Tests;
 with Camera.Lib.Base.Test;
 with Camera.Lib.Options.Unit_Test;
 with Camera.Main;
-with Camera.State;
+--with Camera.State;
 --with Camera.States;
 with Configuration.Camera.Setup.Unit_Tests;
 with Configuration.Camera.State.Unit_Tests;
+--with Configuration.State;
 with Gnoga.Application.Multi_Connect;
---with Gnoga_Ada_Lib.Base;
+with Gnoga_Ada_Lib.Base;
 with Widgets.Adjust.Unit_Test;
 with Widgets.Control.Unit_Test;
 
@@ -88,8 +90,8 @@ package body Camera.Lib.Unit_Test is
          Put_Line ("brand " & Test.Brand'img);
          Put_Line ("Initialize_GNOGA " &
             " Load_State " & Test.Load_State'img &
-            " Location " & Test.Camera_Info.Location'img &
-            " Port_Number " & Test.Camera_Info.Port_Number'img &
+            " Location " & Test.Camera_Info.Camera_Options.Location'img &
+            " Port_Number " & Test.Camera_Info.Camera_Options.Port_Number'img &
             Quote ("Setup_Path", Test.Setup_Path) &
             Quote ("State_Path", Test.State_Path));
       end if;
@@ -113,7 +115,7 @@ package body Camera.Lib.Unit_Test is
    ----------------------------------------------------------------------------
 
    begin
-      return Log_Here (Test.Camera_Info.Camera_Address /= Null, Debug);
+      return Log_Here (Test.Camera_Info.Camera_Options.Camera_Address /= Null, Debug);
    end Have_Camera_Address;
 
    ----------------------------------------------------------------------------
@@ -182,7 +184,6 @@ return Null_Camera_ID;
    procedure Load_Test_State (
       Camera_Info       : in out Camera_Info_Type;
       Setup             : in out Configuration.Camera.Setup.Setup_Type) is
---    State             : in out Configuration.Camera.State.State_Type) is
 ---------------------------------------------------------------
 
       Options        : Standard.Camera.Lib.Unit_Test.
@@ -190,29 +191,27 @@ return Null_Camera_ID;
                            renames Standard.Camera.Lib.Unit_Test.
                               Get_Camera_Unit_Test_Constant_Options.all;
       Configuration_State
-                     : Configuration.State.State_Constant_Access := Null;
-      Camera_Configuration_State
-                     : Configuration.Camera.State.State_Constant_Class_Access
-                        := Null;
-      Global_State   : Camera.State.State_Access :=
-                        Camera.States.Get_Writeable_Global_State;
+                     : constant Configuration.Camera.State.State_Access :=
+                        Camera.States.Get_Writeable_Configuration_State;
       Configuration_Camera_State
-                     : Configuration.Camera.State.State_Access;
+                     : constant Configuration.Camera.State.State_Access :=
+                        States.Get_Writeable_Configuration_State;
 
    begin
       Log_In (Debug or Trace_Set_Up_Tear_Down);
-      Configuration_State.Load (Options.Camera_Library_Options.Location, Camera_State_Path);
---    State.Set_Camera_ID (;
+      Configuration_State.Load (Options.Camera_Library_Options.Location,
+         Camera_State_Path);
       Log_Here (Debug or Trace_Set_Up_Tear_Down,
          " video port#" & Configuration_State.Video_Port'img);
       Setup.Load (Configuration_Camera_State.all, Test_Setup);
-      Camera_Info.Camera_Address := Configuration_State.Video_Address;
-      Camera_Info.Port_Number := Configuration_State.Video_Port;
+      Camera_Info.Camera_Options.Camera_Address := Configuration_State.Video_Address;
+      Camera_Info.Camera_Options.Port_Number := Configuration_State.Video_Port;
 
       Camera_Info.Camera.Initialize_Standard_Preset_IDs;
       Log_Out (Debug or Trace_Set_Up_Tear_Down);
    end Load_Test_State;
 
+   ----------------------------------------------------------------------------
    overriding
    function Process_Option (
       Options  : in out Unit_Test_Program_Options_Type;
@@ -357,6 +356,7 @@ return Null_Camera_ID;
    ---------------------------------------------------------------
    procedure Run_Suite (
       Test                       : in     No_Camera_With_GNOGA_Test_Type) is
+   pragma Unreferenced (Test);
    ---------------------------------------------------------------
 
       Options  : Ada_Lib.Options.Unit_Test.
@@ -418,7 +418,7 @@ procedure Setup_Camera (
    begin
       Log_In (Debug or Trace_Set_Up_Tear_Down, "load state " & Load_State'img &
          " brand " & Brand'img &
-         " location " & Camera_Info.Location'img);
+         " location " & Camera_Info.Camera_Options.Location'img);
 
       case Brand is
 
@@ -437,13 +437,13 @@ procedure Setup_Camera (
       if Load_State then
          Load_Test_State (Camera_Info, Setup); -- , State);
       else
-         pragma Assert (Camera_Info.Camera_Address /= Null,
+         pragma Assert (Camera_Info.Camera_Options.Camera_Address /= Null,
             "Camera_Address not initialized");
       end if;
 
       if Camera_Info.Open_Camera then
          Camera_Info.Camera.Open (
-            Camera_Info.Camera_Address.all, Camera_Info.Port_Number);
+            Camera_Info.Camera_Options.Camera_Address.all, Camera_Info.Camera_Options.Port_Number);
       end if;
       Log_Out(Debug or Trace_Set_Up_Tear_Down);
    end Setup_Camera;
@@ -473,10 +473,10 @@ procedure Setup_Camera (
       Test                       : in out With_Camera_No_GNOGA_Test_Type) is
 ---------------------------------------------------------------
 
-      Options  : Unit_Test_Program_Options_Type'class
-                  renames Unit_Test_Options_Constant_Class_Access (
-                        Ada_Lib.Options.
-                           Get_Ada_Lib_Read_Only_Program_Options).all;
+--    Options  : Unit_Test_Program_Options_Type'class
+--                renames Unit_Test_Options_Constant_Class_Access (
+--                      Ada_Lib.Options.
+--                         Get_Ada_Lib_Read_Only_Program_Options).all;
 
   begin
       Log_In (Debug or Trace_Set_Up_Tear_Down, "load " & Test.Load_State'img &
@@ -488,7 +488,7 @@ procedure Setup_Camera (
 
       Ada_Lib.Unit_Test.Test_Cases.Test_Case_Type (Test).Set_Up;
       Log_Out (Debug or Trace_Set_Up_Tear_Down,
-         " location " & Test.Camera_Info.Location'img);
+         " location " & Test.Camera_Info.Camera_Options.Location'img);
 
   exception
      when Fault: others =>
@@ -529,12 +529,12 @@ procedure Setup_Camera (
          end if;
 
       Camera_Lib_GNOGA_Test_Type (Test).Set_Up;
-      Log_Out (Debug or Trace_Set_Up_Tear_Down, "location " & Test.Camera_Info.Location'img);
+      Log_Out (Debug or Trace_Set_Up_Tear_Down, "location " & Test.Camera_Info.Camera_Options.Location'img);
 
   exception
      when Fault: others =>
         Test.Set_Up_Exception (Fault);
-        Log_Out (Debug or Trace_Set_Up_Tear_Down, "location " & Test.Camera_Info.Location'img);
+        Log_Out (Debug or Trace_Set_Up_Tear_Down, "location " & Test.Camera_Info.Camera_Options.Location'img);
    end Set_Up;
 
    overriding

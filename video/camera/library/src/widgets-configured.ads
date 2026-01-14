@@ -1,6 +1,7 @@
-with Ada_Lib.Strings.Unlimited;
+with Ada_Lib.Strings.Unlimited;use Ada_Lib.Strings.Unlimited;
 with Ada_Lib.Trace;
 with Camera.Main;
+with Configuration.Camera;
 --with GNOGA_Ada_Lib;
 with Gnoga.Gui.Base;
 with Gnoga.Gui.Element.Common;

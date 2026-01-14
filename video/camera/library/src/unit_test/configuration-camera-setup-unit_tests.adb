@@ -1,7 +1,7 @@
 with Ada.Exceptions;
 with Ada_Lib.Directory.Compare_Files;
 with Ada_Lib.String_Quote; use Ada_Lib.String_Quote;
-with Ada_Lib.Strings.Unlimited; use Ada_Lib.Strings.Unlimited;
+with Ada_Lib.Strings.Unlimited;use Ada_Lib.Strings.Unlimited;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
 with Ada_Lib.Unit_Test;
 with AUnit.Assertions; use AUnit.Assertions;

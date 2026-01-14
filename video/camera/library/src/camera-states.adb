@@ -7,15 +7,12 @@ with Configuration.Camera.State;
 
 package body Camera.States is
 
--- use type Camera_Base_State_Class_Access;
--- use type Camera_Configuration_State_Class_Access;
--- use type Camera_Main_Window_Connection_Class_Access;
-
-   Current_Camera_ID       : Camera_ID_Type;
+   use type State.State_Access;
 
    ----------------------------------------------------------------
    procedure Allocate_Connection_Data (
       Camera_ID   : Camera_ID_Type'class := Null_Camera_ID) is
+   pragma Unreferenced (Camera_ID);
    ----------------------------------------------------------------
 
 --    State       : constant Camera.Base.Camera_State_Access :=
@@ -57,22 +54,52 @@ return null;
    ) return Camera_Configuration_State_Access is
    ----------------------------------------------------------------
 
-      State    : constant State_Access := State.Allocate_State (Camera_ID);
+--    Camera_State   : constant State.State_Access :=
+--                      Allocate_State (Camera_ID);
 
    begin
       Log_In (Debug, "ID:" &Camera_ID'img);
 not_implemented;
---    if State.Configuration_State = Null then
+--    if Camera_State.Configuration_State = Null then
 --       Log_Here (Debug, "new camera state");
---       State.Configuration_State := new Configuration.Camera.State.State_Type;
+--       Camera_State.Configuration_State := new Configuration.Camera.State.State_Type;
 --    else
 --       Log_Here ("debug current camera state");
 --    end if;
 --
---    Log_Out (Debug, "state " & Image (State.Configuration_State.all'address));
---    return State.Configuration_State;
+--    Log_Out (Debug, "state " & Image (Camera_State.Configuration_State.all'address));
+--    return Camera_State.Configuration_State;
 return null;
    end Allocate_Configuration_State;
+
+   ----------------------------------------------------------------
+   function Allocate_State (
+      Camera_ID   : in        Camera_ID_Type'class := Camera.Null_Camera_ID
+   ) return State.State_Access is
+   ----------------------------------------------------------------
+
+      Lookup_Camera_ID  : constant Camera_ID_Type :=
+                           (if Camera_ID.Set then
+                                 Camera_ID_Type (Camera_ID)
+                              else
+                                 State.Get_Current_Camera_ID);
+   begin
+      Log_In (Debug, "ID:" &Lookup_Camera_ID'img);
+      if States.Contains (Lookup_Camera_ID) then
+         Log_Out (Debug, "current state");
+         return State.State_Access (States.Element (Lookup_Camera_ID));
+      else
+         declare
+            Camera_State    : constant State.State_Access := new State.State_Type;
+
+         begin
+            States.Insert (Lookup_Camera_ID, Camera_State);
+            Log_Out (Debug, "new state");
+            return Camera_State;
+         end;
+      end if;
+
+   end Allocate_State;
 
    ----------------------------------------------------------------
    function Allocate_Window_Connection (
@@ -80,21 +107,22 @@ return null;
    ) return Camera_Main_Window_Connection_Class_Access is
    ----------------------------------------------------------------
 
-      State                : constant State_Access := Allocate_State (Camera_ID);
+--    Camera_State         : constant State.State_Access :=
+--                            Allocate_State (Camera_ID);
 
    begin
       Log_In (Debug, "ID:" &Camera_ID'img);
 not_implemented;
---    if State.Window_Connection = Null then
+--    if Camera_State.Window_Connection = Null then
 --       Log_Here ("debug new camera state");
---       State.Window_Connection := Camera_Main_Window_Connection_Class_Access (
+--       Camera_State.Window_Connection := Camera_Main_Window_Connection_Class_Access (
 --          Main.Allocate_Window_Connection);
 --    else
 --       Log_Here ("debug current camera state");
 --    end if;
 --
 --    Log_Out (Debug);
---    return State.Window_Connection;
+--    return Camera_State.Window_Connection;
 return null;
    end Allocate_Window_Connection;
 
@@ -108,7 +136,7 @@ return null;
 
    begin
 not_implemented;
-return Camera_Names_Type (1 .. 0);
+return (1 .. 0 => <>);
 --    for State of States loop
 --       Index := Index + 1;
 --       Result (Index).Construct (State.Camera_State.Get_Camera_Name);
@@ -118,18 +146,10 @@ return Camera_Names_Type (1 .. 0);
    end Get_Camera_Names;
 
    ----------------------------------------------------------------
-   function Get_Current_Camera_ID
-   return Camera_ID_Type is
-   ----------------------------------------------------------------
-
-   begin
-      return Current_Camera_ID;
-   end Get_Current_Camera_ID;
-
-   ----------------------------------------------------------------
    function Get_Read_Only_Camera_State (
       Camera_ID   : Camera_ID_Type'class := Null_Camera_ID
    ) return Camera.Base.Camera_Ready_Only_State_Class_Access is
+   pragma Unreferenced (Camera_ID);
    ----------------------------------------------------------------
 
    begin
@@ -153,6 +173,7 @@ return null;
    function Get_Writeable_Camera_State (
       Camera_ID   : Camera_ID_Type'class := Null_Camera_ID
    ) return Camera.Base.Camera_State_Access is
+   pragma Unreferenced (Camera_ID);
    ----------------------------------------------------------------
 
    begin
@@ -165,35 +186,42 @@ return null;
    function Get_Writeable_Configuration_State (
       Camera_ID   : in     Camera_ID_Type'class := Null_Camera_ID
    ) return Configuration.Camera.State.State_Access is
+   pragma Unreferenced (Camera_ID);
    ----------------------------------------------------------------
 
---    State       : constant State_Access := Allocate_State (Camera_ID);
+      Camera_State   : constant State.State_Access :=
+                        Allocate_State (Camera_ID);
 
    begin
-not_implemented;
-return null;
---    return Configuration.Camera.State.State_Access (State.Configuration_State);
+      Log_Here (Debug, "camera id" & Camera_ID.Image);
+
+      if not Camera_State.Has_Configuration_State then
+         Camera_State.Allocate;
+      end if;
+
+      return Configuration.Camera.State.State_Access (
+         Camera_State.Get_Configuration_State);
    end Get_Writeable_Configuration_State;
 
    ----------------------------------------------------------------
-  function Get_Writeable_Global_State (
+   function Get_Writeable_Global_State (
       Camera_ID   : Camera_ID_Type'class := Null_Camera_ID
    ) return State.State_Access is
    ----------------------------------------------------------------
 
    begin
-not_implemented;
-return null;
+      return Allocate_State (Camera_ID);
    end Get_Writeable_Global_State;
 
    ----------------------------------------------------------------
    function Has_Camera_Configuration_State (
       Camera_ID            : in        Camera_ID_Type'class := Null_Camera_ID
    ) return Boolean is
+   pragma Unreferenced (Camera_ID);
    ----------------------------------------------------------------
 
       Result   : constant Boolean := Has_Camera_Configuration_State (
-                                       Current_Camera_ID);
+                                       State.Get_Current_Camera_ID);
    begin
       return Log_Here (Result,
          Debug or else Trace_Pre_Post_Conditions or else not Result);
@@ -217,11 +245,11 @@ return null;
    ----------------------------------------------------------------
 
       Result   : constant Boolean := Camera_ID.Set or else
-                                       Current_Camera_ID.Set;
+                                       State.Has_Current_Camera_ID;
    begin
       return Log_Here (Result,
          Debug or else Trace_Pre_Post_Conditions or else not Result,
-         "current: " &Current_Camera_ID.Image &
+         "current: " & State.Get_Current_Camera_ID.Image &
          " parameter " & Camera_ID.Image);
    end Has_Camera_ID;
 
@@ -231,8 +259,9 @@ return null;
    ) return Boolean is
    ----------------------------------------------------------------
 
-      State    : constant State_Access := Allocate_State (Camera_ID);
-      Result   : constant Boolean := State.Camera_State /= Null;
+      Camera_State   : constant State.State_Access :=
+                        Allocate_State (Camera_ID);
+      Result         : constant Boolean := Camera_State /= Null;
 
    begin
       return Log_Here (Result,
@@ -244,6 +273,7 @@ return null;
    function Has_Window_Connection (
       Camera_ID            : in        Camera_ID_Type'class := Null_Camera_ID
    ) return Boolean is
+   pragma Unreferenced (Camera_ID);
    ----------------------------------------------------------------
 
 --    State          : constant State_Access := Allocate_State (Camera_ID);

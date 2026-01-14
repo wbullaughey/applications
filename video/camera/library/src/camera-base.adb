@@ -2,7 +2,7 @@ with Ada.Text_IO; use  Ada.Text_IO;
 with Ada_Lib.Options;
 with Ada_Lib.OS;
 with Ada_Lib.String_Quote; use Ada_Lib.String_Quote;
-with Ada_Lib.Strings.Unlimited;
+with Ada_Lib.Strings.Unlimited;use Ada_Lib.Strings.Unlimited;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
 with Camera.Commands.PTZ_Optics;
 with Camera.States;
@@ -28,14 +28,14 @@ package body Camera.Base is
                            Null;
    end record;
 
-   type Full_Camera_State_Access
-                        is access Full_Camera_State_Type;
+-- type Full_Camera_State_Access
+--                      is access Full_Camera_State_Type;
 -- type Full_Camera_State_Class_Access
 --                      is access Full_Camera_State_Type'class;
 
-   function Camera_State_Equal (
-      Left, Right                : in     Full_Camera_State_Access
-   ) return Boolean;
+-- function Camera_State_Equal (
+--    Left, Right                : in     Full_Camera_State_Access
+-- ) return Boolean;
 
    overriding
    function Get_Camera (
@@ -103,15 +103,15 @@ package body Camera.Base is
 --      return Base_Data;
 --   end Allocate_Connection_Data;
 
-   ----------------------------------------------------------------
-   function Camera_State_Equal (
-      Left, Right                : in     Full_Camera_State_Access
-   ) return Boolean is
-   ----------------------------------------------------------------
-
-   begin
-      return Left = Right;
-   end Camera_State_Equal;
+-- ----------------------------------------------------------------
+-- function Camera_State_Equal (
+--    Left, Right                : in     Full_Camera_State_Access
+-- ) return Boolean is
+-- ----------------------------------------------------------------
+--
+-- begin
+--    return Left = Right;
+-- end Camera_State_Equal;
 
    ----------------------------------------------------------------
    overriding

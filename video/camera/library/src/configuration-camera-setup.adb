@@ -6,7 +6,7 @@ with Ada_Lib.Configuration;
 with Ada_Lib.Options;
 with Ada_Lib.Parser;
 with Ada_Lib.String_Quote; use Ada_Lib.String_Quote;
-with ADA_LIB.Strings.Unlimited; use Ada_Lib.Strings; use Ada_Lib.Strings.Unlimited;
+with ADA_LIB.Strings;use Ada_Lib.Strings;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
 with Camera.Lib.Options;
 

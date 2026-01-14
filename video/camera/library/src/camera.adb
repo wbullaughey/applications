@@ -5,7 +5,7 @@ with Ada_Lib.Help;
 with Ada_Lib.Options.Create;
 with Ada_Lib.Options.Runstring;
 with ADA_LIB.String_Quote; use ADA_LIB.String_Quote;
-with ADA_LIB.Strings.Unlimited;
+with ADA_LIB.Strings.Unlimited;use Ada_Lib.Strings.Unlimited;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
 
 package body Camera is
@@ -27,13 +27,15 @@ package body Camera is
    Recursed                      : Boolean := False;
 
    ----------------------------------------------------------------
+-- overriding
    function Camera_Hash (
       Address                    : in     Address_Type
    ) return Ada.Containers.Hash_Type is
+   pragma Unreferenced (Address);
    ----------------------------------------------------------------
 
    begin
-not implemented;
+not_implemented;
 return 0;
    end Camera_Hash;
 
@@ -113,7 +115,7 @@ return 0;
 
    begin
       return (if Camera_ID.Set then
-            Camera_ID.Value'img
+            "hash:" & Camera_ID.Value'img
          else
             "not set");
    end Image;

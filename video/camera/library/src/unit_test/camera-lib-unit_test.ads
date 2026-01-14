@@ -6,11 +6,9 @@ with Ada_Lib.Unit_Test.Test_Cases;
 with AUnit.Simple_Test_Cases;
 with AUnit.Test_Suites;
 with Camera.Commands;
-with Camera.Commands.PTZ_Optics;
 with Camera.States;
 with Configuration.Camera.Setup;
 with Configuration.Camera.State;
-with Configuration.State;
 with GNAT.Source_Info;
 --with Gnoga.GUI.Window;
 with Video.Lib;
@@ -20,7 +18,7 @@ package Camera.Lib.Unit_Test is
    use type Camera.Commands.Camera_Class_Access;
    use type Address_Constant_Access;
    use type Port_Type;
-   use type Video.Lib.Location_Type;
+-- use type Video.Lib.Location_Type;
 
    Failed               : exception;
 
@@ -30,11 +28,8 @@ package Camera.Lib.Unit_Test is
    type Camera_Info_Type   is record
       Camera               : Standard.Camera.Commands.
                               Camera_Class_Access := Null;
-      Camera_Address       : Address_Constant_Access := Null;
-      Location             : Configuration.State.Location_Type :=
-                              Video.Lib.No_Location;
+      Camera_Options       : Camera_Options_Type;
       Open_Camera          : Boolean := True;
-      Port_Number          : Port_Type := Standard.Camera.Commands.PTZ_Optics.Port;
    end record;
 
    procedure Load_Test_State (
@@ -42,10 +37,10 @@ package Camera.Lib.Unit_Test is
       Setup             : in out Configuration.Camera.Setup.Setup_Type
 --    State             : in out Configuration.Camera.State.State_Type
    ) with  -- Pre  => Camera_Info.Camera /= Null,
-          Post => Camera_Info.Camera_Address /= Null and then
-                  Camera_Info.Port_Number /= Video.Lib.Port_Type'last and then
+          Post => Camera_Info.Camera_Options.Camera_Address /= Null and then
+                  Camera_Info.Camera_Options.Port_Number /= Video.Lib.Port_Type'last and then
                   Camera.States.Has_Camera_State (Camera_ID (
-                     Camera_Info.Camera_Address.all)) and then
+                     Camera_Info.Camera_Options.Camera_Address.all)) and then
                   Setup.Is_Loaded;
 
    -- use for tests with camera but no web pages

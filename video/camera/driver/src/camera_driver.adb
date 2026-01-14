@@ -24,7 +24,7 @@ procedure Camera_Driver is
                                     Driver_Options.Main_Debug;
 
 begin
-   Ada_Lib.Options.Flags.Set_Ada_Lib_Program_Options (
+   Ada_Lib.Options.Set_Ada_Lib_Program_Options (
          Protected_Options'unchecked_access);
 
    Protected_Options.Driver_Options.Camera_Directory.Construct (
