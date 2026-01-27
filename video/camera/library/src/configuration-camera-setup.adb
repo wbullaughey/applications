@@ -8,7 +8,7 @@ with Ada_Lib.Parser;
 with Ada_Lib.String_Quote; use Ada_Lib.String_Quote;
 with ADA_LIB.Strings;use Ada_Lib.Strings;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
-with Camera.Lib.Options;
+with Camera.Lib.Options.Unit_Test;
 
 package body Configuration.Camera.Setup is
 
@@ -21,6 +21,9 @@ package body Configuration.Camera.Setup is
    procedure Free is new Ada.Unchecked_Deallocation (
       Presets_Type,
       Presets_Access);
+
+   Debug    : Boolean renames Standard.Camera.Lib.Options.
+               Configuration_Options.Setup_Debug;
 
    ----------------------------------------------------------------
    function Configuration_Label (
@@ -662,6 +665,7 @@ package body Configuration.Camera.Setup is
 
 begin
 --Debug := True;
+--Trace_Options := True;
    Log_Here (Debug or Elaborate);
 
 end Configuration.Camera.Setup;

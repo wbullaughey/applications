@@ -192,6 +192,13 @@ package Video.Lib is
       Which_Preset               : in     Which_Preset_Type;
       Preset_ID                  : in     Preset_ID_Type);
 
+   package Video_Options is
+
+      Configuration_State_Debug  : Boolean := False;
+      Library_Debug              : Boolean := False;
+
+   end Video_Options;
+
    Null_Preset_ID                : constant Preset_ID_Type;
    Null_Preset_ID_Number         : constant Preset_Range_Type;
 -- Global_Video_Lib_Options      : Options_Constant_Class_Access := Null;

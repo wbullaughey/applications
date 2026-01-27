@@ -71,9 +71,8 @@ package body Widgets.Adjust.Unit_Test is
 
    end Move_Package;
 
--- State_Test_Path               : constant String := "adjust_state.cfg";
--- Setup_Test_Path               : constant String := "adjust_setup.cfg";
-   Suite_Name                    : constant String := "Adjust_Card";
+   Debug       : Boolean renames Ada_Lib.Options.Ada_Lib_Widgets.Adjust_Debug;
+   Suite_Name  : constant String := "Adjust_Card";
 
    ---------------------------------------------------------------
    overriding
@@ -165,68 +164,71 @@ package body Widgets.Adjust.Unit_Test is
       Test                       : in out AUnit.Test_Cases.Test_Case'class) is
    ---------------------------------------------------------------
 
-      use Gnoga.Gui.Base;
-
-      Local_Test        : Widgets_Adjust_Test_Type renames
-                           Widgets_Adjust_Test_Type (Test);
-      Connection_Data   : constant Camera.Main.Window_Connection_Class_Access :=
-                           Camera.Main.Window_Connection_Class_Access (
-                              Ada_Lib.Test_States.Get_Window_Connection_Data (
-                                 Local_Test.Main_Window));
-      Camera            : Standard.Camera.Commands.Camera_Class_Access renames
-                           Connection_Data.Get_Camera;
-      Event             : constant Move_Package.Mouse_Move_Event_Access := new
-                           Move_Package.Mouse_Move_Event_Type;
-
-      Adjust_Card       : constant Adjust_Card_Access :=
-                           Connection_Data.Get_Adjust_Card;
-      Pan               : Standard.Camera.Absolute_Type;
-      Pan_Offset        : constant := 100;
-      Start_Pan         : Standard.Camera.Absolute_Type;
-      Start_Tilt        : Standard.Camera.Absolute_Type;
-      Tilt              : Standard.Camera.Absolute_Type;
-      Tilt_Offset       : constant := 200;
-
+   use Gnoga.Gui.Base;
    begin
       Log_In (Debug);
-      Camera.Get_Absolute (Start_Pan, Start_Tilt);
       declare
-         Expected_Pan      : constant Standard.Camera.Absolute_Type :=
-                              Start_Pan + Pan_Offset;
-         Expected_Tilt     : constant Standard.Camera.Absolute_Type :=
-                              Start_Tilt + Tilt_Offset;
-      begin
-         Log_Here (Debug,
-            "start pan" & Start_Pan'img & " tilt" & Start_Tilt'img &
-            " expected pan" & Expected_Pan'img & " tilt" & Expected_Tilt'img);
-         -- create a mouse move event telling the amout to move
-         Move_Package.Initialize_Event (Event.all,
-            Connection_Data=> Gnoga_Ada_Lib.Connection_Data_Class_Access (
-                                 Connection_Data),
-            Description    => "mouse move event",
-            Mouse_Event    => (
-               Message        => Mouse_Move,
-               X              => Pan_Offset,
-               Y              => Tilt_Offset,
-               Screen_X       => 100,
-               Screen_Y       => 200,
-               Left_Button    => False,
-               Middle_Button  => False,
-               Right_Button   => False,
-               Alt            => False,
-               Control        => False,
-               Shift          => False,
-               Meta           => False),
-            Wait           => 0.25);
+         Local_Test        : Widgets_Adjust_Test_Type renames
+                              Widgets_Adjust_Test_Type (Test);
+         Connection_Data   : constant Camera.Main.Window_Connection_Class_Access :=
+                              Camera.Main.Window_Connection_Class_Access (
+                                 Ada_Lib.Test_States.Get_Window_Connection_Data (
+                                    Local_Test.Main_Window'unchecked_access));
+         Camera            : Standard.Camera.Commands.Camera_Class_Access renames
+                              Connection_Data.Get_Camera;
+         Event             : constant Move_Package.Mouse_Move_Event_Access := new
+                              Move_Package.Mouse_Move_Event_Type;
 
+         Adjust_Card       : constant Adjust_Card_Access :=
+                              Connection_Data.Get_Adjust_Card;
+         Pan               : Standard.Camera.Absolute_Type;
+         Pan_Offset        : constant := 100;
+         Start_Pan         : Standard.Camera.Absolute_Type;
+         Start_Tilt        : Standard.Camera.Absolute_Type;
+         Tilt              : Standard.Camera.Absolute_Type;
+         Tilt_Offset       : constant := 200;
+
+      begin
          Log_Here (Debug);
-         Adjust_Card.Fire_On_Mouse_Click (Event.Mouse_Event);
-         delay 0.5;     -- wait for button to be pushed
-         Log_Here (Debug);
-         Camera.Get_Absolute (Pan, Tilt);
-         Assert (Pan = Expected_Pan and then Tilt = Expected_Tilt,
-            "pan" & Pan'img & " expected" & Expected_Pan'img &
-            " tilt" & Tilt'img & " expected" & Expected_Tilt'img);
+         Camera.Get_Absolute (Start_Pan, Start_Tilt);
+         declare
+            Expected_Pan      : constant Standard.Camera.Absolute_Type :=
+                                 Start_Pan + Pan_Offset;
+            Expected_Tilt     : constant Standard.Camera.Absolute_Type :=
+                                 Start_Tilt + Tilt_Offset;
+         begin
+            Log_Here (Debug,
+               "start pan" & Start_Pan'img & " tilt" & Start_Tilt'img &
+               " expected pan" & Expected_Pan'img & " tilt" & Expected_Tilt'img);
+            -- create a mouse move event telling the amout to move
+            Move_Package.Initialize_Event (Event.all,
+               Connection_Data=> Gnoga_Ada_Lib.Connection_Data_Class_Access (
+                                    Connection_Data),
+               Description    => "mouse move event",
+               Mouse_Event    => (
+                  Message        => Mouse_Move,
+                  X              => Pan_Offset,
+                  Y              => Tilt_Offset,
+                  Screen_X       => 100,
+                  Screen_Y       => 200,
+                  Left_Button    => False,
+                  Middle_Button  => False,
+                  Right_Button   => False,
+                  Alt            => False,
+                  Control        => False,
+                  Shift          => False,
+                  Meta           => False),
+               Wait           => 0.25);
+
+            Log_Here (Debug);
+            Adjust_Card.Fire_On_Mouse_Click (Event.Mouse_Event);
+            delay 0.5;     -- wait for button to be pushed
+            Log_Here (Debug);
+            Camera.Get_Absolute (Pan, Tilt);
+            Assert (Pan = Expected_Pan and then Tilt = Expected_Tilt,
+               "pan" & Pan'img & " expected" & Expected_Pan'img &
+               " tilt" & Tilt'img & " expected" & Expected_Tilt'img);
+         end;
       end;
       Log_Out (Debug);
 
@@ -263,12 +265,6 @@ package body Widgets.Adjust.Unit_Test is
          Event                   : in out Mouse_Move_Event_Type) is
       ---------------------------------------------------------------
 
---    Local_Test        : Widgets_Adjust_Test_Type renames
---                         Widgets_Adjust_Test_Type (Test);
---    Connection_Data   : constant Camera.Main.Window_Connection_Class_Access :=
---                         Camera.Main.Window_Connection_Class_Access (
---                            Ada_Lib.Test_States.Get_Window_Connection_Data (
---                               Local_Test.Main_Window));
       Adjust_Card       : constant Adjust_Card_Access :=
                            Event.Connection_Data.Get_Adjust_Card;
       Cell              : constant Generic_Cell_Package.

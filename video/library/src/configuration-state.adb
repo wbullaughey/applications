@@ -4,7 +4,7 @@ with Ada_Lib.Strings.Unlimited;use Ada_Lib.Strings.Unlimited;
 with Ada.Text_IO; use Ada.Text_IO;
 with Ada_Lib.String_Quote; use Ada_Lib.String_Quote;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
-with Video.Lib.Options;
+with Video.Lib;
 
 pragma Elaborate (Ada_Lib.Parser);
 
@@ -15,7 +15,7 @@ package body Configuration.State is
                      Remote   => new String'("remote_camera"),
                      No_Location => new String' ("no camera"));
    Debug          : Boolean renames
-                     Video.Lib.Options.Video_Options.Configuration_State_Debug;
+                     Video.Lib.Video_Options.Configuration_State_Debug;
    Port_Key       : constant Address_Key_Type := (
                      Local    => new String'("local_port"),
                      Remote   => new String'("remote_port"),

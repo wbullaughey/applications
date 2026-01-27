@@ -15,6 +15,7 @@ package Camera is
 
    use type Ada_Lib.Socket_IO.Address_Kind_Type;
    use type Video.Lib.Relative_Type;
+   use type Video.Lib.Location_Type;
 
    subtype Address_Type          is Video.Lib.Address_Type;
    subtype Address_Constant_Access
@@ -28,11 +29,6 @@ package Camera is
 
    type Camera_ID_Type           is tagged private;
 
-   function Camera_ID (
-      Address                    : in        Address_Type
-   ) return Camera_ID_Type
-   with Pre => Address.Address_Kind /= Ada_Lib.Socket_IO.Not_Set;
-
    procedure Dump (
       Camera_ID                  : in        Camera_ID_Type);
 
@@ -43,6 +39,11 @@ package Camera is
    function Is_Set (
       Camera_ID                  : in        Camera_ID_Type
    ) return Boolean;
+
+   function Make_Camera_ID (
+      Address                    : in        Address_Type
+   ) return Camera_ID_Type
+   with Pre => Address.Address_Kind /= Ada_Lib.Socket_IO.Not_Set;
 
    type Commands_Type is (
       Auto_Focus,
@@ -117,6 +118,11 @@ package Camera is
    type Camera_Options_Class_Access     is access all Camera_Options_Type'class;
    type Camera_Options_Constant_Class_Access
                                  is access constant Camera_Options_Type'class;
+
+   function Has_Location (
+      Location       : in     Configuration.State.Location_Type
+   ) return Boolean;
+
    overriding
    function Initialize (
       Options               : in out Camera_Options_Type;
@@ -192,7 +198,6 @@ package Camera is
       Value                      : in     Data_Type
    ) return String renames Video.Lib.Image;
 
-   Debug_Camera                  : Boolean := False;
    IP                            : Address_Kind_Type := Ada_Lib.Socket_IO.IP;
    NOT_SET                       : Address_Kind_Type := Ada_Lib.Socket_IO.NOT_SET;
    Null_Camera_ID                : constant Camera_ID_Type;

@@ -161,10 +161,11 @@ package body Camera.Lib.Base.Test is
       ALPTOP_Ports          : aliased constant Ports_Type := (
                                  554, 1935
                               );
-      State             : Configuration.Camera.State.State_Type'class renames
-                           Local_Test.State.all;
+      Configuration_State
+                        : Configuration.Camera.State.State_Type renames
+                           Local_Test.Configuration_State;
       PTZ_Optics_Ports  : aliased constant Ports_Type := (
-                              1 => State.Get_Host_Port
+                              1 => Configuration_State.Get_Host_Port
                            );
       Ports             : Ports_Access := Null;
 

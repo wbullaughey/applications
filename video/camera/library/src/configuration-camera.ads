@@ -25,6 +25,6 @@ package Configuration.Camera is
    Vertical_Slider_Blank_Style: constant String := "Vertical_Slider_Blank_Style";
    Vertical_Slider_Solid_Style: constant String := "Vertical_Slider_Solid_Style";
 
-   Debug                : Boolean := False;
+-- Debug                : Boolean := False;
 
 end Configuration.Camera;

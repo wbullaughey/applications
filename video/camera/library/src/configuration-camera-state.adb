@@ -22,7 +22,7 @@ package body Configuration.Camera.State is
       Images_Access);
 
    Debug : Boolean renames Standard.Camera.Lib.Options.
-            Camera_Options.Configuration_State_Debug;
+            Configuration_Options.State_Debug;
 
    ----------------------------------------------------------------
    function Check_Column (
@@ -174,14 +174,18 @@ package body Configuration.Camera.State is
    return Speed_Type is
    ----------------------------------------------------------------
 
+begin
+log_here;
+
+declare
       State_Pointer  : constant Configuration.Camera.State.State_Constant_Access :=
                         Standard.Camera.States.Get_Read_Only_Configuration_State;
       State          : Configuration.Camera.State.State_Type renames
                         State_Pointer.all;
    begin
-log_here ("State_Pointer " & Image (State_Pointer.all'address) & " State " & Image (State'address));
       Log_Here (Debug, State.Default_Speed'img);
       return State.Default_Speed;
+end;
    end Get_Default_Speed;
 
    ----------------------------------------------------------------
@@ -244,7 +248,6 @@ return Null;
    ----------------------------------------------------------------
 
    begin
-log_here ("state " & Ada_Lib.Strings.Image (State'address));
       return Log_Here (State.Camera_ID.Is_Set,
          Debug or else Trace_Pre_Post_Conditions,
          "camera id" & State.Camera_ID'img);
@@ -367,7 +370,7 @@ log_here ("state " & Ada_Lib.Strings.Image (State'address));
          Quote (" path", Path));
       Config.Load (Path, False);
       State.Load (Config, Location, Path);
-      State.Camera_ID := Standard.Camera.Camera_ID (State.Video_Address.all);
+      State.Camera_ID := Standard.Camera.Make_Camera_ID (State.Video_Address.all);
       State.Camera_Name.Construct (Config.Get_String ("camera_name"));
       State.CSS_Path.Construct (Config.Get_String ("css_path"));
       State.Default_Speed :=  Speed_Type (Config.Get_Integer (
@@ -427,7 +430,6 @@ log_here ("state " & Ada_Lib.Strings.Image (State'address));
 
       Config.Close;
       State.Set_Loaded (True);
-log_here ("state " & Ada_Lib.Strings.Image (State'address));
       Log_Out (Debug, "loaded " & State.Is_Loaded'img);
 
    exception

@@ -82,6 +82,12 @@ package body Unit_Test is
          Exit_Button.Fire_On_Click;
       end;
       Log_Out (Debug);
+
+exception
+   when Fault: others =>
+      Log_Exception (True, Fault);
+      raise;
+
    end Callback;
 
    ---------------------------------------------------------------
@@ -172,13 +178,13 @@ package body Unit_Test is
       Test                       : in out Test_Type) is
    ---------------------------------------------------------------
 
-      State                      : Configuration.Camera.State.State_Type renames
-                                    Test.State;
+      Configuration_State                      : Configuration.Camera.State.State_Type renames
+                                    Test.Configuration_State;
    begin
       Log_In (Debug or Trace_Set_Up_Tear_Down);
       Camera.Lib.Unit_Test.With_Camera_With_GNOGA_Test_Type (Test).Tear_Down;
 --    GNOGA_Ada_Lib.Clear_Connection_Data;
-      State.Unload;
+      Configuration_State.Unload;
       Log_Out (Debug or Trace_Set_Up_Tear_Down);
    end Tear_Down;
 

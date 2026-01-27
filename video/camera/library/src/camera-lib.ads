@@ -92,8 +92,6 @@ package Camera.Lib is
 --                                           Standard.GNAT.Source_Info.Source_Location
 -- ) return Camera.Options_Constant_Class_Access;
 
-   Debug                         : aliased Boolean := False;
-   Debug_Options                 : aliased Boolean := False;
    Number_Configurations         : constant String := "configurations";
    Number_Grid_Columns           : constant String := "grid_columns";
    Number_Grid_Rows              : constant String := "grid_rows";

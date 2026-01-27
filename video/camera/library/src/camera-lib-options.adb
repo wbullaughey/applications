@@ -13,6 +13,7 @@ package body Camera.Lib.Options is
 -- use type Ada_Lib.Options.Interface_Options_Constant_Class_Access;
 -- use type Ada_Lib.Options.Flag_List_Type;
 
+   Debug_Options                 : Boolean renames Camera_Options.Options_Debug;
    Trace_Option                  : constant Character := 'T';
    Options_With_Parameters       : aliased constant
                                     Ada_Lib.Options.Flag_List_Type :=
@@ -98,59 +99,63 @@ package body Camera.Lib.Options is
 
    begin
       Log_In (Trace_Options or Debug_Options, Option.Image);
+not_implemented;
 
-      if Ada_Lib.Options.Has_Option (Option, Options_With_Parameters,
-            Ada_Lib.Options.Null_Flag_List) then
-         case Option.Option is
-            when Trace_Option =>
-               declare
-                  Parameter
-                           : constant String := Iterator.Get_Parameter;
-               begin
-                  Log (Trace_Options or Debug_Options, Here, " process parameter  " & Quote (Parameter));
-
-                  for Trace of Parameter loop
-                     Log_Here (Trace_Options or Debug_Options, Quote ("Trace", Trace));
-                     case Trace is
-
-                        when 'a' =>
-                           Debug_Options := True;
-                           Options.Debug := True;
-
-                        when 'm' =>
-                           Options.Debug := True;
-
-                        when 'r' =>
-                           Debug_Options := True;
-
-                        when others =>
-                           Log_Out (Debug_Options);
-                           Options.Bad_Option (Quote (
-                              "unexpected trace option", Trace) &
-                              " for '" & Trace_Option & "'");
-                           return False;
-
-                     end case;
-                  end loop;
-               end;
-
-            when others =>
-               declare
-                  Message  : constant String :=
-                              "Has_Option incorrectly passed " & Option.Image;
-               begin
-                  Log_Exception (Trace_Options or Debug_Options, Message);
-                  raise Failed with Message;
-               end;
-
-         end case;
-      else
-         Log_Out (Trace_Options or Debug_Options, "other " & Option.Image);
-         return Options.GNOGA.Process_Option (Iterator, Option) or else
-            Options.Camera_Library.Process_Option (Iterator, Option) or else
-            Ada_Lib.Options.Program.Program_Options_Type (Options).Process_Option (
-               Iterator, Option);
-      end if;
+--    if Ada_Lib.Options.Has_Option (Option, Options_With_Parameters,
+--          Ada_Lib.Options.Null_Flag_List) then
+--       case Option.Option is
+--          when Trace_Option =>
+--             declare
+--                Parameter
+--                         : constant String := Iterator.Get_Parameter;
+--             begin
+--                Log (Trace_Options or Debug_Options, Here, " process parameter  " & Quote (Parameter));
+--
+--                for Trace of Parameter loop
+--                   Log_Here (Trace_Options or Debug_Options, Quote ("Trace", Trace));
+--                   case Trace is
+--
+--                      when 'a' =>
+--                         Debug_Options := True;
+--                         Options.Debug := True;
+--
+--                      when 'm' =>
+--                         Options.Debug := True;
+--
+--                      when 'r' =>
+--                         Debug_Options := True;
+--
+--                      when 's' =>
+--                         Camera_Options.State_Debug := True;
+--
+--                      when others =>
+--                         Log_Out (Debug_Options);
+--                         Options.Bad_Option (Quote (
+--                            "unexpected trace option", Trace) &
+--                            " for '" & Trace_Option & "'");
+--                         return False;
+--
+--                   end case;
+--                end loop;
+--             end;
+--
+--          when others =>
+--             declare
+--                Message  : constant String :=
+--                            "Has_Option incorrectly passed " & Option.Image;
+--             begin
+--                Log_Exception (Trace_Options or Debug_Options, Message);
+--                raise Failed with Message;
+--             end;
+--
+--       end case;
+--    else
+--       Log_Out (Trace_Options or Debug_Options, "other " & Option.Image);
+--       return Options.GNOGA.Process_Option (Iterator, Option) or else
+--          Options.Camera_Library.Process_Option (Iterator, Option) or else
+--          Ada_Lib.Options.Program.Program_Options_Type (Options).Process_Option (
+--             Iterator, Option);
+--    end if;
 
       return Log_Out (True, Trace_Options or Debug_Options, "exit" & " option" &
          Option.Image & " handled");
@@ -162,33 +167,35 @@ package body Camera.Lib.Options is
       Options                    : in     Program_Options_Type;  -- only used for dispatch
       Help_Mode                  : in     ADA_LIB.Options.Help_Mode_Type) is
    ----------------------------------------------------------------------------
-
-      Component                  : constant String := "Camera.Lib.Options";
-
+--
+--    Component                  : constant String := "Camera.Lib.Options";
+--
    begin
       Log_In (Debug_Options or Trace_Options, "help mode " & Help_Mode'img);
-
-      case Help_Mode is
-
-      when Ada_Lib.Options.Program_Mode =>
-         Ada_Lib.Help.Create_Option (Trace_Option,
-            "trace options", "trace options", Component, Ada_Lib.Help.Unmodified_Flag);
-
-      when Ada_Lib.Options.Trace_Mode =>
-         New_Line;
-
-         Put_Line (Command_Name & " trace options -" &
-            Trace_Option & ")");
-         Put_Line ("      a               all");
-         Put_Line ("      m               main program options");
-         Put_Line ("      r               runtime options");
-         New_Line;
-
-      end case;
-
-      Ada_Lib.Options.Program.Program_Options_Type (Options).Program_Help (Help_Mode);
-      Options.GNOGA.Program_Help (Help_Mode);
-      Options.Camera_Library.Program_Help (Help_Mode);
+not_implemented;
+--
+--    case Help_Mode is
+--
+--    when Ada_Lib.Options.Program_Mode =>
+--       Ada_Lib.Help.Create_Option (Trace_Option,
+--          "trace options", "trace options", Component, Ada_Lib.Help.Unmodified_Flag);
+--
+--    when Ada_Lib.Options.Trace_Mode =>
+--       New_Line;
+--
+--       Put_Line (Command_Name & " trace options -" &
+--          Trace_Option & ")");
+--       Put_Line ("      a               all");
+--       Put_Line ("      m               main program options");
+--       Put_Line ("      r               runtime options");
+--       Put_Line ("      s               Camera.State.Debug options");
+--       New_Line;
+--
+--    end case;
+--
+--    Ada_Lib.Options.Program.Program_Options_Type (Options).Program_Help (Help_Mode);
+--    Options.GNOGA.Program_Help (Help_Mode);
+--    Options.Camera_Library.Program_Help (Help_Mode);
       Log_Out (Debug_Options or Trace_Options);
    end Program_Help;
 

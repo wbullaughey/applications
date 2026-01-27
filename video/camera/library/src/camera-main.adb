@@ -10,13 +10,9 @@ with Ada_Lib.String_Quote; use Ada_Lib.String_Quote;
 with Ada_Lib.Strings; use Ada_Lib.Strings;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
 with Ask;
---with AUnit.Test_Suites;
---with Camera.Commands.PTZ_Optics;
 with Camera.Lib.Base;
---with Configuration.State;
---with GNAT.Sockets;
+with Camera.Lib.Options;
 with Configuration.Camera.State;
---with Camera.States;
 with Gnoga.Gui.Base;
 with Gnoga.Gui.Element.Section;
 with Gnoga.Gui.Plugin.jQueryUI.Widget;
@@ -26,8 +22,6 @@ with Widgets.Adjust;
 with Widgets.Control; -- causes hang
 with Widgets.Configured;
 with Widgets.Video;
-
--- pragma Elaborate (Ada_Lib.OS);
 
 package body Camera.Main is
 
@@ -265,13 +259,11 @@ package body Camera.Main is
 
    package body Unit_Test is separate;
 
--- package body Widgets_Configured_Unit_Test is separate;
-
+   Debug    : Boolean renames Camera.Lib.Options.Camera_Options.Main_Debug;
    Description                   : aliased constant String := "main camera";
    Main_Window_Connection_ID     : Gnoga.Types.Connection_ID :=
                                      Gnoga.Types.No_Connection;
    Started                       : Boolean := False;
--- Shared_Connection             : Camera.Base.Shared_Connection_Type;
 
    ---------------------------------------------------------------
    function Allocate_Window_Connection

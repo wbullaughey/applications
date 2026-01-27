@@ -7,24 +7,27 @@ with Ada_Lib.Options.Runstring;
 with ADA_LIB.String_Quote; use ADA_LIB.String_Quote;
 with ADA_LIB.Strings.Unlimited;use Ada_Lib.Strings.Unlimited;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
+with Camera.Lib.Options;
 
 package body Camera is
 
 -- use type Ada_Lib.Options.Options_Type;
 -- use type Video.Lib.Location_Type;
 
-   Trace_Flag                    : constant Character := '3';
-   Trace_Option                  : constant Character := 'd';
-   Options_With_Parameters       : aliased constant
-                                    Ada_Lib.Options.Flag_List_Type :=
-                                       Ada_Lib.Options.Create.Create_One (
-                                          'b', Ada_Lib.Options.Unmodified_Flag);
-   Options_Without_Parameters    : aliased constant
-                                    Ada_Lib.Options.Flag_List_Type :=
-                                       Ada_Lib.Options.Create.Create_One (
-                                          Trace_Option,  -- local is default
-                                          Ada_Lib.Options.Unmodified_Flag);
-   Recursed                      : Boolean := False;
+   Debug                      : Boolean renames
+                                 Lib.Options.Camera_Options.Camera_Debug;
+   Trace_Flag                 : constant Character := '3';
+   Trace_Option               : constant Character := 'd';
+   Options_With_Parameters    : aliased constant
+                                 Ada_Lib.Options.Flag_List_Type :=
+                                    Ada_Lib.Options.Create.Create_One (
+                                       'b', Ada_Lib.Options.Unmodified_Flag);
+   Options_Without_Parameters : aliased constant
+                                 Ada_Lib.Options.Flag_List_Type :=
+                                    Ada_Lib.Options.Create.Create_One (
+                                       Trace_Option,  -- local is default
+                                       Ada_Lib.Options.Unmodified_Flag);
+   Recursed                   : Boolean := False;
 
    ----------------------------------------------------------------
 -- overriding
@@ -38,45 +41,6 @@ package body Camera is
 not_implemented;
 return 0;
    end Camera_Hash;
-
-   ----------------------------------------------------------------
-   function Camera_ID (
-      Address     : in        Address_Type
-   ) return Camera_ID_Type is
-   ----------------------------------------------------------------
-
-      Result      : Camera_ID_Type;
-
-   begin
-      Log_In (Debug_Camera);
-      case Address.Address_Kind is
-
-         when Ada_Lib.Socket_IO.IP =>
-            declare
-               Accumulator : Natural := 0;
-               IP_Address  : Ada_Lib.Socket_IO.IP_Address_Type renames
-                              Address.IP_Address;
-            begin
-               for Segment of IP_Address  loop
-                  Accumulator := Accumulator * 256 + Natural (Segment);
-               end loop;
-               Result.Value := Ada.Containers.Hash_Type (Accumulator);
-               Result.Set := True;
-            end;
-
-         when Ada_Lib.Socket_IO.URL =>
-            Result.Value := Ada.Strings.Hash (Address.URL_Address.Coerce);
-            Result.Set := True;
-
-         when Ada_Lib.Socket_IO.Not_Set =>
-            pragma Assert (False, "pre should prevent this");
-
-      end case;
-
-      Log_Out (Debug_Camera, "IP Address " &
-         Ada_Lib.Socket_IO.Image (Address) & ": " & Result.Image);
-      return Result;
-   end Camera_ID;
 
    ----------------------------------------------------------------
    function Camera_ID_Equal (
@@ -108,6 +72,16 @@ return 0;
    end Dump;
 
    -------------------------------------------------------------------------
+   function Has_Location (
+      Location       : in     Configuration.State.Location_Type
+   ) return Boolean is
+   -------------------------------------------------------------------------
+
+   begin
+      return Location /= Video.Lib.No_Location;
+   end Has_Location;
+
+   -------------------------------------------------------------------------
    function Image (
       Camera_ID                  : in        Camera_ID_Type
    ) return String is
@@ -129,7 +103,7 @@ return 0;
    -------------------------------------------------------------------------
 
    begin
-      Log_In_Checked (Recursed, Debug_Camera or Trace_Options,
+      Log_In_Checked (Recursed, Debug or Trace_Options,
          "Without Parameters " & Options_Without_Parameters.Image &
          " from " & From);
 
@@ -139,7 +113,7 @@ return 0;
 
       return Log_Out_Checked (Recursed,
          Ada_Lib.Options.Nested.Nested_Options_Type (Options).Initialize,
-         Debug_Camera or Trace_Options);
+         Debug or Trace_Options);
    end Initialize;
 
    ----------------------------------------------------------------------------
@@ -152,6 +126,45 @@ return 0;
       return Camera_ID.Set;
    end Is_Set;
 
+   ----------------------------------------------------------------
+   function Make_Camera_ID (
+      Address     : in        Address_Type
+   ) return Camera_ID_Type is
+   ----------------------------------------------------------------
+
+      Result      : Camera_ID_Type;
+
+   begin
+      Log_In (Debug, "camera address " & Address.Image);
+      case Address.Address_Kind is
+
+         when Ada_Lib.Socket_IO.IP =>
+            declare
+               Accumulator : Natural := 0;
+               IP_Address  : Ada_Lib.Socket_IO.IP_Address_Type renames
+                              Address.IP_Address;
+            begin
+               for Segment of IP_Address  loop
+                  Accumulator := Accumulator * 256 + Natural (Segment);
+               end loop;
+               Result.Value := Ada.Containers.Hash_Type (Accumulator);
+               Result.Set := True;
+            end;
+
+         when Ada_Lib.Socket_IO.URL =>
+            Result.Value := Ada.Strings.Hash (Address.URL_Address.Coerce);
+            Result.Set := True;
+
+         when Ada_Lib.Socket_IO.Not_Set =>
+            pragma Assert (False, "pre should prevent this");
+
+      end case;
+
+      Log_Out (Debug, "IP Address " &
+         Ada_Lib.Socket_IO.Image (Address) & ": " & Result.Image);
+      return Result;
+   end Make_Camera_ID;
+
    ----------------------------------------------------------------------------
    -- processes options it knows about and calls parent for others
    overriding
@@ -163,7 +176,7 @@ return 0;
    ----------------------------------------------------------------------------
 
    begin
-      Log_In (Trace_Options or Debug_Camera, Option.Image);
+      Log_In (Trace_Options or Debug, Option.Image);
 --       " help test " & Ada_Lib.Options.Help_Test'img);
 
       if Ada_Lib.Options.Has_Option (Option, Options_With_Parameters,
@@ -197,18 +210,18 @@ return 0;
                   Message  : constant String :=
                               "Has_Option incorrectly passed " & Option.Image;
                begin
-                  Log_Exception (Trace_Options or Debug_Camera, Message);
+                  Log_Exception (Trace_Options or Debug, Message);
                   raise Failed with Message;
                end;
          end case;
 
-         return Log_Out (True, Debug_Camera or Trace_Options,
+         return Log_Out (True, Debug or Trace_Options,
             Option.Image & " handled");
       else
          return Log_Out (
             Ada_Lib.Options.Nested.Nested_Options_Type (
                Options).Process_Option (Iterator, Option),
-               Trace_Options or Debug_Camera, "other " & Option.Image);
+               Trace_Options or Debug, "other " & Option.Image);
       end if;
 
    exception
@@ -228,12 +241,12 @@ return 0;
       Component                  : constant String := "Camera";
 
    begin
-      Log_In (Debug_Camera or Trace_Options, "help mode " & Help_Mode'img);
+      Log_In (Debug or Trace_Options, "help mode " & Help_Mode'img);
 
         case Help_Mode is
 
         when Ada_Lib.Options.Program_Mode =>
-           Log_Here (Debug_Camera or Trace_Options, Quote ("Component", Component));
+           Log_Here (Debug or Trace_Options, Quote ("Component", Component));
            Ada_Lib.Help.Create_Option (Trace_Flag, "trace options", "Camera Lib Debug",
               Component, Ada_Lib.Help.Unmodified_Flag);
            New_Line;
@@ -248,7 +261,7 @@ return 0;
 --
       Ada_Lib.Options.Nested.Nested_Options_Type (Options).Program_Help (
          Help_Mode);
-      Log_Out (Debug_Camera or Trace_Options);
+      Log_Out (Debug or Trace_Options);
    end Program_Help;
 
    ----------------------------------------------------------------------------
@@ -265,18 +278,18 @@ return 0;
 --    Suboption                  : Suboption_Type := Plain;
 
    begin
-      Log (Trace_Options or Debug_Camera, Here, Who & Quote (" Parameter", Parameter));
+      Log (Trace_Options or Debug, Here, Who & Quote (" Parameter", Parameter));
 
       for Trace of Parameter loop
-         Log_Here (Trace_Options or Debug_Camera, Quote ("Trace", Trace));
+         Log_Here (Trace_Options or Debug, Quote ("Trace", Trace));
 
          case Trace is
 
             when 'a' =>
-               Debug_Camera := True;
+               Debug := True;
 
             when Trace_Option =>
-               Debug_Camera := True;
+               Debug := True;
 
             when others =>
                Options.Bad_Option (Quote (

@@ -35,21 +35,23 @@ package body Camera.Lib.Unit_Test is
 
    use type Ada_Lib.Options.Mode_Type;
 
-   Camera_Description            : aliased constant String := "test camera";
-   Debug                         : Boolean renames Options.Unit_Test.
-                                    Camera_Lib_Unit_Test.Debug;
-   Trace_Option                  : constant Character := '1';
-   Options_With_Parameters       : aliased constant
-                                    Ada_Lib.Options.Flag_List_Type :=
-                                          Ada_Lib.Options.Create.Create_One (
-                                             Trace_Option, -- & "R",
-                                             Ada_Lib.Options.Unmodified_Flag);
-   Help_Recursed                 : Boolean := False;
-   Initialize_Recursed           : Boolean := False;
+   Camera_Description      : aliased constant String := "test camera";
+   Debug                   : Boolean renames Options.Unit_Test.
+                              Camera_Lib_Unit_Test.Debug;
+   Debug_Options           : Boolean renames
+                              Options.Camera_Options.Options_Debug;
+   Trace_Option            : constant Character := '1';
+   Options_With_Parameters : aliased constant
+                              Ada_Lib.Options.Flag_List_Type :=
+                                    Ada_Lib.Options.Create.Create_One (
+                                       Trace_Option, -- & "R",
+                                       Ada_Lib.Options.Unmodified_Flag);
+   Help_Recursed           : Boolean := False;
+   Initialize_Recursed     : Boolean := False;
 
-   Camera_State_Path             : constant String := "camera_state_path.cfg";
-   Test_Setup                    : constant String :=
-                                    "test_setup.cfg";
+   Camera_State_Path       : constant String := "camera_state_path.cfg";
+   Test_Setup              : constant String := "test_setup.cfg";
+   Test_State              : constant STring := "test_state.cfg";
 
    ----------------------------------------------------------------------------
    procedure Add_Test (
@@ -105,7 +107,7 @@ package body Camera.Lib.Unit_Test is
 
    begin
       return Log_Here (Test.Camera_Info.Camera /= Null, Debug or else
-         Trace_Pre_Post_Conditions, "camera not set");
+         Trace_Pre_Post_Conditions, "camera set");
    end Have_Camera;
 
    ----------------------------------------------------------------------------
@@ -124,10 +126,10 @@ package body Camera.Lib.Unit_Test is
    ) return Boolean is
    ----------------------------------------------------------------------------
 
-      State                      : Configuration.Camera.State.State_Type'class
-                                    renames Test.State.all;
+      Configuration_State  : Configuration.Camera.State.State_Type
+                              renames Test.Configuration_State;
    begin
-      return Log_Here (State.Have_Video_Address, Debug);
+      return Log_Here (Configuration_State.Have_Video_Address, Debug);
    end Have_Video_Address;
 
    ----------------------------------------------------------------------------
@@ -182,32 +184,41 @@ return Null_Camera_ID;
 
 ---------------------------------------------------------------
    procedure Load_Test_State (
+      Camera_State      : in out Camera.State.State_Type;
       Camera_Info       : in out Camera_Info_Type;
       Setup             : in out Configuration.Camera.Setup.Setup_Type) is
 ---------------------------------------------------------------
 
-      Options        : Standard.Camera.Lib.Unit_Test.
-                        Unit_Test_Program_Options_Type'class
-                           renames Standard.Camera.Lib.Unit_Test.
-                              Get_Camera_Unit_Test_Constant_Options.all;
-      Configuration_State
-                     : constant Configuration.Camera.State.State_Access :=
-                        Camera.States.Get_Writeable_Configuration_State;
-      Configuration_Camera_State
-                     : constant Configuration.Camera.State.State_Access :=
-                        States.Get_Writeable_Configuration_State;
-
    begin
       Log_In (Debug or Trace_Set_Up_Tear_Down);
-      Configuration_State.Load (Options.Camera_Library_Options.Location,
-         Camera_State_Path);
-      Log_Here (Debug or Trace_Set_Up_Tear_Down,
-         " video port#" & Configuration_State.Video_Port'img);
-      Setup.Load (Configuration_Camera_State.all, Test_Setup);
-      Camera_Info.Camera_Options.Camera_Address := Configuration_State.Video_Address;
-      Camera_Info.Camera_Options.Port_Number := Configuration_State.Video_Port;
-
-      Camera_Info.Camera.Initialize_Standard_Preset_IDs;
+      declare
+         Options        : Standard.Camera.Lib.Unit_Test.
+                           Unit_Test_Program_Options_Type'class
+                              renames Standard.Camera.Lib.Unit_Test.
+                                 Get_Camera_Unit_Test_Constant_Options.all;
+--       Configuration_Camera_State
+--                      : constant Configuration.Camera.State.State_Access :=
+--                         new Configuration.Camera.State.State_Type;
+      begin
+         Camera_State.Load (Test_Setup, Test_State);
+--       Configuration_Camera_State.Load (Options.Camera_Library_Options.Location,
+--          Camera_State_Path);
+--       Camera.States.Set_State (Make_Camera_ID (
+--          Configuration_Camera_State.Video_Address.all),
+--          State'unchecked_access);
+--
+--       Log_Here (Debug or Trace_Set_Up_Tear_Down,
+--          " video port#" & Configuration_Camera_State.Video_Port'img);
+--       Setup.Load (Configuration_Camera_State.all, Test_Setup);
+--       Camera_Info.Camera_Options.Camera_Address :=
+--          Configuration_Camera_State.Video_Address;
+--       Camera_Info.Camera_Options.Camera_ID := Make_Camera_ID (
+--          Camera_Info.Camera_Options.Camera_Address.all);
+--       Camera_Info.Camera_Options.Port_Number :=
+--          Configuration_Camera_State.Video_Port;
+--
+--       Camera_Info.Camera.Initialize_Standard_Preset_IDs;
+      end;
       Log_Out (Debug or Trace_Set_Up_Tear_Down);
    end Load_Test_State;
 
@@ -286,7 +297,6 @@ return Null_Camera_ID;
          Put_Line ("      b               Base Command_Tests");
          Put_Line ("      B               Base Test");
          Put_Line ("      c               Widgets.Control unit_test trace");
-         Put_Line ("      C               Widgets.Configured unit test trace");
          Put_Line ("      d               Camera.Lib.Unit_Test.Debug");
          Put_Line ("      m               main unit test trace");
          Put_Line ("      o               unit_test options");
@@ -295,7 +305,9 @@ return Null_Camera_ID;
          Put_Line ("      s               Configuration.Camera.State unit_test options");
          Put_Line ("      S               Configuration.Camera.Setup unit_test options");
          Put_Line ("      t               unit_test trace");
-         Put_Line ("      @c              Camera Command trace");
+         Put_Line ("      "
+                           & Ada_Lib.Help.Trace_Modifiers &
+                         "c              Camera Command trace");
          New_Line;
 
       end case;
@@ -411,14 +423,13 @@ procedure Setup_Camera (
       Load_State     : in     Boolean;
       Brand          : in     Standard.Camera.Brand_Type;
       Camera_Info    : in out Camera_Info_Type;
-      Setup          : in out Configuration.Camera.Setup.Setup_Type) is
---    State          : in out Configuration.Camera.State.State_Type) is
+      Setup          : in out Configuration.Camera.Setup.Setup_Type;
+      Camera_State   : in out State.State_Type) is
 ---------------------------------------------------------------
 
    begin
       Log_In (Debug or Trace_Set_Up_Tear_Down, "load state " & Load_State'img &
-         " brand " & Brand'img &
-         " location " & Camera_Info.Camera_Options.Location'img);
+         " brand " & Brand'img);
 
       case Brand is
 
@@ -435,7 +446,7 @@ procedure Setup_Camera (
       end case;
 
       if Load_State then
-         Load_Test_State (Camera_Info, Setup); -- , State);
+         Load_Test_State (Camera_State, Camera_Info, Setup);
       else
          pragma Assert (Camera_Info.Camera_Options.Camera_Address /= Null,
             "Camera_Address not initialized");
@@ -445,7 +456,10 @@ procedure Setup_Camera (
          Camera_Info.Camera.Open (
             Camera_Info.Camera_Options.Camera_Address.all, Camera_Info.Camera_Options.Port_Number);
       end if;
-      Log_Out(Debug or Trace_Set_Up_Tear_Down);
+      Log_Out(Debug or Trace_Set_Up_Tear_Down, (if Load_State then
+            "location " & Camera_Info.Camera_Options.Location'img
+         else
+            "state not loaded"));
    end Setup_Camera;
 
    ---------------------------------------------------------------
@@ -456,7 +470,6 @@ procedure Setup_Camera (
 
    begin
       Log_In (Debug or Trace_Set_Up_Tear_Down, "load state " & Test.Load_State'img);
-      States.Allocate_Connection_Data (Test.State.Get_Camera_ID);
       Ada_Lib.GNOGA.Unit_Test.GNOGA_Tests_Type (Test).Set_Up;
       Log_Out (Debug or Trace_Set_Up_Tear_Down);
 
@@ -483,7 +496,7 @@ procedure Setup_Camera (
          " brand " & Test.Brand'img);
       if Test.Load_State then
          Setup_Camera (Test.Load_State, Test.Brand, Test.Camera_Info,
-            Test.Setup); -- , Allocate_Camera_State (Test.Get_Camera_ID));
+            Test.Configuration_Setup, Test.Camera_State);
       end if;
 
       Ada_Lib.Unit_Test.Test_Cases.Test_Case_Type (Test).Set_Up;
@@ -495,6 +508,7 @@ procedure Setup_Camera (
         Test.Set_Up_Exception (Fault);
    end Set_Up;
 
+   ---------------------------------------------------------------
    overriding
    procedure Set_Up (
       Test                       : in out With_Camera_With_GNOGA_Test_Type) is
@@ -507,8 +521,9 @@ procedure Setup_Camera (
          " Initialize_GNOGA " & Test.Initialize_GNOGA'img);
 
       if Test.Load_State then
+         Test.Camera_State.Allocate;
          Setup_Camera (Test.Load_State, Test.Brand, Test.Camera_Info,
-            Test.Setup); --, Test.State);
+            Test.Configuration_Setup, Test.Camera_State);
       end if;
 
       if not Test.Initialize_GNOGA then
@@ -542,20 +557,27 @@ procedure Setup_Camera (
       Test                       : in out Camera_Lib_GNOGA_Test_Type) is
    ---------------------------------------------------------------
 
-      State                      : Configuration.Camera.State.State_Type renames
-                                    Test.State;
+      Camera_State               : Camera.State.State_Type renames
+                                    Test.Camera_State;
    begin
       Log_In (Debug or Trace_Set_Up_Tear_Down);
 
-      if State.Is_Loaded then
-         State.Unload;
+      if Camera_State.Has_Configuration_State then
+         declare
+            Configuration_State  : Configuration.Camera.State.State_Access :=
+                                    Camera_State.Get_Configuration_State;
+         begin
+            if Configuration_State.Is_Loaded then
+               Configuration_State.Unload;
+               Configuration_State.Clear_Global_Camera_State;
+            end if;
+         end;
       end if;
 
       Gnoga.Application.Multi_Connect.End_Application;
       delay 0.2;
 
       Ada_Lib.Test_States.Clear_Window_Connection_Data (Test.Main_Window);
-      State.Clear_Global_Camera_State;
       Ada_Lib.Unit_Test.Test_Cases.Test_Case_Type (Test).Tear_Down;
       Log_Out (Debug or Trace_Set_Up_Tear_Down);
 
@@ -583,13 +605,13 @@ procedure Setup_Camera (
             Test.Camera_Info.Camera := Null; -- needs so test can be rerun
          end if;
 
-         if Test.Setup.Is_Loaded then
+         if Test.Configuration_Setup.Is_Loaded then
             Log_Here (Debug);
-            Test.Setup.Unload (Test.State.all, False);
+            Test.Configuration_Setup.Unload (Test.Configuration_State, False);
          end if;
-         if Test.State.Is_Loaded then
+         if Test.Configuration_State.Is_Loaded then
             Log_Here (Debug);
-            Test.State.Unload;
+            Test.Configuration_State.Unload;
          end if;
 
          Log_Here (Debug);
@@ -608,8 +630,8 @@ procedure Setup_Camera (
 
       end;
       Log_Here (Debug);
-      if Test.State.Has_Camera_ID then
-         Test.State.Clear_Global_Camera_State;
+      if Test.Configuration_State.Has_Camera_ID then
+         Test.Configuration_State.Clear_Global_Camera_State;
       end if;
       Log_Out (Debug or Trace_Set_Up_Tear_Down);
    end Tear_Down;
@@ -641,10 +663,11 @@ procedure Setup_Camera (
                      Camera_Commands_Debug := True;
                      Camera.Lib.Base.Command_Tests.Debug := True;
                      Camera.Lib.Base.Test.Debug := True;
-                     Configuration.Camera.Setup.Unit_Tests.Debug := True;
-                     Configuration.Camera.State.Unit_Tests.Debug := True;
-                     Camera.Lib.Options.Unit_Test.Camera_Lib_Unit_Test.
-                        Debug := True;
+                     Camera.Lib.Options.Unit_Test.
+                        Camera_Lib_Unit_Test.Configuration_Setup_Debug := True;
+                     Camera.Lib.Options.Unit_Test.
+                        Camera_Lib_Unit_Test.Configuration_State_Debug := True;
+                     Debug := True;
                      Debug_Options := True;
                      Camera.Lib.Options.Unit_Test.
                         Camera_Main_Unit_Test.Debug := True;
@@ -666,12 +689,12 @@ procedure Setup_Camera (
                   when 'c' =>
                      Widgets.Control.Unit_Test.Debug := True;
 
---                when 'C' =>
---                   Widgets.Configured.Unit_Test.Debug := True;
+                  when 'C' =>
+                     Camera.Lib.Options.Unit_Test.
+                        Camera_Lib_Unit_Test.Configuration_Setup_Debug := True;
 
                   when 'd' =>
-                     Camera.Lib.Options.Unit_Test.Camera_Lib_Unit_Test.
-                        Debug := True;
+                     Debug := True;
 
                   when 'm' =>    -- Main unit tests
                      Camera.Lib.Options.Unit_Test.Camera_Main_Unit_Test.
@@ -687,10 +710,12 @@ procedure Setup_Camera (
                      Camera.Command_Queue.Debug := True;
 
                   when 's' =>
-                     Configuration.Camera.State.Unit_Tests.Debug := True;
+                     Camera.Lib.Options.Unit_Test.Camera_Lib_Unit_Test.
+                        Configuration_State_Debug := True;
 
                   when 'S' =>
-                     Configuration.Camera.Setup.Unit_Tests.Debug := True;
+                     Camera.Lib.Options.Unit_Test.Camera_Lib_Unit_Test.
+                        Configuration_Setup_Debug := True;
 
                   when 't' =>
                      Debug := True;
@@ -732,3 +757,4 @@ begin
    Log_Here (Debug or Trace_Options);
 -- Options := Protected_Options'access;
 end Camera.Lib.Unit_Test;
+

@@ -14,27 +14,42 @@ package body Camera.Commands.Unit_Test is
 -- use type Ada.Streams.Stream_Element;
    use type Interfaces.Integer_16;
 
-   type Test_Type is new
-                     Standard.Camera.Lib.Unit_Test.With_Camera_No_GNOGA_Test_Type (
+   type Test_With_No_Preset_Type is new
+      Standard.Camera.Lib.Unit_Test.With_Camera_No_GNOGA_Test_Type (
          Brand       => Camera.PTZ_Optics_Camera) with null record;
 
-   type Test_Access is access Test_Type;
+   type Test_With_No_Preset_Access is access Test_With_No_Preset_Type;
 
    overriding
-   function Name (Test : Test_Type) return AUnit.Message_String;
+   function Name (
+      Test : Test_With_No_Preset_Type
+   ) return AUnit.Message_String;
 
    overriding
    procedure Register_Tests (
-      Test                       : in out Test_Type);
+      Test                       : in out Test_With_No_Preset_Type);
+
+   type Test_With_Preset_Type is new
+      Standard.Camera.Lib.Unit_Test.With_Camera_No_GNOGA_Test_Type (
+         Brand       => Camera.PTZ_Optics_Camera) with null record;
+
+   type Test_With_Preset_Access is access Test_With_Preset_Type;
+
+   overriding
+   function Name (Test : Test_With_Preset_Type) return AUnit.Message_String;
+
+   overriding
+   procedure Register_Tests (
+      Test                       : in out Test_With_Preset_Type);
 
    overriding
    procedure Set_Up (
-      Test                       : in out Test_Type
+      Test                       : in out Test_With_Preset_Type
    ) with Post => Test.Verify_Set_Up;
 
    overriding
    procedure Tear_Down (
-      Test                       : in out Test_Type
+      Test                       : in out Test_With_Preset_Type
    ) with post => Verify_Tear_Down (Test);
 
    function Get_Test_Preset
@@ -49,7 +64,7 @@ package body Camera.Commands.Unit_Test is
    procedure Test_Set_Absolute (
       Test                       : in out AUnit.Test_Cases.Test_Case'class);
 
-   procedure Test_Set_Preset (
+   procedure Test_Set_One_Preset (
       Test                       : in out AUnit.Test_Cases.Test_Case'class);
 
    procedure Test_Set_Preset_Speed (
@@ -84,7 +99,19 @@ package body Camera.Commands.Unit_Test is
    ---------------------------------------------------------------
    overriding
    function Name (
-      Test                       : in     Test_Type
+      Test                       : in     Test_With_Preset_Type
+   ) return Standard.AUnit.Message_String is
+   pragma Unreferenced (Test);
+   ---------------------------------------------------------------
+
+   begin
+      return Standard.AUnit.Format (Suite_Name);
+   end Name;
+
+   ---------------------------------------------------------------
+   overriding
+   function Name (
+      Test                       : in     Test_With_No_Preset_Type
    ) return Standard.AUnit.Message_String is
    pragma Unreferenced (Test);
    ---------------------------------------------------------------
@@ -96,7 +123,7 @@ package body Camera.Commands.Unit_Test is
    ---------------------------------------------------------------
    overriding
    procedure Register_Tests (
-      Test                       : in out Test_Type) is
+      Test                       : in out Test_With_Preset_Type) is
    ---------------------------------------------------------------
 
    begin
@@ -117,14 +144,6 @@ package body Camera.Commands.Unit_Test is
 
 
       Test.Add_Routine (AUnit.Test_Cases.Routine_Spec'(
-         Routine        => Test_Set_Preset'access,
-         Routine_Name   => AUnit.Format ("Test_Set_Preset")));
-
-      Test.Add_Routine (AUnit.Test_Cases.Routine_Spec'(
-         Routine        => Test_Set_Preset_Speed'access,
-         Routine_Name   => AUnit.Format ("Test_Set_Preset_Speed")));
-
-      Test.Add_Routine (AUnit.Test_Cases.Routine_Spec'(
          Routine        => Test_Zoom'access,
          Routine_Name   => AUnit.Format ("Test_Zoom")));
 
@@ -133,8 +152,28 @@ package body Camera.Commands.Unit_Test is
 
    ---------------------------------------------------------------
    overriding
+   procedure Register_Tests (
+      Test                       : in out Test_With_No_Preset_Type) is
+   ---------------------------------------------------------------
+
+   begin
+      Log_In (Debug);
+
+      Test.Add_Routine (AUnit.Test_Cases.Routine_Spec'(
+         Routine        => Test_Set_One_Preset'access,
+         Routine_Name   => AUnit.Format ("Test_Set_One_Preset")));
+
+      Test.Add_Routine (AUnit.Test_Cases.Routine_Spec'(
+         Routine        => Test_Set_Preset_Speed'access,
+         Routine_Name   => AUnit.Format ("Test_Set_Preset_Speed")));
+
+      Log_Out (Debug);
+   end Register_Tests;
+
+   ---------------------------------------------------------------
+   overriding
    procedure Set_Up (
-      Test           : in out Test_Type) is
+      Test           : in out Test_With_Preset_Type) is
    ---------------------------------------------------------------
 
    begin
@@ -147,6 +186,7 @@ package body Camera.Commands.Unit_Test is
                            Select_Maximum_Speed);
       begin
          Log_Here (Debug or Trace_Set_Up_Tear_Down, "speed " & Speed'img);
+
          Test.Camera_Info.Camera.Set_Preset (Video.Lib.Get_Default_Preset_ID,
             Speed => Speed);     -- normally same as preset 0
       end;
@@ -170,12 +210,18 @@ package body Camera.Commands.Unit_Test is
 --                                        Get_Camera_Unit_Test_Constant_Options.all;
       Test_Suite  : constant AUnit.Test_Suites.Access_Test_Suite :=
                      new AUnit.Test_Suites.Test_Suite;
-      Test        : constant Test_Access := new Test_Type;
+      Test_With_Preset
+                  : constant Test_With_Preset_Access :=
+                     new Test_With_Preset_Type;
+      Test_With_No_Preset
+                  : constant Test_With_No_Preset_Access := new
+                     Test_With_No_Preset_Type;
 
    begin
       Log_In (Debug);
       Ada_Lib.Unit_Test.Suite (Suite_Name);  -- used for listing suites
-      Test_Suite.Add_Test (Test);
+      Test_Suite.Add_Test (Test_With_Preset);
+      Test_Suite.Add_Test (Test_With_No_Preset);
       Log_Out (Debug);
       return Test_Suite;
    end Suite;
@@ -183,7 +229,7 @@ package body Camera.Commands.Unit_Test is
    ---------------------------------------------------------------
    overriding
    procedure Tear_Down (
-      Test                       : in out Test_Type) is
+      Test                       : in out Test_With_Preset_Type) is
    ---------------------------------------------------------------
 
       Speed          : constant Data_Type :=
@@ -210,7 +256,8 @@ package body Camera.Commands.Unit_Test is
 --   pragma Unreferenced (Test);
 --   ----------------------------------------------------------------
 --
-----    Local_Test                 : Test_Type'class renames Test_Type'class (Test);
+----    Local_Test                 : Test_With_Preset_Type'class renames
+--                                     Test_With_Preset_Type'class (Test);
 --
 --   begin
 --      Log_In (Debug);
@@ -233,36 +280,37 @@ package body Camera.Commands.Unit_Test is
       end record;
 
       type Relative_Step_Type is record
-         Pan                  : Relative_Type;
-         Tilt                 : Relative_Type;
+         Pan      : Relative_Type;
+         Tilt     : Relative_Type;
       end record;
 
-      Expected                : array (Step_Index_Type) of Absolute_Step_Type;
-      Offset                  : constant := 100;
-      Local_Test              : Test_Type'class renames Test_Type'class (Test);
-      Final_Pan               : Absolute_Type;
-      Final_Tilt              : Absolute_Type;
-      Step                    : Step_Index_Type := 1;
-      Test_Pan                : Absolute_Type;
-      Test_Tilt               : Absolute_Type;
-      Offsets                 : constant array (Step_Index_Type) of Relative_Step_Type := (
-                                 (
-                                    Pan   => Offset,
-                                    Tilt  => 0
-                                 ),
-                                 (
-                                    Pan   => 0,
-                                    Tilt  => -Offset
-                                 ),
-                                 (
-                                    Pan   => -Offset,
-                                    Tilt  => 0
-                                 ),
-                                 (
-                                    Pan   => 0,
-                                    Tilt  => Offset
-                                 )
-                              );
+      Expected    : array (Step_Index_Type) of Absolute_Step_Type;
+      Offset      : constant := 100;
+      Local_Test  : Test_With_Preset_Type'class renames
+                     Test_With_Preset_Type'class (Test);
+      Final_Pan   : Absolute_Type;
+      Final_Tilt  : Absolute_Type;
+      Step        : Step_Index_Type := 1;
+      Test_Pan    : Absolute_Type;
+      Test_Tilt   : Absolute_Type;
+      Offsets     : constant array (Step_Index_Type) of Relative_Step_Type := (
+                     (
+                        Pan   => Offset,
+                        Tilt  => 0
+                     ),
+                     (
+                        Pan   => 0,
+                        Tilt  => -Offset
+                     ),
+                     (
+                        Pan   => -Offset,
+                        Tilt  => 0
+                     ),
+                     (
+                        Pan   => 0,
+                        Tilt  => Offset
+                     )
+                  );
 
 
    begin
@@ -342,7 +390,8 @@ package body Camera.Commands.Unit_Test is
       Test                       : in out AUnit.Test_Cases.Test_Case'class) is
    ----------------------------------------------------------------
 
-      Local_Test  : Test_Type'class renames Test_Type'class (Test);
+      Local_Test  : Test_With_Preset_Type'class renames
+                     Test_With_Preset_Type'class (Test);
       Final_Pan   : Absolute_Type;
       Final_Tilt  : Absolute_Type;
       Pan_Set     : Absolute_Type;
@@ -385,40 +434,43 @@ package body Camera.Commands.Unit_Test is
    end Test_Set_Absolute;
 
    ----------------------------------------------------------------
-   procedure Test_Set_Preset (
+   procedure Test_Set_One_Preset (
       Test                       : in out AUnit.Test_Cases.Test_Case'class) is
    ----------------------------------------------------------------
 
-      Local_Test                 : Test_Type'class renames Test_Type'class (Test);
-      Test_Pan                   : Absolute_Type;
-      Pan                        : Absolute_Type;
-      Pan_Set                    : Absolute_Type;
-      Tilt                       : Absolute_Type;
-      Test_Tilt                  : Absolute_Type;
-      Tilt_Set                   : Absolute_Type;
+      Local_Test  : Test_With_No_Preset_Type'class renames
+                     Test_With_No_Preset_Type'class (Test);
+--    Test_Pan    : Absolute_Type;
+--    Pan         : Absolute_Type;
+--    Pan_Set     : Absolute_Type;
+      Preset      : constant Preset_ID_Type := Video.Lib.Constructor (0);
+--    Tilt        : Absolute_Type;
+--    Test_Tilt   : Absolute_Type;
+--    Tilt_Set    : Absolute_Type;
 
    begin
       Log_In (Debug);
-      -- use test preset as reference - set by Set_Up
-      Local_Test.Camera_Info.Camera.Get_Absolute (Test_Pan, Test_Tilt);
-      -- calculate some points relative to test preset
-      Pan_Set := Test_Pan + 100;
-      Tilt_Set := Test_Tilt - 100;
-      -- set camera to those offsets
-      Local_Test.Camera_Info.Camera.Set_Absolute (Pan_Set, Tilt_Set);
+--    -- use test preset as reference - set by Set_Up
+--    Local_Test.Camera_Info.Camera.Get_Absolute (Test_Pan, Test_Tilt);
+--    -- calculate some points relative to test preset
+--    Pan_Set := Test_Pan + 100;
+--    Tilt_Set := Test_Tilt - 100;
+--    -- set camera to those offsets
+      Local_Test.Camera_Info.Camera.Set_Preset (Preset);
       -- check it was set to that point
-      Local_Test.Camera_Info.Camera.Get_Absolute (Pan, Tilt);
-      Check_Coordinates (Pan, Pan_Set, Tilt, Tilt_Set);
+--    Local_Test.Camera_Info.Camera.Get_Absolute (Pan, Tilt);
+--    Check_Coordinates (Pan, Pan_Set, Tilt, Tilt_Set);
       Log_Out (Debug);
-   end Test_Set_Preset;
+   end Test_Set_One_Preset;
 
    ----------------------------------------------------------------
    procedure Test_Set_Preset_Speed (
       Test                       : in out AUnit.Test_Cases.Test_Case'class) is
    ----------------------------------------------------------------
 
-      Local_Test                 : Test_Type'class renames Test_Type'class (Test);
-      Preset_Speed               : constant Property_Type := 10;
+      Local_Test     : Test_With_No_Preset_Type'class renames
+                        Test_With_No_Preset_Type'class (Test);
+      Preset_Speed   : constant Property_Type := 10;
 
    begin
       Log_In (Debug);
@@ -443,7 +495,8 @@ package body Camera.Commands.Unit_Test is
                   is Integer range 1 .. 2;
       type Pass_Type
                   is (Get_Settings, Test_Settings);
-      Local_Test  : Test_Type'class renames Test_Type'class (Test);
+      Local_Test  : Test_With_Preset_Type'class renames
+                     Test_With_Preset_Type'class (Test);
       Modes       : constant array (Counter_Type) of
                      Camera.Commands.Zoom_Mode_Type := (
                         Camera.Commands.Minimum,

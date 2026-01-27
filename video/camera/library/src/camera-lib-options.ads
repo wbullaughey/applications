@@ -75,19 +75,27 @@ package Camera.Lib.Options is
 --               not Have_Options;
 
    package Camera_Options is
+      AUnit_Debug                : Boolean := False;
+      Base_Debug                 : Boolean := False;
+      Base_Lib_Debug             : Boolean := False;
+      Camera_Debug               : Boolean := False;
       Commands_Debug             : Boolean := False;
-      Configuration_State_Debug  : Boolean := False;
+      Library_Debug              : Boolean := False;
+      Hex_Debug                  : Boolean := False;
       Main_Debug                 : Boolean := False;
       Options_Debug              : Boolean := False;
+      State_Debug                : Boolean := False;
+      States_Debug               : Boolean := False;
    end Camera_Options;
 
 -- package Camera_Main is
 --    Debug                      : Boolean := False;
 -- end Camera_Main;
 --
--- package Configuration_Camera_State is
---    Debug                      : aliased Boolean := False;
--- end Configuration_Camera_State;
+   package Configuration_Options is
+      Setup_Debug                : aliased Boolean := False;
+      State_Debug                : aliased Boolean := False;
+   end Configuration_Options;
 private
 
 -- overriding

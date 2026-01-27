@@ -154,8 +154,7 @@ package Configuration.Camera.Setup is
       Setup                      : in out Setup_Type;
       State                      : in     Configuration.Camera.State.State_Type'class;
       Save_Changes               : in     Boolean
-   ) with Pre => State.Is_Loaded and then
-                 Setup.Is_Loaded;
+   ) with Pre => Setup.Is_Loaded;
 
    procedure Update_Configuration (
       Setup                      : in out Setup_Type;
@@ -178,7 +177,6 @@ package Configuration.Camera.Setup is
       State                      : in     Configuration.Camera.State.State_Type'class
    ) with Pre => State.Is_Loaded;
 
-   Debug                         : Boolean := False;
    Default_Setup                 : constant String := "setup.cfg";
 
    Global_Camera_Setup           : Setup_Access := Null;

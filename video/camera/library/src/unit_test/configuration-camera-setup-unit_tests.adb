@@ -6,6 +6,7 @@ with Ada_Lib.Trace; use Ada_Lib.Trace;
 with Ada_Lib.Unit_Test;
 with AUnit.Assertions; use AUnit.Assertions;
 with AUnit.Test_Cases;
+with Camera.Lib.Options.Unit_Test;
 with Camera.Lib.Unit_Test;
 with Video_Lib;
 
@@ -36,8 +37,7 @@ package body Configuration.Camera.Setup.Unit_Tests is
    ) with Post => Test.Verify_Set_Up;
 
    type Configuration_Tests_Type is new Standard.Camera.Lib.
-                                    Unit_Test.With_Camera_No_GNOGA_Test_Type with
-                                       null record;
+         Unit_Test.With_Camera_No_GNOGA_Test_Type with null record;
 
    type Configuration_Tests_Access is access Configuration_Tests_Type;
 
@@ -69,6 +69,9 @@ package body Configuration.Camera.Setup.Unit_Tests is
       Test                       : in out AUnit.Test_Cases.Test_Case'class);
 
 -- Camera_Description            : aliased constant String := "test camera";
+   Debug    : Boolean renames Standard.Camera.Lib.Options.Unit_Test.
+               Camera_Lib_Unit_Test.Configuration_Setup_Debug;
+
    Suite_Name                    : constant String := "Setup";
 
 -- Test_Setup               : constant String :=
@@ -201,9 +204,6 @@ package body Configuration.Camera.Setup.Unit_Tests is
       Test                       : in out AUnit.Test_Cases.Test_Case'class) is
    ---------------------------------------------------------------
 
---    Connection_Data            : Base.Connection_Data_Type renames
---                                  Base.Connection_Data_Type (
---                                     Ada_Lib.Test_States/Get_Window_Connection_Data.all);
       Local_Test                 : Configuration_Load_Test_Type renames
                                     Configuration_Load_Test_Type (Test);
       Options                    : Standard.Camera.Lib.Unit_Test.
@@ -219,10 +219,10 @@ package body Configuration.Camera.Setup.Unit_Tests is
          Load_State  => True,
          Brand       => Options.Camera_Library_Options.Camera_Options.Brand,
          Camera_Info => Local_Test.Camera_Info,
-         Setup       => Local_Test.Setup);
---       State       => Local_Test.State);
+         Setup       => Local_Test.Configuration_Setup,
+         Camera_State=> Local_Test.Camera_State);
 --    Standard.Camera.Lib.Unit_Test.Load_Test_State (
---       Local_Test.Camera_Info, Local_Test.Setup, Local_Test.State);
+--       Local_Test.Camera_Info, Local_Test.Configuration_Setup, Local_Test.State);
 --    Local_Test.Camera_Info.Camera.Open (State.Video_Address.all, Local_Test.Port_Number);
       Log_Out (Debug);
 
@@ -260,16 +260,16 @@ package body Configuration.Camera.Setup.Unit_Tests is
    begin
       Log_In (Debug);
       if Debug then
-         Local_Test.Setup.Get_Configuration (Configuration_ID).Dump ("configuration");
-         Local_Test.Setup.Get_Preset (Preset_ID).Dump ("preset");
+         Local_Test.Configuration_Setup.Get_Configuration (Configuration_ID).Dump ("configuration");
+         Local_Test.Configuration_Setup.Get_Preset (Preset_ID).Dump ("preset");
       end if;
-      Updated_Setup := Local_Test.Setup;
+      Updated_Setup := Local_Test.Configuration_Setup;
       Updated_Setup.Set_Path (Update_Setup);
       Updated_Setup.Update_Configuration (Configuration_ID, New_Label);
          -- sets  "New Label" for configuration 3
       Updated_Setup.Update_Configuration (Configuration_ID, New_Preset_ID);
       Updated_Setup.Update_Preset (New_Preset_ID, New_Row, New_Column);
-      Updated_Setup.Update (Local_Test.State.all);
+      Updated_Setup.Update (Local_Test.Configuration_State);
       if Debug then
          Updated_Setup.Get_Configuration (Configuration_ID).Dump;
          Updated_Setup.Get_Preset (New_Preset_ID).Dump;
@@ -281,10 +281,10 @@ package body Configuration.Camera.Setup.Unit_Tests is
          New_Preset_ID'img & " deos not exist");
       declare
          New_Configuration       : constant Configuration_Type'class :=
-                                    Local_Test.Setup.Get_Configuration (
+                                    Local_Test.Configuration_Setup.Get_Configuration (
                                        Configuration_ID);
          New_Preset              : constant Preset_Type'class :=
-                                    Local_Test.Setup.Get_Preset (New_Preset_ID);
+                                    Local_Test.Configuration_Setup.Get_Preset (New_Preset_ID);
       begin
          Assert (New_Configuration.Label.Coerce = New_Label,
             Quote ("configuration label has the wrong value. Got ",
@@ -324,10 +324,10 @@ package body Configuration.Camera.Setup.Unit_Tests is
 
       Local_Test              : Configuration_Tests_Type renames
                                  Configuration_Tests_Type (Test);
-      State                   : Configuration.Camera.State.State_Type'class
-                                 renames Local_Test.State.all;
+      Configuration_State     : Configuration.Camera.State.State_Type
+                                 renames Local_Test.Configuration_State;
       Number_Configurations   : constant Configuration_ID_Type :=
-                                    State.Get_Number_Configurations;
+                                    Configuration_State.Get_Number_Configurations;
    begin
       Log_In (Debug, "Number_Configurations" & Number_Configurations'img);
 
@@ -394,10 +394,10 @@ package body Configuration.Camera.Setup.Unit_Tests is
       begin
          declare
             Number_Columns          : constant Column_Type :=
-                                       State.Get_Number_Columns;
+                                       Configuration_State.Get_Number_Columns;
             Last_Preset             : constant Standard.Camera.Preset_ID_Type :=
                                        Video.Lib.Get_Last_Preset_ID;
-            Number_Rows             : constant Row_Type := State.Get_Number_Rows;
+            Number_Rows             : constant Row_Type := Configuration_State.Get_Number_Rows;
 
          begin
             Log_Here (Debug,
@@ -431,7 +431,7 @@ package body Configuration.Camera.Setup.Unit_Tests is
                Log_Here (Debug, "Configuration_ID" & Configuration_ID'img);
                declare
                   Configuration     : constant Configuration_Type'class :=
-                                       Local_Test.Setup.Get_Configuration (Configuration_ID);
+                                       Local_Test.Configuration_Setup.Get_Configuration (Configuration_ID);
                   Expected          : constant Configuration_Type'class :=
                                        Expected_Configurations (Configuration_ID);
                begin
@@ -467,11 +467,11 @@ package body Configuration.Camera.Setup.Unit_Tests is
                      declare
                         Row_Column_Preset_Id
                                           : constant Standard.Camera.Preset_ID_Type :=
-                                             Local_Test.Setup.Get_Preset_ID (
+                                             Local_Test.Configuration_Setup.Get_Preset_ID (
                                                 Expected_Preset_Value.Row,
                                                 Expected_Preset_Value.Column);
                         Preset_By_Preset  : constant Preset_Type'class :=
-                                             Local_Test.Setup.Get_Preset (Row_Column_Preset_Id);
+                                             Local_Test.Configuration_Setup.Get_Preset (Row_Column_Preset_Id);
                         Preset_ID         : constant Video.Lib.Preset_ID_Type :=
                                              Video.Lib.Constructor (Preset_Number);
 
@@ -512,7 +512,7 @@ package body Configuration.Camera.Setup.Unit_Tests is
 
                         Preset_By_Row_Column
                                     : constant Preset_Type'class :=
-                                       Local_Test.Setup.Get_Preset (Row_Column_Preset_Id);
+                                       Local_Test.Configuration_Setup.Get_Preset (Row_Column_Preset_Id);
                      begin
                         Log_Here (Debug, "preset" & Preset_Number'img &
                            " by row column " & Preset_Image (Preset_By_Row_Column));

@@ -6,6 +6,7 @@ with Ada_Lib.Unit_Test.Test_Cases;
 with AUnit.Simple_Test_Cases;
 with AUnit.Test_Suites;
 with Camera.Commands;
+with Camera.State;
 with Camera.States;
 with Configuration.Camera.Setup;
 with Configuration.Camera.State;
@@ -33,13 +34,14 @@ package Camera.Lib.Unit_Test is
    end record;
 
    procedure Load_Test_State (
+      Camera_State      : in out Camera.State.State_Type;
       Camera_Info       : in out Camera_Info_Type;
       Setup             : in out Configuration.Camera.Setup.Setup_Type
 --    State             : in out Configuration.Camera.State.State_Type
    ) with  -- Pre  => Camera_Info.Camera /= Null,
           Post => Camera_Info.Camera_Options.Camera_Address /= Null and then
                   Camera_Info.Camera_Options.Port_Number /= Video.Lib.Port_Type'last and then
-                  Camera.States.Has_Camera_State (Camera_ID (
+                  Camera.States.Has_Camera_State (Make_Camera_ID (
                      Camera_Info.Camera_Options.Camera_Address.all)) and then
                   Setup.Is_Loaded;
 
@@ -47,12 +49,13 @@ package Camera.Lib.Unit_Test is
    type With_Camera_No_GNOGA_Test_Type (
       Brand             : Brand_Type
    ) is abstract new Ada_Lib.Unit_Test.Test_Cases.Test_Case_Type with record
-      Camera_Info       : Camera_Info_Type;
-      Load_State        : Boolean := True;
-      Setup             : Configuration.Camera.Setup.Setup_Type;
-      Setup_Path        : access constant String := Null;
-      State             : Configuration.Camera.State.State_Class_Access;
-      State_Path        : access constant String := Null;
+      Camera_Info          : Camera_Info_Type;
+      Camera_State         : State.State_Type;
+      Configuration_Setup  : Configuration.Camera.Setup.Setup_Type;
+      Configuration_State  : Configuration.Camera.State.State_Type;
+      Load_State           : Boolean := True;
+      Setup_Path           : access constant String := Null;
+      State_Path           : access constant String := Null;
    end record;
 
    type With_Camera_No_GNOGA_Test_Access
@@ -86,11 +89,11 @@ package Camera.Lib.Unit_Test is
    procedure Set_Up (
       Test                       : in out With_Camera_No_GNOGA_Test_Type
    ) with Pre  => not Test.Have_Camera and then
-                  not Test.Setup.Is_Loaded,
+                  not Test.Configuration_Setup.Is_Loaded,
           Post => Test.Verify_Set_Up and then
                   ( if Test.Load_State then
                         Test.Have_Camera and then
-                        Test.Setup.Is_Loaded
+                        Test.Configuration_Setup.Is_Loaded
                      else
                         True);
    overriding
@@ -99,12 +102,14 @@ package Camera.Lib.Unit_Test is
    ) with Post => Test.Verify_Tear_Down;
 
    type Camera_Lib_GNOGA_Test_Type (
-      Initialize_GNOGA  : Boolean) is abstract new
-                           Ada_Lib.GNOGA.Unit_Test.GNOGA_Tests_Type (
-                              Initialize_GNOGA  => Initialize_GNOGA,
-                              Test_Driver       => False) with record
-      Load_State        : Boolean := True;
-      State             : aliased Configuration.Camera.State.State_Type;
+      Initialize_GNOGA     : Boolean) is abstract new
+                              Ada_Lib.GNOGA.Unit_Test.GNOGA_Tests_Type (
+                                 Initialize_GNOGA  => Initialize_GNOGA,
+                                 Test_Driver       => False) with record
+      Camera_State         : aliased State.State_Type;
+      Configuration_Setup  : Configuration.Camera.Setup.Setup_Type;
+      Configuration_State  : Configuration.Camera.State.State_Type;
+      Load_State           : Boolean := True;
    end record;
 
    overriding
@@ -142,7 +147,8 @@ package Camera.Lib.Unit_Test is
 
    -- allocated options for unit test of camera library
    type Unit_Test_Program_Options_Type is new
-      Ada_Lib.Options.AUnit_Lib.Aunit_Program_Options_Type (
+      Options.Program_Options_Type with record
+      AUnit_Options  : Ada_Lib.Options.AUnit_Lib.Aunit_Program_Options_Type
          Multi_Test           => False,
          Options_Selection    => Ada_Lib.Options.AUnit_Lib.
                                     Not_Ada_Lib_Unit_Test) with record
@@ -201,8 +207,8 @@ package Camera.Lib.Unit_Test is
       Load_State     : in     Boolean;
       Brand          : in     Standard.Camera.Brand_Type;
       Camera_Info    : in out Camera_Info_Type;
-      Setup          : in out Configuration.Camera.Setup.Setup_Type);
---    State          : in out Configuration.Camera.State.State_Type);
+      Setup          : in out Configuration.Camera.Setup.Setup_Type;
+      Camera_State   : in out State.State_Type);
 
    Camera_Commands_Debug         : Boolean := False;
    Unit_Test_Options             : Unit_Test_Options_Constant_Class_Access := Null;

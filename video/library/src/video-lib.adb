@@ -16,14 +16,17 @@ pragma Elaborate (Ada_Lib.Parser);
 
 package body Video.Lib is
 
+   use type Ada_Lib.Options.Flag_List_Type;
    use type Index_Type;
 
    Debug_Option                  : constant Character := 'V';
-   Debug                         : Boolean := False;
+   Debug                         : Boolean renames Video_Options.Library_Debug;
    Options_With_Parameters       : aliased constant
                                     Ada_Lib.Options.Flag_List_Type :=
-                                       Ada_Lib.Options.Create.Create_Multiple (
-                                          "dV", Ada_Lib.Options.Unmodified_Flag);
+                                       Ada_Lib.Options.Create.Create_One (
+                                          'V', Ada_Lib.Options.Unmodified_Flag) &
+                                       Ada_Lib.Options.Create.Create_One (
+                                          'D', Ada_Lib.Help.Modifier);
    Options_Without_Parameters    : aliased constant
                                     Ada_Lib.Options.Flag_List_Type :=
                                        Ada_Lib.Options.Create.Create_Multiple (
@@ -56,6 +59,7 @@ package body Video.Lib is
    ---------------------------------------------------------------
 
    begin
+      Log_Here (Debug, "ID" & ID'img);
       return (
          ID       => ID,
          Is_Set   => True);
@@ -332,6 +336,7 @@ package body Video.Lib is
          Put_Line (Component & " trace options (-" & Debug_Option & ")");
          Put_Line ("      a               all");
          Put_Line ("      d               Debug_Option");
+         Put_Line ("      s               configuration.state.Debug");
 
       end case;
 
@@ -381,11 +386,14 @@ package body Video.Lib is
          case Trace is
 
             when 'a' =>
-               Debug := True;
-               Debug := True;
+               Video.Lib.Video_Options.Configuration_State_Debug := True;
+               Video.Lib.Video_Options.Library_Debug := True;
+
+            when 'c' =>
+               Video.Lib.Video_Options.Configuration_State_Debug := True;
 
             when 'd' =>
-               Debug := True;
+               Video.Lib.Video_Options.Library_Debug := True;
 
             when others =>
                Options.Bad_Option (Quote (

@@ -21,8 +21,7 @@ package body Configuration.Camera.State.Unit_Tests is
    use type Video.Lib.Preset_ID_Type;
 
    type Configuration_Load_Test_Type is new Standard.Camera.Lib.
-                                    Unit_Test.With_Camera_No_GNOGA_Test_Type with
-                                       null record;
+      Unit_Test.With_Camera_No_GNOGA_Test_Type with null record;
 
    type Configuration_Load_Test_Access is access Configuration_Load_Test_Type;
 
@@ -69,6 +68,8 @@ package body Configuration.Camera.State.Unit_Tests is
 
 -- type Connection_Data_Type     is new GNOGA_Ada_Lib.Connection_Data_Type
 --                                  with null record;
+   Debug                         : Boolean := False;
+
    Suite_Name                    : constant String := "State";
 
    Test_State               : constant String :=
@@ -198,9 +199,6 @@ package body Configuration.Camera.State.Unit_Tests is
 -- pragma Unreferenced (Test);
    ---------------------------------------------------------------
 
---    Connection_Data            : Base.Connection_Data_Type renames
---                                  Base.Connection_Data_Type (
---                                     Ada_Lib.Test_States/Get_Window_Connection_Data.all);
       Local_Test                 : Configuration_Load_Test_Type renames
                                     Configuration_Load_Test_Type (Test);
       Options                    : Standard.Camera.Lib.Unit_Test.
@@ -211,7 +209,8 @@ package body Configuration.Camera.State.Unit_Tests is
 --                                  Connection_Data.State;
    begin
       Log_In (Debug);
-      Local_Test.State.Load (Options.Camera_Library_Options.Location, Test_State);
+      Local_Test.Configuration_State.Load (
+         Options.Camera_Library_Options.Location, Test_State);
       Log_Out (Debug);
 
    exception
@@ -245,47 +244,48 @@ package body Configuration.Camera.State.Unit_Tests is
                                              Expected_Number_Columns) of
                                        Ada_Lib.Strings.String_Access;
 
-            Expected_Images         : constant Expect_Image_Type :=
-                                       Expect_Image_Type'[
-                                          1 => [
-                                             1 => new String'("preset_0.png"),
-                                             2 => new String'("preset_5.png"),
-                                             others => Null],
-                                          2 => [
-                                             2 => new String'("preset_2.png"),
-                                             others => Null],
-                                          3 => [
-                                             2 => new String'("preset_4.png"),
-                                             3 => new String'("preset_1.png"),
-                                             others => Null],
-                                          4 => [
-                                             2 => new String'("preset_3.png"),
-                                             others => Null]];
+            Expected_Images   : constant Expect_Image_Type :=
+                                 Expect_Image_Type'[
+                                    1 => [
+                                       1 => new String'("preset_0.png"),
+                                       2 => new String'("preset_5.png"),
+                                       others => Null],
+                                    2 => [
+                                       2 => new String'("preset_2.png"),
+                                       others => Null],
+                                    3 => [
+                                       2 => new String'("preset_4.png"),
+                                       3 => new String'("preset_1.png"),
+                                       others => Null],
+                                    4 => [
+                                       2 => new String'("preset_3.png"),
+                                       others => Null]];
 
-            Local_Test              : Configuration_Tests_Type renames
-                                       Configuration_Tests_Type (Test);
-            Options                 : Standard.Camera.Lib.Unit_Test.
-                                       Unit_Test_Program_Options_Type'class
-                                          renames Standard.Camera.Lib.Unit_Test.
-                                             Get_Camera_Unit_Test_Constant_Options.all;
-            State                   : Configuration.Camera.State.State_Type'class
-                                       renames Local_Test.State.all;
+            Local_Test  : Configuration_Tests_Type renames
+                           Configuration_Tests_Type (Test);
+            Options     : Standard.Camera.Lib.Unit_Test.
+                           Unit_Test_Program_Options_Type'class
+                              renames Standard.Camera.Lib.Unit_Test.
+                                 Get_Camera_Unit_Test_Constant_Options.all;
+            Configuration_State
+                              : Configuration.Camera.State.State_Type
+                                 renames Local_Test.Configuration_State;
          begin
-            Log_Here (Debug, "set " & State.Is_Loaded'img & " Number_Columns " &
+            Log_Here (Debug, "set " & Configuration_State.Is_Loaded'img & " Number_Columns " &
                " location " & Options.Camera_Library_Options.Location'img &
-               " address " & Image (State.Get_Number_Columns'address) &
-               " bits " & State.Get_Number_Columns'size'img);
---    Hex_IO.Dump_32 (State.Get_Number_Columns'address, 32, 1, "number columns");
-      --log_here ("test state address " & image (state'address) & " global state " & image (Read_Only_Global_Camera_State.all'address) & " pointer address " & image (Read_Only_Global_Camera_State'address));
+               " address " & Image (Configuration_State.Get_Number_Columns'address) &
+               " bits " & Configuration_State.Get_Number_Columns'size'img);
+--    Hex_IO.Dump_32 (Configuration_State.Get_Number_Columns'address, 32, 1, "number columns");
+      --log_here ("test state address " & image (Configuration_State'address) & " global state " & image (Read_Only_Global_Camera_State.all'address) & " pointer address " & image (Read_Only_Global_Camera_State'address));
 
             declare
                Number_Columns          : constant Column_Type :=
-                                             State.Get_Number_Columns;
+                                             Configuration_State.Get_Number_Columns;
                Number_Configurations   : constant Configuration_ID_Type :=
-                                          State.Get_Number_Configurations;
+                                          Configuration_State.Get_Number_Configurations;
                Last_Preset             : constant Standard.Camera.Preset_ID_Type :=
                                           Video.Lib.Get_Last_Preset_ID;
-               Number_Rows             : constant Row_Type := State.Get_Number_Rows;
+               Number_Rows             : constant Row_Type := Configuration_State.Get_Number_Rows;
 
             begin
                Log_Here (Debug,
@@ -316,7 +316,7 @@ package body Configuration.Camera.State.Unit_Tests is
                for Row in 1 .. Number_Rows loop
                   for Column in 1 .. Number_Columns loop
                      declare
-                        Have_Image     : constant Boolean := State.
+                        Have_Image     : constant Boolean := Configuration_State.
                                           Has_Image (Row, Column);
                         Value          : Ada_Lib.Strings.String_Access renames
                                           Expected_Images (Row, Column);
@@ -326,7 +326,7 @@ package body Configuration.Camera.State.Unit_Tests is
                               Row'img & " column" & Column'img);
                         elsif Have_Image then
                            declare
-                              Image    : constant String := State.
+                              Image    : constant String := Configuration_State.
                                           Image_Path (Row, Column);
                            begin
                               Assert (Image = Value.all,

@@ -23,7 +23,6 @@ with Configuration.Camera;
 with Emulator;
 --with Camera.Main;
 with Camera.Options;
-with Video.Lib.Options;
 with Widgets.Adjust;
 with Widgets.Control;
 with Widgets.Configured;
@@ -38,12 +37,14 @@ package body Camera.Lib is
 -- use type Ada_Lib.Options.Flag_List_Type;
 -- use type Ada_Lib.Options.Interface_Options_Constant_Class_Access;
 
-   Trace_Option                  : constant Character := '2';
-   Trace_Prefix                  : constant Character := Ada_Lib.Help.Modifier;
-   Options_With_Parameters       : aliased constant
-                                    Ada_Lib.Options.Flag_List_Type :=
-                                       Ada_Lib.Options.Create.Create_One (
-                                          Trace_Option, Ada_Lib.Options.Unmodified_Flag);
+   Debug                   : Boolean renames Options.Camera_Options.Library_Debug;
+   Debug_Options           : Boolean renames Options.Camera_Options.Options_Debug;
+   Trace_Option            : constant Character := '2';
+   Trace_Prefix            : constant Character := Ada_Lib.Help.Trace_Modifier;
+   Options_With_Parameters : aliased constant
+                              Ada_Lib.Options.Flag_List_Type :=
+                                 Ada_Lib.Options.Create.Create_One (
+                                    Trace_Option, Ada_Lib.Options.Unmodified_Flag);
 -- Options_Without_Parameters    : aliased constant
 --                                  Ada_Lib.Options.Flag_List_Type :=
 --                                     Ada_Lib.Options.Create_Options (
@@ -292,21 +293,29 @@ package body Camera.Lib is
          Put_Line ("      B               Camera.Lib.Base.debug");
          Put_Line ("      c               camera configuration");
          Put_Line ("      C               camera commands");
+         Put_Line ("      d               camera Debug");
          Put_Line ("      g               Widgets.Generic_Table");
          Put_Line ("      l               camera Library");
          Put_Line ("      L               camera library options");
-         Put_Line ("      m               Main Window");
-         Put_Line ("      s               Trace simulator");
-         Put_Line ("      S               configuration.state.Debug");
-         Put_Line ("      t               Camera.States.Debug");
+         Put_Line ("      m               Camera.Main.Debug");
+         Put_Line ("      s               Camera.State.Debug");
+         Put_Line ("      S               Camera.States.Debug");
 --       Put_Line ("      v               Trace Video communications");
          Put_Line ("      V               Trace Video widgets");
-         Put_Line ("      " & Trace_Prefix & "a              Adjust Window");
-         Put_Line ("      " & Trace_Prefix & "c              Widgets.Control debyg");
-         Put_Line ("      " & Trace_Prefix & "C              Widgets.Configured debug");
-         Put_Line ("      " & Trace_Prefix & "l              List camera commands");
-         Put_Line ("      " & Trace_Prefix & "s              Configuration");
-         Put_Line ("      " & Trace_Prefix & "S              Configuration.Camera.State.Debug");
+         Put_Line ("      " & Trace_Prefix &
+                          "a              Adjust Window");
+         Put_Line ("      " & Trace_Prefix &
+                          "c              Widgets.Control debyg");
+         Put_Line ("      " & Trace_Prefix &
+                          "C              Widgets.Configured debug");
+         Put_Line ("      " & Trace_Prefix &
+                          "l              List camera commands");
+         Put_Line ("      " & Trace_Prefix &
+                          "p              Configuration.Camera.Setup.Debug");
+         Put_Line ("      " & Trace_Prefix &
+                          "s              Configuration");
+         Put_Line ("      " & Trace_Prefix &
+                          "S              Configuration.Camera.State.Debug");
 
       end case;
 
@@ -330,7 +339,8 @@ package body Camera.Lib is
       Log (Trace_Options or Debug_Options, Here, Who & Quote (" Parameter", Parameter));
 
       for Trace of Parameter loop
-         Log_Here (Trace_Options or Debug_Options, Quote ("Trace", Trace));
+         Log_Here (Trace_Options or Debug_Options,
+            "suboptions " & Suboption'img & Quote ("Trace", Trace));
 
          case Suboption is
             when Ada_Lib.Options.Plain =>
@@ -338,38 +348,34 @@ package body Camera.Lib is
                case Trace is
 
                   when 'a' =>
-                     Camera.Base.Debug := True;
-                     Camera.Lib.Base.Debug := True;
                      Camera.Lib.Base.List_Commands := True;
-                     Camera.Lib.Options.
-                        Camera_Options.Configuration_State_Debug := True;
+                     Camera.Lib.Options.Camera_Options.Base_Debug := True;
+                     Camera.Lib.Options.Camera_Options.Base_Lib_Debug := True;
+                     Camera.Lib.Options.Camera_Options.Camera_Debug := True;
                      Camera.Lib.Options.Camera_Options.Commands_Debug := True;
-                     Camera.States.Debug := True;
-                     Configuration.Camera.Debug := True;
+                     Camera.Lib.Options.Camera_Options.State_Debug := True;
+                     Camera.Lib.Options.Camera_Options.States_Debug := True;
                      Configuration.Debug := True;
                      Debug_Options := True;
                      Debug := True;
-                     Emulator.Debug := True;
+--                   Emulator.Debug := True;
                      Options.Lib_Debug := True;
-                     Video.Lib.Options.Video_Options.
-                        Configuration_State_Debug := True;
                      Widgets.Adjust.Debug := True;
                      Widgets.Control.Debug := True;
                      Widgets.Configured.Debug := True;
                      Widgets.Generic_Table.Debug := True;
 
                   when 'b' =>
-                     Camera.Base.Debug := True;
+                     Camera.Lib.Options.Camera_Options.Base_Debug := True;
 
                   when 'B' =>
-                     Camera.Lib.Base.Debug := True;
-
-                  when 'c' =>
-                     Camera.Lib.Options.Camera_Options.
-                        Configuration_State_Debug := True;
+                     Camera.Lib.Options.Camera_Options.Base_Lib_Debug := True;
 
                   when 'C' =>
                      Camera.Lib.Options.Camera_Options.Commands_Debug := True;
+
+                  when 'd' =>
+                     Camera.Lib.Options.Camera_Options.Camera_Debug := True;
 
                   when 'g' =>
                      Widgets.Generic_Table.Debug := True;
@@ -384,13 +390,11 @@ package body Camera.Lib is
                      Camera.Lib.Options.Camera_Options.Main_Debug := True;
 
                   when 's' =>
-                     Emulator.Debug := True;
+                     Camera.Lib.Options.Camera_Options.State_Debug := True;
+--                   Emulator.Debug := True;
 
                   when 'S' =>
-                     Video.Lib.Options.Video_Options.Configuration_State_Debug := True;
-
-                  when 't' =>
-                     Camera.States.Debug := True;
+                     Camera.Lib.Options.Camera_Options.States_Debug := True;
 
 --                when 'u' =>    -- url for camera
 --                   Options.Camera_URL.Construct (Iterator.Get_Parameter);
@@ -424,11 +428,14 @@ package body Camera.Lib is
                   when 'l' =>
                      Camera.Lib.Base.List_Commands := True;
 
+                  when 'p' =>
+                     Lib.Options.Configuration_Options.Setup_Debug := True;
+
                   when 's' =>
-                     Configuration.Debug := True;
+                     Lib.Options.Camera_Options.Camera_Debug := True;
 
                   when 'S' =>
-                     Camera.Lib.Options.Camera_Options.Configuration_State_Debug := True;
+                     Lib.Options.Configuration_Options.State_Debug := True;
 
                   when others =>
                      Options.Bad_Option (Quote (

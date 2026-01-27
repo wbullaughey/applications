@@ -540,7 +540,9 @@ package body Camera.Commands is
 
       if Camera.Current_Speed = 0 or else -- no speed set yet
             Speed /= 0 then               -- requested speed
+log_here;
          if Speed = 0 then                -- use configured speed
+log_here;
             declare
                Speed             : constant Property_Type := Property_Type (
                                     Configuration.Camera.State.Get_Default_Speed);
@@ -550,9 +552,12 @@ package body Camera.Commands is
             end;
          end if;
 
+log_here;
          Camera.Set_Preset_Speed (Update_Speed);
+log_here;
       end if;
 
+log_here;
       Camera.Process_Command (Memory_Recall,
          Options     => ( 1 =>
                (

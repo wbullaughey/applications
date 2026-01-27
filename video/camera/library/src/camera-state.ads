@@ -10,7 +10,7 @@ limited with Configuration.Camera.Setup;
 package Camera.State is
 
    type State_Type                  is tagged private;
-   type State_Access                is access State_Type;
+   type State_Access                is access all State_Type;
    type State_Constant_Access       is access all State_Type;
    type State_Class_Access          is access State_Type'class;
    type State_Constant_Class_Access is access constant State_Type'class;
@@ -44,10 +44,21 @@ package Camera.State is
    function Has_Current_Camera_ID
    return Boolean;
 
-   procedure Load (
-      Location    : in     Video.Lib.Location_Type);
+-- procedure Load (
+--    Location    : in     Video.Lib.Location_Type);
 
-   Debug                   : Boolean := False;
+   procedure Load (
+      State                : in out State_Type;
+      Setup_Name           : in     String;
+      State_Name           : in     String);
+
+   function Resolve_ID (
+      Camera_ID   : Camera_ID_Type
+   ) return Camera_ID_Type;
+
+   procedure Set_Current_Camera_ID (
+      Camera_ID   : in     Camera_ID_Type
+   ) with Pre  => Camera_ID.Is_Set;
 
 private
 
