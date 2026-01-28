@@ -45,9 +45,9 @@ package body Unit_Test is
 --    Test                       : in out AUnit.Test_Cases.Test_Case'class);
 
    type Button_Push_Event_Type   is new Ada_Lib.Timer.Event_Type
-                                    with record
-      Window                     : Gnoga.Gui.Window.Pointer_To_Window_Class;
-   end record;
+                                    with null record;
+--    Window                     : Gnoga.Gui.Window.Pointer_To_Window_Class;
+-- end record;
 
    overriding
    procedure Callback (
@@ -69,8 +69,7 @@ package body Unit_Test is
          Connection_Data
                      : Full_Window_Connection_Class_Access renames
                         Full_Window_Connection_Class_Access (
-                           Ada_Lib.Test_States.Get_Window_Connection_Data (
-                              Event.Window));
+                           Ada_Lib.Test_States.Get_Window_Connection_Data);
          View        : View_Type renames Connection_Data.View;
          Docker      : Docker_Type renames View.Docker;
          Panel       : Panel_Type renames Docker.Panel;
@@ -202,7 +201,7 @@ exception
 
    begin
       Log_In (Debug, "Test_Driver " & Options.Test_Driver'img);
-      Button_Press_Event.Window := Local_Test.Main_Window;
+--    Button_Press_Event.Window := Local_Test.Main_Window;
 
       if not Options.Test_Driver then
          Log_Here (Debug);

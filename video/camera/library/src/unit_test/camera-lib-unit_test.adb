@@ -577,7 +577,7 @@ procedure Setup_Camera (
       Gnoga.Application.Multi_Connect.End_Application;
       delay 0.2;
 
-      Ada_Lib.Test_States.Clear_Window_Connection_Data (Test.Main_Window);
+      Ada_Lib.Test_States.Clear_Window_Connection_Data (Ada_Lib.GNOGA.Window_Lock.Get_Window);
       Ada_Lib.Unit_Test.Test_Cases.Test_Case_Type (Test).Tear_Down;
       Log_Out (Debug or Trace_Set_Up_Tear_Down);
 

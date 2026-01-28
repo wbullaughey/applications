@@ -172,8 +172,7 @@ package body Widgets.Adjust.Unit_Test is
                               Widgets_Adjust_Test_Type (Test);
          Connection_Data   : constant Camera.Main.Window_Connection_Class_Access :=
                               Camera.Main.Window_Connection_Class_Access (
-                                 Ada_Lib.Test_States.Get_Window_Connection_Data (
-                                    Local_Test.Main_Window'unchecked_access));
+                                 Ada_Lib.Test_States.Get_Window_Connection_Data);
          Camera            : Standard.Camera.Commands.Camera_Class_Access renames
                               Connection_Data.Get_Camera;
          Event             : constant Move_Package.Mouse_Move_Event_Access := new
