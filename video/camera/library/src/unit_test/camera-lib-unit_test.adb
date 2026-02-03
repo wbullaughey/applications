@@ -539,7 +539,7 @@ procedure Setup_Camera (
                   Directory            => Camera.Lib.Options.Current_Directory,
                   Port                 => Options.GNOGA_Options.HTTP_Port,
                   Verbose              => True,
-                  Wait_For_Completion  => False);
+                  Wait_For_Message_Loop_Exit  => False);
             end;
          end if;
 

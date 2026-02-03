@@ -69,7 +69,7 @@ package body Unit_Test is
          Connection_Data
                      : Full_Window_Connection_Class_Access renames
                         Full_Window_Connection_Class_Access (
-                           Ada_Lib.Test_States.Get_Window_Connection_Data (
+                           Ada_Lib.GNOGA.Get_Window_Connection_Data (
                               Event.Window));
          View        : View_Type renames Connection_Data.View;
          Docker      : Docker_Type renames View.Docker;
@@ -221,7 +221,7 @@ exception
 --          Directory            => Camera.Lib.Options.Current_Directory,
 --          Port                 => Options.GNOGA_Options.HTTP_Port,
 --          Verbose              => True,
---          Wait_For_Completion  => True);
+--          Wait_For_Message_Loop_Exit  => True);
          end if;
       Log_Out (Debug);
 

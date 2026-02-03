@@ -141,7 +141,6 @@ package body Camera.Commands.PTZ_Optics is
    ----------------------------------------------------------------------------
 
    begin
-log_here;
       return Default_Speed;
    end Get_Default_Speed;
 

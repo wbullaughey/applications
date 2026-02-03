@@ -175,7 +175,6 @@ package body Configuration.Camera.State is
    ----------------------------------------------------------------
 
 begin
-log_here;
 
 declare
       State_Pointer  : constant Configuration.Camera.State.State_Constant_Access :=

@@ -987,13 +987,13 @@ not_implemented;
 --      Directory                  : in     String;
 --      Port                       : in     Ada_Lib.Socket_IO.Port_Type;
 --      Verbose                    : in     Boolean;
---      Wait_For_Completion        : in     Boolean) is -- should be false for
+--      Wait_For_Message_Loop_Exit        : in     Boolean) is -- should be false for
 --                                                      -- multiple unit tests
 --   ----------------------------------------------------------------
 --
 --   begin
 --      Log_In (Debug, Quote ("directory", Directory) &
---         " Wait_For_Completion " & Wait_For_Completion'img &
+--         " Wait_For_Message_Loop_Exit " & Wait_For_Message_Loop_Exit'img &
 --         " port" & Port'img);
 --
 --      if Directory'length > 0 then
@@ -1009,9 +1009,9 @@ not_implemented;
 --         Port                 => Port,
 ----       Start_Message_Loop   => True,
 --         Verbose              => Verbose,
---         Wait_For_Completion  => Wait_For_Completion);
+--         Wait_For_Message_Loop_Exit  => Wait_For_Message_Loop_Exit);
 --
-----    if Wait_For_Completion then
+----    if Wait_For_Message_Loop_Exit then
 ----       Log_Here (Debug, "wait for completion");
 ----       GNOGA_Ada_Lib.Base.Message_Loop_SignalWait;
 ----    end if;

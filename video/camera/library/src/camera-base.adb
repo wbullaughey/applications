@@ -260,14 +260,14 @@ package body Camera.Base is
 --      Handler                    : in     Gnoga.Application.Multi_Connect.Application_Connect_Event;
 --      Application_Title          : in     String;
 --      Port                       : in     Ada_Lib.Socket_IO.Port_Type;
---      Wait_For_Completion        : in     Boolean;
+--      Wait_For_Message_Loop_Exit        : in     Boolean;
 --      Handler_Path               : in     String := "default";
 --      Verbose                    : in     Boolean := False) is
 --   ---------------------------------------------------------------
 --
 --   begin
 --      Log_In (Debug, "GNOGA_Initialized " & GNOGA_Initialized'img &
---         " Wait_For_Completion " & Wait_For_Completion'img &
+--         " Wait_For_Message_Loop_Exit " & Wait_For_Message_Loop_Exit'img &
 --         " port" & Port'img &
 --         " verbose " & Verbose'img);
 --
@@ -309,9 +309,9 @@ package body Camera.Base is
 ----       delay 0.1;
 ----    end loop;
 --
---      Log_Here (Debug, "Wait_For_Completion " & Wait_For_Completion'img);
+--      Log_Here (Debug, "Wait_For_Message_Loop_Exit " & Wait_For_Message_Loop_Exit'img);
 --
---      if Wait_For_Completion then
+--      if Wait_For_Message_Loop_Exit then
 --         Message_Loop_Signal.Wait;
 --      end if;
 --      Log_Out (Debug);

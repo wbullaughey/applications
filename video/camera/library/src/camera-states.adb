@@ -169,7 +169,6 @@ return null;
    ----------------------------------------------------------------
 
    begin
-log_here;
       return Configuration.Camera.State.State_Constant_Access (
          Allocate_Configuration_State (Camera_ID));
    end Get_Read_Only_Configuration_State;
@@ -244,7 +243,6 @@ return null;
    ----------------------------------------------------------------
 
 begin
-log_here;
 declare
       Camera_State   : constant State.State_Access :=
                         Get_Writeable_Global_State (

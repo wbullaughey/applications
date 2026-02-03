@@ -57,7 +57,6 @@ log_here;
 declare
 result : constant Camera_ID_Type := Current_Camera_ID;
 begin
-log_here;
       return result;
 end;
    end Get_Current_Camera_ID;
@@ -147,7 +146,6 @@ end;
    ----------------------------------------------------------------
 
 begin
-log_here ("state");
 tag_history (true, state'tag);
 declare
 

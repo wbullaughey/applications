@@ -79,7 +79,7 @@ begin
                   Directory            => Camera.Lib.Options.Current_Directory,
                   Port                 => Options.GNOGA.HTTP_Port,
                   Verbose              => Options.Verbose,
-                  Wait_For_Completion  => True);
+                  Wait_For_Message_Loop_Exit  => True);
             end;
             Log_Here (Debug);
          end if;
