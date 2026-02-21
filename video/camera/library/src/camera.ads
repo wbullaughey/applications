@@ -1,5 +1,5 @@
 with Ada.Containers;
---with Ada_Lib.Options.Flags;
+with Ada_Lib.GNOGA;
 with Ada_Lib.Options.Nested;
 with Ada_Lib.Socket_IO.Stream_IO;
 with Ada_Lib.Trace;
@@ -24,7 +24,7 @@ package Camera is
    type Brand_Type               is (ALPTOP_Camera, PTZ_Optics_Camera, No_Camera);
    subtype Buffer_Type           is Video.Lib.Buffer_Type;
    type Abstract_Window_Connection_Type
-                                 is abstract new Gnoga_Ada_Lib.Connection_Data_Type
+                                 is abstract new Ada_Lib.GNOGA.Connection_Data_Type
                                     with null record; -- connection data for windows
 
    type Camera_ID_Type           is tagged private;
@@ -104,13 +104,12 @@ package Camera is
 
    subtype Port_Type             is Video.Lib.Port_Type;
 
-   type Camera_Options_Type is limited new Ada_Lib.Options.Nested.
-         Nested_Options_Type with record
+   type Camera_Options_Type is limited new Video.Lib.Options_Type with record
       Brand          : Brand_Type := PTZ_Optics_Camera;
       Camera_Address : Address_Constant_Access := Null;
       Camera_ID      : Camera_ID_Type;
-      Location       : Configuration.State.Location_Type :=
-                        Video.Lib.No_Location;
+--    Location       : Configuration.State.Location_Type :=
+--                      Video.Lib.No_Location;
       Port_Number    : Port_Type; -- := Standard.Camera.Commands.PTZ_Optics.Port;
    end record;
 
@@ -128,7 +127,8 @@ package Camera is
       Options               : in out Camera_Options_Type;
       From                        : in     String := Ada_Lib.Trace.Here
    ) return Boolean
-   with pre => Options.Verify_Preinitialize;
+   with pre    => Options.Verify_Preinitialize,
+        post   => Options.Verify_Initialized;
 
    overriding
    function Process_Option (  -- process one option

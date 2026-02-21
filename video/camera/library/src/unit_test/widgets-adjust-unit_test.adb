@@ -1,13 +1,15 @@
 with Ada.Exceptions;
 with GNOGA_Ada_Lib;
+with Ada_Lib.GNOGA;
+with Ada_Lib.Options;
 with Ada_Lib.Timer;
 with Ada_Lib.Unit_Test;
 with AUnit.Assertions; use AUnit.Assertions;
 with AUnit.Test_Cases;
 with Camera.Commands;
+with Camera.Lib.Options.Unit_Test;
 with Camera.Lib.Unit_Test;
 with Camera.Main;
-with Ada_Lib.Test_States;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
 with Gnoga.Gui.Base;
 with Interfaces;
@@ -60,7 +62,7 @@ package body Widgets.Adjust.Unit_Test is
 
       procedure Initialize_Event (
          Mouse_Move_Event        : in out Mouse_Move_Event_Type;
-         Connection_Data         : in     GNOGA_Ada_lib.Connection_Data_Class_Access;
+         Connection_Data         : in     Ada_Lib.GNOGA.Connection_Data_Class_Access;
          Description             : in     String;
          Mouse_Event             : in     Gnoga.Gui.Base.Mouse_Event_Record;
          Wait                    : in     Duration);
@@ -71,7 +73,8 @@ package body Widgets.Adjust.Unit_Test is
 
    end Move_Package;
 
-   Debug       : Boolean renames Ada_Lib.Options.Ada_Lib_Widgets.Adjust_Debug;
+   Debug       : Boolean renames Camera.Lib.Options.Unit_Test.
+                  Camera_Lib_Unit_Test.Adjust_Debug;
    Suite_Name  : constant String := "Adjust_Card";
 
    ---------------------------------------------------------------
@@ -95,10 +98,11 @@ package body Widgets.Adjust.Unit_Test is
    begin
       Log_In (Debug);
 
-      Test.Add_Routine (AUnit.Test_Cases.Routine_Spec'(
+      Test.Add_Optional_Routine (
+         Needs_Camera   => True,
          Routine        => Test_Mouse_Move'access,
-         Routine_Name   => AUnit.Format ("Test_Mouse_Move")));
-
+         Routine_Name   => "Test_Mouse_Move",
+         Suite_Name     => Suite_Name);
       Log_Out (Debug);
 
    end Register_Tests;
@@ -128,16 +132,15 @@ package body Widgets.Adjust.Unit_Test is
    return AUnit.Test_Suites.Access_Test_Suite is
    ---------------------------------------------------------------
 
-      Options                    : Camera.Lib.Unit_Test.Unit_Test_Program_Options_Type'class
-                                    renames Camera.Lib.Unit_Test.
-                                       Get_Camera_Unit_Test_Constant_Options.all;
+      Options     : Camera.Lib.Unit_Test.Unit_Test_Program_Options_Type'class
+                     renames Camera.Lib.Unit_Test.
+                        Get_Camera_Unit_Test_Constant_Options.all;
       Brand       : Standard.Camera.Brand_Type renames
-                     Options.Camera_Library_Options.Camera_Options.Brand;
-      Test_Suite                 : constant AUnit.Test_Suites.Access_Test_Suite
-                                    := new AUnit.Test_Suites.Test_Suite;
-      Tests                      : constant Widgets_Adjust_Test_Access :=
-                                    new Widgets_Adjust_Test_Type (Brand);
-
+                     Options.Nested_Options.Brand;
+      Test_Suite  : constant AUnit.Test_Suites.Access_Test_Suite
+                     := new AUnit.Test_Suites.Test_Suite;
+      Tests       : constant Widgets_Adjust_Test_Access :=
+                     new Widgets_Adjust_Test_Type (Brand);
    begin
       Log_In (Debug); --, "test state address " & Image (Tests.State'address) & " pointer address " & image (Read_Only_Global_Camera_State'address));
       Ada_Lib.Unit_Test.Suite (Suite_Name);  -- used for listing suites
@@ -201,7 +204,7 @@ package body Widgets.Adjust.Unit_Test is
                " expected pan" & Expected_Pan'img & " tilt" & Expected_Tilt'img);
             -- create a mouse move event telling the amout to move
             Move_Package.Initialize_Event (Event.all,
-               Connection_Data=> Gnoga_Ada_Lib.Connection_Data_Class_Access (
+               Connection_Data=> Ada_Lib.GNOGA.Connection_Data_Class_Access (
                                     Connection_Data),
                Description    => "mouse move event",
                Mouse_Event    => (
@@ -245,7 +248,7 @@ package body Widgets.Adjust.Unit_Test is
       ---------------------------------------------------------------
       procedure Initialize_Event (
          Mouse_Move_Event  : in out Mouse_Move_Event_Type;
-         Connection_Data   : in     GNOGA_Ada_lib.Connection_Data_Class_Access;
+         Connection_Data   : in     Ada_Lib.GNOGA.Connection_Data_Class_Access;
          Description       : in     String;
          Mouse_Event       : in     Gnoga.Gui.Base.Mouse_Event_Record;
          Wait              : in     Duration) is

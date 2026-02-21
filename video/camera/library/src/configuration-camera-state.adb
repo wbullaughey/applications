@@ -10,7 +10,7 @@ with Ada.Text_IO; use Ada.Text_IO;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
 with AUnit.Assertions; use AUnit.Assertions;
 with Camera.Lib.Options;
---with Camera.States;
+--with Camera.Configurations;
 with Video.Lib;
 
 package body Configuration.Camera.State is
@@ -31,7 +31,7 @@ package body Configuration.Camera.State is
    ----------------------------------------------------------------
 
       State_Pointer  : constant Configuration.Camera.State.State_Constant_Access :=
-                        Standard.Camera.States.Get_Read_Only_Configuration_State;
+                        Standard.Camera.Configurations.Get_Read_Only_Configuration_State;
       State          : Configuration.Camera.State.State_Type renames
                         State_Pointer.all;
       Number_Columns : constant Column_Type := State.Get_Number_Columns;
@@ -66,7 +66,7 @@ package body Configuration.Camera.State is
    ----------------------------------------------------------------
 
       State_Pointer  : constant Configuration.Camera.State.State_Constant_Access :=
-                        Standard.Camera.States.Get_Read_Only_Configuration_State;
+                        Standard.Camera.Configurations.Get_Read_Only_Configuration_State;
       State          : Configuration.Camera.State.State_Type renames
                         State_Pointer.all;
       Number_Rows : constant Row_Type := State.Get_Number_Rows;
@@ -121,23 +121,24 @@ package body Configuration.Camera.State is
       end loop;
    end Dump;
 
-   ----------------------------------------------------------------
-   function File_Path
-   return String is
-   ----------------------------------------------------------------
-
-      State_Path                 : Ada_Lib.Strings.Unlimited.String_Type
-                                    renames Standard.Camera.Lib.Options.
-                                       Program_Options_Constant_Class_Access (
-                                          Ada_Lib.Options.Get_Ada_Lib_Read_Only_Program_Options).
-                                             Setup_Path;
-
-   begin
-      return (if State_Path.Length > 0 then
-         State_Path.Coerce
-      else
-         Default_State);
-   end File_Path;
+-- ----------------------------------------------------------------
+-- function File_Path
+-- return String is
+-- ----------------------------------------------------------------
+--
+--    Options     : constant Standard.Camera.Lib.Options.
+--                   Program_Options_Constant_Class_Access :=
+--                      Standard.Camera.Lib.Options.
+--                   Program_Options_Constant_Class_Access (
+--                      Ada_Lib.Options.Get_Ada_Lib_Read_Only_Program_Options);
+--    State_Path  : Ada_Lib.Strings.Unlimited.String_Type
+--                renames Options.Nested_Options.State_Path;
+-- begin
+--    return (if State_Path.Length > 0 then
+--       State_Path.Coerce
+--    else
+--       Default_State);
+-- end File_Path;
 
    ----------------------------------------------------------------
    function Get_Camera_ID (
@@ -178,7 +179,7 @@ begin
 
 declare
       State_Pointer  : constant Configuration.Camera.State.State_Constant_Access :=
-                        Standard.Camera.States.Get_Read_Only_Configuration_State;
+                        Standard.Camera.Configurations.Get_Read_Only_Configuration_State;
       State          : Configuration.Camera.State.State_Type renames
                         State_Pointer.all;
    begin
@@ -278,7 +279,7 @@ return Null;
    ----------------------------------------------------------------
 
       State_Pointer  : constant Configuration.Camera.State.State_Constant_Access :=
-                        Standard.Camera.States.Get_Read_Only_Configuration_State;
+                        Standard.Camera.Configurations.Get_Read_Only_Configuration_State;
       State          : Configuration.Camera.State.State_Type renames
                         State_Pointer.all;
       Name        : constant String :=
@@ -346,29 +347,29 @@ return Null;
 -- end Is_Loaded;
 
    ----------------------------------------------------------------
-   overriding
+-- overriding
    procedure Load (
       State                      : in out State_Type;
-      Location                   : in     Configuration.State.Location_Type;
+--    Location                   : in     Configuration.State.Location_Type;
       Name                       : in     String) is
    ----------------------------------------------------------------
 
-      Config                     : Ada_Lib.Configuration.Configuration_Type;
-      Current_Directory          : constant String :=
-                                    Standard.Camera.Lib.Options.Current_Directory;
-      Last_Preset_Number         : Video.Lib.Preset_Range_Type;
-      Path                       : constant String :=
-                                    (if Current_Directory'length > 0 then
-                                       Current_Directory & "/"
-                                    else
-                                       "") &
-                                    Name;
+      Config            : Ada_Lib.Configuration.Configuration_Type;
+      Current_Directory : constant String :=
+                           Standard.Camera.Lib.Options.Current_Directory;
+      Last_Preset_Number: Video.Lib.Preset_Range_Type;
+      Path              : constant String :=
+                           (if Current_Directory'length > 0 then
+                              Current_Directory & "/"
+                           else
+                              "") &
+                           Name;
    begin
       Log_In (Debug, Quote ("file name", Name) &
          Quote (" Current_Directory", Current_Directory) &
          Quote (" path", Path));
       Config.Load (Path, False);
-      State.Load (Config, Location, Path);
+      State.Load (Path);
       State.Camera_ID := Standard.Camera.Make_Camera_ID (State.Video_Address.all);
       State.Camera_Name.Construct (Config.Get_String ("camera_name"));
       State.CSS_Path.Construct (Config.Get_String ("css_path"));

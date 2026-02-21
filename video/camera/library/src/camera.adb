@@ -112,7 +112,7 @@ return 0;
          Options_Without_Parameters);
 
       return Log_Out_Checked (Recursed,
-         Ada_Lib.Options.Nested.Nested_Options_Type (Options).Initialize,
+         Video.Lib.Options_Type (Options).Initialize,
          Debug or Trace_Options);
    end Initialize;
 
@@ -140,12 +140,14 @@ return 0;
 
          when Ada_Lib.Socket_IO.IP =>
             declare
-               Accumulator : Natural := 0;
+               type Unsigned_64 is mod 2**64;
+               Accumulator : Unsigned_64 := 0;
                IP_Address  : Ada_Lib.Socket_IO.IP_Address_Type renames
                               Address.IP_Address;
             begin
                for Segment of IP_Address  loop
-                  Accumulator := Accumulator * 256 + Natural (Segment);
+                  Accumulator := (Accumulator * 256 + Unsigned_64 (Segment)) mod
+                     Unsigned_64 (Natural'last);
                end loop;
                Result.Value := Ada.Containers.Hash_Type (Accumulator);
                Result.Set := True;
@@ -215,11 +217,13 @@ return 0;
                end;
          end case;
 
-         return Log_Out (True, Debug or Trace_Options,
+         return Log_Out (Video.Lib.Options_Type (Options).Process_Option (
+               Iterator, Option),
+            Debug or Trace_Options,
             Option.Image & " handled");
       else
          return Log_Out (
-            Ada_Lib.Options.Nested.Nested_Options_Type (
+            Video.Lib.Options_Type (
                Options).Process_Option (Iterator, Option),
                Trace_Options or Debug, "other " & Option.Image);
       end if;
@@ -259,7 +263,7 @@ return 0;
            Put_Line ("      d               Camera.Camera_Debug");
         end case;
 --
-      Ada_Lib.Options.Nested.Nested_Options_Type (Options).Program_Help (
+      Video.Lib.Options_Type (Options).Program_Help (
          Help_Mode);
       Log_Out (Debug or Trace_Options);
    end Program_Help;

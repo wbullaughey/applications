@@ -91,10 +91,11 @@ not_implemented;
    begin
       Log_In (Debug);
 
-      Test.Add_Routine (AUnit.Test_Cases.Routine_Spec'(
+      Test.Add_Optional_Routine (
+         Needs_Camera   => True,
          Routine        => Widgets.Control.Unit_Test.Test_Create_Control'access,
-         Routine_Name   => AUnit.Format ("Test_Create_Control")));
-
+         Routine_Name   => "Test_Create_Control",
+         Suite_Name     => Suite_Name);
       Log_Out (Debug);
    end Register_Tests;
 
@@ -141,7 +142,7 @@ not_implemented;
                      renames Camera.Lib.Unit_Test.
                         Get_Camera_Unit_Test_Constant_Options.all;
       Brand       : Standard.Camera.Brand_Type renames
-                     Options.Camera_Library_Options.Camera_Options.Brand;
+                     Options.Nested_Options.Brand;
       Test_Suite  : constant AUnit.Test_Suites.Access_Test_Suite :=
                      new AUnit.Test_Suites.Test_Suite;
       Tests       : constant Test_Access := new Test_Type (

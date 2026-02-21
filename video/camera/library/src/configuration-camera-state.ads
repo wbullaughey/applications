@@ -1,6 +1,6 @@
 with ADA_LIB.Strings.Unlimited;use Ada_Lib.Strings.Unlimited;
 with Ada_Lib.Trace;
-with Camera.States;
+with Camera.Configurations;
 with Configuration.State;
 
 package Configuration.Camera.State is
@@ -22,7 +22,7 @@ package Configuration.Camera.State is
    function Check_Column (
       Column                     : in     Column_Type
    ) return Boolean
-   with Pre => Standard.Camera.States.Has_Camera_Configuration_State;
+   with Pre => Standard.Camera.Configurations.Has_Camera_Configuration_State;
 
    function Check_Image (
       Column                     : in     Column_Type;
@@ -32,13 +32,11 @@ package Configuration.Camera.State is
    function Check_Row (
       Row                        : in     Row_Type
    ) return Boolean
-   with Pre => Standard.Camera.States.Has_Camera_Configuration_State;
+   with Pre => Standard.Camera.Configurations.Has_Camera_Configuration_State;
 
    procedure Clear_Global_Camera_State (
       State                      : in out State_Type
-   ) with Pre  => State.Has_Camera_ID and then
-                  Standard.Camera.States.Has_Camera_Configuration_State (
-                     State.Get_Camera_ID),
+   ) with Pre  => State.Has_Camera_ID,
           Post => not State.Has_Camera_ID;
 
    procedure Copy (
@@ -49,8 +47,8 @@ package Configuration.Camera.State is
       State                      : in     State_Type;
       From                       : in     String := Ada_Lib.Trace.Here);
 
-   function File_Path
-   return String;
+-- function File_Path
+-- return String;
 
    function Get_Camera_ID (
       State                      : in     State_Type
@@ -68,10 +66,10 @@ package Configuration.Camera.State is
 
    function Get_Default_Speed
    return Speed_Type
-   with Pre => Standard.Camera.States.Has_Camera_Configuration_State;
+   with Pre => Standard.Camera.Configurations.Has_Camera_Configuration_State;
 
    function Get_Modifiable_Global_State return State_Access
-   with Pre    => Standard.Camera.States.Has_Camera_Configuration_State;
+   with Pre    => Standard.Camera.Configurations.Has_Camera_Configuration_State;
 
    overriding
    function Get_Number_Columns (
@@ -93,6 +91,10 @@ package Configuration.Camera.State is
       State                      : in     State_Type
    ) return Row_Type;
 
+   function Has_Camera_ID (
+      State                      : in     State_Type
+   ) return Boolean;
+
    function Has_Image (
       State                      : in     State_Type;
       Row                        : in     Row_Type;
@@ -100,10 +102,6 @@ package Configuration.Camera.State is
    ) return Boolean
    with Pre => State.Is_Loaded and then
                Check_Image (Column, Row);
-
-   function Has_Camera_ID (
-      State                      : in     State_Type
-   ) return Boolean;
 
    function Image_Name (
       Column                     : in     Column_Type;
@@ -123,10 +121,10 @@ package Configuration.Camera.State is
                   Column   => Column,
                   Row      => Row);
 
-   overriding
+-- overriding
    procedure Load (
       State                      : in out State_Type;
-      Location                   : in     Configuration.State.Location_Type;
+--    Location                   : in     Configuration.State.Location_Type;
       Name                       : in     String
    ) with Pre => not State.Is_Loaded,
           Post => State.Is_Loaded and then
@@ -135,8 +133,8 @@ package Configuration.Camera.State is
 -- procedure Set_State (
 --    State                      : in     State_Access;
 --    From                       : in     String := Ada_Lib.Trace.Here
--- ) with Pre  => not Standard.Camera.States.Has_Camera_Configuration_State,
---        Post => Standard.Camera.States.Has_Camera_Configuration_State;
+-- ) with Pre  => not Standard.Camera.Configurations.Has_Camera_Configuration_State,
+--        Post => Standard.Camera.Configurations.Has_Camera_Configuration_State;
 
    overriding
    procedure Unload (

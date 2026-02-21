@@ -45,13 +45,7 @@ video_lib = { path='../../library' }
 gnoga_ada_lib = "~0.1.0-dev"
 
 [[pins]]
-gnoga_ada_lib = { path='../../../../gnoga_lib/gnoga_ada_lib' }
-
-[[depends-on]]
-gnoga_options = "~0.1.0-dev"
-
-[[pins]]
-gnoga_options = { path='../../../../gnoga_lib/gnoga_options' }
+gnoga_ada_lib = { path='../../../../gnoga_lib' }
 
 [[depends-on]]
 aunit = "~0.1.0-dev"

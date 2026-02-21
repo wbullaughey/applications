@@ -238,7 +238,7 @@ package body Driver is
             Selected_Parameters.With_Parameters.all) &
          " without parameters " & Ada_Lib.Options.Image (
             Selected_Parameters.Without_Parameters.all) &
-         " Initialized " & Options.Initialized'img &
+         " Initialized " & Options.Verify_Initialized'img &
          " from " & From);
       Protected_Options := Options'unchecked_access;
       Ada_Lib.Options.Runstring.Options.Register (

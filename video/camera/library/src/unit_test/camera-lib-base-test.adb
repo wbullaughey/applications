@@ -5,15 +5,11 @@ with Ada_Lib.Unit_Test;
 with AUnit.Assertions; use AUnit.Assertions;
 with AUnit.Test_Cases;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
---with Base;
+with Camera.Lib.Options.Unit_Test;
 with Camera.Lib.Unit_Test;
 with Configuration.Camera.State;
---with GNAT.Sockets;
---with Gnoga_Ada_Lib;
 
 package body Camera.Lib.Base.Test is
-
--- use type Camera.Lib.Unit_Test.With_Camera_No_GNOGA_Test_Type;
 
    type Test_Type (
       Brand       : Brand_Type) is new
@@ -54,30 +50,15 @@ package body Camera.Lib.Base.Test is
                Camera.Lib.Unit_Test.With_Camera_No_GNOGA_Test_Type (
                   Test).Have_Camera_Address;
 
--- function URL return String;
-
--- procedure URL_Scan(
---    Test                       : in out AUnit.Test_Cases.Test_Case'class);
-
--- ALPTOP_IP_Address              : constant GNAT.Sockets.Inet_Addr_V4_Type :=
---                                  (192, 168, 1, 240);
--- Camera_Description            : aliased constant String := "test camera";
--- Port                          : constant Port_Type := 80;
--- PTZ_Optics_Local_IP_Address   : GNAT.Sockets.Inet_Addr_Type;
--- PTZ_Optics_Local_IP_Address   : constant GNAT.Sockets.Inet_Addr_V4_Type :=
---                                  (192, 168, 1, 201);
--- PTZ_Optics_Local_URL_Address  : constant String := "192.168.1.201";
--- PTZ_Optics_Port               : constant := 5678;
--- PTZ_Optics_Remote_URL_Address : constant String := "http://ucwc.dyndns.org";
--- Local_Port                    : constant String := ":80";
--- Remote_Port                   : constant String := ":9100";
-   Suite_Name                    : constant String := "Basic_Video";
+   Debug       : Boolean renames Options.Unit_Test.Camera_Lib_Unit_Test.
+                  Base_Debug;
+   Suite_Name  : constant String := "Basic_Video";
 
 
    ---------------------------------------------------------------
    overriding
    function Name (
-      Test                       : in     Test_Type) return AUnit.Message_String is
+      Test     : in     Test_Type) return AUnit.Message_String is
    pragma Unreferenced (Test);
    ---------------------------------------------------------------
 
@@ -157,24 +138,30 @@ package body Camera.Lib.Base.Test is
       type Ports_Type      is array (Positive range <>) of Port_Type;
       type Ports_Access    is access constant Ports_Type;
 
-      Local_Test        : Test_Type renames Test_Type (Test);
-      ALPTOP_Ports          : aliased constant Ports_Type := (
-                                 554, 1935
-                              );
+      Local_Test     : Test_Type renames Test_Type (Test);
+      ALPTOP_Ports   : aliased constant Ports_Type := (
+                           554, 1935
+                        );
       Configuration_State
-                        : Configuration.Camera.State.State_Type renames
-                           Local_Test.Configuration_State;
-      PTZ_Optics_Ports  : aliased constant Ports_Type := (
-                              1 => Configuration_State.Get_Host_Port
-                           );
-      Ports             : Ports_Access := Null;
+                     : Configuration.Camera.State.State_Type'class renames
+                        Local_Test.Configuration.Get_Configuration_State.all;
+      Options        : Standard.Camera.Lib.Unit_Test.
+                        Unit_Test_Program_Options_Type'class renames
+                           Standard.Camera.Lib.Unit_Test.
+                              Get_Camera_Unit_Test_Constant_Options.all;
+      Brand          : Standard.Camera.Brand_Type renames
+                        Options.Nested_Options.Brand;
+      PTZ_Optics_Ports
+                     : aliased constant Ports_Type := (
+                           1 => Configuration_State.Get_Host_Port
+                        );
+      Ports          : Ports_Access := Null;
 
    begin
       Log_In (Debug);
       Put_Line ("read write");
 
-      case Camera.Lib.Unit_Test.Get_Camera_Unit_Test_Constant_Options.
-            Camera_Library_Options.Camera_Options.Brand is
+      case Brand is
 
          when ALPTOP_Camera =>
             Ports := ALPTOP_Ports'access;
@@ -278,21 +265,25 @@ package body Camera.Lib.Base.Test is
 
    begin
       Log_In (Debug);
-      Test.Add_Routine (AUnit.Test_Cases.Routine_Spec'(
+      Test.Add_Optional_Routine (
+         Needs_Camera   => True,
          Routine        => Test_Open'access,
-         Routine_Name   => AUnit.Format ("Test_Open")));
+         Routine_Name   => "Test_Open",
+         Suite_Name     => Suite_Name);
 
 --    Test.Add_Routine (AUnit.Test_Cases.Routine_Spec'(
 --       Routine        => Port_Scan'access,
---       Routine_Name   => AUnit.Format ("Port_Scan")));
+--       Routine_Name   => "Port_Scan",
 
-      Test.Add_Routine (AUnit.Test_Cases.Routine_Spec'(
+      Test.Add_Optional_Routine (
+         Needs_Camera   => True,
          Routine        => Read_Write'access,
-         Routine_Name   => AUnit.Format ("Read_Write")));
+         Routine_Name   => "Read_Write",
+         Suite_Name     => Suite_Name);
 
 --    Test.Add_Routine (AUnit.Test_Cases.Routine_Spec'(
 --       Routine        => URL_Scan'access,
---       Routine_Name   => AUnit.Format ("URL_Scan")));
+--       Routine_Name   => "URL_Scan",
 
       Log_Out (Debug);
    end Register_Tests;
@@ -317,14 +308,13 @@ package body Camera.Lib.Base.Test is
                         renames Standard.Camera.Lib.Unit_Test.
                            Get_Camera_Unit_Test_Constant_Options.all;
       Brand       : Standard.Camera.Brand_Type renames
-                     Options.Camera_Library_Options.Camera_Options.Brand;
+                     Options.Nested_Options.Brand;
       Test_Suite  : constant AUnit.Test_Suites.Access_Test_Suite :=
                      new AUnit.Test_Suites.Test_Suite;
       Test        : constant Test_Access := new Test_Type (Brand);
 
    begin
-      Log_In (Debug, "brand " & Options.Camera_Library_Options.
-         Camera_Options.Brand'img);
+      Log_In (Debug, "brand " & Brand'img);
       Ada_Lib.Unit_Test.Suite (Suite_Name);  -- used for listing suites
       Test_Suite.Add_Test (Test);
       Log_Out (Debug);

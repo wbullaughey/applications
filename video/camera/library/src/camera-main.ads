@@ -2,7 +2,8 @@
 with AUnit.Test_Suites;
 with Camera.Base;
 with Camera.Commands;
-with Camera.States;
+with Camera.Configurations;
+with Configuration.Camera.State;
 with Gnoga.Application.Multi_Connect;
 with Gnoga.Gui.Element.Common;
 with Gnoga.Gui.Plugin.Message_Boxes;
@@ -46,7 +47,7 @@ package Camera.Main is
    -- allocates camera state if 1st time camera is
    function Get_Camera_State (
       Window_Connection                  : in      Window_Connection_Type
-   ) return Base.Camera_State_Class_Access  is abstract;
+   ) return Configuration.Camera.State.State_Access  is abstract;
 
    function Get_Configured_Card (
       Window_Connection                     : in out Window_Connection_Type
@@ -101,16 +102,15 @@ package Camera.Main is
 --    Window_Connection            : in   Window_Connection_Type
 -- ) return Base.Camera_State_Class_Access is abstract;
 
-   overriding
-   procedure Set_Main_Window (
-      Window_Connection             : in out Window_Connection_Type;
-      Main_Window                   : in     Gnoga.Gui.Window.
-                                                Pointer_To_Window_Class) is abstract;
-
    procedure Set_Main_Created (
       Window_Connection            : in out Window_Connection_Type;
       Value                         : in     Boolean) is abstract;
 
+-- overriding
+-- procedure Set_Connection_Data_Main_Window (
+--    Window_Connection : in out Window_Connection_Type;
+--    Main_Window       : in     Gnoga.Gui.Window.
+--                                  Pointer_To_Window_Class) is abstract;
 -- procedure Set_Mouse_Action (
 --    Window_Connection       : in out Window_Connection_Type;
 --    Action                  : in     Camera.Mouse_Click_Action_Type) is abstract;
@@ -138,7 +138,7 @@ package Camera.Main is
       Main_Window                : in out Gnoga.Gui.Window.Window_Type'Class;
       Connection                 : access Gnoga.Application.Multi_Connect.
                                              Connection_Holder_Type
-   ) with Pre => States.Has_Camera_Configuration_State;
+   ) with Pre => Configurations.Has_Camera_Configuration_State;
 
    overriding
    procedure Process_Command (

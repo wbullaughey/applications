@@ -1,4 +1,4 @@
-with Ada_Lib.Test_States;
+with Ada_Lib.GNOGA;
 with Ada_Lib.Timer;
 with Ada_Lib.Unit_Test;
 with AUnit.Test_Cases;
@@ -69,8 +69,7 @@ package body Unit_Test is
          Connection_Data
                      : Full_Window_Connection_Class_Access renames
                         Full_Window_Connection_Class_Access (
-                           Ada_Lib.GNOGA.Get_Window_Connection_Data (
-                              Event.Window));
+                           Ada_Lib.GNOGA.Get_Window_Connection_Data);
          View        : View_Type renames Connection_Data.View;
          Docker      : Docker_Type renames View.Docker;
          Panel       : Panel_Type renames Docker.Panel;
@@ -111,9 +110,11 @@ exception
    begin
       Log_In (Debug);
 
-      Test.Add_Routine (AUnit.Test_Cases.Routine_Spec'(
+      Test.Add_Optional_Routine (
+         Needs_Camera   => True,
          Routine        => Test_Halt'access,
-         Routine_Name   => AUnit.Format ("Test_Halt")));
+         Routine_Name   => "Test_Halt",
+         Suite_Name     => Suite_Name);
 
 --    Test.Add_Routine (AUnit.Test_Cases.Routine_Spec'(
 --       Routine        => Test_Preset_Library'access,
@@ -159,7 +160,7 @@ exception
                      renames Camera.Lib.Unit_Test.
                         Get_Camera_Unit_Test_Constant_Options.all;
       Brand       : Standard.Camera.Brand_Type renames
-                     Options.Camera_Library_Options.Camera_Options.Brand;
+                     Options.Nested_Options.Brand;
       Test_Suite  : constant AUnit.Test_Suites.Access_Test_Suite :=
                      new AUnit.Test_Suites.Test_Suite;
       Tests       : constant Test_Access := new Test_Type (Brand);
@@ -202,12 +203,12 @@ exception
 
    begin
       Log_In (Debug, "Test_Driver " & Options.Test_Driver'img);
-      Button_Press_Event.Window := Local_Test.Main_Window;
+      Button_Press_Event.Window := Ada_Lib.GNOGA.Get_Main_Window;
 
       if not Options.Test_Driver then
          Log_Here (Debug);
 --       Button_Press_Event.Connection_Data :=
---          GNOGA_Ada_lib.Connection_Data_Class_Access (Local_Test.Connection_Data);
+--          Ada_Lib.GNOGA.Connection_Data_Class_Access (Local_Test.Connection_Data);
 
          Button_Press_Event.Start (
             Wait           => 2.0,

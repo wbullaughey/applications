@@ -128,24 +128,28 @@ package body Camera.Commands.Unit_Test is
 
    begin
       Log_In (Debug);
+--       Test.Add_Routine (AUnit.Test_Cases.Routine_Spec'(
+--          Routine        => Test_Get_Absolute'access,
+--          Routine_Name   => AUnit.Format ("Test_Get_Absolute")));
 
---    Test.Add_Routine (AUnit.Test_Cases.Routine_Spec'(
---       Routine        => Test_Get_Absolute'access,
---       Routine_Name   => AUnit.Format ("Test_Get_Absolute")));
-
-      Test.Add_Routine (AUnit.Test_Cases.Routine_Spec'(
+      Test.Add_Optional_Routine (
+         Needs_Camera   => True,
          Routine        => Test_Position_Relative'access,
-         Routine_Name   => AUnit.Format ("Test_Position_Relative")));
+         Routine_Name   => "Test_Position_Relative",
+         Suite_Name     => Suite_Name);
 
-
-      Test.Add_Routine (AUnit.Test_Cases.Routine_Spec'(
+      Test.Add_Optional_Routine (
+         Needs_Camera   => True,
          Routine        => Test_Set_Absolute'access,
-         Routine_Name   => AUnit.Format ("Test_Set_Absolute")));
+         Routine_Name   => "Test_Set_Absolute",
+         Suite_Name     => Suite_Name);
 
 
-      Test.Add_Routine (AUnit.Test_Cases.Routine_Spec'(
+      Test.Add_Optional_Routine (
+         Needs_Camera   => True,
          Routine        => Test_Zoom'access,
-         Routine_Name   => AUnit.Format ("Test_Zoom")));
+         Routine_Name   => "Test_Zoom",
+         Suite_Name     => Suite_Name);
 
       Log_Out (Debug);
    end Register_Tests;
@@ -159,13 +163,17 @@ package body Camera.Commands.Unit_Test is
    begin
       Log_In (Debug);
 
-      Test.Add_Routine (AUnit.Test_Cases.Routine_Spec'(
+      Test.Add_Optional_Routine (
+         Needs_Camera   => True,
          Routine        => Test_Set_One_Preset'access,
-         Routine_Name   => AUnit.Format ("Test_Set_One_Preset")));
+         Routine_Name   => "Test_Set_One_Preset",
+         Suite_Name     => Suite_Name);
 
-      Test.Add_Routine (AUnit.Test_Cases.Routine_Spec'(
+      Test.Add_Optional_Routine (
+         Needs_Camera   => True,
          Routine        => Test_Set_Preset_Speed'access,
-         Routine_Name   => AUnit.Format ("Test_Set_Preset_Speed")));
+         Routine_Name   => "Test_Set_Preset_Speed",
+         Suite_Name     => Suite_Name);
 
       Log_Out (Debug);
    end Register_Tests;

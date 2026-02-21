@@ -33,7 +33,8 @@ package Driver is
      Options                     : in out Driver_Options_Type;
      From                        : in     String := Ada_Lib.Trace.Here
    ) return Boolean
-   with pre => Options.Verify_Preinitialize;
+   with pre    => Options.Verify_Preinitialize,
+        Post   => Options.Verify_Initialized;
 
    overriding
    function Process_Option (  -- process one option
@@ -42,7 +43,7 @@ package Driver is
                         Command_Line_Iterator_Interface'class;
       Option   : in     Ada_Lib.Options.Base_Flag_Option_Type'class
    ) return Boolean
-   with pre => Options.Initialized;
+   with pre => Options.Verify_Initialized;
 
    overriding
    procedure Trace_Parse (
@@ -59,7 +60,9 @@ package Driver is
    function Initialize (
      Options                     : in out Program_Options_Type;
      From                        : in     String := Ada_Lib.Trace.Here
-   ) return Boolean;
+   ) return Boolean
+   with pre    => Options.Verify_Preinitialize,
+        Post   => Options.Verify_Initialized;
 
    overriding
    function Process_Option (  -- process one option
@@ -67,7 +70,7 @@ package Driver is
       Iterator : in out Ada_Lib.Options.Command_Line_Iterator_Interface'class;
       Option   : in     Ada_Lib.Options.Base_Flag_Option_Type'class
    ) return Boolean
-   with pre => Options.Initialized;
+   with pre => Options.Verify_Initialized;
 
    overriding
    procedure Trace_Parse (

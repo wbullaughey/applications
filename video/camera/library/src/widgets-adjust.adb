@@ -167,7 +167,7 @@ package body Widgets.Adjust is
          Event_Image (Mouse_Event));
 
       if Mouse_Action /= Camera.No_Action then
-         Connection_Data.Get_Camera_State.Set_Mouse_Action (Mouse_Action);
+         Connection_Data.Set_Mouse_Action (Mouse_Action);
       end if;
       Log_Out (Debug);
    end Mouse_Click_Handler;

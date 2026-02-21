@@ -132,83 +132,112 @@ package body Camera.Lib.Base.Command_Tests is
 
 --    Test.Add_Routine (AUnit.Test_Cases.Routine_Spec'(
 --       Routine        => Test_Auto_Focus'access,
---       Routine_Name   => AUnit.Format ("Test_Auto_Focus")));
+--       Routine_Name   => "Test_Auto_Focus",
 --
 --    Test.Add_Routine (AUnit.Test_Cases.Routine_Spec'(
 --       Routine        => Test_Manual_Focus'access,
---       Routine_Name   => AUnit.Format ("Test_Manual_Focus")));
+--       Routine_Name   => "Test_Manual_Focus",
 --
-      Test.Add_Routine (AUnit.Test_Cases.Routine_Spec'(
+      Test.Add_Optional_Routine (
+         Needs_Camera   => True,
          Routine        => Test_Position_Absolute'access,
-         Routine_Name   => AUnit.Format ("Test_Position_Absolute")));
+         Routine_Name   => "Test_Position_Absolute",
+         Suite_Name     => Suite_Name);
 
-      Test.Add_Routine (AUnit.Test_Cases.Routine_Spec'(
+      Test.Add_Optional_Routine (
+         Needs_Camera   => True,
          Routine        => Test_Position_Down_Left'access,
-         Routine_Name   => AUnit.Format ("Test_Position_Down_Left")));
+         Routine_Name   => "Test_Position_Down_Left",
+         Suite_Name     => Suite_Name);
 
-      Test.Add_Routine (AUnit.Test_Cases.Routine_Spec'(
+      Test.Add_Optional_Routine (
+         Needs_Camera   => True,
          Routine        => Test_Position_Down_Right'access,
-         Routine_Name   => AUnit.Format ("Test_Position_Down_Right")));
+         Routine_Name   => "Test_Position_Down_Right",
+         Suite_Name     => Suite_Name);
 
-      Test.Add_Routine (AUnit.Test_Cases.Routine_Spec'(
+      Test.Add_Optional_Routine (
+         Needs_Camera   => True,
          Routine        => Test_Position_Down'access,
-         Routine_Name   => AUnit.Format ("Test_Position_Down")));
+         Routine_Name   => "Test_Position_Down",
+         Suite_Name     => Suite_Name);
 
-      Test.Add_Routine (AUnit.Test_Cases.Routine_Spec'(
+      Test.Add_Optional_Routine (
+         Needs_Camera   => True,
          Routine        => Test_Position_Relative'access,
-         Routine_Name   => AUnit.Format ("Test_Position_Relative")));
+         Routine_Name   => "Test_Position_Relative",
+         Suite_Name     => Suite_Name);
 
-      Test.Add_Routine (AUnit.Test_Cases.Routine_Spec'(
+      Test.Add_Optional_Routine (
+         Needs_Camera   => True,
          Routine        => Test_Position_Request'access,
-         Routine_Name   => AUnit.Format ("Test_Position_Request")));
+         Routine_Name   => "Test_Position_Request",
+         Suite_Name     => Suite_Name);
 
-      Test.Add_Routine (AUnit.Test_Cases.Routine_Spec'(
+      Test.Add_Optional_Routine (
+         Needs_Camera   => True,
          Routine        => Test_Position_Right'access,
-         Routine_Name   => AUnit.Format ("Test_Position_Right")));
+         Routine_Name   => "Test_Position_Right",
+         Suite_Name     => Suite_Name);
 
-      Test.Add_Routine (AUnit.Test_Cases.Routine_Spec'(
+      Test.Add_Optional_Routine (
+         Needs_Camera   => True,
          Routine        => Test_Position_Left'access,
-         Routine_Name   => AUnit.Format ("Test_Position_Left")));
+         Routine_Name   => "Test_Position_Left",
+         Suite_Name     => Suite_Name);
 
-      Test.Add_Routine (AUnit.Test_Cases.Routine_Spec'(
+      Test.Add_Optional_Routine (
+         Needs_Camera   => True,
          Routine        => Test_Position_Stop'access,
-         Routine_Name   => AUnit.Format ("Test_Position_Stop")));
+         Routine_Name   => "Test_Position_Stop",
+         Suite_Name     => Suite_Name);
 
-      Test.Add_Routine (AUnit.Test_Cases.Routine_Spec'(
+      Test.Add_Optional_Routine (
+         Needs_Camera   => True,
          Routine        => Test_Position_Up'access,
-         Routine_Name   => AUnit.Format ("Test_Position_Up")));
+         Routine_Name   => "Test_Position_Up",
+         Suite_Name     => Suite_Name);
 
-      Test.Add_Routine (AUnit.Test_Cases.Routine_Spec'(
+      Test.Add_Optional_Routine (
+         Needs_Camera   => True,
          Routine        => Test_Position_Up_Left'access,
-         Routine_Name   => AUnit.Format ("Test_Position_Up_Left")));
+         Routine_Name   => "Test_Position_Up_Left",
+         Suite_Name     => Suite_Name);
 
-      Test.Add_Routine (AUnit.Test_Cases.Routine_Spec'(
+      Test.Add_Optional_Routine (
+         Needs_Camera   => True,
          Routine        => Test_Position_Up_Right'access,
-         Routine_Name   => AUnit.Format ("Test_Position_Up_Right")));
+         Routine_Name   => "Test_Position_Up_Right",
+         Suite_Name     => Suite_Name);
 
 --    Test.Add_Routine (AUnit.Test_Cases.Routine_Spec'(
+--       Needs_Camera   => True,
 --       Routine        => Test_Power'access,
---       Routine_Name   => AUnit.Format ("Test_Power")));
+--       Routine_Name   => "Test_Power",
 
-      Test.Add_Routine (AUnit.Test_Cases.Routine_Spec'(
+      Test.Add_Optional_Routine (
+         Needs_Camera   => True,
          Routine        => Test_Recall_Memory'access,
-         Routine_Name   => AUnit.Format ("Test_Recall_Memory")));
+         Routine_Name   => "Test_Recall_Memory",
+         Suite_Name     => Suite_Name);
 
-      Test.Add_Routine (AUnit.Test_Cases.Routine_Spec'(
+      Test.Add_Optional_Routine (
+         Needs_Camera   => True,
          Routine        => Test_Recall_Set'access,
-         Routine_Name   => AUnit.Format ("Test_Recall_Set")));
+         Routine_Name   => "Test_Recall_Set",
+         Suite_Name     => Suite_Name);
 
 --    Test.Add_Routine (AUnit.Test_Cases.Routine_Spec'(
 --       Routine        => Test_Recall_Speed'access,
---       Routine_Name   => AUnit.Format ("Test_Recall_Speed")));
+--       Routine_Name   => "Test_Recall_Speed",
 --
 --    Test.Add_Routine (AUnit.Test_Cases.Routine_Spec'(
 --       Routine        => Test_Zoom_Direct'access,
---       Routine_Name   => AUnit.Format ("Test_Zoom_Direct")));
+--       Routine_Name   => "Test_Zoom_Direct",
 --
 --    Test.Add_Routine (AUnit.Test_Cases.Routine_Spec'(
 --       Routine        => Test_Zoom_Tele'access,
---       Routine_Name   => AUnit.Format ("Test_Zoom_Tele")));
+--       Routine_Name   => "Test_Zoom_Tele",
 --
       Log_Out (Debug);
    end Register_Tests;
@@ -278,7 +307,7 @@ package body Camera.Lib.Base.Command_Tests is
                         renames Standard.Camera.Lib.Unit_Test.
                      Get_Camera_Unit_Test_Constant_Options.all;
       Brand       : Standard.Camera.Brand_Type renames
-                     Options.Camera_Library_Options.Camera_Options.Brand;
+                     Options.Nested_Options.Brand;
       Test_Suite  : constant AUnit.Test_Suites.Access_Test_Suite :=
                      new AUnit.Test_Suites.Test_Suite;
       Test        : constant Test_Access := new Test_Type (Brand);
@@ -1116,12 +1145,14 @@ package body Camera.Lib.Base.Command_Tests is
       Length                     : in     Duration) is
    ---------------------------------------------------------------
 
-      Options                    : Standard.Camera.Lib.Unit_Test.
-                                    Unit_Test_Program_Options_Type'class
-                                       renames Standard.Camera.Lib.Unit_Test.
-                                          Get_Camera_Unit_Test_Constant_Options.all;
+      Options        : Standard.Camera.Lib.Unit_Test.
+                        Unit_Test_Program_Options_Type'class
+                           renames Standard.Camera.Lib.Unit_Test.
+                              Get_Camera_Unit_Test_Constant_Options.all;
+      If_Emulation   : Boolean renames Options.Nested_Options.
+                        If_Emulation;
    begin
-      if not Options.Camera_Library_Options.If_Emulation then
+      if not If_Emulation then
          delay Length;
       end if;
    end Wait;

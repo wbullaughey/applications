@@ -128,7 +128,7 @@ package Video.Lib is
       Directory                  : ADA_LIB.Strings.Unlimited.String_Type;
                                     -- set by runstring option 'c'
       If_Emulation               : Boolean := False;
-      Location                   : Location_Type := Remote;
+--    Location                   : Location_Type := Local; moved to camera_state
 -- should be in state
 --    Camera_Address             : Ada_Lib.Socket_IO.Address_Access := Null;
 --    Port_Number                : Port_Type;
@@ -140,16 +140,17 @@ package Video.Lib is
    type Options_Constant_Class_Access
                                  is access constant Options_Type'class;
 
-   function Address_Kind (
-     Options                     : in     Options_Type
-   ) return Address_Kind_Type;
+-- function Address_Kind (
+--   Options                     : in     Options_Type
+-- ) return Address_Kind_Type;
 
    overriding
    function Initialize (
      Options                     : in out Options_Type;
      From                        : in     String := Ada_Lib.Trace.Here
    ) return Boolean
-   with pre => Options.Verify_Preinitialize;
+   with pre    => Options.Verify_Preinitialize,
+        post   => Options.Verify_Initialized;
 
    overriding
    function Process_Option (  -- process one option
@@ -157,7 +158,7 @@ package Video.Lib is
       Iterator : in out Ada_Lib.Options.Command_Line_Iterator_Interface'class;
       Option   : in     Ada_Lib.Options.Base_Flag_Option_Type'class
    ) return Boolean
-   with pre => Options.Initialized;
+   with pre => Options.Verify_Initialized;
 -- with Pre => not Ada_Lib.Options.Have_Options;
 
    overriding
@@ -172,12 +173,12 @@ package Video.Lib is
       Length                     : in     Natural;
       From                       : in     String := Ada_Lib.Trace.Here);
 
-   function Hex is new Hex_IO.Modular_Hex (Data_Type);
-   function Hex is new Hex_IO.Modular_Hex (Value_Type);
-
    function Have_Preset (
       Which_Preset               : in     Which_Preset_Type
    ) return Boolean;
+
+   function Hex is new Hex_IO.Modular_Hex (Data_Type);
+   function Hex is new Hex_IO.Modular_Hex (Value_Type);
 
    function Image (
       Value                      : in     Data_Type

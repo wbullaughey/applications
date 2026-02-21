@@ -7,6 +7,7 @@ with Ada_Lib.OS;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
 with Ada_Lib.Trace_Tasks;
 with Ada_Lib.Unit_Test;
+with Camera.Lib.Options;
 with Camera.Lib.Unit_Test;
 with Camera.Command_Queue;
 with Command_Name;
@@ -15,8 +16,9 @@ with Command_Name;
 
 procedure Camera_AUnit is
 
-   Options              : aliased Camera.Lib.Unit_Test.Unit_Test_Program_Options_Type;
-   Debug                : Boolean renames Options.Main_Debug;
+   Options  : aliased Camera.Lib.Unit_Test.Unit_Test_Program_Options_Type (
+               Multi_Test  => True);
+   Debug    : Boolean renames Camera.Lib.Options.Camera_Options.Main_Debug;
 
 begin
 --Debug := True;
@@ -25,7 +27,7 @@ begin
    Put_Line (Command_Name);
    Ada_Lib.Options.Nested.Set_Ada_Lib_Nested_Options (
       Ada_Lib.Options.Nested.Nested_Options_Type (
-         Options.Camera_Library_Options)'unchecked_access);
+         Options.Nested_Options)'unchecked_access);
    Ada_Lib.Options.Set_Ada_Lib_Program_Options (
       Ada_Lib.Options.Program.Program_Options_Type (
          Options)'unchecked_access);

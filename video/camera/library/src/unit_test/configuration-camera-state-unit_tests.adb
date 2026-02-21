@@ -1,16 +1,13 @@
 with Ada.Exceptions;
---with Ada_Lib.GNOGA;
 with Ada_Lib.Options;
 with Ada_Lib.String_Quote; use Ada_Lib.String_Quote;
 with Ada_Lib.Strings; use Ada_Lib.Strings;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
 with Ada_Lib.Unit_Test;
---with Ada_Lib.Unit_Test.Test_Cases;
---with Base;
 with AUnit.Assertions; use AUnit.Assertions;
 with AUnit.Test_Cases;
---with Camera.Lib.Unit_Test;
---with Hex_IO;
+with Camera.Base;
+with Camera.Lib.Options.Unit_Test;
 with Video.Lib;
 
 package body Configuration.Camera.State.Unit_Tests is
@@ -66,14 +63,13 @@ package body Configuration.Camera.State.Unit_Tests is
    procedure Test_Values (
       Test                       : in out AUnit.Test_Cases.Test_Case'class);
 
--- type Connection_Data_Type     is new GNOGA_Ada_Lib.Connection_Data_Type
---                                  with null record;
-   Debug                         : Boolean := False;
+   Debug       : Boolean renames Standard.Camera.Lib.Options.Unit_Test.
+                  Camera_Lib_Unit_Test.Configuration_Setup_Debug;
 
-   Suite_Name                    : constant String := "State";
+   Suite_Name  : constant String := "State";
 
-   Test_State               : constant String :=
-                                    "test_state.cfg";
+   Test_State  : constant String :=
+                       "test_state.cfg";
 
  ---------------------------------------------------------------
    overriding
@@ -125,10 +121,11 @@ package body Configuration.Camera.State.Unit_Tests is
    begin
       Log_In (Debug);
 
-      Test.Add_Routine (AUnit.Test_Cases.Routine_Spec'(
+      Test.Add_Optional_Routine (
+         Needs_Camera   => True,
          Routine        => Test_Values'access,
-         Routine_Name   => AUnit.Format ("Test_Values")));
-
+         Routine_Name   => "Test_Values",
+         Suite_Name     => Suite_Name);
       Log_Out (Debug);
 
    end Register_Tests;
@@ -162,7 +159,7 @@ package body Configuration.Camera.State.Unit_Tests is
                         renames Standard.Camera.Lib.Unit_Test.
                            Get_Camera_Unit_Test_Constant_Options.all;
       Brand       : Standard.Camera.Brand_Type renames
-                     Options.Camera_Library_Options.Camera_Options.Brand;
+                     Options.Nested_Options.Brand;
       Test_Suite  : constant AUnit.Test_Suites.Access_Test_Suite
                      := new AUnit.Test_Suites.Test_Suite;
       Load_Test   : constant Configuration_Load_Test_Access :=
@@ -199,18 +196,21 @@ package body Configuration.Camera.State.Unit_Tests is
 -- pragma Unreferenced (Test);
    ---------------------------------------------------------------
 
-      Local_Test                 : Configuration_Load_Test_Type renames
-                                    Configuration_Load_Test_Type (Test);
-      Options                    : Standard.Camera.Lib.Unit_Test.
-                                    Unit_Test_Program_Options_Type'class
-                                       renames Standard.Camera.Lib.Unit_Test.
-                                          Get_Camera_Unit_Test_Constant_Options.all;
---    State                      : Configuration.Camera.State.State_Type renames
---                                  Connection_Data.State;
+      Local_Test  : Configuration_Load_Test_Type renames
+                     Configuration_Load_Test_Type (Test);
+      Options     : Standard.Camera.Lib.Unit_Test.
+                     Unit_Test_Options_Class_Access :=
+                        Standard.Camera.Lib.Unit_Test.
+                           Get_Camera_Unit_Test_Constant_Options;
+
+      Configuration
+                  : Standard.Camera.Base.Configuration_Type renames
+                     Local_Test.Configuration;
+--    Location    : constant Video.Lib.Location_Type :=
+--                   Configuration.Get_Location;
    begin
       Log_In (Debug);
-      Local_Test.Configuration_State.Load (
-         Options.Camera_Library_Options.Location, Test_State);
+      Configuration.Load (Options.Get_Configuration_Path);
       Log_Out (Debug);
 
    exception
@@ -269,10 +269,12 @@ package body Configuration.Camera.State.Unit_Tests is
                                  Get_Camera_Unit_Test_Constant_Options.all;
             Configuration_State
                               : Configuration.Camera.State.State_Type
-                                 renames Local_Test.Configuration_State;
+                                 renames Local_Test.Configuration.Get_Configuration_State.all;
+--          Location          : Video.Lib.Location_Type renames
+--                               Options.Configuration.Get_Location;
          begin
             Log_Here (Debug, "set " & Configuration_State.Is_Loaded'img & " Number_Columns " &
-               " location " & Options.Camera_Library_Options.Location'img &
+--             " location " & Location'img &
                " address " & Image (Configuration_State.Get_Number_Columns'address) &
                " bits " & Configuration_State.Get_Number_Columns'size'img);
 --    Hex_IO.Dump_32 (Configuration_State.Get_Number_Columns'address, 32, 1, "number columns");
@@ -285,7 +287,8 @@ package body Configuration.Camera.State.Unit_Tests is
                                           Configuration_State.Get_Number_Configurations;
                Last_Preset             : constant Standard.Camera.Preset_ID_Type :=
                                           Video.Lib.Get_Last_Preset_ID;
-               Number_Rows             : constant Row_Type := Configuration_State.Get_Number_Rows;
+               Number_Rows             : constant Row_Type :=
+                                          Configuration_State.Get_Number_Rows;
 
             begin
                Log_Here (Debug,

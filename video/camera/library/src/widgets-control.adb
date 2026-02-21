@@ -6,7 +6,7 @@ with Camera.Base;
 with Camera.Main;
 with Configuration.Camera.Setup;
 with Configuration.Camera.State;
-with Camera.States;
+with Camera.Configurations;
 --with GNOGA_Ada_Lib;
 with Gnoga.Gui.Element.Common;
 with Gnoga.Gui.Element.Form;
@@ -212,7 +212,7 @@ not_implemented;
                                ID & "_")
                             & Widget_Name;
       State_Pointer     : constant Configuration.Camera.State.State_Constant_Access :=
-                           Camera.States.Get_Read_Only_Configuration_State;
+                           Camera.Configurations.Get_Read_Only_Configuration_State;
       State             : Configuration.Camera.State.State_Type renames
                            State_Pointer.all;
       Number_Columns    : constant Control_Column_Index_Type :=

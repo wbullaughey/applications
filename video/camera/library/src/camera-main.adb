@@ -216,14 +216,18 @@ package body Camera.Main is
 
    overriding
    procedure Set_Main_Created (
-      Window_Connection            : in out Full_Window_Connection_Type;
+      Window_Connection          : in out Full_Window_Connection_Type;
       Value                      : in     Boolean);
 
-   overriding
-   procedure Set_Main_Window (
-      Window_Connection         : in out Full_Window_Connection_Type;
-      Main_Window             : in     Gnoga.Gui.Window.
-                                          Pointer_To_Window_Class);
+-- procedure Set_Main_Window (
+--    Window_Connection          : in out Full_Window_Connection_Type;
+--    Value                      : in     Boolean);
+
+-- overriding
+-- procedure  Set_Connection_Data_Main_Window (
+--    Window_Connection         : in out Full_Window_Connection_Type;
+--    Main_Window             : in     Gnoga.Gui.Window.
+--                                        Pointer_To_Window_Class);
 
    overriding
    procedure Trigger_Update_Event (
@@ -699,7 +703,7 @@ return false;
 
       State_Pointer  : constant Configuration.Camera.State.
                         State_Constant_Access :=
-                           Camera.States.Get_Read_Only_Configuration_State;
+                           Camera.Configurations.Get_Read_Only_Configuration_State;
 
       State    : Configuration.Camera.State.State_Type renames
                   State_Pointer.all;
@@ -709,6 +713,7 @@ return false;
 --       " main window " & Image (Main_Window'address) &
 --       " connection data " & Image (Connection_Data'address));
 
+     Ada_Lib.GNOGA.Set_Main_Window (Main_Window'unchecked_access);
      Started := True;
 
      declare
@@ -948,7 +953,7 @@ not_implemented;
                               Full_Window_Connection_Class_Access (
                                  Object.Connection_Data);
       State                : Configuration.Camera.State.State_Type renames
-                              Standard.Camera.States.
+                              Standard.Camera.Configurations.
                                  Get_Read_Only_Configuration_State.all;
       Camera_CSS           : constant String := State.Get_CSS_Path;
 
@@ -973,7 +978,7 @@ not_implemented;
    ---------------------------------------------------------------
    overriding
    procedure Set_Main_Created (
-      Window_Connection            : in out Full_Window_Connection_Type;
+      Window_Connection          : in out Full_Window_Connection_Type;
       Value                      : in     Boolean) is
    ---------------------------------------------------------------
 
@@ -1044,17 +1049,17 @@ not_implemented;
 --    return Window_Connection.Shared_Connection;
 -- end Shared_Connection;
 
-   ---------------------------------------------------------------
-   overriding
-   procedure Set_Main_Window (
-      Window_Connection         : in out Full_Window_Connection_Type;
-      Main_Window             : in     Gnoga.Gui.Window.
-                                          Pointer_To_Window_Class) is
-   ---------------------------------------------------------------
-
-   begin
-      Window_Connection.Main_Window := Main_Window;
-   end Set_Main_Window;
+-- ---------------------------------------------------------------
+-- overriding
+-- procedure Set_Main_Window (
+--    Window_Connection         : in out Full_Window_Connection_Type;
+--    Main_Window             : in     Gnoga.Gui.Window.
+--                                        Pointer_To_Window_Class) is
+-- ---------------------------------------------------------------
+--
+-- begin
+--    Window_Connection.Main_Window := Main_Window;
+-- end Set_Main_Window;
 
 -- ---------------------------------------------------------------
 -- procedure Set_Mouse_Action (

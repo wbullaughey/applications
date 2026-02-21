@@ -66,8 +66,8 @@ package Configuration.Camera.Setup is
       What                       : in     String := "";
       From                       : in     String := Ada_Lib.Trace.Here);
 
-   function File_Path
-   return String;
+-- function File_Path
+-- return String;
 
    function Get_Configuration (
       Setup                      : in     Setup_Type;

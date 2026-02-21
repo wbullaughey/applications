@@ -5,7 +5,7 @@ with Ada_Lib.String_Quote; use Ada_Lib.String_Quote;
 with Ada_Lib.Strings.Unlimited;use Ada_Lib.Strings.Unlimited;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
 with Camera.Commands.PTZ_Optics;
-with Camera.States;
+with Camera.Configurations;
 with Configuration.Camera.State;
 with GNAT.Sockets;
 
@@ -15,7 +15,7 @@ package body Camera.Base is
 
 -- use type Camera_ID_Type;
 
-   type Full_Camera_State_Type is new Camera_State_Type with record
+   type Full_Configuration_Type is new Configuration_Type with record
       Camera            : Standard.Camera.Commands.Camera_Class_Access := Null;
       Camera_ID         : Camera_ID_Type;
       Camera_Name       : Ada_Lib.Strings.Unlimited.String_Type;
@@ -28,53 +28,223 @@ package body Camera.Base is
                            Null;
    end record;
 
--- type Full_Camera_State_Access
---                      is access Full_Camera_State_Type;
--- type Full_Camera_State_Class_Access
---                      is access Full_Camera_State_Type'class;
+-- type Full_Configuration_Access
+--                      is access Full_Configuration_Type;
+-- type Full_Configuration_Class_Access
+--                      is access Full_Configuration_Type'class;
 
--- function Camera_State_Equal (
---    Left, Right                : in     Full_Camera_State_Access
+-- function Configuration_Equal (
+--    Left, Right                : in     Full_Configuration_Access
 -- ) return Boolean;
 
    overriding
    function Get_Camera (
-      Camera_State      : in     Full_Camera_State_Type
+      Configuration      : in     Full_Configuration_Type
    )return Camera.Commands.Camera_Class_Access;
 
    overriding
    function Get_Camera_ID (
-      Camera_State      : in     Full_Camera_State_Type
+      Configuration      : in     Full_Configuration_Type
    ) return Camera_ID_Type;
 
    overriding
    function Get_Camera_Name (
-      Camera_State      : in     Full_Camera_State_Type
+      Configuration      : in     Full_Configuration_Type
    ) return String;
 
-   overriding
-   function Get_Camera_State_Pan_Speed (
-      Camera_State      : in     Full_Camera_State_Type
-   ) return Data_Type;
+   ----------------------------------------------------------------
+   procedure Allocate (
+      State    : in out Configuration_Type) is
+   ----------------------------------------------------------------
 
-   overriding
-   function Get_Camera_State_Tilt_Speed (
-      Camera_State      : in     Full_Camera_State_Type
-   ) return Data_Type;
+   begin
+      Log_In (Debug);
+      State.Configuration_Setup := new Standard.Configuration.Camera.Setup.Setup_Type;
+      State.Configuration_State := new Standard.Configuration.Camera.State.State_Type;
+      Log_Out (Debug);
+   end Allocate;
 
-   overriding
-   procedure Set_Mouse_Action (
-      Camera_State      : in     Full_Camera_State_Type;
-      Action            : in     Camera.Mouse_Click_Action_Type);
+   ----------------------------------------------------------------
+   procedure Deallocate (
+      State    : in out Configuration_Type) is
+   ----------------------------------------------------------------
+
+   begin
+      Log_In (Debug);
+      Free (State.Configuration_Setup);
+      Free (State.Configuration_State);
+      Log_Out (Debug);
+   end Deallocate;
+
+   ----------------------------------------------------------------
+   function Get_Configuration_Setup (
+      Configuration      : in     Configuration_Type
+   ) return access Standard.Configuration.Camera.Setup.Setup_Type is
+   ----------------------------------------------------------------
+
+   begin
+      return Configuration.Configuration_Setup;
+   end Get_Configuration_Setup;
+
+   ----------------------------------------------------------------
+   function Get_Configuration_State (
+      Configuration      : in     Configuration_Type
+   ) return Configuration.Camera.State.State_Access is
+   ----------------------------------------------------------------
+
+   begin
+      return Configuration.Configuration_State;
+   end Get_Configuration_State;
+
+-- ----------------------------------------------------------------
+-- function Get_Configuration (
+--    Camera_State      : in     Camera_State_Type;
+--    Index             : in     Positive
+-- ) return Configuration_Access is
+-- ----------------------------------------------------------------
+--
+-- begin
+--    return Camera_State.Configurations (Index);
+-- end Get_Configuration;
+
+   ----------------------------------------------------------------
+   function Get_Configuration_State (
+      Configuration      : in     Configuration_Type
+   ) return access Standard.Configuration.Camera.State.State_Type'class is
+   ----------------------------------------------------------------
+
+   begin
+      return State.Configuration_State;
+   end Get_Configuration_State;
+
+   ----------------------------------------------------------------
+   function Get_Current_Camera_ID
+   return Camera_ID_Type is
+   ----------------------------------------------------------------
+
+   begin
+log_here;
+declare
+result : constant Camera_ID_Type := Current_Camera_ID;
+begin
+log_here ("result " & result'img);
+      return result;
+end;
+   end Get_Current_Camera_ID;
+
+ ----------------------------------------------------------------
+ function Get_Read_Only_Global_State (
+    Camera_ID   : Camera_ID_Type'class := Null_Camera_ID
+ ) return Configuration_Constant_Access is
+ ----------------------------------------------------------------
+
+ begin
+    return Configuration_Constant_Access (Allocate_State);
+ end Get_Read_Only_Global_State;
+
+   ----------------------------------------------------------------
+   function Has_Camera_State (
+      Configuration      : in     Configuration_Type
+   ) return Boolean is
+   ----------------------------------------------------------------
+
+   begin
+      return State.Camera_State /= Null;
+   end Has_Camera_State;
+
+   ----------------------------------------------------------------
+   function Has_Configuration_Setup (
+      Configuration      : in     Configuration_Type
+   ) return Boolean is
+   ----------------------------------------------------------------
+
+   begin
+      return Log_Here (State.Configuration_Setup /= Null,
+         Debug or Trace_Pre_Post_Conditions);
+   end Has_Configuration_Setup;
+
+   ----------------------------------------------------------------
+   function Has_Configuration_State (
+      Configuration      : in     Configuration_Type
+   ) return Boolean is
+   ----------------------------------------------------------------
+
+   begin
+      return Log_Here (State.Configuration_State /= Null,
+         Debug or Trace_Pre_Post_Conditions);
+   end Has_Configuration_State;
+
+   ----------------------------------------------------------------
+   function Has_Current_Camera_ID
+   return Boolean is
+   ----------------------------------------------------------------
+
+   begin
+Log_Here (Current_Camera_ID.image);
+log_here (Current_Camera_ID.Set'img);
+      return Current_Camera_ID.Set;
+   end Has_Current_Camera_ID;
+
+ ----------------------------------------------------------------
+ procedure Load (
+    Location    : in     Video.Lib.Location_Type) is
+ ----------------------------------------------------------------
+
+    Cameras           : Ada_Lib.Configuration.Configuration_Type;
+    Current_Directory : constant String :=
+                         Standard.Camera.Lib.Options.Current_Directory;
+    File_Name         : constant String := "cameras.cfg";
+    Path              : constant String :=
+                         (if Current_Directory'length > 0 then
+                            Current_Directory & "/"
+                         else
+                            "") & File_Name;
+    State             : constant Configuration_Access := new Configuration_Type;
+
+ begin
+    Cameras.Load (Path, Create => False);
+    declare
+       Number_Cameras : constant Natural :=
+                         Cameras.Get_Integer ("number_cameras");
+    begin
+       for Camera in 1 .. Number_Cameras loop
+          declare
+             Camera_Number     : constant String :=
+                                  Ada_Lib.Strings.Trim (Camera'img);
+             State_Name        : constant String := Cameras.Get_String (
+                                  "state_" & Camera_Number);
+             Setup_Name        : constant String := Cameras.Get_String (
+                                  "setup_" & Camera_Number);
+          begin
+             Load (State.all, Setup_Name, State_Name);
+          end;
+       end loop;
+    end;
+ end Load;
+
+-- overriding
+-- function Get_Configuration_Pan_Speed (
+--    Configuration      : in     Full_Configuration_Type
+-- ) return Data_Type;
+--
+-- overriding
+-- function Get_Configuration_Tilt_Speed (
+--    Configuration      : in     Full_Configuration_Type
+-- ) return Data_Type;
+--
+-- overriding
+-- procedure Set_Mouse_Action (
+--    Configuration      : in     Full_Configuration_Type;
+--    Action            : in     Camera.Mouse_Click_Action_Type);
 
    ---------------------------------------------------------------
-   function Allocate_Camera_State
-   return Camera_State_Class_Access is
+   function Allocate_Configuration
+   return Configuration_Class_Access is
    ---------------------------------------------------------------
 
    begin
-      return Camera_State_Class_Access'(new Full_Camera_State_Type);
-   end Allocate_Camera_State;
+      return Configuration_Class_Access'(new Full_Configuration_Type);
+   end Allocate_Configuration;
 
 --   ---------------------------------------------------------------
 --   procedure Allocate_Connection_Data is
@@ -99,84 +269,105 @@ package body Camera.Base is
 --      Log_Here (Debug);
 ----    Base_Data.Get_Connection_Data.Main_Data := new Main.Window_Connection_Type;
 --      GNOGA_Ada_Lib.Set_Connection_Data (
---         GNOGA_Ada_Lib.Connection_Data_Class_Access (Base_Data));
+--         Ada_Lib.GNOGA.Connection_Data_Class_Access (Base_Data));
 --      return Base_Data;
 --   end Allocate_Connection_Data;
 
 -- ----------------------------------------------------------------
--- function Camera_State_Equal (
---    Left, Right                : in     Full_Camera_State_Access
+-- function Configuration_Equal (
+--    Left, Right                : in     Full_Configuration_Access
 -- ) return Boolean is
 -- ----------------------------------------------------------------
 --
 -- begin
 --    return Left = Right;
--- end Camera_State_Equal;
+-- end Configuration_Equal;
 
    ----------------------------------------------------------------
    overriding
    function Get_Camera (
-      Camera_State      : in     Full_Camera_State_Type
+      Configuration      : in     Full_Configuration_Type
    )return Camera.Commands.Camera_Class_Access is
    ----------------------------------------------------------------
 
    begin
-      return Camera_State.Camera;
+      return Configuration.Camera;
    end Get_Camera;
 
    ----------------------------------------------------------------
    overriding
    function Get_Camera_ID (
-      Camera_State      : in     Full_Camera_State_Type
+      Configuration      : in     Full_Configuration_Type
    ) return Camera_ID_Type is
    ----------------------------------------------------------------
 
    begin
-      return Camera_State.Camera_ID;
+      return Configuration.Camera_ID;
    end Get_Camera_ID;
 
    ----------------------------------------------------------------
    overriding
    function Get_Camera_Name (
-      Camera_State      : in     Full_Camera_State_Type
+      Configuration      : in     Full_Configuration_Type
    ) return String is
    ----------------------------------------------------------------
 
    begin
-      return Camera_State.Camera_Name.Coerce;
+      return Configuration.Camera_Name.Coerce;
    end Get_Camera_Name;
 
    ----------------------------------------------------------------
    overriding
-   function Get_Camera_State_Pan_Speed (
-      Camera_State      : in     Full_Camera_State_Type
+   function Get_Configuration_Pan_Speed (
+      Configuration      : in     Full_Configuration_Type
    ) return Data_Type is
    ----------------------------------------------------------------
 
    begin
-      return Full_Camera_State_Type'class (Camera_State).Camera_Pan_Speed;
-   end Get_Camera_State_Pan_Speed;
+      return Full_Configuration_Type'class (Configuration).Camera_Pan_Speed;
+   end Get_Configuration_Pan_Speed;
 
    ----------------------------------------------------------------
    overriding
-   function Get_Camera_State_Tilt_Speed (
-      Camera_State      : in     Full_Camera_State_Type
+   function Get_Configuration_Tilt_Speed (
+      Configuration      : in     Full_Configuration_Type
    ) return Data_Type is
    ----------------------------------------------------------------
 
    begin
-      return Full_Camera_State_Type'class (Camera_State).Camera_Pan_Speed;
-   end Get_Camera_State_Tilt_Speed;
+      return Full_Configuration_Type'class (Configuration).Camera_Pan_Speed;
+   end Get_Configuration_Tilt_Speed;
 
 -- ----------------------------------------------------------------
--- function Get_Camera_State (
---    Camera_State      : in     Camera_State_Type
--- ) return Camera_State_Class_Access is
+-- function Get_Configuration (
+--    Configuration      : in     Configuration_Type
+-- ) return Configuration_Class_Access is
 -- ----------------------------------------------------------------
 --
 -- begin
---    return Camera_State_Class_Access (Full_Camera_State'access);
--- end Get_Camera_State;
+--    return Configuration_Class_Access (Full_Configuration'access);
+-- end Get_Configuration;
+
+   ----------------------------------------------------------------
+   function Get_Configuration (
+      Configurations    : in     Configurations_Type;
+      Index             : in     Positive
+   ) return Configuration_Class_Access is
+   ----------------------------------------------------------------
+
+   begin
+      return Configurations.Configurations (Index)'unchecked_access;
+   end Get_Configuration;
+
+   ----------------------------------------------------------------
+   function Get_Configuration_State (
+      Configuration        : in     Configuration_Type
+   ) return access Standard.Configuration.Camera.State.State_Type;
+   ----------------------------------------------------------------
+
+   begin
+      return Configuration.Configuration_State;
+   end Get_Configuration_State;
 
 --   ----------------------------------------------------------------
 --   -- gets connection data for current active window
@@ -234,6 +425,46 @@ package body Camera.Base is
 --not_implemented;
 --return null;
 --   end Get_Connection_Data;
+
+   ----------------------------------------------------------------
+   function Get_Location (
+      Configuration     : in     Configuration_Type
+   ) return Video.Lib.Location_Type is
+   ----------------------------------------------------------------
+
+   begin
+      return Configuration.Location;
+   end Get_Location;
+
+   ----------------------------------------------------------------
+   function Get_Setup_Path (
+      Configuration     : in     Configuration_Type
+   ) return String is
+   ----------------------------------------------------------------
+
+   begin
+      return Configuration.Setup_Path.Coerce;
+   end Get_Setup_Path;
+
+   ----------------------------------------------------------------
+   function Get_Simulate (
+      Configuration     : in     Configuration_Type
+   ) return Boolean is
+   ----------------------------------------------------------------
+
+   begin
+      return Configuration.Simulate;
+   end Get_Simulate;
+
+   ----------------------------------------------------------------
+   function Get_State_Path (
+      Configuration     : in     Configuration_Type
+   ) return String is
+   ----------------------------------------------------------------
+
+   begin
+      return Configuration.State_Path.Coerce;
+   end Get_State_Path;
 
    ----------------------------------------------------------------
    procedure Halt is
@@ -323,6 +554,62 @@ package body Camera.Base is
 --         raise Failed with "could not Initialize_GNOGA";
 --   end Initialize_GNOGA;
 
+   ---------------------------------------------------------------
+   procedure Load (
+      Configurations    : in out Configurations_Class_Access;
+      Path              : in     String) is
+   ---------------------------------------------------------------
+
+   begin
+      Log_In (Debug, Quote ("path", Path));
+      Configurations := new Configuration_Type;
+
+      declare
+         Config            : Ada_Lib.Configuration.Configuration_Type;
+
+      begin
+         Config.Load (Path, False);
+         Configurations.Number_Configurations := Natural (Config.Get_Integer (
+            "number configurations"));
+         for Configuration_Index in Configuration.Number_Configurations loop
+            declare
+               Configuration  : Configuration_Class_Access renames
+                                 Configuratiions.Configurations (Configuration_Index);
+               Configuration_Path   : constant String := Path & "." &
+                                       Trim (Configuration_Index'img);
+            begin
+               Configuration.Configuration_Setup := new Configuration.Camera.Setup.Setup_Type;
+               Configuration.Configuration_Setup.Load (Configuration_Path);
+               Configuration.Configuration_State := new Configuration.Camera.State.State_Type;
+               Configuration.Configuration_State.Load (Configuration_Path);
+            end;
+         end loop;
+      end;
+      Log_Out (Debug);
+   end Load;
+
+   ---------------------------------------------------------------
+   procedure Load_Setup (
+      Configuration      :    out Configuration_Type;
+      Path              : in     String) is
+   ---------------------------------------------------------------
+
+   begin
+      Configuration.Configuration_Setup.Load (Path);
+not_implemented;
+   end Load_Setup;
+
+   ---------------------------------------------------------------
+   procedure Load_State (
+      Configuration      :    out Configuration_Type;
+      Path              : in     String) is
+   ---------------------------------------------------------------
+
+   begin
+      Configuration.Configuration_State.Load (Path);
+not_implemented;
+   end Load_State;
+
 --   ----------------------------------------------------------------
 --   function New_Base_Data (
 --      Window_ID                  : in     Window_ID_Type
@@ -337,34 +624,34 @@ package body Camera.Base is
 
    ---------------------------------------------------------------
    procedure Open_Camera (
-      Camera         : in out Camera_State_Type;
+      Camera         : in out Configuration_Type;
       Description    : in     Ada_Lib.Strings.String_Constant_Access) is
    ---------------------------------------------------------------
 
       State_Pointer     : constant Configuration.Camera.State.
                            State_Constant_Access := Standard.Camera.
-                              States.Get_Read_Only_Configuration_State;
+                              Configurations.Get_Read_Only_Configuration_State;
       State             : Configuration.Camera.State.State_Type renames
                         State_Pointer.all;
       Port_Number       : constant Standard.Camera.Port_Type :=
                            State.Get_Host_Port;
       Camera_Address    : constant Ada_Lib.Socket_IO.Address_Type :=
                            State.Get_Host_Address;
-      Full_Camera_State : Full_Camera_State_Type renames
-                           Full_Camera_State_Type (
-                              Camera_State_Type'class (Camera));
+      Full_Configuration : Full_Configuration_Type renames
+                           Full_Configuration_Type (
+                              Configuration_Type'class (Camera));
 
    begin
       Log_In (Debug,
          Quote (" Camera_URL", Camera_Address.Image) &
          " port" & Port_Number'img);
 
-      Full_Camera_State.Camera :=
+      Full_Configuration.Camera :=
          Standard.Camera.Commands.Camera_Class_Access'(
             new Standard.Camera.Commands.PTZ_Optics.PTZ_Optics_Type (
                Description));
 
-      Full_Camera_State.Camera.Open (Camera_Address, Port_Number);
+      Full_Configuration.Camera.Open (Camera_Address, Port_Number);
       Log_Out (Debug);
 
    exception
@@ -395,6 +682,26 @@ package body Camera.Base is
       Window.Alert (Error_Message);
    end Report_Exception;
 
+   ----------------------------------------------------------------
+   procedure Set_Configuration_Setup (
+      Configuration        : in out Configuration_Type;
+      Configuration_Setup  : in     Standard.Configuration.Camera.Setup.Setup_Access) is
+   ----------------------------------------------------------------
+
+   begin
+      Configuration.Configuration_Setup := Configuration_Setup;
+   end Set_Configuration_Setup;
+
+   ----------------------------------------------------------------
+   procedure Set_Configuration_State (
+      Configuration        : in out Configuration_Type;
+      Configuration_State  : in     Standard.Configuration.Camera.State.State_Access) is
+   ----------------------------------------------------------------
+
+   begin
+     Configuration.Configuration_State := Configuration_State;
+   end Set_Configuration_State;
+
 -- ---------------------------------------------------------------
 -- procedure Set_Main_Window_Connection_ID (
 --    Window_ID                  : in     Gnoga.Types.Connection_ID) is
@@ -407,7 +714,7 @@ package body Camera.Base is
    ----------------------------------------------------------------
    overriding
    procedure Set_Mouse_Action (
-      Camera_State      : in     Full_Camera_State_Type;
+      Configuration      : in     Full_Configuration_Type;
       Action            : in     Mouse_Click_Action_Type) is
    ----------------------------------------------------------------
 

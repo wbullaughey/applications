@@ -7,27 +7,21 @@ with ADA_LIB.OS;
 with Ada_Lib.Options.Runstring;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
 with Command_Name;
+with Video.Lib;
 
 package body Camera.Lib.Options is
 
 -- use type Ada_Lib.Options.Interface_Options_Constant_Class_Access;
 -- use type Ada_Lib.Options.Flag_List_Type;
 
-   Debug_Options                 : Boolean renames Camera_Options.Options_Debug;
-   Trace_Option                  : constant Character := 'T';
-   Options_With_Parameters       : aliased constant
-                                    Ada_Lib.Options.Flag_List_Type :=
-                                       Ada_Lib.Options.Create.Create_One (
-                                          Trace_Option, Ada_Lib.Options.Unmodified_Flag);
--- Options_Without_Parameters    : aliased constant
---                                  Ada_Lib.Options.Flag_List_Type :=
---                                     Ada_Lib.Options.Null_Flag_List;
---                                     Ada_Lib.Options.Create_Options (
---                                        "m", Ada_Lib.Options.Unmodified_Flag) &
---                                     Ada_Lib.Options.Create_Options (
---                                        'q', Ada_Lib.Help.Modifier);
--- Protected_Options             : Ada_Lib.Options.Flags.
---                                  Program_Options_Class_Access := Null;
+   Debug_Options           : Boolean renames Camera_Options.Options_Debug;
+   Trace_Option            : constant Character := 'T';
+   Options_With_Parameters : aliased constant
+                              Ada_Lib.Options.Flag_List_Type :=
+                                 Ada_Lib.Options.Create.Create_One (
+                                    Trace_Option, Ada_Lib.Options.
+                                       Unmodified_Flag);
+   Recursed                : Boolean := False;
 
    -------------------------------------------------------------------------
    function Current_Directory  -- set by runstring option 'c' else null
@@ -38,26 +32,55 @@ package body Camera.Lib.Options is
       return Get_Camera_Readonly_Options.Directory.Coerce;
    end Current_Directory;
 
---   -------------------------------------------------------------------------
---   function Get_Camera_Modifyable_Options
---   return Ada_Lib.Options.Flags.Verification_Options_Class_Access is
---   -------------------------------------------------------------------------
+-- -------------------------------------------------------------------------
+-- function Has_Camera
+-- return Boolean is
+-- -------------------------------------------------------------------------
 --
---   begin
---      return Program_Options_Access (
---         Get_Modifiable_Program_Options);
---   end Get_Camera_Modifyable_Options;
+-- begin
+--    Log_In (Debug_Options);
+--    declare
+--       Options  : Ada_Lib.Options.
+--                   Abstract_Runtime_Options_Constant_Class_Access :=
+--                      Ada_Lib.Options.Get_Ada_Lib_Read_Only_Program_Options;
+--    begin
+--       if Debug_Options then
+--          Tag_History (Options.all'tag);
+--       end if;
 --
---   -------------------------------------------------------------------------
---   function Get_Camera_Read_Only_Options
---   return Ada_Lib.Options.Flags.Verification_Options_Constant_Class_Access is
---   -------------------------------------------------------------------------
+--       declare
+--          Program_Options   : Program_Options_Constant_Class_Access renames
+--                               Program_Options_Constant_Class_Access (
+--                                  Options);
+--       begin
+--          return Log_Out (Program_Options.Nested_Options.Location =
+--                   Video.Lib.Remote, Debug_Options);
+--       end;
+--    end;
 --
---   begin
---log_here ("unit testing " & Ada_Lib.Unit_Testing'img);
---      return (if Ada_Lib.Unit_Testing then
---         Ada_Lib.Options.Flags.Verification_Options_Constant_Class_Access);
---   end Get_Camera_Read_Only_Options;
+-- exception
+--    when Fault: others =>
+--       Trace_Exception (Fault);
+--       raise;
+--
+-- end Has_Camera;
+
+   -------------------------------------------------------------------------
+   overriding
+   function Initialize (
+     Options                     : in out Nested_Options_Type;
+     From                        : in     String := Ada_Lib.Trace.Here
+   ) return Boolean is
+   -------------------------------------------------------------------------
+
+   begin
+      Log_In_Checked (Recursed, Debug_Options or Trace_Options,
+         "from " & From & " options address " & Image (Options'address));
+
+      return Log_Out_Checked (Recursed,
+         Library_Options_Type (Options).Initialize,
+         Debug_Options or Trace_Options);
+   end Initialize;
 
    -------------------------------------------------------------------------
    overriding
@@ -77,15 +100,29 @@ package body Camera.Lib.Options is
          Ada_Lib.Options.Runstring.Without_Parameters,
          Ada_Lib.Options.Null_Flag_List);
 
---    Configuration.Camera.State.Read_Only_Global_Camera_State :=
---       new Configuration.Camera.State.State_Type;
-
       return Log_Out (
-         Options.GNOGA.Initialize and then
-         Options.Camera_Library.Initialize and then
+         Options.Nested_Options.Initialize and then
          Ada_Lib.Options.Program.Program_Options_Type (Options).Initialize,
          Debug_Options or Trace_Options);
    end Initialize;
+
+--   ----------------------------------------------------------------------------
+--   -- processes options it knows about and calls parent for others
+--   overriding
+--   function Process_Option (
+--      Options  : in out Nested_Options_Type;
+--      Iterator : in out Ada_Lib.Options.Command_Line_Iterator_Interface'class;
+--      Option   : in     Ada_Lib.Options.Base_Flag_Option_Type'class
+--   ) return Boolean is
+--   ----------------------------------------------------------------------------
+--
+--   begin
+--      Log_In (Trace_Options or Debug_Options, Option.Image);
+--not_implemented;
+--
+--      return Log_Out (True, Trace_Options or Debug_Options, "exit" & " option" &
+--         Option.Image & " handled");
+--   end Process_Option;
 
    ----------------------------------------------------------------------------
    -- processes options it knows about and calls parent for others
@@ -152,7 +189,7 @@ not_implemented;
 --    else
 --       Log_Out (Trace_Options or Debug_Options, "other " & Option.Image);
 --       return Options.GNOGA.Process_Option (Iterator, Option) or else
---          Options.Camera_Library.Process_Option (Iterator, Option) or else
+--          Options.Nested_Options.Process_Option (Iterator, Option) or else
 --          Ada_Lib.Options.Program.Program_Options_Type (Options).Process_Option (
 --             Iterator, Option);
 --    end if;
@@ -160,6 +197,18 @@ not_implemented;
       return Log_Out (True, Trace_Options or Debug_Options, "exit" & " option" &
          Option.Image & " handled");
    end Process_Option;
+
+--   ----------------------------------------------------------------------------
+--   overriding
+--   procedure Program_Help (
+--      Options                    : in     Nested_Options_Type;  -- only used for dispatch
+--      Help_Mode                  : in     ADA_LIB.Options.Help_Mode_Type) is
+--   ----------------------------------------------------------------------------
+--
+--   begin
+--      Log_In (Debug_Options or Trace_Options, "help mode " & Help_Mode'img);
+--not_implemented;
+--   end Program_Help;
 
    ----------------------------------------------------------------------------
    overriding
@@ -188,14 +237,14 @@ not_implemented;
 --       Put_Line ("      a               all");
 --       Put_Line ("      m               main program options");
 --       Put_Line ("      r               runtime options");
---       Put_Line ("      s               Camera.State.Debug options");
+--       Put_Line ("      s               Camera.Configuration.Debug options");
 --       New_Line;
 --
 --    end case;
 --
 --    Ada_Lib.Options.Program.Program_Options_Type (Options).Program_Help (Help_Mode);
 --    Options.GNOGA.Program_Help (Help_Mode);
---    Options.Camera_Library.Program_Help (Help_Mode);
+--    Options.Nested_Options.Program_Help (Help_Mode);
       Log_Out (Debug_Options or Trace_Options);
    end Program_Help;
 

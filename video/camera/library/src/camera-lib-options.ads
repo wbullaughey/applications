@@ -1,12 +1,8 @@
 with ADA_LIB.Command_Line_Iterator;
-with GNOGA_Options;
---with Ada_Lib.Options.Flags;
+with Ada_Lib.Options.Nested;
 with Ada_Lib.Options.Program;
 with ADA_LIB.Strings.Unlimited;use Ada_Lib.Strings.Unlimited;
---with Ada_Lib.Trace;
---with Ada_Lib.Socket_IO;
 with Gnoga.Gui.Base;
---with Camera.Lib;
 
 package Camera.Lib.Options is
 
@@ -24,14 +20,45 @@ package Camera.Lib.Options is
    end record;
 
    -- type used for application options
-   type Program_Options_Type     is limited new Ada_Lib.Options.Program.
-                                    Program_Options_Type with record
-      Camera_Library             : aliased Camera.Lib.Library_Options_Type;
+   type Nested_Options_Type      is limited new Library_Options_Type with record
+      Configuration_Path         : Ada_Lib.Strings.Unlimited.String_Type;
       Setup_Path                 : Ada_Lib.Strings.Unlimited.String_Type;
       State_Path                 : Ada_Lib.Strings.Unlimited.String_Type;
       Debug                      : Boolean := False;
-      GNOGA                      : GNOGA_Options.GNOGA_Options_Type;
       Template                   : Ada_Lib.Strings.Unlimited.String_Type;
+   end record;
+
+   type Nested_Options_Access    is access all Nested_Options_Type;
+   type Nested_Options_Class_Access
+                                 is access all Nested_Options_Type'class;
+   type Nested_Options_Constant_Class_Access
+                                 is access constant Nested_Options_Type'class;
+
+   overriding
+   function Initialize (
+     Options                     : in out Nested_Options_Type;
+     From                        : in     String := Ada_Lib.Trace.Here
+   ) return Boolean
+   with pre    => Options.Verify_Preinitialize,
+        post   => Options.Verify_Initialized;
+
+-- overriding
+-- function Process_Option (  -- process one option
+--    Options  : in out Nested_Options_Type;
+--    Iterator : in out Ada_Lib.Options.Command_Line_Iterator_Interface'class;
+--    Option   : in     Ada_Lib.Options.Base_Flag_Option_Type'class
+-- ) return Boolean
+-- with pre => Options.Verify_Initialized;
+--
+-- overriding
+-- procedure Program_Help (
+--    Options                    : in     Nested_Options_Type;  -- only used for dispatch
+--    Help_Mode                  : in     ADA_LIB.Options.Help_Mode_Type);
+
+   type Program_Options_Type     is limited new Ada_Lib.Options.Program.
+                                    Program_Options_Type with record
+      Nested_Options             : aliased Nested_Options_Type;
+      Camera_State_Path          : Ada_Lib.Strings.Unlimited.String_Type;
    end record;
 
    type Program_Options_Access   is access all Program_Options_Type;
@@ -44,20 +71,13 @@ package Camera.Lib.Options is
    return String
    with Pre => Have_Options;
 
--- function Get_Camera_Modifyable_Options
--- return Options_Class_Access
--- with Pre => Have_Options;
---
--- function Get_Camera_Read_Only_Options
--- return  Ada_Lib.Options.Flags.Verification_Options_Constant_Class_Access
--- with Pre => Have_Options;
-
    overriding
    function Initialize (
      Options                     : in out Program_Options_Type;
      From                        : in     String := Ada_Lib.Trace.Here
    ) return Boolean
-   with pre => Options.Verify_Preinitialize;
+   with pre    => Options.Verify_Preinitialize,
+        post   => Options.Verify_Initialized;
 
    overriding
    function Process_Option (  -- process one option
@@ -65,19 +85,18 @@ package Camera.Lib.Options is
       Iterator : in out Ada_Lib.Options.Command_Line_Iterator_Interface'class;
       Option   : in     Ada_Lib.Options.Base_Flag_Option_Type'class
    ) return Boolean
-   with pre => Options.Initialized;
--- with Pre => not Ada_Lib.Options.Have_Options;
+   with pre => Options.Verify_Initialized;
 
--- procedure Set_Protected_Options (
---    Options                    : in not null Ada_Lib.Options.Flags.
---                                  Program_Options_Class_Access
--- ) with Pre => Options /= Null and then
---               not Have_Options;
+   overriding
+   procedure Program_Help (
+      Options                    : in     Program_Options_Type;  -- only used for dispatch
+      Help_Mode                  : in     ADA_LIB.Options.Help_Mode_Type);
 
    package Camera_Options is
       AUnit_Debug                : Boolean := False;
       Base_Debug                 : Boolean := False;
       Base_Lib_Debug             : Boolean := False;
+      Camera_Control_Debug       : Boolean := False;
       Camera_Debug               : Boolean := False;
       Commands_Debug             : Boolean := False;
       Library_Debug              : Boolean := False;
@@ -97,16 +116,5 @@ package Camera.Lib.Options is
       State_Debug                : aliased Boolean := False;
    end Configuration_Options;
 private
-
--- overriding
--- procedure Process (     -- processes whole command line calling Process_Option for each option
---   Options                    : in out Program_Options_Type;
---   Iterator                   : in out ADA_LIB.Command_Line_Iterator.
---                                  Abstract_Package.Abstract_Iterator_Type'class);
-
-   overriding
-   procedure Program_Help (
-      Options                    : in     Program_Options_Type;  -- only used for dispatch
-      Help_Mode                  : in     ADA_LIB.Options.Help_Mode_Type);
 
 end Camera.Lib.Options;

@@ -37,20 +37,20 @@ package body Video.Lib is
                                           Is_Set      => False,
                                           ID          => 0));
 
-   ---------------------------------------------------------------
-   function Address_Kind (
-     Options                     : in     Options_Type
-   ) return Address_Kind_Type is
-   ---------------------------------------------------------------
-
-   begin
-      return (case Options.Location is
-         when Video.Lib.Remote => URL,
-
-         when Video.Lib.Local => IP,
-
-         when Video.Lib.No_Location => NOT_SET);
-   end Address_Kind;
+-- ---------------------------------------------------------------
+-- function Address_Kind (
+--   Options                     : in     Options_Type
+-- ) return Address_Kind_Type is
+-- ---------------------------------------------------------------
+--
+-- begin
+--    return (case Options.Location is
+--       when Video.Lib.Remote => URL,
+--
+--       when Video.Lib.Local => IP,
+--
+--       when Video.Lib.No_Location => NOT_SET);
+-- end Address_Kind;
 
    ---------------------------------------------------------------
    function Constructor (
@@ -269,24 +269,24 @@ package body Video.Lib is
 --             Options.Port_Number := Port_Type (
 --                Ada_Lib.Socket_IO.Port_Type (Iterator.Get_Integer));
 
-            when 'r' =>    -- remote camera
-               if    Options.Simulate and then
-                     not Ada_Lib.Options.Ada_Lib_Environment.Help_Test then
-                  Options.Bad_Option (
-                     "Remote option (r) and Simulate (E) are incompatable at " &
-                     Here);
-               end if;
-               Options.Location := Remote;
+--          when 'r' =>    -- remote camera
+--             if    Options.Simulate and then
+--                   not Ada_Lib.Options.Ada_Lib_Environment.Help_Test then
+--                Options.Bad_Option (
+--                   "Remote option (r) and Simulate (E) are incompatable at " &
+--                   Here);
+--             end if;
+--             Options.Location := Remote;
 --log_here ("remote " & Image (Options.Remote'address));
 
-            when 'S' =>    -- simulate Standard.Camera
-               if    Options.Location = Remote and then
-                     not Ada_Lib.Options.Ada_Lib_Environment.Help_Test then
-                  Options.Bad_Option (
-                     "Remote option (r) and Simulate (E) are incompatable at " &
-                     Here);
-               end if;
-               Options.Simulate := True;
+--          when 'S' =>    -- simulate Standard.Camera
+--             if    Options.Location = Remote and then
+--                   not Ada_Lib.Options.Ada_Lib_Environment.Help_Test then
+--                Options.Bad_Option (
+--                   "Remote option (r) and Simulate (E) are incompatable at " &
+--                   Here);
+--             end if;
+--             Options.Simulate := True;
 
             when Others =>
                Log_Exception (Debug or Trace_Options);
@@ -324,8 +324,8 @@ package body Video.Lib is
             Component, Ada_Lib.Help.Unmodified_Flag);
 --       Ada_Lib.Help.Create_Option ('p', "port option",
 --          "port option", Component, Ada_Lib.Help.Unmodified_Flag);
-         Ada_Lib.Help.Create_Option ('r', "", "remote camera", Component, Ada_Lib.Help.Unmodified_Flag);
-         Ada_Lib.Help.Create_Option ('s', "", "simulate camera", Component, Ada_Lib.Help.Unmodified_Flag);
+--       Ada_Lib.Help.Create_Option ('r', "", "remote camera", Component, Ada_Lib.Help.Unmodified_Flag);
+--       Ada_Lib.Help.Create_Option ('s', "", "simulate camera", Component, Ada_Lib.Help.Unmodified_Flag);
          Ada_Lib.Help.Create_Option (Debug_Option, "trace options",
             "trace options", Component, Ada_Lib.Help.Unmodified_Flag);
          New_Line;

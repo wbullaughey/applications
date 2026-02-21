@@ -15,7 +15,7 @@ with Camera.Base;
 --with Camera.Commands;
 with Camera.Lib.Base;
 with Camera.Lib.Options;
-with Camera.States;
+with Camera.Configurations;
 with Configuration.Camera;
 --with Configuration.Camera.Setup;
 --with Configuration.Camera.State;
@@ -115,7 +115,7 @@ package body Camera.Lib is
 --       Options_Without_Parameters);
 
       return Log_Out_Checked (Recursed,
-         Video.Lib.Options_Type (Options).Initialize,
+         Camera_Options_Type (Options).Initialize,
          Debug_Options or Trace_Options);
    end Initialize;
 
@@ -298,8 +298,9 @@ package body Camera.Lib is
          Put_Line ("      l               camera Library");
          Put_Line ("      L               camera library options");
          Put_Line ("      m               Camera.Main.Debug");
-         Put_Line ("      s               Camera.State.Debug");
-         Put_Line ("      S               Camera.States.Debug");
+         Put_Line ("      M               Camera_Control.Debug");
+         Put_Line ("      s               Camera.Configuration.Debug");
+         Put_Line ("      S               Camera.Configurations.Debug");
 --       Put_Line ("      v               Trace Video communications");
          Put_Line ("      V               Trace Video widgets");
          Put_Line ("      " & Trace_Prefix &
@@ -312,14 +313,14 @@ package body Camera.Lib is
                           "l              List camera commands");
          Put_Line ("      " & Trace_Prefix &
                           "p              Configuration.Camera.Setup.Debug");
-         Put_Line ("      " & Trace_Prefix &
-                          "s              Configuration");
+--       Put_Line ("      " & Trace_Prefix &
+--                        "s              Configuration");
          Put_Line ("      " & Trace_Prefix &
                           "S              Configuration.Camera.State.Debug");
 
       end case;
 
-      Video.Lib.Options_Type (Options).Program_Help (Help_Mode);
+      Camera_Options_Type (Options).Program_Help (Help_Mode);
       Log_Out (Debug_Options or Trace_Options);
    end Program_Help;
 
@@ -336,11 +337,12 @@ package body Camera.Lib is
                                     Ada_Lib.Options.Plain;
 
    begin
-      Log (Trace_Options or Debug_Options, Here, Who & Quote (" Parameter", Parameter));
+      Log_In (Trace_Options or Debug_Options,
+         Quote (" Parameter", Parameter));
 
       for Trace of Parameter loop
          Log_Here (Trace_Options or Debug_Options,
-            "suboptions " & Suboption'img & Quote ("Trace", Trace));
+            "suboptions " & Suboption'img & Quote (" Trace", Trace));
 
          case Suboption is
             when Ada_Lib.Options.Plain =>
@@ -348,13 +350,14 @@ package body Camera.Lib is
                case Trace is
 
                   when 'a' =>
-                     Camera.Lib.Base.List_Commands := True;
-                     Camera.Lib.Options.Camera_Options.Base_Debug := True;
-                     Camera.Lib.Options.Camera_Options.Base_Lib_Debug := True;
-                     Camera.Lib.Options.Camera_Options.Camera_Debug := True;
-                     Camera.Lib.Options.Camera_Options.Commands_Debug := True;
-                     Camera.Lib.Options.Camera_Options.State_Debug := True;
-                     Camera.Lib.Options.Camera_Options.States_Debug := True;
+                     Base.List_Commands := True;
+                     Lib.Options.Camera_Options.Base_Debug := True;
+                     Lib.Options.Camera_Options.Base_Lib_Debug := True;
+                     Lib.Options.Camera_Options.Camera_Debug := True;
+                     Lib.Options.Camera_Options.Commands_Debug := True;
+                     Lib.Options.Camera_Options.State_Debug := True;
+                     Lib.Options.Camera_Options.States_Debug := True;
+                     Lib.Options.Configuration_Options.State_Debug := True;
                      Configuration.Debug := True;
                      Debug_Options := True;
                      Debug := True;
@@ -366,16 +369,16 @@ package body Camera.Lib is
                      Widgets.Generic_Table.Debug := True;
 
                   when 'b' =>
-                     Camera.Lib.Options.Camera_Options.Base_Debug := True;
+                     Lib.Options.Camera_Options.Base_Debug := True;
 
                   when 'B' =>
-                     Camera.Lib.Options.Camera_Options.Base_Lib_Debug := True;
+                     Lib.Options.Camera_Options.Base_Lib_Debug := True;
 
                   when 'C' =>
-                     Camera.Lib.Options.Camera_Options.Commands_Debug := True;
+                     Lib.Options.Camera_Options.Commands_Debug := True;
 
                   when 'd' =>
-                     Camera.Lib.Options.Camera_Options.Camera_Debug := True;
+                     Lib.Options.Camera_Options.Camera_Debug := True;
 
                   when 'g' =>
                      Widgets.Generic_Table.Debug := True;
@@ -387,17 +390,20 @@ package body Camera.Lib is
                      Debug_Options := True;
 
                   when 'm' =>
-                     Camera.Lib.Options.Camera_Options.Main_Debug := True;
+                     Lib.Options.Camera_Options.Main_Debug := True;
+
+                  when 'M' =>
+                     Lib.Options.Camera_Options.Camera_Control_Debug := True;
 
                   when 's' =>
-                     Camera.Lib.Options.Camera_Options.State_Debug := True;
+                     Lib.Options.Camera_Options.State_Debug := True;
 --                   Emulator.Debug := True;
 
                   when 'S' =>
-                     Camera.Lib.Options.Camera_Options.States_Debug := True;
+                     Lib.Options.Camera_Options.States_Debug := True;
 
 --                when 'u' =>    -- url for camera
---                   Options.Camera_URL.Construct (Iterator.Get_Parameter);
+--                   Lib.Options.Camera_URL.Construct (Iterator.Get_Parameter);
 
                   when 'V' =>
                      Widgets.Video.Debug := True;
@@ -426,13 +432,13 @@ package body Camera.Lib is
                      Widgets.Configured.Debug := True;
 
                   when 'l' =>
-                     Camera.Lib.Base.List_Commands := True;
+                     Base.List_Commands := True;
 
                   when 'p' =>
                      Lib.Options.Configuration_Options.Setup_Debug := True;
 
-                  when 's' =>
-                     Lib.Options.Camera_Options.Camera_Debug := True;
+--                when 's' =>
+--                   Lib.Options.Camera_Options.Camera_Debug := True;
 
                   when 'S' =>
                      Lib.Options.Configuration_Options.State_Debug := True;
@@ -452,6 +458,7 @@ package body Camera.Lib is
 
          end case;
       end loop;
+      Log_Out (Trace_Options or Debug_Options);
    end Trace_Parse;
 
 begin

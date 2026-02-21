@@ -14,8 +14,7 @@ package Camera.Lib is
                                  is Ada_Lib.Command_Line_Iterator.
                                     Abstract_Package.Abstract_Iterator_Type;
 
-   type Library_Options_Type     is new Video.Lib.Options_Type with record
-      Camera_Options             : Camera_Options_Type;
+   type Library_Options_Type     is new Camera_Options_Type with record
       Lib_Debug                  : Boolean := False;
    end record;
 
@@ -58,7 +57,8 @@ package Camera.Lib is
       Options              : in out Library_Options_Type;
       From                 : in     String := Ada_Lib.Trace.Here
    ) return Boolean
-   with pre => Options.Verify_Preinitialize;
+   with pre    => Options.Verify_Preinitialize,
+        post   => Options.Verify_Initialized;
 
    overriding
    function Process_Option (  -- process one option
@@ -66,7 +66,7 @@ package Camera.Lib is
       Iterator : in out Ada_Lib.Options.Command_Line_Iterator_Interface'class;
       Option   : in     Ada_Lib.Options.Base_Flag_Option_Type'class
    ) return Boolean
-   with pre => Options.Initialized;
+   with pre => Options.Verify_Initialized;
 
    overriding
    procedure Trace_Parse (
