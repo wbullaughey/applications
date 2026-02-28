@@ -1,4 +1,5 @@
 --with Ada_Lib.Socket_IO;
+with Ada_Lib.Strings.Unlimited;
 with AUnit.Test_Suites;
 with Camera.Base;
 with Camera.Commands;
@@ -43,6 +44,22 @@ package Camera.Main is
    function Get_Camera (
       Window_Connection                  : in   Window_Connection_Type
    ) return Commands.Camera_Class_Access is abstract;
+
+--    Camera_ID            : Camera_ID_Type;
+--    Camera_Name          : Ada_Lib.Strings.Unlimited.String_Type;
+--    Camera_Pan           : Absolute_Type;
+
+   function Get_Camera_Pan_Speed (
+      Window_Connection                  : in   Window_Connection_Type
+   ) return Property_Type;
+
+--    Camera_Tilt          : Absolute_Type;
+
+   function Get_Camera_Tilt_Speed (
+      Window_Connection                  : in   Window_Connection_Type
+   ) return Property_Type;
+
+--    Camera_Zoom          : Property_Type;
 
    -- allocates camera state if 1st time camera is
    function Get_Camera_State (
@@ -138,7 +155,11 @@ package Camera.Main is
       Main_Window                : in out Gnoga.Gui.Window.Window_Type'Class;
       Connection                 : access Gnoga.Application.Multi_Connect.
                                              Connection_Holder_Type
-   ) with Pre => Configurations.Has_Camera_Configuration_State;
+   ) with Pre => Configurations.Has_Configuration;
+
+   procedure Open_Camera (
+      Connection     : in out Window_Connection_Type;
+      Description    : in     Ada_Lib.Strings.String_Constant_Access);
 
    overriding
    procedure Process_Command (
@@ -155,6 +176,11 @@ package Camera.Main is
       Response                   :    out Maximum_Response_Type;
       Timeout_Time               : in     Duration := 0.0)  is abstract;
                                           -- when 0 use command default
+
+   procedure Set_Mouse_Action (
+      Connection_Data            : in out Window_Connection_Type;
+      Action                     : in     Mouse_Click_Action_Type);
+
    function Running return Boolean;
 
    function Unit_Test_Suite return AUnit.Test_Suites.Access_Test_Suite;
@@ -162,6 +188,16 @@ package Camera.Main is
 private
 
    type Window_Connection_Type   is abstract new Abstract_Window_Connection_Type with
-                                    null record;
+                                    record
+      Camera               : Commands.Camera_Class_Access := Null;
+      Camera_ID            : Camera_ID_Type;
+      Camera_Name          : Ada_Lib.Strings.Unlimited.String_Type;
+      Camera_Pan           : Absolute_Type;
+      Camera_Pan_Speed     : Property_Type;
+      Camera_Tilt          : Absolute_Type;
+      Camera_Tilt_Speed    : Property_Type;
+      Camera_Zoom          : Property_Type;
+      Mouse_Action         : Mouse_Click_Action_Type;
+   end record;
 
 end Camera.Main;

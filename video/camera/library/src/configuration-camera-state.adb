@@ -10,7 +10,7 @@ with Ada.Text_IO; use Ada.Text_IO;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
 with AUnit.Assertions; use AUnit.Assertions;
 with Camera.Lib.Options;
---with Camera.Configurations;
+with Camera.Configurations;
 with Video.Lib;
 
 package body Configuration.Camera.State is
@@ -30,11 +30,13 @@ package body Configuration.Camera.State is
    ) return Boolean is
    ----------------------------------------------------------------
 
-      State_Pointer  : constant Configuration.Camera.State.State_Constant_Access :=
-                        Standard.Camera.Configurations.Get_Read_Only_Configuration_State;
-      State          : Configuration.Camera.State.State_Type renames
+      State_Pointer  : constant Standard.Camera.Configurations.
+                        Camera_Configuration_State_Constant_Class_Access :=
+                           Standard.Camera.Configurations.
+                              Get_Read_Only_Camera_Configuration_State;
+      State          : Configuration.Camera.State.State_Type'class renames
                         State_Pointer.all;
-      Number_Columns : constant Column_Type := State.Get_Number_Columns;
+      Number_Columns : constant Column_Type := State.Number_Columns;
       Result         : constant Boolean := State.Images /= Null and then
                         Column <= Number_Columns;  -- column number starts at 0
    begin
@@ -65,10 +67,13 @@ package body Configuration.Camera.State is
    ) return Boolean is
    ----------------------------------------------------------------
 
-      State_Pointer  : constant Configuration.Camera.State.State_Constant_Access :=
-                        Standard.Camera.Configurations.Get_Read_Only_Configuration_State;
-      State          : Configuration.Camera.State.State_Type renames
-                        State_Pointer.all;
+      State_Pointer
+                  : constant Standard.Camera.Configurations.
+                     Camera_Configuration_State_Constant_Class_Access :=
+                        Standard.Camera.Configurations.
+                           Get_Read_Only_Camera_Configuration_State;
+      State       : Configuration.Camera.State.State_Type'class renames
+                     State_Pointer.all;
       Number_Rows : constant Row_Type := State.Get_Number_Rows;
       Result         : constant Boolean := State.Images /= Null and then
                                              Row <= State.Number_Rows;
@@ -178,9 +183,12 @@ package body Configuration.Camera.State is
 begin
 
 declare
-      State_Pointer  : constant Configuration.Camera.State.State_Constant_Access :=
-                        Standard.Camera.Configurations.Get_Read_Only_Configuration_State;
-      State          : Configuration.Camera.State.State_Type renames
+      State_Pointer
+                  : constant Standard.Camera.Configurations.
+                     Camera_Configuration_State_Constant_Class_Access :=
+                        Standard.Camera.Configurations.
+                           Get_Read_Only_Camera_Configuration_State;
+      State          : Configuration.Camera.State.State_Type'class renames
                         State_Pointer.all;
    begin
       Log_Here (Debug, State.Default_Speed'img);
@@ -198,9 +206,9 @@ return Null;
    end Get_Modifiable_Global_State;
 
    ----------------------------------------------------------------
-   overriding
+-- overriding
    function Get_Number_Columns (
-      State                      : in     State_Type
+      State                      : in     State_Type'class
    ) return Column_Type is
    ----------------------------------------------------------------
 
@@ -209,9 +217,9 @@ return Null;
    end Get_Number_Columns;
 
    ----------------------------------------------------------------
-   overriding
+-- overriding
    function Get_Number_Configurations (
-      State                      : in     State_Type
+      State                      : in     State_Type'class
    ) return Configuration_ID_Type is
    ----------------------------------------------------------------
 
@@ -220,9 +228,9 @@ return Null;
    end Get_Number_Configurations;
 
    ----------------------------------------------------------------
-   overriding
+-- overriding
    function Get_Number_Presets (
-      State                      : in     State_Type
+      State                      : in     State_Type'class
    ) return Natural is
    ----------------------------------------------------------------
 
@@ -231,9 +239,9 @@ return Null;
    end Get_Number_Presets;
 
    ----------------------------------------------------------------
-   overriding
+-- overriding
    function Get_Number_Rows (
-      State                      : in     State_Type
+      State                      : in     State_Type'class
    ) return Row_Type is
    ----------------------------------------------------------------
 
@@ -278,10 +286,13 @@ return Null;
    ) return String is
    ----------------------------------------------------------------
 
-      State_Pointer  : constant Configuration.Camera.State.State_Constant_Access :=
-                        Standard.Camera.Configurations.Get_Read_Only_Configuration_State;
-      State          : Configuration.Camera.State.State_Type renames
-                        State_Pointer.all;
+      State_Pointer
+                  : constant Standard.Camera.Configurations.
+                     Camera_Configuration_State_Constant_Class_Access :=
+                        Standard.Camera.Configurations.
+                           Get_Read_Only_Camera_Configuration_State;
+      State       : Configuration.Camera.State.State_Type'class renames
+                     State_Pointer.all;
       Name        : constant String :=
                      State.Image_Path (Row, Column);
       Path        : constant String := "img/" & Name;
@@ -347,14 +358,14 @@ return Null;
 -- end Is_Loaded;
 
    ----------------------------------------------------------------
--- overriding
+   overriding
    procedure Load (
       State                      : in out State_Type;
---    Location                   : in     Configuration.State.Location_Type;
-      Name                       : in     String) is
+      Config                     : Ada_Lib.Configuration.Configuration_Type;
+      Location                   : in     Configuration.State.Location_Type;
+      File_Name                  : in     String) is
    ----------------------------------------------------------------
 
-      Config            : Ada_Lib.Configuration.Configuration_Type;
       Current_Directory : constant String :=
                            Standard.Camera.Lib.Options.Current_Directory;
       Last_Preset_Number: Video.Lib.Preset_Range_Type;
@@ -363,13 +374,15 @@ return Null;
                               Current_Directory & "/"
                            else
                               "") &
-                           Name;
+                           File_Name;
    begin
-      Log_In (Debug, Quote ("file name", Name) &
+      Log_In (Debug, Quote ("file name", File_Name) &
          Quote (" Current_Directory", Current_Directory) &
          Quote (" path", Path));
-      Config.Load (Path, False);
-      State.Load (Path);
+      Standard.Configuration.State.State_Type (State).Load (Config, Location,
+         File_Name);
+--    Config.Load (Path, False);
+--    State.Load (Path);
       State.Camera_ID := Standard.Camera.Make_Camera_ID (State.Video_Address.all);
       State.Camera_Name.Construct (Config.Get_String ("camera_name"));
       State.CSS_Path.Construct (Config.Get_String ("css_path"));
@@ -428,7 +441,7 @@ return Null;
          end loop;
       end loop;
 
-      Config.Close;
+--    Config.Close;
       State.Set_Loaded (True);
       Log_Out (Debug, "loaded " & State.Is_Loaded'img);
 

@@ -38,7 +38,6 @@ Ada_Lib.Options.Program.Get_Read_Only_Program_Options;
 begin
 tag_history (true, Ada_Lib_Options.all'tag);
 declare
-
       Options  : Camera.Lib.Unit_Test.
                      Unit_Test_Options_Constant_Class_Access :=
                   Camera.Lib.Unit_Test.
@@ -46,9 +45,9 @@ declare
                      Ada_Lib.Options.Program.Get_Read_Only_Program_Options);
 
    begin
-      Standard.Camera.Configuration.State.Load (
-         Options.Configuration.Get_Location, State_Name);
-      Standard.Camera.Configuration.Setup.Load (Configuration.Configuration_State.all, State_Name);
+not_implemented;
+--    Base.Configuration_Type (Configuration).Load;
+--       Setup_Name, State_Name);
 end;
    end Load;
 

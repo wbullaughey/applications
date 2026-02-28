@@ -6,6 +6,7 @@ with Ada_Lib.Trace; use Ada_Lib.Trace;
 with Ada_Lib.Unit_Test;
 with AUnit.Assertions; use AUnit.Assertions;
 with AUnit.Test_Cases;
+with Camera.Base;
 with Camera.Lib.Options.Unit_Test;
 with Camera.Lib.Unit_Test;
 with Video_Lib;
@@ -224,7 +225,7 @@ package body Configuration.Camera.Setup.Unit_Tests is
          Load_State     => True,
          Brand          => Brand,
          Camera_Info    => Local_Test.Camera_Info,
-         Setup          => Local_Test.Configuration.Get_Configuration_Setup.all,
+--       Setup          => Local_Test.Configuration.Get_Configuration_Setup.all,
          Configuration  => Local_Test.Configuration);
 --    Standard.Camera.Lib.Unit_Test.Load_Test_State (
 --       Local_Test.Camera_Info, Local_Test.Configuration.Get_Configuration_Setup, Local_Test.State);
@@ -251,7 +252,7 @@ package body Configuration.Camera.Setup.Unit_Tests is
                                     "expected_updated_test_setup.cfg";
       Local_Test                 : Configuration_Tests_Type renames
                                     Configuration_Tests_Type (Test);
-      Configuration              : Base.Configuration_Type renames
+      Configuration              : Standard.Camera.Base.Configuration_Type renames
                                     Local_Test.Configuration;
       New_Column                 : constant := 1;
       New_Label                  : constant String := "New Label";
@@ -261,7 +262,7 @@ package body Configuration.Camera.Setup.Unit_Tests is
       Preset_ID                  : constant Video.Lib.Preset_ID_Type :=
                                     Video.Lib.Constructor (3);
       Update_Setup               : constant String := "updated_setup.cfg";
-      Updated_Setup              : Configuration.Camera.Setup.Setup_Type;
+      Updated_Setup              : Setup_Type;
                                     -- new cfg file "updated_setup.cfg"
 
    begin
@@ -331,11 +332,12 @@ package body Configuration.Camera.Setup.Unit_Tests is
 
       Local_Test              : Configuration_Tests_Type renames
                                  Configuration_Tests_Type (Test);
-      Configuration_State     : Configuration.Camera.State.State_Type'class
+      Configuration_State     : Configuration.Camera.State.State_Type
                                  renames Local_Test.Configuration.
                                     Get_Configuration_State.all;
       Number_Configurations   : constant Configuration_ID_Type :=
-                                    Configuration_State.Get_Number_Configurations;
+                                    Configuration.Camera.State.
+                                       Get_Number_Configurations (Configuration_State);
    begin
       Log_In (Debug, "Number_Configurations" & Number_Configurations'img);
 

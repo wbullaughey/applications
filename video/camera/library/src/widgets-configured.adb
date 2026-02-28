@@ -3,7 +3,7 @@ with Ada.Text_IO; use  Ada.Text_IO;
 with Ada_Lib.String_Quote; use Ada_Lib.String_Quote;
 with Ada_Lib.Strings; use Ada_Lib.Strings;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
-with Camera.Configurations; use Camera.Configurations;
+with Camera.Configurations;
 with Configuration.Camera.Setup;
 -- use Configuration.Camera;
 -- use Configuration.Camera.Setup;
@@ -39,7 +39,7 @@ package body Widgets.Configured is
       type State_Type ( <> )     is tagged private;
 
       with function Last_Value (
-         State                   : in     State_Type
+         State                   : in     State_Type'class
       ) return Field_Type;
 
    package Field_Package is
@@ -100,13 +100,13 @@ package body Widgets.Configured is
    ---------------------------------------------------------------
 
    package Column_Package is new Field_Package (Configuration.Column_Type,
-      Configuration.Camera.State.State_Type,
+      Configuration.Camera.State.State_Type'class,
       Configuration.Camera.State.Get_Number_Columns);
    package Preset_ID_Package is new Field_Package (Natural,
-      Configuration.Camera.State.State_Type,
+      Configuration.Camera.State.State_Type'class,
       Configuration.Camera.State.Get_Number_Presets);
    package Row_Package is new Field_Package (Configuration.Row_Type,
-      Configuration.Camera.State.State_Type,
+      Configuration.Camera.State.State_Type'class,
       Configuration.Camera.State.Get_Number_Rows);
 
    ----------------------------------------------------------------
@@ -121,8 +121,8 @@ package body Widgets.Configured is
 --    State       : Camera.Configurations.State_Type'class renames
 --                   Camera.Configurations.Get_Read_Only_Global_State.all;
       Configuration_State
-                        : Configuration.Camera.State.State_Type renames
-                           Camera.Configurations.Get_Read_Only_Configuration_State (
+                        : Configuration.Camera.State.State_Type'class renames
+                           Camera.Configurations.Get_Camera_Configuration_State (
                               Camera_ID).all;
       Number_Configurations
                   : constant Configuration.Configuration_ID_Type :=
@@ -344,11 +344,11 @@ package body Widgets.Configured is
          Coordinate           : in     Configuration.Column_Type) is
       -------------------------------------------------------------
 
-         Column_Cell    : Column_Cell_Type renames
-                           Column_Cell_Type (Cell);
-         State          : Configuration.Camera.State.State_Type renames
-                           Camera.Configurations.Get_Read_Only_Configuration_State.all;
-begin
+         Column_Cell : Column_Cell_Type renames
+                        Column_Cell_Type (Cell);
+         State       : Configuration.Camera.State.State_Type'class renames
+                        Camera.Configurations.Get_Camera_Configuration_State.all;
+      begin
          Column_Package.Update (State, Column_Cell.Column_Number,
             Column_Cell.Column_Coordinate, Coordinate);
       end Column_Package_Update;
@@ -573,8 +573,8 @@ begin
                            Get_Preset_ID (Configuration_ID);
          Has_Preset  : constant Boolean :=
                         Configuration.Camera.Setup.Global_Camera_Setup.Has_Preset (Preset_ID);
-         State       : Configuration.Camera.State.State_Type renames
-                        Camera.Configurations.Get_Read_Only_Configuration_State.all;
+         State       : Configuration.Camera.State.State_Type'class renames
+                        Camera.Configurations.Get_Camera_Configuration_State.all;
 
       begin
          Log_In (Debug, "Preset_ID " & Preset_ID.Image &
@@ -1075,9 +1075,10 @@ not_implemented;
          Coordinate           : in     Configuration.Row_Type) is
       -------------------------------------------------------------
 
-         Row_Cell       : Row_Cell_Type renames Row_Cell_Type (Cell);
-         State          : Configuration.Camera.State.State_Type renames
-                           Camera.Configurations.Get_Read_Only_Configuration_State.all;
+         Row_Cell : Row_Cell_Type renames Row_Cell_Type (Cell);
+         State    : Configuration.Camera.State.State_Type'class renames
+                     Camera.Configurations.
+                        Get_Read_Only_Camera_Configuration_State.all;
       begin
          Row_Package.Update (State, Row_Cell.Row_Number,
             Row_Cell.Row_Coordinate, Coordinate);
@@ -1594,8 +1595,9 @@ not_implemented;
                               Video.Lib.Constructor (
                                  Camera.Preset_Range_Type'value (
                                     Raw_Value)));
-         State          : Configuration.Camera.State.State_Type renames
-                           Camera.Configurations.Get_Read_Only_Configuration_State.all;
+         State          : Configuration.Camera.State.State_Type'class renames
+                           Camera.Configurations.
+                              Get_Read_Only_Camera_Configuration_State.all;
       begin
          Log_In (Debug, "Configuration_ID" & Configuration_ID'img &
             Quote (" raw preset value", Raw_Value) &

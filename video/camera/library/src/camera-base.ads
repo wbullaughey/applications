@@ -15,17 +15,23 @@ package Camera.Base is
    type Configuration_Access        is access Configuration_Type;
    type Configuration_Class_Access  is access all Configuration_Type'class;
 
--- function Get_Camera (
---    Configuration       : in     Configuration_Type
--- ) return Camera.Commands.Camera_Class_Access ;
+-- function Allocate
+-- return Configuration_Access;
+
+   procedure Deallocate (
+      Configuration        : in     Configuration_Access);
+
+   function Get_Camera (
+      Configuration        : in     Configuration_Type
+   ) return Camera.Commands.Camera_Class_Access;
 --
--- function Get_Camera_Name (
---    Configuration       : in     Configuration_Type
--- ) return String ;
---
--- function Get_Camera_ID (
---    Configuration       : in     Configuration_Type
--- ) return Camera_ID_Type ;
+   function Get_Camera_Name (
+      Configuration       : in     Configuration_Type
+   ) return String;
+
+   function Get_Camera_ID (
+      Configuration        : in     Configuration_Type
+   ) return Camera_ID_Type;
 --
 -- function Get_Configurations_Pan_Speed (
 --    Configuration       : in     Configuration_Type
@@ -38,15 +44,15 @@ package Camera.Base is
 
    function Get_Configuration_State (
       Configuration        : in     Configuration_Type
-   ) return access Standard.Configuration.Camera.State.State_Type'class
-   with Pre    => Configuration.Has_Configuration_State;
+   ) return access Standard.Configuration.Camera.State.State_Type
+   with Pre    => Configuration.Has_Configuration;
 
 -- function Get_Configurations_Tilt_Speed (
 --    Configuration       : in     Configuration_Type
 -- ) return Data_Type ;
 --
-   function Get_Current_Camera_ID
-   return Camera_ID_Type;
+-- function Get_Current_Camera_ID
+-- return Camera_ID_Type;
 
    function Get_Location (
       Configuration       : in     Configuration_Type
@@ -76,20 +82,20 @@ package Camera.Base is
 --    Configuration     : in     Configuration_Type
 -- ) return String;
 --
-   function Has_Camera_State (
-      Configuration      : in     Configuration_Type
-   ) return Boolean;
+-- function Has_Camera_State (
+--    Configuration      : in     Configuration_Type
+-- ) return Boolean;
 
    function Has_Configuration_Setup (
       Configuration      : in     Configuration_Type
    ) return Boolean;
 
-   function Has_Configuration_State (
+   function Has_Configuration (
       Configuration      : in     Configuration_Type
    ) return Boolean;
 
-   function Has_Current_Camera_ID
-   return Boolean;
+-- function Has_Current_Camera_ID
+-- return Boolean;
 
    function Have_Video_Address (
       Configuration      : in     Configuration_Type
@@ -107,33 +113,35 @@ package Camera.Base is
 
    procedure Load (
       Configuration        : in out Configuration_Type;
-      Path                 : in     String
-   ) with Pre  => Path'length > 0;
+      Path                 : in     String;
+      Camera_Index         : in     Positive);
 
    procedure Load_Setup (
-      Configuration        : in out Configuration_Type);
+      Configuration        : in out Configuration_Type;
+      Path                 : in     String);
 
    procedure Load_State (
-      Configuration        : in out Configuration_Type);
-
-   procedure Open_Camera (
-      Configuration       : in out Configuration_Type;
-      Description       : in     Ada_Lib.Strings.String_Constant_Access);
-
-   procedure Set_Configuration_Setup (
       Configuration        : in out Configuration_Type;
-      Configuration_Setup  : in     Standard.Configuration.Camera.Setup.
-                                       Setup_Access);
+      Path                 : in     String);
 
-   procedure Set_Configuration_State (
-      Configuration        : in out Configuration_Type;
-      Configuration_State  : in     Standard.Configuration.Camera.State.
-                                       State_Access);
+-- procedure Open_Camera (
+--    Configuration       : in out Configuration_Type;
+--    Description       : in     Ada_Lib.Strings.String_Constant_Access);
 
-   procedure Set_Mouse_Action (
-      Configuration       : in     Configuration_Type;
-      Action            : in     Mouse_Click_Action_Type
-   ) ;
+-- procedure Set_Configuration_Setup (
+--    Configuration        : in out Configuration_Type;
+--    Configuration_Setup  : in     Standard.Configuration.Camera.Setup.
+--                                     Setup_Access);
+
+-- procedure Set_Configuration_State (
+--    Configuration        : in out Configuration_Type;
+--    Configuration_State  : in     Standard.Configuration.Camera.State.
+--                                     State_Access);
+
+-- procedure Set_Mouse_Action (
+--    Configuration        : in     Configuration_Type;
+--    Action               : in     Mouse_Click_Action_Type
+-- );
 
    type Configurations_Type is tagged limited private;
    type Camera_Read_Only_State_Access is access constant Configurations_Type;
@@ -141,6 +149,11 @@ package Camera.Base is
    type Configurations_Class_Access is access all Configurations_Type'class;
    type Camera_Ready_Only_State_Class_Access is
       access constant Configurations_Type'class;
+
+   function Get_Configuration (
+      Configurations          : in     Configurations_Type;
+      Index                   : in     Positive
+   ) return Configuration_Access;
 
    function Get_Number_Configurations (
       Configurations         : in     Configurations_Type
@@ -150,17 +163,10 @@ package Camera.Base is
       Configurations         : in     Configurations_Type
    ) return Camera_Ready_Only_State_Class_Access;
 
-   function Get_Writeable_Configuration (
-      Configurations         : in     Configurations_Type
-   ) return Configurations_Class_Access;
-
    procedure Load (
-      Configurations          : in out Configurations_Type;
-      Path                    : in     String
-   ) with Post    => Configurations.Get_Number_Configurations > 0;
-
--- function Allocate_Configurations
--- return Configurations_Class_Access;
+      Configurations       : in out Configurations_Type;
+      Path                 : in     String
+   ) with Pre    => Path'length > 0;
 
    procedure Halt;
 
@@ -170,22 +176,32 @@ package Camera.Base is
       Message              : in     String;
       Where                : in     String := GNAT.Source_Info.Source_Location);
 
-   Debug                         : Boolean := False;
-
 private
 
    type Configuration_Type is tagged record
+      Camera_ID            : Camera_ID_Type;
+      Camera_Name          : Ada_Lib.Strings.Unlimited.String_Type;
       Configuration_Setup  : access Configuration.Camera.Setup.Setup_Type :=
                               Null;
       Configuration_State  : access Configuration.Camera.State.State_Type :=
                               Null;
+      Default_Camera_Pan   : Absolute_Type;
+      Default_Camera_Pan_Speed
+                           : Property_Type;
+      Default_Camera_Tilt  : Absolute_Type;
+      Default_Camera_Tilt_Speed
+                           : Property_Type;
+      Default_Camera_Zoom  : Property_Type;
       Location             : Video.Lib.Location_Type;
       Setup_Path           : Ada_Lib.Strings.Unlimited.String_Type;
       Simulate             : Boolean := False;
       State_Path           : Ada_Lib.Strings.Unlimited.String_Type;
+      Options              : Ada_Lib.Options.Base_Flag_Option_Class_Access :=
+                              Null;
    end record;
 
-   type Configuration_Array   is array (Positive) of aliased Configuration_Type;
+   type Configuration_Array
+      is array (Positive range <>) of Configuration_Access;
 
    type Configuration_Access_Array
                               is access Configuration_Array;

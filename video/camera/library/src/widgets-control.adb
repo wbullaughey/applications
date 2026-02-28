@@ -2,6 +2,7 @@ with Ada_Lib.String_Quote; use Ada_Lib.String_Quote;
 with Ada_Lib.Strings.Unlimited;use Ada_Lib.Strings.Unlimited;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
 with Camera.Commands;
+with Camera.Configurations;
 with Camera.Base;
 with Camera.Main;
 with Configuration.Camera.Setup;
@@ -206,20 +207,23 @@ not_implemented;
       ID                         : in     String := "") is
    ----------------------------------------------------------------
 
-      Top_Name           : constant String := (if ID'length = 0 then
-                               ""
-                            else
-                               ID & "_")
-                            & Widget_Name;
-      State_Pointer     : constant Configuration.Camera.State.State_Constant_Access :=
-                           Camera.Configurations.Get_Read_Only_Configuration_State;
-      State             : Configuration.Camera.State.State_Type renames
-                           State_Pointer.all;
-      Number_Columns    : constant Control_Column_Index_Type :=
-                            Control_Column_Index_Type (
-                               State.Get_Number_Columns);
-      Number_Rows       : constant Configuration.Row_Type :=
-                               State.Get_Number_Rows;
+      Top_Name       : constant String := (if ID'length = 0 then
+                            ""
+                         else
+                            ID & "_")
+                         & Widget_Name;
+      State_Pointer
+            : constant Camera.Configurations.
+               Camera_Configuration_State_Constant_Class_Access :=
+                  Camera.Configurations.
+                     Get_Read_Only_Camera_Configuration_State;
+      State : Configuration.Camera.State.State_Type'class renames
+               State_Pointer.all;
+      Number_Columns
+            : constant Control_Column_Index_Type :=
+               Control_Column_Index_Type (State.Get_Number_Columns);
+      Number_Rows
+            : constant Configuration.Row_Type := State.Get_Number_Rows;
    begin
       Log_In (Debug, Quote ("ID", ID) & Quote (" Top_Name", Top_Name) &
          Quote (" Widget_Name", Widget_Name));

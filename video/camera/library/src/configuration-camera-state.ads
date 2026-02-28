@@ -1,3 +1,4 @@
+with Ada_Lib.Configuration;
 with ADA_LIB.Strings.Unlimited;use Ada_Lib.Strings.Unlimited;
 with Ada_Lib.Trace;
 with Camera.Configurations;
@@ -22,7 +23,7 @@ package Configuration.Camera.State is
    function Check_Column (
       Column                     : in     Column_Type
    ) return Boolean
-   with Pre => Standard.Camera.Configurations.Has_Camera_Configuration_State;
+   with Pre => Standard.Camera.Configurations.Has_Configuration;
 
    function Check_Image (
       Column                     : in     Column_Type;
@@ -32,7 +33,7 @@ package Configuration.Camera.State is
    function Check_Row (
       Row                        : in     Row_Type
    ) return Boolean
-   with Pre => Standard.Camera.Configurations.Has_Camera_Configuration_State;
+   with Pre => Standard.Camera.Configurations.Has_Configuration;
 
    procedure Clear_Global_Camera_State (
       State                      : in out State_Type
@@ -66,29 +67,29 @@ package Configuration.Camera.State is
 
    function Get_Default_Speed
    return Speed_Type
-   with Pre => Standard.Camera.Configurations.Has_Camera_Configuration_State;
+   with Pre => Standard.Camera.Configurations.Has_Configuration;
 
    function Get_Modifiable_Global_State return State_Access
-   with Pre    => Standard.Camera.Configurations.Has_Camera_Configuration_State;
+   with Pre    => Standard.Camera.Configurations.Has_Configuration;
 
-   overriding
+-- overriding
    function Get_Number_Columns (
-      State                      : in     State_Type
+      State                      : in     State_Type'class
    ) return Column_Type;
 
-   overriding
+-- overriding
    function Get_Number_Configurations (
-      State                      : in     State_Type
+      State                      : in     State_Type'class
    ) return Configuration_ID_Type;
 
-   overriding
+-- overriding
    function Get_Number_Presets (
-      State                      : in     State_Type
+      State                      : in     State_Type'class
    ) return Natural;
 
-   overriding
+-- overriding
    function Get_Number_Rows (
-      State                      : in     State_Type
+      State                      : in     State_Type'class
    ) return Row_Type;
 
    function Has_Camera_ID (
@@ -121,11 +122,12 @@ package Configuration.Camera.State is
                   Column   => Column,
                   Row      => Row);
 
--- overriding
+   overriding
    procedure Load (
       State                      : in out State_Type;
---    Location                   : in     Configuration.State.Location_Type;
-      Name                       : in     String
+      Config                     : Ada_Lib.Configuration.Configuration_Type;
+      Location                   : in     Configuration.State.Location_Type;
+      File_Name                  : in     String
    ) with Pre => not State.Is_Loaded,
           Post => State.Is_Loaded and then
                   State.Have_Video_Address;
@@ -133,8 +135,8 @@ package Configuration.Camera.State is
 -- procedure Set_State (
 --    State                      : in     State_Access;
 --    From                       : in     String := Ada_Lib.Trace.Here
--- ) with Pre  => not Standard.Camera.Configurations.Has_Camera_Configuration_State,
---        Post => Standard.Camera.Configurations.Has_Camera_Configuration_State;
+-- ) with Pre  => not Standard.Camera.Configurations.Has_Configuration,
+--        Post => Standard.Camera.Configurations.Has_Configuration;
 
    overriding
    procedure Unload (

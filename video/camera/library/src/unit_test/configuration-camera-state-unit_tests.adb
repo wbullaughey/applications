@@ -66,6 +66,7 @@ package body Configuration.Camera.State.Unit_Tests is
    Debug       : Boolean renames Standard.Camera.Lib.Options.Unit_Test.
                   Camera_Lib_Unit_Test.Configuration_Setup_Debug;
 
+   Configuration_Path  : constant String := "test_configuration.cfg";
    Suite_Name  : constant String := "State";
 
    Test_State  : constant String :=
@@ -199,7 +200,7 @@ package body Configuration.Camera.State.Unit_Tests is
       Local_Test  : Configuration_Load_Test_Type renames
                      Configuration_Load_Test_Type (Test);
       Options     : Standard.Camera.Lib.Unit_Test.
-                     Unit_Test_Options_Class_Access :=
+                     Unit_Test_Options_Constant_Class_Access :=
                         Standard.Camera.Lib.Unit_Test.
                            Get_Camera_Unit_Test_Constant_Options;
 
@@ -210,7 +211,7 @@ package body Configuration.Camera.State.Unit_Tests is
 --                   Configuration.Get_Location;
    begin
       Log_In (Debug);
-      Configuration.Load (Options.Get_Configuration_Path);
+      Configuration.Load (Configuration_Path, Camera_Index => 1);
       Log_Out (Debug);
 
    exception
@@ -268,17 +269,13 @@ package body Configuration.Camera.State.Unit_Tests is
                               renames Standard.Camera.Lib.Unit_Test.
                                  Get_Camera_Unit_Test_Constant_Options.all;
             Configuration_State
-                              : Configuration.Camera.State.State_Type
-                                 renames Local_Test.Configuration.Get_Configuration_State.all;
---          Location          : Video.Lib.Location_Type renames
---                               Options.Configuration.Get_Location;
+                        : Configuration.Camera.State.State_Type renames
+                           Local_Test.Configuration.Get_Configuration_State.all;
          begin
-            Log_Here (Debug, "set " & Configuration_State.Is_Loaded'img & " Number_Columns " &
---             " location " & Location'img &
+            Log_Here (Debug, "set " & Configuration_State.Is_Loaded'img &
+                              " Number_Columns " &
                " address " & Image (Configuration_State.Get_Number_Columns'address) &
                " bits " & Configuration_State.Get_Number_Columns'size'img);
---    Hex_IO.Dump_32 (Configuration_State.Get_Number_Columns'address, 32, 1, "number columns");
-      --log_here ("test state address " & image (Configuration_State'address) & " global state " & image (Read_Only_Global_Camera_State.all'address) & " pointer address " & image (Read_Only_Global_Camera_State'address));
 
             declare
                Number_Columns          : constant Column_Type :=

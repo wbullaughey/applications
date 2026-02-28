@@ -181,8 +181,8 @@ package body Widgets.Adjust is
       Connection_Data   : Camera.Main.Window_Connection_Type'class renames
                            Camera.Main.Window_Connection_Type'class (
                               Object.Connection_Data.all);
-      Camera_State      : constant Camera.Base.Camera_State_Class_Access :=
-                           Connection_Data.Get_Camera_State;
+--    Camera_State      : constant Camera.Base.Camera_State_Class_Access :=
+--                         Connection_Data.Get_Camera_State;
       Mouse_Action            : constant Camera.Mouse_Click_Action_Type :=
                                  Parse_Mouse_Action (Object.ID);
 
@@ -199,14 +199,14 @@ package body Widgets.Adjust is
                Connection_Data.Get_Camera.all,
                Camera.Relative_Type (Mouse_Event.X),
                Camera.Relative_Type (Mouse_Event.Y),
-               Camera_State.Get_Camera_State_Pan_Speed,
-               Camera_State.Get_Camera_State_Tilt_Speed);
+               Connection_Data.Get_Camera_Pan_Speed,
+               Connection_Data.Get_Camera_Tilt_Speed);
 
          when Camera.Horizontal_Scroll =>
             Camera.Command_Queue.Relative_Command (
                Connection_Data.Get_Camera.all,
                Camera.Relative_Type (Mouse_Event.X), 0,
-               Camera_State.Get_Camera_State_Pan_Speed, 0);
+               Connection_Data.Get_Camera_Pan_Speed, 0);
 
          when Camera.No_Action | Camera.No_Change =>
             Log_Out (Debug);
@@ -216,7 +216,7 @@ package body Widgets.Adjust is
             Camera.Command_Queue.Relative_Command (
                Connection_Data.Get_Camera.all, 0,
                Camera.Relative_Type (Mouse_Event.Y), 0,
-               Camera_State.Get_Camera_State_Tilt_Speed);
+               Connection_Data.Get_Camera_Tilt_Speed);
 
       end case;
 

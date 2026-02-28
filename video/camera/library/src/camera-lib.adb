@@ -291,7 +291,7 @@ package body Camera.Lib is
          Put_Line ("      a               all");
          Put_Line ("      b               Base.debug");
          Put_Line ("      B               Camera.Lib.Base.debug");
-         Put_Line ("      c               camera configuration");
+--       Put_Line ("      c               camera configuration");
          Put_Line ("      C               camera commands");
          Put_Line ("      d               camera Debug");
          Put_Line ("      g               Widgets.Generic_Table");

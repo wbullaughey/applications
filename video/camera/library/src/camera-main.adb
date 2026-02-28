@@ -10,6 +10,7 @@ with Ada_Lib.String_Quote; use Ada_Lib.String_Quote;
 with Ada_Lib.Strings; use Ada_Lib.Strings;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
 with Ask;
+with Camera.Configurations;
 with Camera.Lib.Base;
 with Camera.Lib.Options;
 with Configuration.Camera.State;
@@ -17,6 +18,7 @@ with Gnoga.Gui.Base;
 with Gnoga.Gui.Element.Section;
 with Gnoga.Gui.Plugin.jQueryUI.Widget;
 with Gnoga.Gui.View.Docker;
+with GNAT.Sockets;
 with Gnoga.Types.Colors;
 with Widgets.Adjust;
 with Widgets.Control; -- causes hang
@@ -26,10 +28,10 @@ with Widgets.Video;
 package body Camera.Main is
 
 -- use type Base.Connection_Data_Class_Access;
--- use type Configuration.Camera.State.State_Access;
+   use type Configuration.Camera.State.State_Access;
    use type Gnoga.Types.Pointer_to_Connection_Data_Class;
    use type GNOGA.GUI.Plugin.JQueryui.Widget.Dialog_Access;
-   use type Base.Camera_State_Class_Access;
+-- use type Base.Camera_State_Class_Access;
 
    type Navigation_Type          is new Gnoga.Gui.Element.Section.Section_Type with record
 --    Dump_Button                : aliased Gnoga.Gui.Element.Common.Button_Type;
@@ -72,7 +74,7 @@ package body Camera.Main is
 
    type Full_Window_Connection_Type
                            is new Window_Connection_Type with record
-      Camera_State         : Base.Camera_State_Class_Access := Null;
+      Camera_State         : Configuration.Camera.State.State_Access := Null;
       Exited               : Boolean := False;  -- set true by exit button
       GUI_Window           : Gnoga.Gui.Window.Pointer_To_Window_Class :=
                               Null;
@@ -82,8 +84,6 @@ package body Camera.Main is
                               Dialog_Access := Null;
       Message_Box_Result   : Gnoga.Gui.Plugin.Message_Boxes.
                               Message_Box_Result;
-      Mouse_Action         : Mouse_Click_Action_Type := No_Action;
-                              -- application responing to
       Update_Event         : Ada_Lib.Event.Event_Type (
                               new String'("update event"));
       View                 : View_Type;
@@ -133,7 +133,7 @@ package body Camera.Main is
    overriding
    function Get_Camera_State (
       Window_Connection                  : in     Full_Window_Connection_Type
-   ) return Base.Camera_State_Class_Access
+   ) return Configuration.Camera.State.State_Access
    with Pre    => Window_Connection.Has_Camera_State;
 
    overriding
@@ -464,19 +464,39 @@ return false;
    ---------------------------------------------------------------
 
    begin
-      return Window_Connection.Get_Camera_State.Get_Camera;
+      return Window_Connection.Get_Camera;
    end Get_Camera;
+
+   ---------------------------------------------------------------
+   function Get_Camera_Pan_Speed (
+      Window_Connection                  : in   Window_Connection_Type
+   ) return Property_Type is
+   ---------------------------------------------------------------
+
+   begin
+      return Window_Connection.Camera_Pan_Speed;
+   end Get_Camera_Pan_Speed;
 
    ---------------------------------------------------------------
    overriding
    function Get_Camera_State (
       Window_Connection                  : in     Full_Window_Connection_Type
-   ) return Base.Camera_State_Class_Access is
+   ) return Configuration.Camera.State.State_Access is
    ---------------------------------------------------------------
 
    begin
       return Window_Connection.Camera_State;
    end Get_Camera_State;
+
+   ---------------------------------------------------------------
+   function Get_Camera_Tilt_Speed (
+      Window_Connection                  : in   Window_Connection_Type
+   ) return Property_Type is
+   ---------------------------------------------------------------
+
+   begin
+      return Window_Connection.Camera_Tilt_Speed;
+   end Get_Camera_Tilt_Speed;
 
 -- ----------------------------------------------------------------
 -- function Get_Cards (
@@ -701,11 +721,11 @@ return false;
    pragma Unreferenced (Connection);
    ----------------------------------------------------------------
 
-      State_Pointer  : constant Configuration.Camera.State.
-                        State_Constant_Access :=
-                           Camera.Configurations.Get_Read_Only_Configuration_State;
+      State_Pointer  : constant Configurations.
+                        Camera_Configuration_State_Constant_Class_Access :=
+                           Camera.Configurations.Get_Read_Only_Camera_Configuration_State;
 
-      State    : Configuration.Camera.State.State_Type renames
+      State    : Configuration.Camera.State.State_Type'class renames
                   State_Pointer.all;
    begin
       Log_In (Debug, "started " & Started'img &
@@ -741,7 +761,7 @@ return false;
 
      begin
         Cards.Control_Card := Control_Card;
-        Full_Window_Connection.Get_Camera_State.Open_Camera (Description'access);
+        Full_Window_Connection.Open_Camera (Description'access);
 
         Main_Window.Connection_Data (
            Gnoga.Types.Pointer_to_Connection_Data_Class (
@@ -916,6 +936,44 @@ return false;
 -- end On_Result_Connect;
 
    ---------------------------------------------------------------
+   procedure Open_Camera (
+      Connection     : in out Window_Connection_Type;
+      Description    : in     Ada_Lib.Strings.String_Constant_Access) is
+   ---------------------------------------------------------------
+
+      State       : Configuration.Camera.State.State_Type'class
+                     renames Configurations.
+                        Get_Read_Only_Camera_Configuration_State (
+                           Connection.Camera_ID).all;
+      Port_Number : constant Standard.Camera.Port_Type :=
+                         State.Get_Host_Port;
+      Camera_Address  : constant Ada_Lib.Socket_IO.Address_Type :=
+                         State.Get_Host_Address;
+   begin
+      Log_In (Debug,
+         Quote (" Camera_URL", Camera_Address.Image) &
+         " port" & Port_Number'img);
+
+not_implemented;  -- need way to call camera allocator based on configuration 2//26/26
+--    Connection.Camera :=
+--       Standard.Camera.Commands.Camera_Class_Access'(
+--          new Standard.Camera.Commands.PTZ_Optics.PTZ_Optics_Type (
+--             Description));
+
+      Connection.Camera.Open (Camera_Address, Port_Number);
+      Log_Out (Debug);
+
+   exception
+
+      when Fault: GNAT.Sockets.Host_Error =>
+         Trace_Exception (Debug, Fault, Here);
+         Put_Line ("Could not open camera. Error " &
+            Ada.Exceptions.Exception_Message (Fault));
+         Ada_Lib.OS.Immediate_Halt (Ada_Lib.OS.Application_Error);
+
+   end Open_Camera;
+
+   ---------------------------------------------------------------
    overriding
    procedure Process_Command (
       Connection_Data            : in out Full_Window_Connection_Type;
@@ -952,9 +1010,9 @@ not_implemented;
       Windows_Connection   : constant Full_Window_Connection_Class_Access :=
                               Full_Window_Connection_Class_Access (
                                  Object.Connection_Data);
-      State                : Configuration.Camera.State.State_Type renames
+      State                : Configuration.Camera.State.State_Type'class renames
                               Standard.Camera.Configurations.
-                                 Get_Read_Only_Configuration_State.all;
+                                 Get_Read_Only_Camera_Configuration_State.all;
       Camera_CSS           : constant String := State.Get_CSS_Path;
 
    begin
@@ -1037,6 +1095,16 @@ not_implemented;
    begin
       return Started;
    end Running;
+
+   ---------------------------------------------------------------
+   procedure Set_Mouse_Action (
+      Connection_Data            : in out Window_Connection_Type;
+      Action                     : in     Mouse_Click_Action_Type) is
+   ---------------------------------------------------------------
+
+   begin
+      Connection_Data.Mouse_Action := Action;
+   end Set_Mouse_Action;
 
 -- ---------------------------------------------------------------
 -- overriding

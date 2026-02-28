@@ -42,21 +42,21 @@ package Configuration.State is
    ) return Video.Lib.Port_Type
    with Pre => State.Video_Port /= Video.Lib.Port_Type'last;
 
-   function Get_Number_Columns (
-      State                      : in     State_Type
-   ) return Column_Type is abstract;
+-- function Get_Number_Columns (
+--    State                      : in     State_Type
+-- ) return Column_Type is abstract;
 
-   function Get_Number_Configurations (
-      State                      : in     State_Type
-   ) return Configuration_ID_Type is abstract;
-
-   function Get_Number_Presets (
-      State                      : in     State_Type
-   ) return Natural is abstract;
-
-   function Get_Number_Rows (
-      State                      : in     State_Type
-   ) return Row_Type is abstract;
+-- function Get_Number_Configurations (
+--    State                      : in     State_Type
+-- ) return Configuration_ID_Type is abstract;
+--
+-- function Get_Number_Presets (
+--    State                      : in     State_Type
+-- ) return Natural is abstract;
+--
+-- function Get_Number_Rows (
+--    State                      : in     State_Type
+-- ) return Row_Type is abstract;
 
    function Have_Video_Address (
       State                      : in     State_Type

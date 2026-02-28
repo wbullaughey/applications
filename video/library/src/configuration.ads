@@ -3,7 +3,7 @@ with Ada_Lib.Trace;
 
 package Configuration is
 
-   subtype Address_Kind_Type     is Ada_Lib.Socket_IO.Address_Kind_Type;
+   subtype Address_Kind_Type  is Ada_Lib.Socket_IO.Address_Kind_Type;
 
    type Column_Type           is new Positive;
    type Configuration_ID_Type is new Positive;

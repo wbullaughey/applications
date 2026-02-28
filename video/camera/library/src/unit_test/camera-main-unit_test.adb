@@ -176,16 +176,17 @@ exception
    ---------------------------------------------------------------
    overriding
    procedure Tear_Down (
-      Test                       : in out Test_Type) is
+      Test           : in out Test_Type) is
    ---------------------------------------------------------------
 
-      Configuration_State                      : Configuration.Camera.State.State_Type renames
-                                    Test.Configuration_State;
+      Configuration  : Base.Configuration_Type renames Test.Configuration;
+
    begin
       Log_In (Debug or Trace_Set_Up_Tear_Down);
       Camera.Lib.Unit_Test.With_Camera_With_GNOGA_Test_Type (Test).Tear_Down;
 --    GNOGA_Ada_Lib.Clear_Connection_Data;
-      Configuration_State.Unload;
+not_implemented;
+--    Configuration.Unload;
       Log_Out (Debug or Trace_Set_Up_Tear_Down);
    end Tear_Down;
 

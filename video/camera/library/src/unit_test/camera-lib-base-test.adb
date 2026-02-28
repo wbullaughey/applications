@@ -143,7 +143,7 @@ package body Camera.Lib.Base.Test is
                            554, 1935
                         );
       Configuration_State
-                     : Configuration.Camera.State.State_Type'class renames
+                     : Configuration.Camera.State.State_Type renames
                         Local_Test.Configuration.Get_Configuration_State.all;
       Options        : Standard.Camera.Lib.Unit_Test.
                         Unit_Test_Program_Options_Type'class renames

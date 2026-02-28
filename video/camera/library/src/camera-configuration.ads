@@ -9,25 +9,27 @@ limited with Configuration.Camera.Setup;
 
 package Camera.Configuration is
 
-   type Configuration_Type               is new Base.Configuration_Type with private;
-   type Configuration_Access             is access all Configuration_Type;
-   type Configuration_Constant_Access    is access all Configuration_Type;
-   type Configuration_Class_Access       is access Configuration_Type'class;
+   type Configuration_Type       is new Base.Configuration_Type with private;
+   type Configuration_Access     is access all Configuration_Type;
+   type Configuration_Class_Access
+                                 is access all Configuration_Type'class;
+   type Configuration_Constant_Access
+                                 is access all Configuration_Type;
    type Configuration_Constant_Class_Access
                                  is access constant Configuration_Type'class;
 
 -- function Allocate;
 -- return Configuration_Access;
--- ) with Pre  => not State.Has_Configuration_State and then
+-- ) with Pre  => not State.Has_Configuration and then
 --                not State.Has_Configuration_Setup,
---        Post => State.Has_Configuration_State and then
+--        Post => State.Has_Configuration and then
 --                State.Has_Configuration_Setup;
 
 -- procedure Deallocate (
 --    State    : in out Configuration_Type
--- ) with Pre  => State.Has_Configuration_State and then
+-- ) with Pre  => State.Has_Configuration and then
 --                State.Has_Configuration_Setup,
---        Post => not State.Has_Configuration_State and then
+--        Post => not State.Has_Configuration and then
 --                not State.Has_Configuration_Setup;
 
 -- function Get_Camera_Configuration (
@@ -48,7 +50,7 @@ package Camera.Configuration is
       Configuration        : in out Configuration_Type;
       Setup_Name           : in     String;
       State_Name           : in     String
-   ) with   Pre => Configuration.Has_Configuration_State;
+   ) with   Pre => Configuration.Has_Configuration;
 
 -- function Resolve_ID (
 --    Camera_ID   : Camera_ID_Type
@@ -65,7 +67,7 @@ package Camera.Configuration is
 
 private
 
-   type Configuration_Type         is new Base.Configuration_Type with record
+   type Configuration_Type is new Base.Configuration_Type with record
       Window_Connection    : access Main.Window_Connection_Type'class := Null;
    end record;
 

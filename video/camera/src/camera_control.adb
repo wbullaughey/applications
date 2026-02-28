@@ -38,7 +38,7 @@ procedure Camera_Control is
 --      declare
 --         Configuration_State  : Configuration.Camera.State.State_Type
 --            renames Camera.Configurations.
---               Get_Writeable_Configuration_State (
+--               Get_Configuration_State (
 --                  Camera_State.Get_Camera_ID).all;
 --      begin
 ----       Camera_State.Copy (Configuration_State);

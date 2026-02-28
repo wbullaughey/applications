@@ -37,14 +37,14 @@ package Camera.Lib.Unit_Test is
    end record;
 
    procedure Load_Test_State (
-      Configuration     : in out Camera.Configuration.Configuration_Type;
+      Configuration      : in out Standard.Camera.Base.Configuration_Type;
       Camera_Info       : in out Camera_Info_Type;
       Setup             : in out Standard.Configuration.Camera.Setup.Setup_Type
 --    State             : in out Configuration.Camera.State.State_Type
    ) with  -- Pre  => Camera_Info.Camera /= Null,
           Post => Camera_Info.Camera_Options.Camera_Address /= Null and then
                   Camera_Info.Camera_Options.Port_Number /= Video.Lib.Port_Type'last and then
-                  Camera.Configurations.Has_Camera_State (Make_Camera_ID (
+                  Camera.Configurations.Has_Camera_ID (Make_Camera_ID (
                      Camera_Info.Camera_Options.Camera_Address.all)) and then
                   Setup.Is_Loaded;
 
@@ -93,8 +93,8 @@ package Camera.Lib.Unit_Test is
    overriding
    procedure Set_Up (
       Test                       : in out With_Camera_No_GNOGA_Test_Type
-   ) with Pre  => not Test.Have_Camera and then
-                  not Test.Configuration.Get_Configuration_Setup.Is_Loaded,
+   ) with Pre  => not Test.Have_Camera, --  and then
+--                not Test.Configuration.Get_Configuration_Setup.Is_Loaded,
           Post => Test.Verify_Set_Up and then
                   ( if Test.Load_State then
                         Test.Have_Camera and then
@@ -232,7 +232,6 @@ package Camera.Lib.Unit_Test is
       Load_State     : in     Boolean;
       Brand          : in     Standard.Camera.Brand_Type;
       Camera_Info    : in out Camera_Info_Type;
-      Setup          : in out Standard.Configuration.Camera.Setup.Setup_Type;
       Configuration  : in out Standard.Camera.Base.Configuration_Type);
 
    Camera_Commands_Debug         : Boolean := False;
