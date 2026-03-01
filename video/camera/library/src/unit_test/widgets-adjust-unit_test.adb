@@ -1,7 +1,7 @@
 with Ada.Exceptions;
-with GNOGA_Ada_Lib;
+--with GNOGA_Ada_Lib;
 with Ada_Lib.GNOGA;
-with Ada_Lib.Options;
+--with Ada_Lib.Options;
 with Ada_Lib.Timer;
 with Ada_Lib.Unit_Test;
 with AUnit.Assertions; use AUnit.Assertions;
@@ -171,8 +171,8 @@ package body Widgets.Adjust.Unit_Test is
    begin
       Log_In (Debug);
       declare
-         Local_Test        : Widgets_Adjust_Test_Type renames
-                              Widgets_Adjust_Test_Type (Test);
+--       Local_Test        : Widgets_Adjust_Test_Type renames
+--                            Widgets_Adjust_Test_Type (Test);
          Connection_Data   : constant Camera.Main.Window_Connection_Class_Access :=
                               Camera.Main.Window_Connection_Class_Access (
                                  Ada_Lib.GNOGA.Get_Window_Connection_Data);

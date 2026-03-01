@@ -66,11 +66,10 @@ package body Configuration.Camera.State.Unit_Tests is
    Debug       : Boolean renames Standard.Camera.Lib.Options.Unit_Test.
                   Camera_Lib_Unit_Test.Configuration_Setup_Debug;
 
-   Configuration_Path  : constant String := "test_configuration.cfg";
    Suite_Name  : constant String := "State";
 
-   Test_State  : constant String :=
-                       "test_state.cfg";
+-- Test_State  : constant String :=
+--                     "test_state.cfg";
 
  ---------------------------------------------------------------
    overriding
@@ -199,19 +198,22 @@ package body Configuration.Camera.State.Unit_Tests is
 
       Local_Test  : Configuration_Load_Test_Type renames
                      Configuration_Load_Test_Type (Test);
-      Options     : Standard.Camera.Lib.Unit_Test.
-                     Unit_Test_Options_Constant_Class_Access :=
-                        Standard.Camera.Lib.Unit_Test.
-                           Get_Camera_Unit_Test_Constant_Options;
+--    Options     : Standard.Camera.Lib.Unit_Test.
+--                   Unit_Test_Options_Constant_Class_Access :=
+--                      Standard.Camera.Lib.Unit_Test.
+--                         Get_Camera_Unit_Test_Constant_Options;
 
       Configuration
                   : Standard.Camera.Base.Configuration_Type renames
                      Local_Test.Configuration;
---    Location    : constant Video.Lib.Location_Type :=
---                   Configuration.Get_Location;
+      Configuration_Path
+                  : constant String := "test_configuration.cfg";
+      Configuration_Default_Path
+                  : constant String := "test_configuration_defaults.cfg";
    begin
       Log_In (Debug);
       Configuration.Load (Configuration_Path, Camera_Index => 1);
+      Configuration.Load (Configuration_Default_Path, Camera_Index => 1);
       Log_Out (Debug);
 
    exception
@@ -264,10 +266,10 @@ package body Configuration.Camera.State.Unit_Tests is
 
             Local_Test  : Configuration_Tests_Type renames
                            Configuration_Tests_Type (Test);
-            Options     : Standard.Camera.Lib.Unit_Test.
-                           Unit_Test_Program_Options_Type'class
-                              renames Standard.Camera.Lib.Unit_Test.
-                                 Get_Camera_Unit_Test_Constant_Options.all;
+--          Options     : Standard.Camera.Lib.Unit_Test.
+--                         Unit_Test_Program_Options_Type'class
+--                            renames Standard.Camera.Lib.Unit_Test.
+--                               Get_Camera_Unit_Test_Constant_Options.all;
             Configuration_State
                         : Configuration.Camera.State.State_Type renames
                            Local_Test.Configuration.Get_Configuration_State.all;

@@ -263,7 +263,7 @@ not_implemented;
 begin
 --Protected_Options.Debug := True;
 --Debug := True;
-Trace_Options := True;
+--Trace_Options := True;
 --Elaborate := True;
 
    Log_Here (Elaborate or Debug_Options or Trace_Options);

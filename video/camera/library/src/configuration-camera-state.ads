@@ -124,10 +124,10 @@ package Configuration.Camera.State is
 
    overriding
    procedure Load (
-      State                      : in out State_Type;
-      Config                     : Ada_Lib.Configuration.Configuration_Type;
-      Location                   : in     Configuration.State.Location_Type;
-      File_Name                  : in     String
+      State       : in out State_Type;
+      Config      : in out Ada_Lib.Configuration.Configuration_Type;
+      Location    : in     Configuration.State.Location_Type;
+      File_Name   : in     String
    ) with Pre => not State.Is_Loaded,
           Post => State.Is_Loaded and then
                   State.Have_Video_Address;

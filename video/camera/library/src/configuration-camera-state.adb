@@ -360,10 +360,10 @@ return Null;
    ----------------------------------------------------------------
    overriding
    procedure Load (
-      State                      : in out State_Type;
-      Config                     : Ada_Lib.Configuration.Configuration_Type;
-      Location                   : in     Configuration.State.Location_Type;
-      File_Name                  : in     String) is
+      State       : in out State_Type;
+      Config      : in out Ada_Lib.Configuration.Configuration_Type;
+      Location    : in     Configuration.State.Location_Type;
+      File_Name   : in     String) is
    ----------------------------------------------------------------
 
       Current_Directory : constant String :=
@@ -379,9 +379,9 @@ return Null;
       Log_In (Debug, Quote ("file name", File_Name) &
          Quote (" Current_Directory", Current_Directory) &
          Quote (" path", Path));
+      Config.Load (Path, False);
       Standard.Configuration.State.State_Type (State).Load (Config, Location,
          File_Name);
---    Config.Load (Path, False);
 --    State.Load (Path);
       State.Camera_ID := Standard.Camera.Make_Camera_ID (State.Video_Address.all);
       State.Camera_Name.Construct (Config.Get_String ("camera_name"));

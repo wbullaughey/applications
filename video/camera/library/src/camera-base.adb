@@ -1,16 +1,16 @@
-with Ada.Text_IO; use  Ada.Text_IO;
+--with Ada.Text_IO; use  Ada.Text_IO;
 with Ada_Lib.Configuration;
 with Ada_Lib.Options;
 with Ada_Lib.OS;
 with Ada_Lib.String_Quote; use Ada_Lib.String_Quote;
 with Ada_Lib.Strings.Unlimited;use Ada_Lib.Strings.Unlimited;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
-with Camera.Commands.PTZ_Optics;
-with Camera.Configurations;
+--with Camera.Commands.PTZ_Optics;
+--with Camera.Configurations;
 with Camera.Lib.Options;
 with Configuration.Camera.Setup;
 with Configuration.Camera.State;
-with GNAT.Sockets;
+--with GNAT.Sockets;
 
 -- pragma Elaborate (Ada_Lib.OS);
 
@@ -262,6 +262,8 @@ not_implemented;
             Camera_Configuration_File.Load (Camera_File_Name,
                Create => False);
             declare
+               Configuration_File
+                           : Ada_Lib.Configuration.Configuration_Type;
                State_Name  : constant String :=
                               Camera_Configuration_File.Get_String (
                                  "state_" & Trim (Camera'img));
@@ -269,7 +271,8 @@ not_implemented;
                               Camera_Configuration_File.Get_String (
                                  "setup_" & Trim (Camera'img));
             begin
-               Configuration.Configuration_State.Load (State_Name);
+               Configuration.Configuration_State.Load (
+                  Configuration_File, Location, State_Name);
                Configuration.Configuration_Setup.Load (
                   Configuration.Configuration_State.all, Setup_Name);
             end;
@@ -616,14 +619,14 @@ return null;
 
       ------------------------------------------------------------
       function Path_Type (
-         Configured        : in     String;
+         Camera_Index      : in     Positive;
          Prefix            : in     String;
          Root              : in     String
       ) return String is
       ------------------------------------------------------------
 
          Parameter         : constant String :=
-                              Configured & Camera_Suffix;
+                              Prefix & Camera_Suffix;
 
 --                            (if Prefix'length = 0 then
 --                                  Root
@@ -632,7 +635,7 @@ return null;
 --                               Camera_Suffix);
       begin
          Log_In (Debug,
-            Quote ("Configured", Configured) &
+            "Camera_Index" & Camera_Index'img &
             Quote (" prefix", Prefix) &
             Quote (" root", Root) &
             Quote (" parameter", Parameter));
@@ -646,8 +649,13 @@ return null;
                return Result;
             end;
          else
-            Log_Out (Debug, Quote ("Configured", Configured));
-            return Configured;
+            declare
+               Result         : constant String :=
+                                 Prefix & Trim (Camera_Index'img);
+            begin
+               Log_Out (Debug, Quote ("Result", Result));
+               return Result;
+            end;
          end if;
       end Path_Type;
       ------------------------------------------------------------
@@ -657,15 +665,21 @@ return null;
          Camera_Index'img);
       Configuration_File.Load (Path, Create => False);
       Configuration.Setup_Path.Construct (Path_Type (
-         Path, "camera_setup_", "setup"));
+         Camera_Index, "camera_setup_", "setup"));
       Configuration.Setup_Path.Construct (Path_Type (
-         Path, "camera_state_", "state"));
+         Camera_Index, "camera_state_", "state"));
       Configuration.Configuration_Setup :=
          new Standard.Configuration.Camera.Setup.Setup_Type;
       Configuration.Configuration_State :=
          new Standard.Configuration.Camera.State.State_Type;
-      Configuration.Configuration_State.Load (
-         Configuration.Setup_Path.Coerce);
+
+      declare
+         State_Configuration_File
+                        : Ada_Lib.Configuration.Configuration_Type;
+      begin
+         Configuration.Configuration_State.Load (State_Configuration_File,
+            Configuration.Location, Configuration.Setup_Path.Coerce);
+      end;
       Configuration.Configuration_Setup.Load (
          Configuration.Configuration_State.all,
             Configuration.Setup_Path.Coerce);

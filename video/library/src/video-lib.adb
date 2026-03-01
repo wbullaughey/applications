@@ -299,7 +299,7 @@ package body Video.Lib is
       else
          return Log_Out (Ada_Lib.Options.Nested.Nested_Options_Type (
             Options).Process_Option (Iterator, Option),
-            Trace_Options or Debug, "other option" & Option.Image);
+            Trace_Options or Debug, "other " & Option.Image);
       end if;
    end Process_Option;
 
@@ -389,11 +389,11 @@ package body Video.Lib is
                Video.Lib.Video_Options.Configuration_State_Debug := True;
                Video.Lib.Video_Options.Library_Debug := True;
 
-            when 'c' =>
-               Video.Lib.Video_Options.Configuration_State_Debug := True;
-
             when 'd' =>
                Video.Lib.Video_Options.Library_Debug := True;
+
+            when 's' =>
+               Video.Lib.Video_Options.Configuration_State_Debug := True;
 
             when others =>
                Options.Bad_Option (Quote (

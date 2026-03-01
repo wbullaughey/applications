@@ -179,7 +179,7 @@ exception
       Test           : in out Test_Type) is
    ---------------------------------------------------------------
 
-      Configuration  : Base.Configuration_Type renames Test.Configuration;
+--    Configuration  : Base.Configuration_Type renames Test.Configuration;
 
    begin
       Log_In (Debug or Trace_Set_Up_Tear_Down);
@@ -200,7 +200,7 @@ not_implemented;
                                     Unit_Test.Unit_Test_Options_Constant_Class_Access (
                                        Ada_Lib.Options.Get_Ada_Lib_Read_Only_Program_Options).all;
       Button_Press_Event      : Button_Push_Event_Type;
-      Local_Test              : Test_Type'class renames Test_Type'class (Test);
+--    Local_Test              : Test_Type'class renames Test_Type'class (Test);
 
    begin
       Log_In (Debug, "Test_Driver " & Options.Test_Driver'img);

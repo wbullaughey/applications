@@ -4,7 +4,7 @@ with Ada_Lib.Help;
 with Ada_Lib.Options.Create;
 --with Ada_Lib.Options.Nested;
 with Ada_Lib.Options.Runstring;
-with Ada_Lib.Options.Unit_Test;
+--with Ada_Lib.Options.Unit_Test;
 --with Ada_Lib.Test_States;
 with Ada_Lib.Strings; use Ada_Lib.Strings;
 with Ada_Lib.String_Quote; use Ada_Lib.String_Quote;
@@ -26,7 +26,7 @@ with Camera.Main;
 with Configuration.Camera.Setup.Unit_Tests;
 with Configuration.Camera.State.Unit_Tests;
 --with Configuration.State;
-with Gnoga.Application.Multi_Connect;
+--with Gnoga.Application.Multi_Connect;
 with Gnoga_Ada_Lib.Base;
 with Widgets.Adjust.Unit_Test;
 with Widgets.Control.Unit_Test;
@@ -52,7 +52,7 @@ package body Camera.Lib.Unit_Test is
 
    Camera_State_Path       : constant String := "camera_state_path.cfg";
    Test_Setup              : constant String := "test_setup.cfg";
-   Test_State              : constant STring := "test_state.cfg";
+-- Test_State              : constant STring := "test_state.cfg";
 
    ----------------------------------------------------------------------------
    procedure Check_Preset (
@@ -195,10 +195,10 @@ return Null_Camera_ID;
    begin
       Log_In (Debug or Trace_Set_Up_Tear_Down);
       declare
-         Options  : Standard.Camera.Lib.Unit_Test.
-                  Unit_Test_Program_Options_Type'class
-                     renames Standard.Camera.Lib.Unit_Test.
-                        Get_Camera_Unit_Test_Constant_Options.all;
+--       Options  : Standard.Camera.Lib.Unit_Test.
+--                Unit_Test_Program_Options_Type'class
+--                   renames Standard.Camera.Lib.Unit_Test.
+--                      Get_Camera_Unit_Test_Constant_Options.all;
          Configuration_Camera_State
                   : constant Standard.Configuration.Camera.State.State_Access :=
                      new Standard.Configuration.Camera.State.State_Type;
@@ -238,6 +238,7 @@ return Null_Camera_ID;
       function Call_Nested (
          Message        : in     String
       ) return Boolean is
+      pragma Unreferenced (Message);
       -------------------------------------------------------------------------
 
       begin
@@ -600,8 +601,9 @@ procedure Setup_Camera (
       if Configuration.Has_Configuration then
          declare
             Configuration_State
-               : Standard.Configuration.Camera.State.State_Class_Access :=
-                  Configuration.Get_Configuration_State;
+               : constant Standard.Configuration.Camera.State.
+                  State_Class_Access :=
+                     Configuration.Get_Configuration_State;
          begin
             if Configuration_State.Is_Loaded then
                Configuration_State.Unload;
@@ -634,7 +636,7 @@ procedure Setup_Camera (
       Test                       : in out With_Camera_No_GNOGA_Test_Type) is
    ---------------------------------------------------------------
 
-      Has_Camera_ID              : Boolean := False;
+--    Has_Camera_ID              : Boolean := False;
 
    begin
       Log_In (Debug or Trace_Set_Up_Tear_Down);
@@ -647,11 +649,11 @@ procedure Setup_Camera (
 
          declare
             Configuration_Setup
-                     : Standard.Configuration.Camera.Setup.Setup_Access :=
-                        Test.Configuration.Get_Configuration_Setup;
+               : constant Standard.Configuration.Camera.Setup.Setup_Access :=
+                     Test.Configuration.Get_Configuration_Setup;
             Configuration_State
-                     : Standard.Configuration.Camera.State.State_Access :=
-                        Test.Configuration.Get_Configuration_State;
+               : constant Standard.Configuration.Camera.State.State_Access :=
+                  Test.Configuration.Get_Configuration_State;
          begin
             if Configuration_Setup.Is_Loaded then
                Log_Here (Debug);
@@ -664,9 +666,7 @@ procedure Setup_Camera (
             end if;
 
             if Configuration_State.Has_Camera_ID then
-log_here;
                Configuration_State.Clear_Global_Camera_State;
-log_here;
             end if;
          end;
 

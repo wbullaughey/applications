@@ -1,13 +1,13 @@
 --with Ada.Containers.Indefinite_Hashed_Maps;
-with Ada.Unchecked_Deallocation;
-with Ada_Lib.Configuration;
+--with Ada.Unchecked_Deallocation;
+--with Ada_Lib.Configuration;
 with Ada_Lib.Options.Program;
-with Ada_Lib.Strings; use Ada_Lib.Strings;
+--with Ada_Lib.Strings; use Ada_Lib.Strings;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
 with Camera.Lib.Options;
 with Camera.Lib.Unit_Test;
-with Configuration.Camera.State;
-with Configuration.Camera.Setup;
+--with Configuration.Camera.State;
+--with Configuration.Camera.Setup;
 
 package body Camera.Configuration is
 

@@ -73,10 +73,10 @@ package body Configuration.State is
 
    ----------------------------------------------------------------
    procedure Load (
-      State                      : in out State_Type;
-      Config                     : in     Ada_Lib.Configuration.Configuration_Type;
-      Location                   : in     Location_Type;
-      File_Name                  : in     String) is
+      State       : in out State_Type;
+      Config      : in out Ada_Lib.Configuration.Configuration_Type;
+      Location    : in     Location_Type;
+      File_Name   : in     String) is
    ----------------------------------------------------------------
 
       Reported                   : exception;

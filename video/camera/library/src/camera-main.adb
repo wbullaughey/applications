@@ -10,10 +10,11 @@ with Ada_Lib.String_Quote; use Ada_Lib.String_Quote;
 with Ada_Lib.Strings; use Ada_Lib.Strings;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
 with Ask;
-with Camera.Configurations;
+with Camera.Base;
+--with Camera.Configurations;
 with Camera.Lib.Base;
 with Camera.Lib.Options;
-with Configuration.Camera.State;
+--with Configuration.Camera.State;
 with Gnoga.Gui.Base;
 with Gnoga.Gui.Element.Section;
 with Gnoga.Gui.Plugin.jQueryUI.Widget;
@@ -98,9 +99,9 @@ package body Camera.Main is
    procedure Close_Message_Box (
       Window_Connection            : in out Full_Window_Connection_Type);
 
-   function Connection_Data_Equal (
-      Left, Right                   : in     Window_Connection_Access
-   ) return Boolean;
+-- function Connection_Data_Equal (
+--    Left, Right                   : in     Window_Connection_Access
+-- ) return Boolean;
 
    overriding
    function Did_Exit (
@@ -237,13 +238,13 @@ package body Camera.Main is
    procedure Wait_For_Update_Event (
       Window_Connection            : in out Full_Window_Connection_Type);
 
-   function Window_ID_Equal (
-      Left, Right                : in     Window_ID_Type
-   ) return Boolean;
-
-   function Window_ID_Hash (
-      Key                        : in     Window_ID_Type
-   ) return Ada.Containers.Hash_Type;
+-- function Window_ID_Equal (
+--    Left, Right                : in     Window_ID_Type
+-- ) return Boolean;
+--
+-- function Window_ID_Hash (
+--    Key                        : in     Window_ID_Type
+-- ) return Ada.Containers.Hash_Type;
 
    procedure Trace_Button_Click_Handler (
       Object                     : in out Gnoga.Gui.Base.Base_Type'Class
@@ -265,7 +266,7 @@ package body Camera.Main is
 
    Debug    : Boolean renames Camera.Lib.Options.Camera_Options.Main_Debug;
    Description                   : aliased constant String := "main camera";
-   Main_Window_Connection_ID     : Gnoga.Types.Connection_ID :=
+   Main_Window_Connection_ID     : constant Gnoga.Types.Connection_ID :=
                                      Gnoga.Types.No_Connection;
    Started                       : Boolean := False;
 
@@ -464,7 +465,9 @@ return false;
    ---------------------------------------------------------------
 
    begin
-      return Window_Connection.Get_Camera;
+not_implemented;
+return null;
+--    return Window_Connection.Get_Camera;
    end Get_Camera;
 
    ---------------------------------------------------------------
@@ -607,77 +610,77 @@ return false;
       return Main_Window_Connection_ID /= Gnoga.Types.No_Connection;
    end Has_Main_Window_Connection_ID;
 
-   ----------------------------------------------------------------
-   function Main_Window (
-      Navigation                 : in     Navigation_Type
-   ) return Gnoga.Gui.Base.Pointer_To_Base_Class is
-   ----------------------------------------------------------------
-
-   begin
-      return Navigation.Parent.Parent.Parent.Parent;
-   end Main_Window;
-
-   ----------------------------------------------------------------
-   function Main_Window (
-      Cards                      : in     Cards_Type
-   ) return Gnoga.Gui.Base.Pointer_To_Base_Class is
-   ----------------------------------------------------------------
-
-   begin
-      return Cards.Parent.Parent.Parent.Parent.Parent;
-   end Main_Window;
-
-   ----------------------------------------------------------------
-   function Main_Window (
-      Deck                       : in     Deck_Type
-   ) return Gnoga.Gui.Base.Pointer_To_Base_Class is
-   ----------------------------------------------------------------
-
-   begin
-      return Deck.Parent.Parent.Parent.Parent;
-   end Main_Window;
-
-   ----------------------------------------------------------------
-   function Main_Window (
-      Panel                      : in     Panel_Type
-   ) return Gnoga.Gui.Base.Pointer_To_Base_Class is
-   ----------------------------------------------------------------
-
-   begin
-      return Panel.Parent.Parent.Parent;
-   end Main_Window;
-
-   ----------------------------------------------------------------
-   function Main_Window (
-      Docker                     : in     Docker_Type
-   ) return Gnoga.Gui.Base.Pointer_To_Base_Class is
-   ----------------------------------------------------------------
-
-   begin
-      return Docker.Parent.Parent;
-   end Main_Window;
-
-   ----------------------------------------------------------------
-   function Main_Window (
-      View                       : in     View_Type
-   ) return Gnoga.Gui.Base.Pointer_To_Base_Class is
-   ----------------------------------------------------------------
-
-   begin
-      return View.Parent;
-   end Main_Window;
-
-   ----------------------------------------------------------------
-   overriding
-   function Main_Window (
-      Window_Connection                  : in     Full_Window_Connection_Type
-   ) return Gnoga.Gui.Window.Pointer_To_Window_Class is
-   ----------------------------------------------------------------
-
-   begin
-      return Window_Connection.GUI_Window;
-   end Main_Window;
-
+-- ----------------------------------------------------------------
+-- function Main_Window (
+--    Navigation                 : in     Navigation_Type
+-- ) return Gnoga.Gui.Base.Pointer_To_Base_Class is
+-- ----------------------------------------------------------------
+--
+-- begin
+--    return Navigation.Parent.Parent.Parent.Parent;
+-- end Main_Window;
+--
+-- ----------------------------------------------------------------
+-- function Main_Window (
+--    Cards                      : in     Cards_Type
+-- ) return Gnoga.Gui.Base.Pointer_To_Base_Class is
+-- ----------------------------------------------------------------
+--
+-- begin
+--    return Cards.Parent.Parent.Parent.Parent.Parent;
+-- end Main_Window;
+--
+-- ----------------------------------------------------------------
+-- function Main_Window (
+--    Deck                       : in     Deck_Type
+-- ) return Gnoga.Gui.Base.Pointer_To_Base_Class is
+-- ----------------------------------------------------------------
+--
+-- begin
+--    return Deck.Parent.Parent.Parent.Parent;
+-- end Main_Window;
+--
+-- ----------------------------------------------------------------
+-- function Main_Window (
+--    Panel                      : in     Panel_Type
+-- ) return Gnoga.Gui.Base.Pointer_To_Base_Class is
+-- ----------------------------------------------------------------
+--
+-- begin
+--    return Panel.Parent.Parent.Parent;
+-- end Main_Window;
+--
+-- ----------------------------------------------------------------
+-- function Main_Window (
+--    Docker                     : in     Docker_Type
+-- ) return Gnoga.Gui.Base.Pointer_To_Base_Class is
+-- ----------------------------------------------------------------
+--
+-- begin
+--    return Docker.Parent.Parent;
+-- end Main_Window;
+--
+-- ----------------------------------------------------------------
+-- function Main_Window (
+--    View                       : in     View_Type
+-- ) return Gnoga.Gui.Base.Pointer_To_Base_Class is
+-- ----------------------------------------------------------------
+--
+-- begin
+--    return View.Parent;
+-- end Main_Window;
+--
+-- ----------------------------------------------------------------
+-- overriding
+-- function Main_Window (
+--    Window_Connection                  : in     Full_Window_Connection_Type
+-- ) return Gnoga.Gui.Window.Pointer_To_Window_Class is
+-- ----------------------------------------------------------------
+--
+-- begin
+--    return Window_Connection.GUI_Window;
+-- end Main_Window;
+--
    ----------------------------------------------------------------
    overriding
    procedure Message_Box (

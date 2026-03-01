@@ -1,7 +1,7 @@
 --with Ada_Lib.Socket_IO;
 with Ada_Lib.Strings.Unlimited;
 with AUnit.Test_Suites;
-with Camera.Base;
+--with Camera.Base;
 with Camera.Commands;
 with Camera.Configurations;
 with Configuration.Camera.State;

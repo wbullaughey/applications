@@ -67,11 +67,10 @@ package Configuration.State is
    ) return Boolean;
 
    procedure Load (
-      State                      : in out State_Type;
-      Config                     : in     Ada_Lib.Configuration.Configuration_Type;
-      Location                   : in     Location_Type;
-      File_Name                  : in     String);
--- ) with Pre => not State.Is_Set;
+      State       : in out State_Type;
+      Config      : in out Ada_Lib.Configuration.Configuration_Type;
+      Location    : in     Location_Type;
+      File_Name   : in     String);
 
    procedure Load (
       State                      : in out State_Type;

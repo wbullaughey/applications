@@ -11,16 +11,16 @@ with Ada_Lib.Socket_IO;
 with ADA_LIB.String_Quote; use ADA_LIB.String_Quote;
 with ADA_LIB.Strings.Unlimited;use Ada_Lib.Strings.Unlimited;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
-with Camera.Base;
+--with Camera.Base;
 --with Camera.Commands;
 with Camera.Lib.Base;
 with Camera.Lib.Options;
-with Camera.Configurations;
+--with Camera.Configurations;
 with Configuration.Camera;
 --with Configuration.Camera.Setup;
 --with Configuration.Camera.State;
 --with Configuration.State;
-with Emulator;
+--with Emulator;
 --with Camera.Main;
 with Camera.Options;
 with Widgets.Adjust;
@@ -37,14 +37,18 @@ package body Camera.Lib is
 -- use type Ada_Lib.Options.Flag_List_Type;
 -- use type Ada_Lib.Options.Interface_Options_Constant_Class_Access;
 
-   Debug                   : Boolean renames Options.Camera_Options.Library_Debug;
-   Debug_Options           : Boolean renames Options.Camera_Options.Options_Debug;
+   Debug                   : Boolean renames Options.Camera_Options.
+                                       Library_Debug;
+   Debug_Options           : Boolean renames Options.Camera_Options.
+                                       Options_Debug;
    Trace_Option            : constant Character := '2';
-   Trace_Prefix            : constant Character := Ada_Lib.Help.Trace_Modifier;
+   Trace_Prefix            : constant Character :=
+                                       Ada_Lib.Help.Trace_Modifier;
    Options_With_Parameters : aliased constant
                               Ada_Lib.Options.Flag_List_Type :=
                                  Ada_Lib.Options.Create.Create_One (
-                                    Trace_Option, Ada_Lib.Options.Unmodified_Flag);
+                                    Trace_Option, Ada_Lib.Options.
+                                       Unmodified_Flag);
 -- Options_Without_Parameters    : aliased constant
 --                                  Ada_Lib.Options.Flag_List_Type :=
 --                                     Ada_Lib.Options.Create_Options (
@@ -121,14 +125,14 @@ package body Camera.Lib is
 
    ----------------------------------------------------------------------------
    procedure Initialize (
-      Iterator                   :    out Source_Iterator_Type;
-      Window                     : in     Gnoga.Gui.Base.Pointer_To_Base_Class;
-      Source                     : in     String;
-      Include_Options            : in     Boolean;
-      Include_Non_Options        : in     Boolean;
-      Argument_Seperator         : in     Character := ' ';
-      Option_Prefix              : in     Character := '-';
-      Skip                       : in     Natural := 0) is
+      Iterator             :    out Source_Iterator_Type;
+      Window               : in     Gnoga.Gui.Base.Pointer_To_Base_Class;
+      Source               : in     String;
+      Include_Options      : in     Boolean;
+      Include_Non_Options  : in     Boolean;
+      Argument_Seperator   : in     Character := ' ';
+      Option_Prefix        : in     Character := '-';
+      Skip                 : in     Natural := 0) is
    ----------------------------------------------------------------------------
 
       Modifiers                  : constant String := "";
@@ -219,7 +223,8 @@ package body Camera.Lib is
    overriding
    function Process_Option (
       Options  : in out Library_Options_Type;
-      Iterator : in out Ada_Lib.Options.Command_Line_Iterator_Interface'class;
+      Iterator : in out Ada_Lib.Options.
+                           Command_Line_Iterator_Interface'class;
       Option   : in     Ada_Lib.Options.Base_Flag_Option_Type'class
    ) return Boolean is
    ----------------------------------------------------------------------------
@@ -238,7 +243,8 @@ package body Camera.Lib is
             when others =>
                declare
                   Message  : constant String :=
-                              "Has_Option incorrectly passed " & Option.Image;
+                              "Has_Option incorrectly passed " &
+                              Option.Image;
                begin
                   Log_Exception (Trace_Options or Debug_Options, Message);
                   raise Failed with Message;
@@ -249,7 +255,8 @@ package body Camera.Lib is
             Option.Image & " handled");
       else
          return Log_Out (
-            Video.Lib.Options_Type (Options).Process_Option (Iterator, Option),
+               Video.Lib.Options_Type (Options).Process_Option (
+                  Iterator, Option),
                Trace_Options or Debug_Options, "other " & Option.Image);
       end if;
 
