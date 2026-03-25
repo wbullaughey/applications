@@ -1,27 +1,28 @@
 with ADA_LIB.Command_Line_Iterator;
 --with Ada_Lib.Configuration;
 --with Ada_Lib.Options.Flags;
-with Ada_Lib.Options.Nested;
+--with Ada_Lib.Options.Nested;
+with Ada_Lib.Options.Verification;
 with Hex_IO;
 with Gnoga.Gui.Base;
 with Video.Lib;
 
 package Camera.Lib is
 
-   Failed                        : exception;
+   Failed                     : exception;
 
    subtype Abstract_Iterator_Type
-                                 is Ada_Lib.Command_Line_Iterator.
-                                    Abstract_Package.Abstract_Iterator_Type;
+                              is Ada_Lib.Command_Line_Iterator.
+                                 Abstract_Package.Abstract_Iterator_Type;
 
-   type Library_Options_Type     is new Camera_Options_Type with record
-      Lib_Debug                  : Boolean := False;
-   end record;
+   type Camera_Lib_Nested_Options_Type
+      is abstract limited new Video.Lib.Video_Lib_Nested_Options_Type with
+                                 null record;
 
    type Library_Options_Class_Access
-                                 is access all Library_Options_Type'class;
+                                 is access all Camera_Lib_Nested_Options_Type'class;
    type Library_Options_Constant_Class_Access
-                                 is access constant Library_Options_Type'class;
+                                 is access constant Camera_Lib_Nested_Options_Type'class;
 
 
    type Source_Iterator_Type     is new Ada_Lib.Command_Line_Iterator.
@@ -42,19 +43,19 @@ package Camera.Lib is
    function Get_Camera_Modifiable_Options
    return Library_Options_Class_Access
    with Pre => Have_Options and then
-               Ada_Lib.Options.Nested.Have_Ada_Lib_Nested_Options;
+               Ada_Lib.Options.Verification.Have_Ada_Lib_Program_Options;
 
    function Get_Camera_Readonly_Options
    return Library_Options_Constant_Class_Access
    with Pre => Have_Options and then
-               Ada_Lib.Options.Nested.Have_Ada_Lib_Nested_Options;
+               Ada_Lib.Options.Verification.Have_Ada_Lib_Program_Options;
 
    function Have_Options
    return Boolean;
 
    overriding
    function Initialize (
-      Options              : in out Library_Options_Type;
+      Options              : in out Camera_Lib_Nested_Options_Type;
       From                 : in     String := Ada_Lib.Trace.Here
    ) return Boolean
    with pre    => Options.Verify_Preinitialize,
@@ -62,7 +63,7 @@ package Camera.Lib is
 
    overriding
    function Process_Option (  -- process one option
-      Options  : in out Library_Options_Type;
+      Options  : in out Camera_Lib_Nested_Options_Type;
       Iterator : in out Ada_Lib.Options.Command_Line_Iterator_Interface'class;
       Option   : in     Ada_Lib.Options.Base_Flag_Option_Type'class
    ) return Boolean
@@ -70,7 +71,7 @@ package Camera.Lib is
 
    overriding
    procedure Trace_Parse (
-      Options                    : in out Library_Options_Type;
+      Options                    : in out Camera_Lib_Nested_Options_Type;
       Iterator                   : in out Ada_Lib.Options.
                                     Command_Line_Iterator_Interface'class);
 
@@ -100,7 +101,7 @@ private
 
    overriding
    procedure Program_Help (
-      Options                    : in     Library_Options_Type;  -- only used for dispatch
+      Options                    : in     Camera_Lib_Nested_Options_Type;  -- only used for dispatch
       Help_Mode                  : in     ADA_LIB.Options.Help_Mode_Type);
 
 end Camera.Lib;

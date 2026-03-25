@@ -26,6 +26,10 @@ package Camera.Main is
    type Window_Connection_Access is access all Window_Connection_Type;
    type Window_Connection_Class_Access
                                  is access all Window_Connection_Type'class;
+
+   procedure Allocate_Camera (
+      Connection     : in out Window_Connection_Type);
+
    procedure Close_Message_Box (
       Window_Connection            : in out Window_Connection_Type) is abstract;
 
@@ -93,9 +97,9 @@ package Camera.Main is
    function Has_Main_Window_Connection
    return Boolean;
 
-   function Has_Main_Window_Connection_ID
-   return Boolean;
-
+-- function Has_Main_Window_Connection_ID
+-- return Boolean;
+--
    function Main_Window (
       Window_Connection                  : in     Window_Connection_Type
    ) return Gnoga.Gui.Window.Pointer_To_Window_Class is abstract;

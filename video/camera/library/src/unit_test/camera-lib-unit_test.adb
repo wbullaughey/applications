@@ -5,35 +5,38 @@ with Ada_Lib.Options.Create;
 --with Ada_Lib.Options.Nested;
 with Ada_Lib.Options.Runstring;
 --with Ada_Lib.Options.Unit_Test;
+--with Ada_Lib.Options.Verification;
 --with Ada_Lib.Test_States;
 with Ada_Lib.Strings; use Ada_Lib.Strings;
 with Ada_Lib.String_Quote; use Ada_Lib.String_Quote;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
-with Ada_Lib.Unit_Test.Reporter;
+--with Ada_Lib.Unit_Test.Reporter;
 with AUnit.Assertions; use AUnit.Assertions;
-with AUnit.Options;
-with AUnit.Test_Results;
+--with AUnit.Options;
+--with AUnit.Test_Results;
 --with Camera.Base;
 with Camera.Command_Queue;
 with Camera.Commands.PTZ_Optics;
-with Camera.Commands.Unit_Test;
+--with Camera.Commands.Unit_Test;
+with Camera.Configurations;
 with Camera.Lib.Base.Command_Tests;
-with Camera.Lib.Base.Test;
+--with Camera.Lib.Base.Test;
 with Camera.Lib.Options.Unit_Test;
 with Camera.Main;
 --with Camera.Configuration;
 --with Camera.Configurations;
-with Configuration.Camera.Setup.Unit_Tests;
+--with Configuration.Camera.Setup.Unit_Tests;
 with Configuration.Camera.State.Unit_Tests;
 --with Configuration.State;
 --with Gnoga.Application.Multi_Connect;
 with Gnoga_Ada_Lib.Base;
-with Widgets.Adjust.Unit_Test;
+with Video.Lib;
+--with Widgets.Adjust.Unit_Test;
 with Widgets.Control.Unit_Test;
 
 package body Camera.Lib.Unit_Test is
 
-   use type Ada_Lib.Options.Mode_Type;
+-- use type Ada_Lib.Options.Mode_Type;
 
    Configuration_Path      : constant String := "test_configuration.cfg";
    Camera_Description      : aliased constant String := "test camera";
@@ -50,8 +53,8 @@ package body Camera.Lib.Unit_Test is
    Help_Recursed           : Boolean := False;
    Initialize_Recursed     : Boolean := False;
 
-   Camera_State_Path       : constant String := "camera_state_path.cfg";
-   Test_Setup              : constant String := "test_setup.cfg";
+-- Camera_State_Path       : constant String := "camera_state_path.cfg";
+-- Test_Setup              : constant String := "test_setup.cfg";
 -- Test_State              : constant STring := "test_state.cfg";
 
    ----------------------------------------------------------------------------
@@ -82,22 +85,25 @@ package body Camera.Lib.Unit_Test is
          Put_Line ("brand " & Test.Brand'img);
          Put_Line ("Initialize_GNOGA " &
             " Load_State " & Test.Load_State'img &
-            " Location " & Test.Configuration.Get_Location'img &
-            " Port_Number " & Test.Camera_Info.Camera_Options.Port_Number'img &
+--          " Location " & Test.Configuration.Get_Location'img &
+            " Port_Number " & Test.Configuration.Get_Video_Port'img &
             Quote ("Setup_Path", Test.Setup_Path) &
             Quote ("State_Path", Test.State_Path));
       end if;
    end Dump;
 
-   ----------------------------------------------------------------------------
-   function Get_Configuration_Path (
-     Options                     : in out Unit_Test_Program_Options_Type
-   ) return String is
-   ----------------------------------------------------------------------------
-
-   begin
-      return Options.Nested_Options.Configuration_Path.Coerce;
-   end Get_Configuration_Path;
+-- ----------------------------------------------------------------------------
+-- function Get_Configuration_Path
+-- return String is
+-- ----------------------------------------------------------------------------
+--
+--    Nested_Options
+--       : constant Options.Nested_Options_Constant_Class_Access :=
+--             Nested_Options.Get_Camera_Lib_Options_Read_Only_Nested_Options;
+--
+-- begin
+--    return Nested_Options.Configuration_Path.Coerce;
+-- end Get_Configuration_Path;
 
    ----------------------------------------------------------------------------
    function Have_Camera (
@@ -117,7 +123,7 @@ package body Camera.Lib.Unit_Test is
    ----------------------------------------------------------------------------
 
    begin
-      return Log_Here (Test.Camera_Info.Camera_Options.Camera_Address /= Null, Debug);
+      return Log_Here (Test.Configuration.Have_Video_Address, Debug);
    end Have_Camera_Address;
 
    ----------------------------------------------------------------------------
@@ -147,19 +153,21 @@ return Null_Camera_ID;
    function Get_Camera_Unit_Test_Constant_Options (
       From                    : in     String := Standard.GNAT.Source_Info.
                                           Source_Location
-   ) return Unit_Test_Options_Constant_Class_Access is
+   ) return Camera_Lib_Unit_Test_Program_Options_Constant_Class_Access is
    ----------------------------------------------------------------------------
 
    begin
       Log_Here (Debug, "from " & From);
-      return Unit_Test_Options_Constant_Class_Access (
-         Ada_Lib.Options.Get_Ada_Lib_Read_Only_Program_Options);
+not_implemented;
+return null;
+--    return Unit_Test_Options_Constant_Class_Access (
+--       Ada_Lib.Options.Verification.Get_Ada_Lib_Read_Only_Nested_Options);
    end Get_Camera_Unit_Test_Constant_Options;
 
    -------------------------------------------------------------------------
    overriding
    function Initialize (
-     Options                     : in out Unit_Test_Program_Options_Type;
+     Options                     : in out Camera_Lib_Unit_Test_Program_Options_Type;
      From                        : in     String := Ada_Lib.Trace.Here
    ) return Boolean is
    -------------------------------------------------------------------------
@@ -167,7 +175,7 @@ return Null_Camera_ID;
    begin
       Log_In_Checked (Initialize_Recursed, Debug_Options or Trace_Options,
          "from " & From);
-      Unit_Test_Options := Options'unchecked_access;
+--    Unit_Test_Options := Options'unchecked_access;
 --    Ada_Lib.Options.Set_Ada_Lib_Options (Protected_Options'access);
 
       Ada_Lib.Options.Runstring.Options.Register (
@@ -176,59 +184,57 @@ return Null_Camera_ID;
       Ada_Lib.Options.Runstring.Options.Register (
       Ada_Lib.Options.Runstring.Without_Parameters,
          Ada_Lib.Options.Null_Flag_List);
-      return Log_Out_Checked (Initialize_Recursed,
 
-         Options.Nested_Options.Initialize and then
-         Ada_Lib.Options.Unit_Test.
-            Ada_Lib_Unit_Test_Program_Options_Type (
-               Options).Initialize,
+      return Log_Out_Checked (Initialize_Recursed,
+--       Options.Initialize and then
+         Ada_Lib.Options.Program.Program_Options_Type (Options).Initialize,
          Debug_Options or Trace_Options);
    end Initialize;
 
----------------------------------------------------------------
-   procedure Load_Test_State (
-      Configuration      : in out Standard.Camera.Base.Configuration_Type;
-      Camera_Info       : in out Camera_Info_Type;
-      Setup             : in out Standard.Configuration.Camera.Setup.Setup_Type) is
----------------------------------------------------------------
-
-   begin
-      Log_In (Debug or Trace_Set_Up_Tear_Down);
-      declare
---       Options  : Standard.Camera.Lib.Unit_Test.
---                Unit_Test_Program_Options_Type'class
---                   renames Standard.Camera.Lib.Unit_Test.
---                      Get_Camera_Unit_Test_Constant_Options.all;
-         Configuration_Camera_State
-                  : constant Standard.Configuration.Camera.State.State_Access :=
-                     new Standard.Configuration.Camera.State.State_Type;
-      begin
-         Configuration.Load (Configuration_Path, Camera_Index => 1);
-         Configuration_Camera_State.Load (Configuration.Get_Location,
-            Camera_State_Path);
-         Camera.Configurations.Set_State (Make_Camera_ID (
-            Configuration_Camera_State.Video_Address.all),
-            Configuration'unchecked_access);
-
-         Log_Here (Debug or Trace_Set_Up_Tear_Down,
-            " video port#" & Configuration_Camera_State.Video_Port'img);
-         Setup.Load (Configuration_Camera_State.all, Test_Setup);
-         Camera_Info.Camera_Options.Camera_Address :=
-            Configuration_Camera_State.Video_Address;
-         Camera_Info.Camera_Options.Camera_ID := Make_Camera_ID (
-            Camera_Info.Camera_Options.Camera_Address.all);
-         Camera_Info.Camera_Options.Port_Number :=
-            Configuration_Camera_State.Video_Port;
-
-         Camera_Info.Camera.Initialize_Standard_Preset_IDs;
-      end;
-      Log_Out (Debug or Trace_Set_Up_Tear_Down);
-   end Load_Test_State;
+-----------------------------------------------------------------
+--   procedure Load_Test_State (
+--      Configuration      : in out Standard.Camera.Base.Configuration_Type;
+--      Camera_Info       : in out Camera_Info_Type;
+--      Setup             : in out Standard.Configuration.Camera.Setup.Setup_Type) is
+-----------------------------------------------------------------
+--
+--   begin
+--      Log_In (Debug or Trace_Set_Up_Tear_Down);
+--      declare
+----       Options  : Standard.Camera.Lib.Unit_Test.
+----                Camera_Lib_Unit_Test_Program_Options_Type'class
+----                   renames Standard.Camera.Lib.Unit_Test.
+----                      Get_Camera_Unit_Test_Constant_Options.all;
+--         Configuration_Camera_State
+--                  : constant Standard.Configuration.Camera.State.State_Access :=
+--                     new Standard.Configuration.Camera.State.State_Type;
+--      begin
+--         Configuration.Load (Configuration_Path, Camera_Index => 1);
+--         Configuration_Camera_State.Load (Configuration.Get_Location,
+--            Camera_State_Path);
+--         Camera.Configurations.Set_State (Make_Camera_ID (
+--            Configuration_Camera_State.Video_Address.all),
+--            Configuration'unchecked_access);
+--
+--         Log_Here (Debug or Trace_Set_Up_Tear_Down,
+--            " video port#" & Configuration_Camera_State.Video_Port'img);
+--         Setup.Load (Configuration_Camera_State.all, Test_Setup);
+--         Camera_Info.Camera_Options.Camera_Address :=
+--            Configuration_Camera_State.Video_Address;
+--         Camera_Info.Camera_Options.Camera_ID := Make_Camera_ID (
+--            Camera_Info.Camera_Options.Camera_Address.all);
+--         Camera_Info.Camera_Options.Port_Number :=
+--            Configuration_Camera_State.Video_Port;
+--
+--         Camera_Info.Camera.Initialize_Standard_Preset_IDs;
+--      end;
+--      Log_Out (Debug or Trace_Set_Up_Tear_Down);
+--   end Load_Test_State;
 
    ----------------------------------------------------------------------------
    overriding
    function Process_Option (
-      Options  : in out Unit_Test_Program_Options_Type;
+      Options  : in out Camera_Lib_Unit_Test_Program_Options_Type;
       Iterator : in out Ada_Lib.Options.Command_Line_Iterator_Interface'class;
       Option   : in     Ada_Lib.Options.Base_Flag_Option_Type'class
    ) return Boolean is
@@ -242,9 +248,9 @@ return Null_Camera_ID;
       -------------------------------------------------------------------------
 
       begin
-         return Log_Out (Options.Nested_Options.Process_Option (
+         return Log_Out (Options.Process_Option (
                Iterator, Option) or else
-            Ada_Lib.Options.Unit_Test.Ada_Lib_Unit_Test_Program_Options_Type (
+            Ada_Lib.Options.Program.Program_Options_Type (
                Options).Process_Option (Iterator, Option),
             Trace_Options or Debug_Options);
       end Call_Nested;
@@ -254,7 +260,7 @@ return Null_Camera_ID;
       Log_In (Trace_Options or Debug_Options, Option.Image &
          " options address " & Image (Options'address) &
          " initialized " & Options.Verify_Initialized'img &
-         " options tag " & Tag_Name (Unit_Test_Program_Options_Type'class (Options)'tag));
+         Tag_Name (" options", Camera_Lib_Unit_Test_Program_Options_Type'class (Options)'tag));
 
       if Ada_Lib.Options.Has_Option (Option, Options_With_Parameters,
             Ada_Lib.Options.Null_Flag_List) then
@@ -285,14 +291,14 @@ return Null_Camera_ID;
    ----------------------------------------------------------------------------
    overriding
    procedure Program_Help (
-      Options                    : in     Unit_Test_Program_Options_Type;  -- only used for dispatch
+      Options                    : in     Camera_Lib_Unit_Test_Program_Options_Type;  -- only used for dispatch
       Help_Mode                  : in     ADA_LIB.Options.Help_Mode_Type) is
    ----------------------------------------------------------------------------
 
    begin
       Log_In_Checked (Help_Recursed, Debug_Options or Trace_Options,
          "help mode " & Help_Mode'img);
-      Options.Nested_Options.Program_Help (Help_Mode);
+--    Options.Program_Help (Help_Mode);
 --    Options.Unit_Test.Program_Help (Help_Mode);
 
       case Help_Mode is
@@ -326,110 +332,115 @@ return Null_Camera_ID;
 
       end case;
 
-     Ada_Lib.Options.Unit_Test.Ada_Lib_Unit_Test_Program_Options_Type (
+     Ada_Lib.Options.Program.Program_Options_Type (
          Options).Program_Help (Help_Mode);
      Log_Out_Checked (Help_Recursed, Debug_Options or Trace_Options);
 
    end Program_Help;
 
-   ---------------------------------------------------------------
-   procedure Run_Suite (
-     Options                    : in   Unit_Test_Program_Options_Type) is
-   ---------------------------------------------------------------
+--   ---------------------------------------------------------------
+--   procedure Run_Suite  (
+--      Options  : Options.Unit_Test.Camera_Unit_Test_Program_Options_Type) is
+--   ---------------------------------------------------------------
+--
+--      Nested_Options
+--         : constant Ada_Lib.Options.Unit_Test.
+--               Ada_Lib_Unit_Test_Nested_Options_Constant_Class_Access :=
+--            Ada_Lib.Options.Unit_Test.
+--               Get_Readonly_Ada_Lib_Unit_Test_Nested_Options;
+--
+--   begin
+--      Log_In (Debug);
+--      declare
+--         AUnit_Options  : AUnit.Options.AUnit_Options;
+--         Outcome        : AUnit.Status;
+--         Reporter       : Ada_Lib.Unit_Test.Reporter.Reporter_Type;
+--         Results        : AUnit.Test_Results.Result;
+--         Test_Suite     : constant AUnit.Test_Suites.Access_Test_Suite :=
+--                           AUnit.Test_Suites.New_Suite;
+--      begin
+--         AUnit_Options.Filter := Nested_Options.Filter'unchecked_access;
+----       Test_Suite.Add_Test (Camera.Lib.Base.Test.Suite);
+--         Test_Suite.Add_Test (Camera.Main.Unit_Test_Suite);
+--         Test_Suite.Add_Test (Standard.Camera.Commands.Unit_Test.Suite);
+--         Test_Suite.Add_Test (Standard.Camera.Lib.Base.Command_Tests.Suite);
+--         Test_Suite.Add_Test (Standard.Camera.Lib.Base.Test.Suite);
+--         Test_Suite.Add_Test (Standard.Configuration.Camera.Setup.Unit_Tests.Suite);
+--         Test_Suite.Add_Test (Standard.Configuration.Camera.State.Unit_Tests.Suite);
+--         Test_Suite.Add_Test (Widgets.Adjust.Unit_Test.Suite);
+----       Test_Suite.Add_Test (Widgets.Configured.Unit_Test.Suite);
+--         Test_Suite.Add_Test (Widgets.Control.Unit_Test.Suite);
+--
+--         Test_Suite.Run (AUnit_Options, Results, Outcome);
+--         case Nested_Options.Mode is
+--
+--            when  Ada_Lib.Options.Driver_Suites |
+--                  Ada_Lib.Options.List_Suites |
+--                  Ada_Lib.Options.Print_Suites =>
+--               Ada_Lib.Unit_Test.Iterate_Suites (
+--                  Ada_Lib.Options.Unit_Test.Suite_Action'access,
+--                  Ada_Lib.Options.Unit_Test.Routine_Action'access,
+--                  Nested_Options.Mode);
+--
+--            when Ada_Lib.Options.Run_Tests =>
+--               Put_Line ("report camera test results");
+--               Reporter.Report (Results, AUnit_Options);
+--
+--         end case;
+--      end;
+--      Log_Out (Debug or Trace_Options);
+--   end Run_Suite;
 
-   begin
-      Log_In (Debug);
-      declare
-         AUnit_Options  : AUnit.Options.AUnit_Options;
-         Outcome        : AUnit.Status;
-         Reporter       : Ada_Lib.Unit_Test.Reporter.Reporter_Type;
-         Results        : AUnit.Test_Results.Result;
-         Test_Suite     : constant AUnit.Test_Suites.Access_Test_Suite :=
-                           AUnit.Test_Suites.New_Suite;
-      begin
-         AUnit_Options.Filter := Options.Filter'unchecked_access;
---       Test_Suite.Add_Test (Camera.Lib.Base.Test.Suite);
-         Test_Suite.Add_Test (Camera.Main.Unit_Test_Suite);
-         Test_Suite.Add_Test (Standard.Camera.Commands.Unit_Test.Suite);
-         Test_Suite.Add_Test (Standard.Camera.Lib.Base.Command_Tests.Suite);
-         Test_Suite.Add_Test (Standard.Camera.Lib.Base.Test.Suite);
-         Test_Suite.Add_Test (Standard.Configuration.Camera.Setup.Unit_Tests.Suite);
-         Test_Suite.Add_Test (Standard.Configuration.Camera.State.Unit_Tests.Suite);
-         Test_Suite.Add_Test (Widgets.Adjust.Unit_Test.Suite);
---       Test_Suite.Add_Test (Widgets.Configured.Unit_Test.Suite);
-         Test_Suite.Add_Test (Widgets.Control.Unit_Test.Suite);
-
-         Test_Suite.Run (AUnit_Options, Results, Outcome);
-         case Options.Mode is
-
-            when  Ada_Lib.Options.Driver_Suites |
-                  Ada_Lib.Options.List_Suites |
-                  Ada_Lib.Options.Print_Suites =>
-               Ada_Lib.Unit_Test.Iterate_Suites (
-                  Ada_Lib.Options.Unit_Test.Suite_Action'access,
-                  Ada_Lib.Options.Unit_Test.Routine_Action'access,
-                  Options.Mode);
-
-            when Ada_Lib.Options.Run_Tests =>
-               Put_Line ("report camera test results");
-               Reporter.Report (Results, AUnit_Options);
-
-         end case;
-      end;
-      Log_Out (Debug or Trace_Options);
-   end Run_Suite;
-
-   ---------------------------------------------------------------
-   procedure Run_Suite (
-      Test                       : in     No_Camera_With_GNOGA_Test_Type) is
-   pragma Unreferenced (Test);
-   ---------------------------------------------------------------
-
-      Options  : Ada_Lib.Options.Unit_Test.
-                  Ada_Lib_Unit_Test_Program_Options_Type renames
-                     Ada_Lib.Options.Unit_Test.
-                        Ada_Lib_Unit_Test_Program_Options_Type (
-                        Ada_Lib.Options.
-                           Get_Ada_Lib_Read_Only_Program_Options.all);
-   begin
-      Log_In (Debug, "List suties " & Options.Mode'img);
-      declare
-         AUnit_Options  : AUnit.Options.AUnit_Options;
-         Outcome        : AUnit.Status;
-         Reporter       : Ada_Lib.Unit_Test.Reporter.Reporter_Type;
-         Results        : AUnit.Test_Results.Result;
-         Test_Suite     : constant AUnit.Test_Suites.Access_Test_Suite :=
-                           AUnit.Test_Suites.New_Suite;
-      begin
-         AUnit_Options.Filter := Options.Filter'unchecked_access;
-         Test_Suite.Add_Test (Standard.Configuration.Camera.State.Unit_Tests.Suite);
-         Test_Suite.Add_Test (Standard.Configuration.Camera.Setup.Unit_Tests.Suite);
-         Test_Suite.Add_Test (Camera.Main.Unit_Test_Suite);
-         Test_Suite.Add_Test (Standard.Camera.Lib.Base.Command_Tests.Suite);
-         Test_Suite.Add_Test (Standard.Camera.Commands.Unit_Test.Suite);
-         Test_Suite.Add_Test (Widgets.Control.Unit_Test.Suite);
---       Test_Suite.Add_Test (Widgets.Configured.Unit_Test.Suite);
-         Test_Suite.Add_Test (Widgets.Adjust.Unit_Test.Suite);
-
-         Log_Here (Debug);
-         Test_Suite.Run (AUnit_Options, Results, Outcome);
-         case Options.Mode is
-
-            when Ada_Lib.Options.Driver_Suites |
-                 Ada_Lib.Options.List_Suites |
-                 Ada_Lib.Options.Print_Suites =>
-               Ada_Lib.Unit_Test.Iterate_Suites (
-                  Ada_Lib.Options.Unit_Test.Suite_Action'access,
-                  Ada_Lib.Options.Unit_Test.Routine_Action'access, Options.Mode);
-
-            when Ada_Lib.Options.Run_Tests =>
-               Put_Line ("report camera test results");
-               Reporter.Report (Results, AUnit_Options);
-
-         end case;
-      end;
-      Log_Out (Debug);
-   end Run_Suite;
+--   ---------------------------------------------------------------
+--   procedure Run_Suite is
+--   ---------------------------------------------------------------
+--
+--      Nested_Options
+--         : Ada_Lib.Options.Unit_Test.
+--               Ada_Lib_Unit_Test_Nested_Options_Constant_Class_Access :=
+--            Ada_Lib.Options.Unit_Test.
+--               Get_Readonly_Ada_Lib_Unit_Test_Nested_Options;
+--   begin
+--tag_history (true, "options", Nested_Options.all'tag);
+--not_implemented;
+--    Log_In (Debug, "List suties " & Nested_Options.Mode'img);
+--      declare
+--         AUnit_Options  : AUnit.Options.AUnit_Options;
+--         Outcome        : AUnit.Status;
+--         Reporter       : Ada_Lib.Unit_Test.Reporter.Reporter_Type;
+--         Results        : AUnit.Test_Results.Result;
+--         Test_Suite     : constant AUnit.Test_Suites.Access_Test_Suite :=
+--                           AUnit.Test_Suites.New_Suite;
+--      begin
+--         AUnit_Options.Filter := Options.Filter'unchecked_access;
+--         Test_Suite.Add_Test (Standard.Configuration.Camera.State.Unit_Tests.Suite);
+--         Test_Suite.Add_Test (Standard.Configuration.Camera.Setup.Unit_Tests.Suite);
+--         Test_Suite.Add_Test (Camera.Main.Unit_Test_Suite);
+--         Test_Suite.Add_Test (Standard.Camera.Lib.Base.Command_Tests.Suite);
+--         Test_Suite.Add_Test (Standard.Camera.Commands.Unit_Test.Suite);
+--         Test_Suite.Add_Test (Widgets.Control.Unit_Test.Suite);
+----       Test_Suite.Add_Test (Widgets.Configured.Unit_Test.Suite);
+--         Test_Suite.Add_Test (Widgets.Adjust.Unit_Test.Suite);
+--
+--         Log_Here (Debug);
+--         Test_Suite.Run (AUnit_Options, Results, Outcome);
+--         case Options.Mode is
+--
+--            when Ada_Lib.Options.Driver_Suites |
+--                 Ada_Lib.Options.List_Suites |
+--                 Ada_Lib.Options.Print_Suites =>
+--               Ada_Lib.Unit_Test.Iterate_Suites (
+--                  Ada_Lib.Options.Unit_Test.Suite_Action'access,
+--                  Ada_Lib.Options.Unit_Test.Routine_Action'access, Options.Mode);
+--
+--            when Ada_Lib.Options.Run_Tests =>
+--               Put_Line ("report camera test results");
+--               Reporter.Report (Results, AUnit_Options);
+--
+--         end case;
+--      end;
+--    Log_Out (Debug);
+-- end Run_Suite;
 
 ---------------------------------------------------------------
 procedure Setup_Camera (
@@ -459,18 +470,17 @@ procedure Setup_Camera (
 
       end case;
 
-      if Load_State then
-         Load_Test_State (Configuration, Camera_Info,
-            Configuration.Get_Configuration_Setup.all);
-      else
-         pragma Assert (Camera_Info.Camera_Options.Camera_Address /= Null,
-            "Camera_Address not initialized");
-      end if;
+--    if Load_State then
+--       Load_Test_State (Configuration, Camera_Info,
+--          Configuration.Get_Configuration_Setup.all);
+--    else
+--       pragma Assert (Camera_Info.Camera_Options.Camera_Address /= Null,
+--          "Camera_Address not initialized");
+--    end if;
 
       if Camera_Info.Open_Camera then
          Camera_Info.Camera.Open (
-            Camera_Info.Camera_Options.Camera_Address.all,
-               Camera_Info.Camera_Options.Port_Number);
+            Configuration.Get_Camera_Address, Configuration.Get_Video_Port);
       end if;
       Log_Out (Debug or Trace_Set_Up_Tear_Down);
    end Setup_Camera;
@@ -499,10 +509,10 @@ procedure Setup_Camera (
       Test                       : in out With_Camera_No_GNOGA_Test_Type) is
 ---------------------------------------------------------------
 
---    Options  : Unit_Test_Program_Options_Type'class
+--    Options  : Camera_Lib_Unit_Test_Program_Options_Type'class
 --                renames Unit_Test_Options_Constant_Class_Access (
 --                      Ada_Lib.Options.
---                         Get_Ada_Lib_Read_Only_Program_Options).all;
+--                         Get_Ada_Lib_Read_Only_Nested_Options).all;
 
   begin
       Log_In (Debug or Trace_Set_Up_Tear_Down, "load " & Test.Load_State'img &
@@ -513,8 +523,8 @@ procedure Setup_Camera (
       end if;
 
       Ada_Lib.Unit_Test.Test_Cases.Test_Case_Type (Test).Set_Up;
-      Log_Out (Debug or Trace_Set_Up_Tear_Down,
-         " location " & Test.Configuration.Get_Location'img);
+      Log_Out (Debug or Trace_Set_Up_Tear_Down);
+--       " location " & Test.Configuration.Get_Location'img);
 
   exception
      when Fault: others =>
@@ -536,7 +546,18 @@ procedure Setup_Camera (
       if Test.Load_State then
          Setup_Camera (Test.Load_State, Test.Brand, Test.Camera_Info,
             Test.Configuration);
+
+         declare
+            Camera_State
+               : Standard.Configuration.Camera.State.State_Type renames
+                  Test.Configuration.Get_Configuration_State.all;
+         begin
+            Camera.Configurations.Set_State (
+               Make_Camera_ID (Camera_State.Get_Video_Address.all),
+               Test.Configuration'unchecked_access);
+         end;
       end if;
+      Camera_Lib_GNOGA_Test_Type (Test).Set_Up;
 
       if Test.Initialize_GNOGA then
          Test.Set_Up_With_Handler (
@@ -546,30 +567,29 @@ procedure Setup_Camera (
       else
          Log_Here (Debug);
          declare
-            Options        : Standard.Camera.Lib.Unit_Test.
-                              Unit_Test_Program_Options_Type'class
-                                 renames Standard.Camera.Lib.Unit_Test.
-                                    Get_Camera_Unit_Test_Constant_Options.all;
+            GNOGA_Ada_Lib_Options
+               : constant Gnoga_Ada_Lib.
+                     GNOGA_Ada_Lib_Options_Constant_Class_Access :=
+                  Gnoga_Ada_Lib.Get_GNOGA_Ada_Lib_Read_Only_Options;
          begin
             GNOGA_Ada_Lib.Base.Run (
                Handler     => Camera.Main.On_Connect'Unrestricted_Access,
                Directory   => Camera.Lib.Options.Current_Directory,
-               Port        => Options.Library_Options.GNOGA_Options.HTTP_Port,
+               Port        => GNOGA_Ada_Lib_Options.Get_HTTP_Port,
                Verbose     => True,
                Wait_For_Message_Loop_Exit
                            => False);
          end;
 
-         Camera_Lib_GNOGA_Test_Type (Test).Set_Up;
       end if;
-      Log_Out (Debug or Trace_Set_Up_Tear_Down,
-         "location " & Test.Configuration.Get_Location'img);
+      Log_Out (Debug or Trace_Set_Up_Tear_Down);
+--       "location " & Test.Configuration.Get_Location'img);
 
    exception
       when Fault: others =>
          Test.Set_Up_Exception (Fault);
-         Log_Out (Debug or Trace_Set_Up_Tear_Down, "location " &
-            Test.Configuration.Get_Location'img);
+         Log_Out (Debug or Trace_Set_Up_Tear_Down); --, "location " &
+--          Test.Configuration.Get_Location'img);
    end Set_Up;
 
    ---------------------------------------------------------------
@@ -691,7 +711,7 @@ procedure Setup_Camera (
    ----------------------------------------------------------------------------
    overriding
    procedure Trace_Parse (
-      Options        : in out Unit_Test_Program_Options_Type;
+      Options        : in out Camera_Lib_Unit_Test_Program_Options_Type;
       Iterator       : in out Ada_Lib.Options.
                                  Command_Line_Iterator_Interface'class) is
    ----------------------------------------------------------------------------
@@ -727,8 +747,8 @@ procedure Setup_Camera (
                      Debug_Options := True;
                      Camera.Lib.Options.Unit_Test.
                         Camera_Main_Unit_Test.Debug := True;
-                     Options.Main_Debug := True;
-                     Options.Debug := True;
+--                   Options.Main_Debug := True;
+--                   Options.Debug := True;
                      Camera.Lib.Options.Unit_Test.Camera_Lib_Unit_Test.
                         Unit_Test_Debug := True;
                      Widgets.Control.Unit_Test.Debug := True;

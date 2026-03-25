@@ -1,4 +1,4 @@
-with Ada.Containers.Indefinite_Hashed_Maps;
+--with Ada.Containers.Indefinite_Hashed_Maps;
 with Ada_Lib.Strings.Unlimited;use Ada_Lib.Strings.Unlimited;
 limited with Camera.Base;
 --limited with Camera.Lib.Base;
@@ -9,8 +9,8 @@ limited with Configuration.Camera.Setup;
 
 package Camera.Configurations is
 
-   use type Configuration.Configuration_Access;
-   use type Configuration.Configuration_Class_Access;
+-- use type Configuration.Configuration_Access;
+-- use type Configuration.Configuration_Class_Access;
 
    type Camera_Base_Configuration_Class_Access
                      is access all Base.Configuration_Type'class;
@@ -84,6 +84,10 @@ package Camera.Configurations is
    function Has_Configuration (
       Camera_ID            : in        Camera_ID_Type := Null_Camera_ID
    ) return Boolean;
+
+   procedure Set_Current_Camera_ID (
+      Camera_ID   : in     Camera_ID_Type
+   ) with Pre  => Camera_ID.Is_Set;
 
    procedure Set_State (
       Camera_ID      : in     Camera_ID_Type;

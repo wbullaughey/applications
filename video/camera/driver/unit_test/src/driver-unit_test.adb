@@ -4,6 +4,7 @@ with Ada_Lib.Help;
 with Ada_Lib.Options.Flags;
 with Ada_Lib.Options.Runstring;
 with Ada_Lib.Options.Unit_Test;
+with Ada_Lib.Options.Verification;
 with Ada_Lib.Strings.Unlimited;use Ada_Lib.Strings.Unlimited;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
 with Ada_Lib.Unit_Test.Reporter;
@@ -92,7 +93,7 @@ package body Driver.Unit_Test is
          Options_Without_Parameters);
 
 --    Protected_Options.Unit_Test := True;
-      Ada_Lib.Options.Set_Ada_Lib_Program_Options (Protected_Options'access);
+      Ada_Lib.Options.Verification.Set_Ada_Lib_Nested_Options (Protected_Options'access);
 
 --    Ada_Lib.Options.Unit_Test.Unit_Test_Options :=
 --       Protected_Options'unchecked_access;

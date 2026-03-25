@@ -14,9 +14,8 @@ package body Camera.Commands.Unit_Test is
 -- use type Ada.Streams.Stream_Element;
    use type Interfaces.Integer_16;
 
-   type Test_With_No_Preset_Type is new
-      Standard.Camera.Lib.Unit_Test.With_Camera_No_GNOGA_Test_Type (
-         Brand       => Camera.PTZ_Optics_Camera) with null record;
+   type Test_With_No_Preset_Type is new Standard.Camera.Lib.Unit_Test.
+      With_Camera_No_GNOGA_Test_Type with null record;
 
    type Test_With_No_Preset_Access is access Test_With_No_Preset_Type;
 
@@ -29,9 +28,8 @@ package body Camera.Commands.Unit_Test is
    procedure Register_Tests (
       Test                       : in out Test_With_No_Preset_Type);
 
-   type Test_With_Preset_Type is new
-      Standard.Camera.Lib.Unit_Test.With_Camera_No_GNOGA_Test_Type (
-         Brand       => Camera.PTZ_Optics_Camera) with null record;
+   type Test_With_Preset_Type is new Standard.Camera.Lib.Unit_Test.
+      With_Camera_No_GNOGA_Test_Type with null record;
 
    type Test_With_Preset_Access is access Test_With_Preset_Type;
 

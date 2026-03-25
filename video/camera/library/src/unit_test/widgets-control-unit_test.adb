@@ -15,10 +15,10 @@ package body Widgets.Control.Unit_Test is
    type Button_Push_Event_Type   is new Ada_Lib.Timer.Event_Type with null record;
 
    type Test_Type (
-      Brand                      : Standard.Camera.Brand_Type;
+--    Brand                      : Standard.Camera.Brand_Type;
       Initialize_GNOGA           : Boolean) is new Camera.Lib.Unit_Test.
                                     With_Camera_With_GNOGA_Test_Type (
-                                       Brand             => Brand,
+--                                     Brand             => Brand,
                                        Initialize_GNOGA  => False) with
                                        -- Set_Up will use Main.Run to initialize
                                           null record;
@@ -138,15 +138,15 @@ not_implemented;
    function Suite return AUnit.Test_Suites.Access_Test_Suite is
    ---------------------------------------------------------------
 
-      Options     : Camera.Lib.Unit_Test.Unit_Test_Program_Options_Type'class
-                     renames Camera.Lib.Unit_Test.
-                        Get_Camera_Unit_Test_Constant_Options.all;
-      Brand       : Standard.Camera.Brand_Type renames
-                     Options.Nested_Options.Brand;
+--    Options     : Camera.Lib.Unit_Test.Unit_Test_Program_Options_Type'class
+--                   renames Camera.Lib.Unit_Test.
+--                      Get_Camera_Unit_Test_Constant_Options.all;
+--    Brand       : Standard.Camera.Brand_Type renames
+--                   Options.Nested_Options.Brand;
       Test_Suite  : constant AUnit.Test_Suites.Access_Test_Suite :=
                      new AUnit.Test_Suites.Test_Suite;
       Tests       : constant Test_Access := new Test_Type (
-                     Brand             => Brand,
+--                   Brand             => Brand,
                      Initialize_GNOGA  => True);
 
    begin

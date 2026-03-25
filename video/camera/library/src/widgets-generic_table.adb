@@ -159,7 +159,7 @@ package body Widgets.Generic_Table is
                            " column " & Column_Index'img &
                            Quote (" id",  ID) &
                            " rowspan" & Row_Index_Type'pos (Number_Rows)'img &
-                           " column class " & Tag_Name (Column'tag));
+                           " column class " & Tag_Name ("column",Column'tag));
                         Column.Create_Column (
                            Column_Index   => Column_Index,
                            ID             => ID,
@@ -254,7 +254,7 @@ package body Widgets.Generic_Table is
       ----------------------------------------------------------------
 
       begin
-         Log_Here (Debug, "object tag " & Tag_Name (Object'tag) & " from " & From);
+         Log_Here (Debug, Tag_Name (" object", Object'tag) & " from " & From);
          return Generic_Cell_Package.Cell_Class_Access (Object.Parent);
       end Get_Cell;
 
@@ -276,7 +276,7 @@ package body Widgets.Generic_Table is
             " row" & Row_Index'img);
          Row.Dump (Debug, "");
          Cell.Dump (Debug, "");
-         Tag_History (Debug, Cell.all'tag);
+         Tag_History (Debug, "cell",Cell.all'tag);
          return Cell;
       end Get_Cell;
 
@@ -319,7 +319,7 @@ package body Widgets.Generic_Table is
       ----------------------------------------------------------------
 
       begin
-         Log_Here (Debug, "object tag " & Tag_Name (Object'tag));
+         Log_Here (Debug, Tag_Name (" object", Object'tag));
 
          declare
             Cell                 : constant Generic_Cell_Package.

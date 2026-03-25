@@ -1,16 +1,16 @@
 with Ada.Exceptions;
 with Ada.Unchecked_Deallocation;
-with Ada_Lib.Configuration;
+--with Ada_Lib.Configuration;
 with Ada_Lib.Directory;
-with Ada_Lib.Options;
-with Ada_Lib.Socket_IO;
+--with Ada_Lib.Options;
+--with Ada_Lib.Socket_IO;
 with Ada_Lib.Strings; use Ada_Lib.Strings;
 with Ada_Lib.String_Quote; use Ada_Lib.String_Quote;
 with Ada.Text_IO; use Ada.Text_IO;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
 with AUnit.Assertions; use AUnit.Assertions;
 with Camera.Lib.Options;
-with Camera.Configurations;
+--with Camera.Configurations;
 with Video.Lib;
 
 package body Configuration.Camera.State is
@@ -135,7 +135,7 @@ package body Configuration.Camera.State is
 --                   Program_Options_Constant_Class_Access :=
 --                      Standard.Camera.Lib.Options.
 --                   Program_Options_Constant_Class_Access (
---                      Ada_Lib.Options.Get_Ada_Lib_Read_Only_Program_Options);
+--                      Ada_Lib.Options.Verification.Get_Ada_Lib_Read_Only_Nested_Options);
 --    State_Path  : Ada_Lib.Strings.Unlimited.String_Type
 --                renames Options.Nested_Options.State_Path;
 -- begin
@@ -145,6 +145,15 @@ package body Configuration.Camera.State is
 --       Default_State);
 -- end File_Path;
 
+   ----------------------------------------------------------------
+   function Get_Brand (
+      State                      : in     State_Type
+   ) return Standard.Camera.Brand_Type is
+   ----------------------------------------------------------------
+
+   begin
+      return State.Brand;
+   end Get_Brand;
    ----------------------------------------------------------------
    function Get_Camera_ID (
       State                      : in     State_Type
@@ -383,7 +392,7 @@ return Null;
       Standard.Configuration.State.State_Type (State).Load (Config, Location,
          File_Name);
 --    State.Load (Path);
-      State.Camera_ID := Standard.Camera.Make_Camera_ID (State.Video_Address.all);
+      State.Camera_ID := Standard.Camera.Make_Camera_ID (State.Get_Video_Address.all);
       State.Camera_Name.Construct (Config.Get_String ("camera_name"));
       State.CSS_Path.Construct (Config.Get_String ("css_path"));
       State.Default_Speed :=  Speed_Type (Config.Get_Integer (
@@ -401,9 +410,9 @@ return Null;
 
       Log_Here (Debug,
          "camera id " & State.Camera_ID.Image &
-         Quote (" video address", State.Video_Address.Image) &
+         Quote (" video address", State.Get_Video_Address.Image) &
          " camera id" & State.Camera_ID.Image &
-         Quote ("video port", State.Video_Port'img) &
+         Quote ("video port", State.Get_Video_Port'img) &
          Quote (" CSS_Path", State.CSS_Path) &
          " Number_Columns" & State.Number_Columns'img &
          " Number_Configurations" & State.Get_Number_Configurations'img &

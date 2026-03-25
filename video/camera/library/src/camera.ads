@@ -1,10 +1,10 @@
 with Ada.Containers;
 with Ada_Lib.GNOGA;
-with Ada_Lib.Options.Nested;
+--with Ada_Lib.Options.Nested;
 with Ada_Lib.Socket_IO.Stream_IO;
 with Ada_Lib.Trace;
 with Configuration.State;
-with Gnoga_Ada_Lib;
+--with Gnoga_Ada_Lib;
 with Hex_IO;
 with Interfaces;
 with Video.Lib;
@@ -104,50 +104,50 @@ package Camera is
 
    subtype Port_Type             is Video.Lib.Port_Type;
 
-   type Camera_Options_Type is limited new Video.Lib.Options_Type with record
-      Brand          : Brand_Type := PTZ_Optics_Camera;
-      Camera_Address : Address_Constant_Access := Null;
-      Camera_ID      : Camera_ID_Type;
---    Location       : Configuration.State.Location_Type :=
---                      Video.Lib.No_Location;
-      Port_Number    : Port_Type; -- := Standard.Camera.Commands.PTZ_Optics.Port;
-   end record;
-
-   type Camera_Options_Access           is access all Camera_Options_Type;
-   type Camera_Options_Class_Access     is access all Camera_Options_Type'class;
-   type Camera_Options_Constant_Class_Access
-                                 is access constant Camera_Options_Type'class;
+--   type Camera_Options_Type is limited new Video.Lib.Options_Type with record
+--      Brand          : Brand_Type := PTZ_Optics_Camera;
+--      Camera_Address : Address_Constant_Access := Null;
+--      Camera_ID      : Camera_ID_Type;
+----    Location       : Configuration.State.Location_Type :=
+----                      Video.Lib.No_Location;
+--      Port_Number    : Port_Type; -- := Standard.Camera.Commands.PTZ_Optics.Port;
+--   end record;
+--
+--   type Camera_Options_Access           is access all Camera_Options_Type;
+--   type Camera_Options_Class_Access     is access all Camera_Options_Type'class;
+--   type Camera_Options_Constant_Class_Access
+--                                 is access constant Camera_Options_Type'class;
 
    function Has_Location (
       Location       : in     Configuration.State.Location_Type
    ) return Boolean;
 
-   overriding
-   function Initialize (
-      Options               : in out Camera_Options_Type;
-      From                        : in     String := Ada_Lib.Trace.Here
-   ) return Boolean
-   with pre    => Options.Verify_Preinitialize,
-        post   => Options.Verify_Initialized;
-
-   overriding
-   function Process_Option (  -- process one option
-      Options  : in out Camera_Options_Type;
-      Iterator : in out Ada_Lib.Options.Command_Line_Iterator_Interface'class;
-      Option   : in     Ada_Lib.Options.Base_Flag_Option_Type'class
-   ) return Boolean
-   with pre => Options.Was_Initialized;
-
-   overriding
-   procedure Program_Help (
-      Options                    : in     Camera_Options_Type;  -- only used for dispatch
-      Help_Mode                  : in     ADA_LIB.Options.Help_Mode_Type);
-
-   overriding
-   procedure Trace_Parse (
-      Options                    : in out Camera_Options_Type;
-      Iterator                   : in out Ada_Lib.Options.
-                                    Command_Line_Iterator_Interface'class);
+-- overriding
+-- function Initialize (
+--    Options               : in out Camera_Options_Type;
+--    From                        : in     String := Ada_Lib.Trace.Here
+-- ) return Boolean
+-- with pre    => Options.Verify_Preinitialize,
+--      post   => Options.Verify_Initialized;
+--
+-- overriding
+-- function Process_Option (  -- process one option
+--    Options  : in out Camera_Options_Type;
+--    Iterator : in out Ada_Lib.Options.Command_Line_Iterator_Interface'class;
+--    Option   : in     Ada_Lib.Options.Base_Flag_Option_Type'class
+-- ) return Boolean
+-- with pre => Options.Was_Initialized;
+--
+-- overriding
+-- procedure Program_Help (
+--    Options                    : in     Camera_Options_Type;  -- only used for dispatch
+--    Help_Mode                  : in     ADA_LIB.Options.Help_Mode_Type);
+--
+-- overriding
+-- procedure Trace_Parse (
+--    Options                    : in out Camera_Options_Type;
+--    Iterator                   : in out Ada_Lib.Options.
+--                                  Command_Line_Iterator_Interface'class);
 
    procedure Process_Command (
       Connection_Data            : in out Abstract_Window_Connection_Type;

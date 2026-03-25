@@ -19,14 +19,12 @@ package body Widgets.Adjust.Unit_Test is
 
    use type Interfaces.Integer_16;
 
-   type Widgets_Adjust_Test_Type (
-      Brand                      : Standard.Camera.Brand_Type) is new
-                                    Camera.Lib.Unit_Test.
-                                       With_Camera_With_GNOGA_Test_Type (
-                                          Brand             => Brand,
-                                          Initialize_GNOGA  => False) with
+   type Widgets_Adjust_Test_Type is new Camera.Lib.Unit_Test.
+      With_Camera_With_GNOGA_Test_Type (
+--                                        Brand             => Brand,
+         Initialize_GNOGA  => False) with null record;
                                           -- Set_Up will use Main.Run to initialize
-                                             null record;
+
    type Widgets_Adjust_Test_Access
                                  is access Widgets_Adjust_Test_Type;
 
@@ -132,15 +130,15 @@ package body Widgets.Adjust.Unit_Test is
    return AUnit.Test_Suites.Access_Test_Suite is
    ---------------------------------------------------------------
 
-      Options     : Camera.Lib.Unit_Test.Unit_Test_Program_Options_Type'class
-                     renames Camera.Lib.Unit_Test.
-                        Get_Camera_Unit_Test_Constant_Options.all;
-      Brand       : Standard.Camera.Brand_Type renames
-                     Options.Nested_Options.Brand;
+--    Options     : Camera.Lib.Unit_Test.Unit_Test_Program_Options_Type'class
+--                   renames Camera.Lib.Unit_Test.
+--                      Get_Camera_Unit_Test_Constant_Options.all;
+--    Brand       : Standard.Camera.Brand_Type renames
+--                   Options.Nested_Options.Brand;
       Test_Suite  : constant AUnit.Test_Suites.Access_Test_Suite
                      := new AUnit.Test_Suites.Test_Suite;
       Tests       : constant Widgets_Adjust_Test_Access :=
-                     new Widgets_Adjust_Test_Type (Brand);
+                     new Widgets_Adjust_Test_Type; -- (Brand);
    begin
       Log_In (Debug); --, "test state address " & Image (Tests.State'address) & " pointer address " & image (Read_Only_Global_Camera_State'address));
       Ada_Lib.Unit_Test.Suite (Suite_Name);  -- used for listing suites
@@ -165,6 +163,7 @@ package body Widgets.Adjust.Unit_Test is
    ---------------------------------------------------------------
    procedure Test_Mouse_Move (
       Test                       : in out AUnit.Test_Cases.Test_Case'class) is
+   pragma Unreferenced (Test);
    ---------------------------------------------------------------
 
    use Gnoga.Gui.Base;

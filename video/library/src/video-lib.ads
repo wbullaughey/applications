@@ -1,4 +1,5 @@
-with Ada_Lib.Options.Nested;
+--with Ada_Lib.Options.Nested;
+with Ada_Lib.Options.Verification;
 with Ada_Lib.Trace;
 with Ada_Lib.Socket_IO; -- .Stream_IO;
 with Ada_Lib.Strings.Unlimited;use Ada_Lib.Strings.Unlimited;
@@ -26,7 +27,7 @@ package Video.Lib is
    subtype Data_Type             is Ada_Lib.Socket_IO.Data_Type;
    subtype Index_Type            is Ada_Lib.Socket_IO.Index_Type;
    type Location_Type            is (Local, Remote, No_Location);
-   type Port_Type                is new Ada_Lib.Socket_IO.Port_Type;
+   subtype Port_Type             is Ada_Lib.Socket_IO.Port_Type;
    subtype Maximum_Command_Type is Buffer_Type (1 .. 20);
    subtype Maximum_Response_Type
                                  is Buffer_Type (1 .. 30);
@@ -107,54 +108,60 @@ package Video.Lib is
    with Pre => Have_Preset (Which_Preset);
 
    function Image (
-      Preset_ID                  : in     Preset_ID_Type
+      Preset_ID         : in     Preset_ID_Type
    ) return String;
 
    function Is_Set (
-      Preset_ID                  : in     Preset_ID_Type;
-      From                       : in     String := Ada_Lib.Trace.Here
+      Preset_ID         : in     Preset_ID_Type;
+      From              : in     String := Ada_Lib.Trace.Here
    ) return Boolean;
 
    procedure Set (
-      Preset_ID                  : in out Preset_ID_Type;
-      ID                         : in     Preset_Range_Type);
+      Preset_ID         : in out Preset_ID_Type;
+      ID                : in     Preset_Range_Type);
 
-   type Relative_Type            is new Integer;
-   type Value_Type               is mod 2**32;
+   type Relative_Type   is new Integer;
+   type Value_Type      is mod 2**32;
 
-   type Options_Type             is limited new Ada_Lib.Options.Nested.
-                                    Nested_Options_Type with record
-      Address_Kind               : Address_Kind_Type;
-      Directory                  : ADA_LIB.Strings.Unlimited.String_Type;
-                                    -- set by runstring option 'c'
-      If_Emulation               : Boolean := False;
---    Location                   : Location_Type := Local; moved to camera_state
--- should be in state
---    Camera_Address             : Ada_Lib.Socket_IO.Address_Access := Null;
---    Port_Number                : Port_Type;
-      Simulate                   : Boolean := False;
+   type Video_Lib_Nested_Options_Type    is abstract limited new Ada_Lib.Options.Verification.
+                           Verification_Nested_Options_Type with record
+      Address_Kind      : Address_Kind_Type;
+      Directory         : ADA_LIB.Strings.Unlimited.String_Type;
+                           -- set by runstring option 'c'
+      If_Emulation      : Boolean := False;
+      Location          : Location_Type := Local;
+      Simulate          : Boolean := False;
    end record;
 
-   type Options_Access           is access all Options_Type;
-   type Options_Class_Access     is access all Options_Type'class;
+   type Options_Access  is access all Video_Lib_Nested_Options_Type;
+   type Options_Class_Access     is access all Video_Lib_Nested_Options_Type'class;
    type Options_Constant_Class_Access
-                                 is access constant Options_Type'class;
+                                 is access constant Video_Lib_Nested_Options_Type'class;
 
 -- function Address_Kind (
---   Options                     : in     Options_Type
+--   Options                     : in     Video_Lib_Nested_Options_Type
 -- ) return Address_Kind_Type;
+
+   function Get_Video_Lib_Read_Only_Nested_Options (
+      From                 : in     String := Ada_Lib.Trace.Here
+   ) return Options_Constant_Class_Access
+   with Pre    => Ada_Lib.Options.Verification.Have_Ada_Lib_Program_Options;
 
    overriding
    function Initialize (
-     Options                     : in out Options_Type;
+     Options                     : in out Video_Lib_Nested_Options_Type;
      From                        : in     String := Ada_Lib.Trace.Here
    ) return Boolean
    with pre    => Options.Verify_Preinitialize,
         post   => Options.Verify_Initialized;
 
    overriding
+   procedure Post_Process (
+     Options                    : in out Video_Lib_Nested_Options_Type);
+
+   overriding
    function Process_Option (  -- process one option
-     Options   : in out Options_Type;
+     Options   : in out Video_Lib_Nested_Options_Type;
       Iterator : in out Ada_Lib.Options.Command_Line_Iterator_Interface'class;
       Option   : in     Ada_Lib.Options.Base_Flag_Option_Type'class
    ) return Boolean
@@ -163,7 +170,7 @@ package Video.Lib is
 
    overriding
    procedure Trace_Parse (
-      Options                    : in out Options_Type;
+      Options                    : in out Video_Lib_Nested_Options_Type;
       Iterator                   : in out Ada_Lib.Options.
                                     Command_Line_Iterator_Interface'class);
 
@@ -221,7 +228,7 @@ private
 
    overriding
    procedure Program_Help (
-      Options                    : in     Options_Type;  -- only used for dispatch
+      Options                    : in     Video_Lib_Nested_Options_Type;  -- only used for dispatch
       Help_Mode                  : in     ADA_LIB.Options.Help_Mode_Type);
 
 end Video.Lib;

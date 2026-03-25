@@ -69,6 +69,8 @@ package body Configuration.Camera.Setup.Unit_Tests is
    procedure Test_Values (
       Test                       : in out AUnit.Test_Cases.Test_Case'class);
 
+   Brand                         : constant Standard.Camera.Brand_Type :=
+                                    Standard.Camera.PTZ_Optics_Camera;
 -- Camera_Description            : aliased constant String := "test camera";
    Debug    : Boolean renames Standard.Camera.Lib.Options.Unit_Test.
                Camera_Lib_Unit_Test.Configuration_Setup_Debug;
@@ -171,18 +173,16 @@ package body Configuration.Camera.Setup.Unit_Tests is
    function Suite return AUnit.Test_Suites.Access_Test_Suite is
    ---------------------------------------------------------------
 
-      Options     : Standard.Camera.Lib.Unit_Test.
-                     Unit_Test_Program_Options_Type'class
-                        renames Standard.Camera.Lib.Unit_Test.
-                           Get_Camera_Unit_Test_Constant_Options.all;
-      Brand       : Standard.Camera.Brand_Type renames
-                     Options.Nested_Options.Brand;
+--    Options     : Standard.Camera.Lib.Unit_Test.
+--                   Unit_Test_Program_Options_Type'class
+--                      renames Standard.Camera.Lib.Unit_Test.
+--                         Get_Camera_Unit_Test_Constant_Options.all;
       Test_Suite  : constant AUnit.Test_Suites.Access_Test_Suite :=
                      new AUnit.Test_Suites.Test_Suite;
       Load_Test   : constant Configuration_Load_Test_Access :=
-                     new Configuration_Load_Test_Type (Brand);
+                     new Configuration_Load_Test_Type; -- (Brand);
       Tests       : constant Configuration_Tests_Access :=
-                     new Configuration_Tests_Type (Brand);
+                     new Configuration_Tests_Type; -- (Brand);
 
    begin
       Log_In (Debug);
@@ -213,12 +213,10 @@ package body Configuration.Camera.Setup.Unit_Tests is
 
       Local_Test  : Configuration_Load_Test_Type renames
                      Configuration_Load_Test_Type (Test);
-      Options     : Standard.Camera.Lib.Unit_Test.
-                     Unit_Test_Program_Options_Type'class renames
-                        Standard.Camera.Lib.Unit_Test.
-                           Get_Camera_Unit_Test_Constant_Options.all;
-      Brand       : Standard.Camera.Brand_Type renames
-                     Options.Nested_Options.Brand;
+--    Options     : Standard.Camera.Lib.Unit_Test.
+--                   Unit_Test_Program_Options_Type'class renames
+--                      Standard.Camera.Lib.Unit_Test.
+--                         Get_Camera_Unit_Test_Constant_Options.all;
    begin
       Log_In (Debug);
       Standard.Camera.Lib.Unit_Test.Setup_Camera (

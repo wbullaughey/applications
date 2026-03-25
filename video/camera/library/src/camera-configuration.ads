@@ -61,10 +61,6 @@ package Camera.Configuration is
 --    Camera_State   : in     Base.Camera_Configuration_Class_Access
 -- ) with Pre  => not State.Has_Camera_State;
 
--- procedure Set_Current_Camera_ID (
---    Camera_ID   : in     Camera_ID_Type
--- ) with Pre  => Camera_ID.Is_Set;
-
 private
 
    type Configuration_Type is new Base.Configuration_Type with record

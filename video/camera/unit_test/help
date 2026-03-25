@@ -14,6 +14,7 @@ camera_aunit command line options:
     -G <trace options>            : GNOGA traces                    (GNOGA library)
     -h                            : this message                    (Ada_Lib)
     -n                            : no camera                       (test_ada_lib)
+    -r                            : remote camera                   (Video Lib)
     -P                            : set pause flag                  (Ada_Lib)
     -s <suite to test>            : select test suite to run.       (test_ada_lib)
     -U <unit test trace Ada_Lib>  : select trace                    (test_ada_lib)

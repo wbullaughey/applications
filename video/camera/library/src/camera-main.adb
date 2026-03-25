@@ -5,12 +5,14 @@ with Ada.IO_Exceptions;
 with Ada.Text_IO; use  Ada.Text_IO;
 with Ada_Lib.Help;
 with Ada_Lib.Options;
+--with Ada_Lib.Options.Verification;
 with Ada_Lib.OS;
 with Ada_Lib.String_Quote; use Ada_Lib.String_Quote;
 with Ada_Lib.Strings; use Ada_Lib.Strings;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
 with Ask;
-with Camera.Base;
+--with Camera.Base;
+--with Camera.Commands.PTZ_Optics;
 --with Camera.Configurations;
 with Camera.Lib.Base;
 with Camera.Lib.Options;
@@ -266,9 +268,39 @@ package body Camera.Main is
 
    Debug    : Boolean renames Camera.Lib.Options.Camera_Options.Main_Debug;
    Description                   : aliased constant String := "main camera";
-   Main_Window_Connection_ID     : constant Gnoga.Types.Connection_ID :=
-                                     Gnoga.Types.No_Connection;
+-- Main_Window_Connection_ID     : constant Gnoga.Types.Connection_ID :=
+--                                   Gnoga.Types.No_Connection;
    Started                       : Boolean := False;
+
+   ---------------------------------------------------------------
+   procedure Allocate_Camera (
+      Connection     : in out Window_Connection_Type) is
+   ---------------------------------------------------------------
+
+--    Options     : constant Ada_Lib.Options.Verification.
+--                   Verification_Nested_Options_Constant_Class_Access :=
+--                      Ada_Lib.Options.Verification.
+--                         Get_Ada_Lib_Read_Only_Nested_Options;
+   begin
+      Log_In (Debug, " Camera_ID " &  Connection.Camera_ID.Image);
+
+--    Tag_History (Debug, "options", Options.all'tag);
+--    case Configurations.Get_Read_Only_Camera_Configuration_State.Get_Brand (
+--          Connection.Camera_ID) is
+--
+--       when ALPTOP_Camera =>
+--          Not_Implemented;
+--
+--       when PTZ_Optics_Camera =>
+--          Connection.Camera :=
+--             new Commands.PTZ_Optics.PTZ_Optics_Type ("PTZ_Options");
+--
+--        when No_Camera =>
+--          raise Failed with "no camera";
+--
+--    end case;
+      Log_Out (Debug);
+   end Allocate_Camera;
 
    ---------------------------------------------------------------
    function Allocate_Window_Connection
@@ -306,17 +338,17 @@ package body Camera.Main is
 
    end Close_Message_Box;
 
-   ---------------------------------------------------------------
-   function Connection_Data_Equal (
-      Left, Right                : in     Window_Connection_Access
-   ) return Boolean is
-   ---------------------------------------------------------------
-
-   begin
-not_implemented;
-return false;
-   end Connection_Data_Equal;
-
+--   ---------------------------------------------------------------
+--   function Connection_Data_Equal (
+--      Left, Right                : in     Window_Connection_Access
+--   ) return Boolean is
+--   ---------------------------------------------------------------
+--
+--   begin
+--not_implemented;
+--return false;
+--   end Connection_Data_Equal;
+--
 -- ---------------------------------------------------------------
 -- procedure Close_Message_Box (
 --    Connection_Data            : in out Connection_Data_Type) is
@@ -601,15 +633,15 @@ not_implemented;
 return false;
    end Has_Main_Window_Connection;
 
-   ---------------------------------------------------------------
-   function Has_Main_Window_Connection_ID
-   return Boolean is
-   ---------------------------------------------------------------
-
-   begin
-      return Main_Window_Connection_ID /= Gnoga.Types.No_Connection;
-   end Has_Main_Window_Connection_ID;
-
+-- ---------------------------------------------------------------
+-- function Has_Main_Window_Connection_ID
+-- return Boolean is
+-- ---------------------------------------------------------------
+--
+-- begin
+--    return Main_Window_Connection_ID /= Gnoga.Types.No_Connection;
+-- end Has_Main_Window_Connection_ID;
+--
 -- ----------------------------------------------------------------
 -- function Main_Window (
 --    Navigation                 : in     Navigation_Type
@@ -670,17 +702,17 @@ return false;
 --    return View.Parent;
 -- end Main_Window;
 --
--- ----------------------------------------------------------------
--- overriding
--- function Main_Window (
---    Window_Connection                  : in     Full_Window_Connection_Type
--- ) return Gnoga.Gui.Window.Pointer_To_Window_Class is
--- ----------------------------------------------------------------
---
--- begin
---    return Window_Connection.GUI_Window;
--- end Main_Window;
---
+   ----------------------------------------------------------------
+   overriding
+   function Main_Window (
+      Window_Connection                  : in     Full_Window_Connection_Type
+   ) return Gnoga.Gui.Window.Pointer_To_Window_Class is
+   ----------------------------------------------------------------
+
+   begin
+      return Window_Connection.GUI_Window;
+   end Main_Window;
+
    ----------------------------------------------------------------
    overriding
    procedure Message_Box (
@@ -949,21 +981,22 @@ return false;
                         Get_Read_Only_Camera_Configuration_State (
                            Connection.Camera_ID).all;
       Port_Number : constant Standard.Camera.Port_Type :=
-                         State.Get_Host_Port;
-      Camera_Address  : constant Ada_Lib.Socket_IO.Address_Type :=
-                         State.Get_Host_Address;
+                         State.Get_Video_Port;
+      Camera_Address  : constant Ada_Lib.Socket_IO.Address_Constant_Access :=
+                         State.Get_Video_Address;
    begin
       Log_In (Debug,
          Quote (" Camera_URL", Camera_Address.Image) &
          " port" & Port_Number'img);
 
-not_implemented;  -- need way to call camera allocator based on configuration 2//26/26
+      Connection.Allocate_Camera;
+
 --    Connection.Camera :=
 --       Standard.Camera.Commands.Camera_Class_Access'(
 --          new Standard.Camera.Commands.PTZ_Optics.PTZ_Optics_Type (
 --             Description));
 
-      Connection.Camera.Open (Camera_Address, Port_Number);
+      Connection.Camera.Open (Camera_Address.all, Port_Number);
       Log_Out (Debug);
 
    exception
@@ -984,6 +1017,7 @@ not_implemented;  -- need way to call camera allocator based on configuration 2/
       Options                    : in     Command_Options_Type;
       Timeout_Time               : in     Duration := 0.0) is
                                           -- when 0 use command default
+   pragma Unreferenced(Connection_Data, Command, Options, Timeout_Time);
    ---------------------------------------------------------------
 
    begin
@@ -999,6 +1033,8 @@ not_implemented;
       Response                   :    out Maximum_Response_Type;
       Timeout_Time               : in     Duration := 0.0) is
                                           -- when 0 use command default
+   pragma Unreferenced (Connection_Data, Command, Options, Response, Timeout_Time);
+
    ---------------------------------------------------------------
 
    begin
@@ -1233,27 +1269,27 @@ not_implemented;
       Log_Here (Debug);
    end Wait_For_Update_Event;
 
-   ---------------------------------------------------------------
-   function Window_ID_Equal (
-      Left, Right                : in     Window_ID_Type
-   ) return Boolean is
-   ---------------------------------------------------------------
-
-   begin
-not_implemented;
-return false;
-   end Window_ID_Equal;
-
-   ---------------------------------------------------------------
-   function Window_ID_Hash (
-      Key                        : in     Window_ID_Type
-   ) return Ada.Containers.Hash_Type is
-   ---------------------------------------------------------------
-
-   begin
-not_implemented;
-return Ada.Containers.Hash_Type'first;
-   end Window_ID_Hash;
+--   ---------------------------------------------------------------
+--   function Window_ID_Equal (
+--      Left, Right                : in     Window_ID_Type
+--   ) return Boolean is
+--   ---------------------------------------------------------------
+--
+--   begin
+--not_implemented;
+--return false;
+--   end Window_ID_Equal;
+--
+--   ---------------------------------------------------------------
+--   function Window_ID_Hash (
+--      Key                        : in     Window_ID_Type
+--   ) return Ada.Containers.Hash_Type is
+--   ---------------------------------------------------------------
+--
+--   begin
+--not_implemented;
+--return Ada.Containers.Hash_Type'first;
+--   end Window_ID_Hash;
 
 begin
 --Debug := True;

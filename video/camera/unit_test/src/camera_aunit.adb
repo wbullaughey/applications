@@ -1,36 +1,39 @@
 with Ada.Exceptions;
 with Ada.Text_IO; use Ada.Text_IO;
 with Ada_Lib.Help;
-with Ada_Lib.Options.Nested;
-with Ada_Lib.Options.Program;
+--with Ada_Lib.Options.Nested;
+--with Ada_Lib.Options.Program;
+with Ada_Lib.Options.Verification;
 with Ada_Lib.OS;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
 with Ada_Lib.Trace_Tasks;
 with Ada_Lib.Unit_Test;
-with Camera.Lib.Options;
-with Camera.Lib.Unit_Test;
 with Camera.Command_Queue;
+with Camera.Lib.Options.Unit_Test;
+with Camera.Lib.Unit_Test.Run_Suite;
+--with Camera.Unit_Test;
 with Command_Name;
 
 -- pragma Elaborate (Ada_Lib.OS);
 
 procedure Camera_AUnit is
 
-   Options  : aliased Camera.Lib.Unit_Test.Unit_Test_Program_Options_Type (
-               Multi_Test  => True);
+   Options
+      : aliased Camera.Lib.Options.Unit_Test.
+            Camera_Unit_Test_Program_Options_Type (
+         Multi_Test        => True);
+
    Debug    : Boolean renames Camera.Lib.Options.Camera_Options.Main_Debug;
 
 begin
---Debug := True;
---Trace_Tests := True;
+Debug := True;
+Trace_Tests := True;
    Log_In (Debug);
    Put_Line (Command_Name);
-   Ada_Lib.Options.Nested.Set_Ada_Lib_Nested_Options (
-      Ada_Lib.Options.Nested.Nested_Options_Type (
-         Options.Nested_Options)'unchecked_access);
-   Ada_Lib.Options.Set_Ada_Lib_Program_Options (
-      Ada_Lib.Options.Program.Program_Options_Type (
+   Ada_Lib.Options.Verification.Set_Ada_Lib_Program_Options (
+      Ada_Lib.Options.Verification.Verification_Program_Options_Type (
          Options)'unchecked_access);
+Tag_History (true, "options", Camera.Lib.Options.Unit_Test.Camera_Unit_Test_Program_Options_Type'class (Options)'tag);
    if Options.Initialize then
       Log_Here (Debug);
       if Options.Process (

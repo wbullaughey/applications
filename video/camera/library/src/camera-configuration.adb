@@ -5,7 +5,7 @@ with Ada_Lib.Options.Program;
 --with Ada_Lib.Strings; use Ada_Lib.Strings;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
 with Camera.Lib.Options;
-with Camera.Lib.Unit_Test;
+--with Camera.Lib.Unit_Test;
 --with Configuration.Camera.State;
 --with Configuration.Camera.Setup;
 
@@ -22,7 +22,6 @@ package body Camera.Configuration is
 --    Name     => Standard.Configuration.Camera.State.State_Access,
 --    Object   => Standard.Configuration.Camera.State.State_Type);
 --
--- Current_Camera_ID : Camera_ID_Type := Null_Camera_ID;
    Debug             : Boolean renames Lib.Options.Camera_Options.State_Debug;
 
    ----------------------------------------------------------------
@@ -36,13 +35,13 @@ Ada_Lib_Options : constant Ada_Lib.Options.Program.Program_Options_Constant_Clas
 Ada_Lib.Options.Program.Get_Read_Only_Program_Options;
 
 begin
-tag_history (true, Ada_Lib_Options.all'tag);
+tag_history (true, "Ada_Lib_Options", Ada_Lib_Options.all'tag);
 declare
-      Options  : Camera.Lib.Unit_Test.
-                     Unit_Test_Options_Constant_Class_Access :=
-                  Camera.Lib.Unit_Test.
-                        Unit_Test_Options_Constant_Class_Access (
-                     Ada_Lib.Options.Program.Get_Read_Only_Program_Options);
+--    Options  : Camera.Lib.Unit_Test.
+--                   Unit_Test_Options_Constant_Class_Access :=
+--                Camera.Lib.Unit_Test.
+--                      Unit_Test_Options_Constant_Class_Access (
+--                   Ada_Lib.Options.Program.Get_Read_Only_Program_Options);
 
    begin
 not_implemented;
@@ -77,15 +76,6 @@ end;
 --      State.Camera_State := Camera_State;
 --   end Set_Camera_State;
 --
---   ----------------------------------------------------------------
---   procedure Set_Current_Camera_ID (
---      Camera_ID   : in     Camera_ID_Type) is
---   ----------------------------------------------------------------
---
---   begin
---      Current_Camera_ID := Camera_ID;
---   end Set_Current_Camera_ID;
-
 begin
    --Debug := False;
    Log_Here (Debug);

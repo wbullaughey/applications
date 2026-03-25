@@ -4,11 +4,13 @@ with Ada_Lib.Strings.Unlimited;use Ada_Lib.Strings.Unlimited;
 with Ada.Text_IO; use Ada.Text_IO;
 with Ada_Lib.String_Quote; use Ada_Lib.String_Quote;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
-with Video.Lib;
+--with Video.Lib;
 
 pragma Elaborate (Ada_Lib.Parser);
 
 package body Configuration.State is
+
+   use type Ada_Lib.Socket_IO.Address_Kind_Type;
 
    Address_Key    : constant Address_Key_Type := (
                      Local    => new String'("local_camera"),
@@ -32,24 +34,34 @@ package body Configuration.State is
    end Dump;
 
    ----------------------------------------------------------------
-   function Get_Host_Address (
+   function Get_Video_Address (
       State                      : in     State_Type
-   ) return Ada_Lib.Socket_IO.Address_Type is
+   ) return Ada_Lib.Socket_IO.Address_Constant_Access is
    ----------------------------------------------------------------
 
    begin
-      return State.Video_Address.all;
-   end Get_Host_Address;
+      return State.Video_Address;
+   end Get_Video_Address;
 
    ----------------------------------------------------------------
-   function Get_Host_Port (
+   function Get_Video_Address_URL (
+      State                      : in     State_Type
+   ) return String is
+   ----------------------------------------------------------------
+
+   begin
+      return State.Video_Address.URL_Address.Coerce;
+   end Get_Video_Address_URL;
+
+   ----------------------------------------------------------------
+   function Get_Video_Port (
       State                      : in     State_Type
    ) return Video.Lib.Port_Type is
    ----------------------------------------------------------------
 
    begin
       return State.Video_Port;
-   end Get_Host_Port;
+   end Get_Video_Port;
 
    ----------------------------------------------------------------
    function Have_Video_Address (
@@ -58,7 +70,7 @@ package body Configuration.State is
    ----------------------------------------------------------------
 
    begin
-      return Log_Here (State.Video_Address /= Null, Debug);
+      return Log_Here (State.Video_Address /= Null);
    end Have_Video_Address;
 
    ----------------------------------------------------------------
@@ -71,6 +83,15 @@ package body Configuration.State is
       return Log_Here (State.Video_Port /= Video.Lib.Port_Type'last, Debug);
    end Have_Video_Port;
 
+   ----------------------------------------------------------------
+   function Is_URL_Video_Address (
+      State                      : in     State_Type
+   ) return Boolean is
+   ----------------------------------------------------------------
+
+   begin
+      return State.Video_Address.Address_Kind = Ada_Lib.Socket_IO.URL;
+   end Is_URL_Video_Address;
    ----------------------------------------------------------------
    procedure Load (
       State       : in out State_Type;
@@ -121,7 +142,7 @@ package body Configuration.State is
 
       -------------------------------------------------------------
       function Load_Address
-      return Ada_Lib.Socket_IO.Address_Type is
+      return Ada_Lib.Socket_IO.Address_Constant_Access is
       -------------------------------------------------------------
 
          Address                  : constant String :=
@@ -142,8 +163,9 @@ package body Configuration.State is
             " Camera_Address " & Camera_Address);
          if Kind = "IP" then
             declare
-               Result            : Ada_Lib.Socket_IO.Address_Type (
-                                    Ada_Lib.Socket_IO.IP);
+               Result            : constant Ada_Lib.Socket_IO.Address_Access :=
+                                    new Ada_Lib.Socket_IO.Address_Type (
+                                       Ada_Lib.Socket_IO.IP);
                IP_Parser         : Ada_Lib.Parser.Iterator_Type :=
                                      Ada_Lib.Parser.Initialize (
                                         Value          => Camera_Address,
@@ -162,17 +184,17 @@ package body Configuration.State is
                   end;
                end loop;
                Log_Out (Debug, "ip address" & Result.Image);
-               return Result;
+               return Ada_Lib.Socket_IO.Address_Constant_Access (Result);
             end;
          elsif Kind = "URL" then
             declare
-               Result            : Ada_Lib.Socket_IO.Address_Type (
-                                    Ada_Lib.Socket_IO.URL);
-
+               Result            : constant Ada_Lib.Socket_IO.Address_Access :=
+                                    new Ada_Lib.Socket_IO.Address_Type (
+                                       Ada_Lib.Socket_IO.URL);
             begin
                Result.URL_Address.Append (Camera_Address);
                Log_Out (Debug, "url address " & Result.Image);
-               return Result;
+               return Ada_Lib.Socket_IO.Address_Constant_Access (Result);
             end;
          else
             Log_Exception (Debug);
@@ -193,17 +215,17 @@ package body Configuration.State is
    begin
       Log_In (Debug);
 
-      declare
-         Video_Address           : constant Ada_Lib.Socket_IO.Address_Type :=
-                                    Load_Address;
-      begin
-         State.Video_Address := new Ada_Lib.Socket_IO.Address_Type'(Video_Address);
+--    declare
+--       Video_Address           : constant Ada_Lib.Socket_IO.Address_Type :=
+--                                  Load_Address;
+--    begin
+         State.Video_Address := Load_Address;
 
          State.Video_Port := Video.Lib.Port_Type'value (
             Get_Config_String (Port_Key (Location).all));
 
          Log_Out (Debug);
-      end;
+--    end;
 
    exception
 

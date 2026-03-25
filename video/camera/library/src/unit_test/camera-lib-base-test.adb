@@ -11,10 +11,8 @@ with Configuration.Camera.State;
 
 package body Camera.Lib.Base.Test is
 
-   type Test_Type (
-      Brand       : Brand_Type) is new
-                     Camera.Lib.Unit_Test.With_Camera_No_GNOGA_Test_Type (
-                        Brand) with null record;
+   type Test_Type is new Camera.Lib.Unit_Test.
+      With_Camera_No_GNOGA_Test_Type with null record;
 
    type Test_Access is access Test_Type;
 
@@ -145,15 +143,15 @@ package body Camera.Lib.Base.Test is
       Configuration_State
                      : Configuration.Camera.State.State_Type renames
                         Local_Test.Configuration.Get_Configuration_State.all;
-      Options        : Standard.Camera.Lib.Unit_Test.
-                        Unit_Test_Program_Options_Type'class renames
-                           Standard.Camera.Lib.Unit_Test.
-                              Get_Camera_Unit_Test_Constant_Options.all;
-      Brand          : Standard.Camera.Brand_Type renames
-                        Options.Nested_Options.Brand;
+--    Options        : Standard.Camera.Lib.Unit_Test.
+--                      Unit_Test_Program_Options_Type'class renames
+--                         Standard.Camera.Lib.Unit_Test.
+--                            Get_Camera_Unit_Test_Constant_Options.all;
+--    Brand          : Standard.Camera.Brand_Type renames
+--                      Options.Nested_Options.Brand;
       PTZ_Optics_Ports
                      : aliased constant Ports_Type := (
-                           1 => Configuration_State.Get_Host_Port
+                           1 => Configuration_State.Get_Video_Port
                         );
       Ports          : Ports_Access := Null;
 
@@ -161,7 +159,7 @@ package body Camera.Lib.Base.Test is
       Log_In (Debug);
       Put_Line ("read write");
 
-      case Brand is
+      case Configuration_State.Get_Brand is
 
          when ALPTOP_Camera =>
             Ports := ALPTOP_Ports'access;
@@ -226,8 +224,8 @@ package body Camera.Lib.Base.Test is
          begin
             Log_Here (Debug, "Port" & Ports.all (Port)'img);
             Local_Test.Camera_Info.Camera.URL_Open (
-               Local_Test.Camera_Info.Camera_Options.Camera_Address.URL_Address.Coerce,
-               Local_Test.Camera_Info.Camera_Options.Port_Number);
+               Configuration_State.Get_Video_Address_URL,
+               Configuration_State.Get_Video_Port);
             Test_Port (Ports.all (Port));
             Local_Test.Camera_Info.Camera.Close ;
 
@@ -303,18 +301,18 @@ package body Camera.Lib.Base.Test is
    function Suite return AUnit.Test_Suites.Access_Test_Suite is
    ---------------------------------------------------------------
 
-      Options     : Standard.Camera.Lib.Unit_Test.
-                     Unit_Test_Program_Options_Type'class
-                        renames Standard.Camera.Lib.Unit_Test.
-                           Get_Camera_Unit_Test_Constant_Options.all;
-      Brand       : Standard.Camera.Brand_Type renames
-                     Options.Nested_Options.Brand;
+--    Options     : Standard.Camera.Lib.Unit_Test.
+--                   Unit_Test_Program_Options_Type'class
+--                      renames Standard.Camera.Lib.Unit_Test.
+--                         Get_Camera_Unit_Test_Constant_Options.all;
+--    Brand       : Standard.Camera.Brand_Type renames
+--                   Options.Nested_Options.Brand;
       Test_Suite  : constant AUnit.Test_Suites.Access_Test_Suite :=
                      new AUnit.Test_Suites.Test_Suite;
-      Test        : constant Test_Access := new Test_Type (Brand);
+      Test        : constant Test_Access := new Test_Type; -- (Brand);
 
    begin
-      Log_In (Debug, "brand " & Brand'img);
+      Log_In (Debug);
       Ada_Lib.Unit_Test.Suite (Suite_Name);  -- used for listing suites
       Test_Suite.Add_Test (Test);
       Log_Out (Debug);
@@ -336,16 +334,19 @@ package body Camera.Lib.Base.Test is
       Test                       : in out AUnit.Test_Cases.Test_Case'class) is
    ---------------------------------------------------------------
 
+      Local_Test     : Test_Type renames Test_Type (Test);
+      Configuration_State
+                     : Configuration.Camera.State.State_Type renames
+                        Local_Test.Configuration.Get_Configuration_State.all;
 --    Options                    : Standard.Camera.Lib.Unit_Test.
 --                                  Unit_Test_Program_Options_Type'class
 --                                     renames Standard.Camera.Lib.Unit_Test.
 --                                        Get_Camera_Unit_Test_Constant_Options.all;
-      Local_Test                 : Test_Type renames Test_Type (Test);
-
    begin
       Put_Line ("test open");
-      Local_Test.Camera_Info.Camera.Open (Local_Test.Camera_Info.Camera_Options.Camera_Address.all,
-         Local_Test.Camera_Info.Camera_Options.Port_Number);
+      Local_Test.Camera_Info.Camera.Open (
+         Configuration_State.Get_Video_Address.all,
+         Configuration_State.Get_Video_Port);
 
    exception
       when Fault: others =>

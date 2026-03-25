@@ -1,6 +1,7 @@
 --with Ada.Text_IO; use  Ada.Text_IO;
 with Ada_Lib.Configuration;
-with Ada_Lib.Options;
+with Ada_Lib.Options.Nested;
+with Ada_Lib.Options.Verification;
 with Ada_Lib.OS;
 with Ada_Lib.String_Quote; use Ada_Lib.String_Quote;
 with Ada_Lib.Strings.Unlimited;use Ada_Lib.Strings.Unlimited;
@@ -83,6 +84,7 @@ package body Camera.Base is
    ----------------------------------------------------------------
    procedure Deallocate (
       Configuration     : in     Configuration_Access) is
+   pragma Unreferenced (Configuration);
    ----------------------------------------------------------------
 
    begin
@@ -92,6 +94,48 @@ not_implemented;
 --    Free (Configuration.Configuration_State);
       Log_Out (Debug);
    end Deallocate;
+
+   ----------------------------------------------------------------
+   function Get_Camera (
+      Configuration      : in     Configuration_Type
+   )return Camera.Commands.Camera_Class_Access is
+   ----------------------------------------------------------------
+
+   begin
+not_implemented;
+--    return Configuration.Camera;
+return null;
+   end Get_Camera;
+
+   ----------------------------------------------------------------
+   function Get_Camera_Address (
+      Configuration        : in     Configuration_Type
+   ) return Camera.Address_Type is
+   ----------------------------------------------------------------
+
+   begin
+      return Configuration.Configuration_State.Get_Video_Address.all;
+   end Get_Camera_Address;
+
+   ----------------------------------------------------------------
+   function Get_Camera_ID (
+      Configuration      : in     Configuration_Type
+   ) return Camera_ID_Type is
+   ----------------------------------------------------------------
+
+   begin
+      return Configuration.Camera_ID;
+   end Get_Camera_ID;
+
+   ----------------------------------------------------------------
+   function Get_Camera_Name (
+      Configuration      : in     Configuration_Type
+   ) return String is
+   ----------------------------------------------------------------
+
+   begin
+      return Configuration.Camera_Name.Coerce;
+   end Get_Camera_Name;
 
    ----------------------------------------------------------------
    function Get_Configuration (
@@ -139,6 +183,125 @@ not_implemented;
 --end;
 --   end Get_Current_Camera_ID;
 
+   ----------------------------------------------------------------
+   function Get_Configuration_Pan_Speed (
+      Configuration      : in     Configuration_Type
+   ) return Data_Type is
+   ----------------------------------------------------------------
+
+   begin
+      return Configuration_Type'class (Configuration
+         ).Default_Camera_Pan_Speed;
+   end Get_Configuration_Pan_Speed;
+
+   ----------------------------------------------------------------
+   function Get_Configuration_Tilt_Speed (
+      Configuration      : in     Configuration_Type
+   ) return Data_Type is
+   ----------------------------------------------------------------
+
+   begin
+      return Configuration_Type'class (Configuration
+         ).Default_Camera_Tilt_Speed;
+   end Get_Configuration_Tilt_Speed;
+
+--   ----------------------------------------------------------------
+--   -- gets connection data for current active window
+--   function Get_Connection_Data
+--   return Window_Connection_Access is
+--   ----------------------------------------------------------------
+--
+--   begin
+--not_implemented;
+--return null;
+--   end Get_Connection_Data;
+
+--   ----------------------------------------------------------------
+--   -- gets connection data for specified window
+--   function Get_Connection_Data (
+--      Window_ID                  : in     Window_ID_Type
+--   ) return Window_Connection_Access is
+--   ----------------------------------------------------------------
+--
+--   begin
+--not_implemented;
+--return null;
+--   end Get_Connection_Data;
+
+--   ----------------------------------------------------------------
+--   function Get_Connection_Data (
+--      Base_Data            : in     Gnoga.Types.Base_Data_Type'class
+--   ) return Base_Data_Access is
+--   ----------------------------------------------------------------
+--
+--   begin
+--not_implemented;
+--return null;
+--   end Get_Connection_Data;
+--
+--   ----------------------------------------------------------------
+--   function Get_Connection_Data (
+--      Base_Data            : in     Base_Data_Type
+--   ) return Base_Data_Access is
+--   ----------------------------------------------------------------
+--
+--   begin
+--not_implemented;
+--return null;
+--   end Get_Connection_Data;
+--
+--   ----------------------------------------------------------------
+--   function Get_Connection_Data (
+--      Base_Data            : in     Base_Data_Type;
+--      Window_ID                  : in     Window_ID_Type
+--   ) return Base_Data_Access is
+--   ----------------------------------------------------------------
+--
+--   begin
+--not_implemented;
+--return null;
+--   end Get_Connection_Data;
+
+-- ----------------------------------------------------------------
+-- function Get_Location (
+--    Configuration     : in     Configuration_Type
+-- ) return Video.Lib.Location_Type is
+-- ----------------------------------------------------------------
+--
+-- begin
+--    return Configuration.Location;
+-- end Get_Location;
+
+   ----------------------------------------------------------------
+   function Get_Setup_Path (
+      Configuration     : in     Configuration_Type
+   ) return String is
+   ----------------------------------------------------------------
+
+   begin
+      return Configuration.Setup_Path.Coerce;
+   end Get_Setup_Path;
+
+   ----------------------------------------------------------------
+   function Get_Simulate (
+      Configuration     : in     Configuration_Type
+   ) return Boolean is
+   ----------------------------------------------------------------
+
+   begin
+      return Configuration.Simulate;
+   end Get_Simulate;
+
+   ----------------------------------------------------------------
+   function Get_State_Path (
+      Configuration     : in     Configuration_Type
+   ) return String is
+   ----------------------------------------------------------------
+
+   begin
+      return Configuration.State_Path.Coerce;
+   end Get_State_Path;
+
  ----------------------------------------------------------------
    function Get_Number_Configurations (
       Configurations         : in     Configurations_Type
@@ -170,6 +333,16 @@ return null;
 --begin
 --   return Configuration_Constant_Access (Allocate_State);
 --end Get_Read_Only_Global_State;
+
+   ----------------------------------------------------------------
+   function Get_Video_Port (
+      Configuration     : in     Configuration_Type
+   ) return Video.Lib.Port_Type is
+   ----------------------------------------------------------------
+
+   begin
+      return Configuration.Configuration_State.Get_Video_Port;
+   end Get_Video_Port;
 
 -- ----------------------------------------------------------------
 -- function Has_Camera_State (
@@ -221,8 +394,7 @@ return null;
  ----------------------------------------------------------------
 
    begin
-not_implemented;
-      return False;
+      return Configuration.Configuration_State.Have_Video_Address;
    end Have_Video_Address;
 
  ----------------------------------------------------------------
@@ -342,157 +514,6 @@ not_implemented;
 -- end Configuration_Equal;
 
    ----------------------------------------------------------------
-   function Get_Camera (
-      Configuration      : in     Configuration_Type
-   )return Camera.Commands.Camera_Class_Access is
-   ----------------------------------------------------------------
-
-   begin
-not_implemented;
---    return Configuration.Camera;
-return null;
-   end Get_Camera;
-
-   ----------------------------------------------------------------
-   function Get_Camera_ID (
-      Configuration      : in     Configuration_Type
-   ) return Camera_ID_Type is
-   ----------------------------------------------------------------
-
-   begin
-      return Configuration.Camera_ID;
-   end Get_Camera_ID;
-
-   ----------------------------------------------------------------
-   function Get_Camera_Name (
-      Configuration      : in     Configuration_Type
-   ) return String is
-   ----------------------------------------------------------------
-
-   begin
-      return Configuration.Camera_Name.Coerce;
-   end Get_Camera_Name;
-
-   ----------------------------------------------------------------
-   function Get_Configuration_Pan_Speed (
-      Configuration      : in     Configuration_Type
-   ) return Data_Type is
-   ----------------------------------------------------------------
-
-   begin
-      return Configuration_Type'class (Configuration
-         ).Default_Camera_Pan_Speed;
-   end Get_Configuration_Pan_Speed;
-
-   ----------------------------------------------------------------
-   function Get_Configuration_Tilt_Speed (
-      Configuration      : in     Configuration_Type
-   ) return Data_Type is
-   ----------------------------------------------------------------
-
-   begin
-      return Configuration_Type'class (Configuration
-         ).Default_Camera_Tilt_Speed;
-   end Get_Configuration_Tilt_Speed;
-
---   ----------------------------------------------------------------
---   -- gets connection data for current active window
---   function Get_Connection_Data
---   return Window_Connection_Access is
---   ----------------------------------------------------------------
---
---   begin
---not_implemented;
---return null;
---   end Get_Connection_Data;
-
---   ----------------------------------------------------------------
---   -- gets connection data for specified window
---   function Get_Connection_Data (
---      Window_ID                  : in     Window_ID_Type
---   ) return Window_Connection_Access is
---   ----------------------------------------------------------------
---
---   begin
---not_implemented;
---return null;
---   end Get_Connection_Data;
-
---   ----------------------------------------------------------------
---   function Get_Connection_Data (
---      Base_Data            : in     Gnoga.Types.Base_Data_Type'class
---   ) return Base_Data_Access is
---   ----------------------------------------------------------------
---
---   begin
---not_implemented;
---return null;
---   end Get_Connection_Data;
---
---   ----------------------------------------------------------------
---   function Get_Connection_Data (
---      Base_Data            : in     Base_Data_Type
---   ) return Base_Data_Access is
---   ----------------------------------------------------------------
---
---   begin
---not_implemented;
---return null;
---   end Get_Connection_Data;
---
---   ----------------------------------------------------------------
---   function Get_Connection_Data (
---      Base_Data            : in     Base_Data_Type;
---      Window_ID                  : in     Window_ID_Type
---   ) return Base_Data_Access is
---   ----------------------------------------------------------------
---
---   begin
---not_implemented;
---return null;
---   end Get_Connection_Data;
-
-   ----------------------------------------------------------------
-   function Get_Location (
-      Configuration     : in     Configuration_Type
-   ) return Video.Lib.Location_Type is
-   ----------------------------------------------------------------
-
-   begin
-      return Configuration.Location;
-   end Get_Location;
-
-   ----------------------------------------------------------------
-   function Get_Setup_Path (
-      Configuration     : in     Configuration_Type
-   ) return String is
-   ----------------------------------------------------------------
-
-   begin
-      return Configuration.Setup_Path.Coerce;
-   end Get_Setup_Path;
-
-   ----------------------------------------------------------------
-   function Get_Simulate (
-      Configuration     : in     Configuration_Type
-   ) return Boolean is
-   ----------------------------------------------------------------
-
-   begin
-      return Configuration.Simulate;
-   end Get_Simulate;
-
-   ----------------------------------------------------------------
-   function Get_State_Path (
-      Configuration     : in     Configuration_Type
-   ) return String is
-   ----------------------------------------------------------------
-
-   begin
-      return Configuration.State_Path.Coerce;
-   end Get_State_Path;
-
-   ----------------------------------------------------------------
    procedure Halt is
    ----------------------------------------------------------------
 
@@ -512,6 +533,20 @@ return null;
 ----    return Has_Main_Window_Connection_ID and then
 --   end Has_Connection_Data;
 
+-- ----------------------------------------------------------------
+-- function Has_Location (
+--    Configuration      : in     Configuration_Type
+-- ) return Boolean is
+-- ----------------------------------------------------------------
+--
+--    Result            : constant Boolean :=
+--                         Configuration.Location /= Video.Lib.No_Location;
+--
+-- begin
+--    return Log_Here (Result,
+--       Debug or Trace_Pre_Post_Conditions or not Result);
+-- end Has_Location;
+--
 --   ------------------------------------------------------------------------------------------------
 --   procedure Initialize_GNOGA (
 --      Handler                    : in     Gnoga.Application.Multi_Connect.Application_Connect_Event;
@@ -616,6 +651,10 @@ return null;
 
       Camera_Suffix        : constant String := Trim (Camera_Index'img);
       Configuration_File   : Ada_Lib.Configuration.Configuration_Type;
+      Options              : constant Ada_Lib.Options.Verification.
+                              Verification_Nested_Options_Constant_Class_Access :=
+                                 Ada_Lib.Options.Verification.
+                                    Get_Ada_Lib_Read_Only_Nested_Options;
 
       ------------------------------------------------------------
       function Path_Type (
@@ -677,12 +716,24 @@ return null;
          State_Configuration_File
                         : Ada_Lib.Configuration.Configuration_Type;
       begin
-         Configuration.Configuration_State.Load (State_Configuration_File,
-            Configuration.Location, Configuration.Setup_Path.Coerce);
+not_implemented;
+--       Configuration.Configuration_State.Load (State_Configuration_File,
+--          Video.Lib.Options_Constant_Class_Access (Options).Location,
+--          Configuration.Setup_Path.Coerce);
       end;
       Configuration.Configuration_Setup.Load (
          Configuration.Configuration_State.all,
             Configuration.Setup_Path.Coerce);
+
+--       Camera_Info.Camera_Options.Camera_Address :=
+--          Configuration_Camera_State.Video_Address;
+--       Camera_Info.Camera_Options.Camera_ID := Make_Camera_ID (
+--          Camera_Info.Camera_Options.Camera_Address.all);
+--       Camera_Info.Camera_Options.Port_Number :=
+--          Configuration_Camera_State.Video_Port;
+--
+--       Camera_Info.Camera.Initialize_Standard_Preset_IDs;
+
       Log_Out (Debug, Quote ("setup path", Configuration.Setup_Path) &
                      Quote (" state path", Configuration.State_Path));
    end Load;
@@ -691,6 +742,7 @@ return null;
    procedure Load_Setup (
       Configuration        : in out Configuration_Type;
       Path                 : in     String) is
+   pragma Unreferenced (Configuration, Path);
    ---------------------------------------------------------------
 
    begin
@@ -702,6 +754,7 @@ not_implemented;
    procedure Load_State (
       Configuration        : in out Configuration_Type;
       Path                 : in     String) is
+   pragma Unreferenced (Configuration, Path);
    ---------------------------------------------------------------
 
    begin

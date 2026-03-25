@@ -324,7 +324,7 @@ package body Widgets.Configured is
       begin
          Log_In (Debug, Quote ("button text", Value) &
             " Configuration_ID" & Configuration_ID'img &
-            " button tag " & Tag_Name (Button'tag));
+            Tag_Name (" button", Button'tag));
 
          Connection_Data.Process_Command (
             Camera.Memory_Set,
@@ -1499,7 +1499,7 @@ not_implemented;
          Log_In (Debug, -- Quote ("update field column " & Cell.Table_Column'img &
 --          " id", ID) &
             Quote (" object id", Object.ID) &
-            " tag " & Tag_Name (Cell.all'tag));
+            Tag_Name (" ", Cell.all'tag));
 --          " configuration id" & Cell.Configuration_ID'img);
 
          if Debug then

@@ -1,5 +1,5 @@
 with ADA_LIB.Command_Line_Iterator;
-with Ada_Lib.Options.Nested;
+--with Ada_Lib.Options.Nested;
 with Ada_Lib.Options.Program;
 with ADA_LIB.Strings.Unlimited;use Ada_Lib.Strings.Unlimited;
 with Gnoga.Gui.Base;
@@ -20,7 +20,8 @@ package Camera.Lib.Options is
    end record;
 
    -- type used for application options
-   type Nested_Options_Type      is limited new Library_Options_Type with record
+   type Camera_Lib_Options_Nested_Options_Type
+         is limited new Camera_Lib_Nested_Options_Type with record
       Configuration_Path         : Ada_Lib.Strings.Unlimited.String_Type;
       Setup_Path                 : Ada_Lib.Strings.Unlimited.String_Type;
       State_Path                 : Ada_Lib.Strings.Unlimited.String_Type;
@@ -28,15 +29,25 @@ package Camera.Lib.Options is
       Template                   : Ada_Lib.Strings.Unlimited.String_Type;
    end record;
 
-   type Nested_Options_Access    is access all Nested_Options_Type;
+   type Nested_Options_Access    is access all Camera_Lib_Options_Nested_Options_Type;
    type Nested_Options_Class_Access
-                                 is access all Nested_Options_Type'class;
+                                 is access all Camera_Lib_Options_Nested_Options_Type'class;
    type Nested_Options_Constant_Class_Access
-                                 is access constant Nested_Options_Type'class;
+                                 is access constant Camera_Lib_Options_Nested_Options_Type'class;
+
+   function Get_Camera_Lib_Options_Read_Only_Nested_Options (
+      From                       : in     String
+   ) return Nested_Options_Constant_Class_Access
+   with Pre    => Ada_Lib.Options.Verification.Have_Ada_Lib_Program_Options;
+
+   overriding
+   function Image (
+     Options                     : in     Camera_Lib_Options_Nested_Options_Type
+   ) return String;
 
    overriding
    function Initialize (
-     Options                     : in out Nested_Options_Type;
+     Options                     : in out Camera_Lib_Options_Nested_Options_Type;
      From                        : in     String := Ada_Lib.Trace.Here
    ) return Boolean
    with pre    => Options.Verify_Preinitialize,
@@ -44,7 +55,7 @@ package Camera.Lib.Options is
 
 -- overriding
 -- function Process_Option (  -- process one option
---    Options  : in out Nested_Options_Type;
+--    Options  : in out Camera_Lib_Options_Nested_Options_Type;
 --    Iterator : in out Ada_Lib.Options.Command_Line_Iterator_Interface'class;
 --    Option   : in     Ada_Lib.Options.Base_Flag_Option_Type'class
 -- ) return Boolean
@@ -52,12 +63,12 @@ package Camera.Lib.Options is
 --
 -- overriding
 -- procedure Program_Help (
---    Options                    : in     Nested_Options_Type;  -- only used for dispatch
+--    Options                    : in     Camera_Lib_Options_Nested_Options_Type;  -- only used for dispatch
 --    Help_Mode                  : in     ADA_LIB.Options.Help_Mode_Type);
 
    type Program_Options_Type     is limited new Ada_Lib.Options.Program.
                                     Program_Options_Type with record
-      Nested_Options             : aliased Nested_Options_Type;
+      Nested_Options             : aliased Camera_Lib_Options_Nested_Options_Type;
       Camera_State_Path          : Ada_Lib.Strings.Unlimited.String_Type;
    end record;
 

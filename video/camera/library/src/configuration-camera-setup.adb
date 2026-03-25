@@ -3,12 +3,13 @@ with Ada.Text_IO; use Ada.Text_IO;
 with Ada.Unchecked_Deallocation;
 --with Ada_Lib.Address;
 with Ada_Lib.Configuration;
-with Ada_Lib.Options;
+--with Ada_Lib.Options;
 with Ada_Lib.Parser;
 with Ada_Lib.String_Quote; use Ada_Lib.String_Quote;
 with ADA_LIB.Strings;use Ada_Lib.Strings;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
-with Camera.Lib.Options.Unit_Test;
+with Camera.Lib.Options;
+--with Camera.Lib.Options.Unit_Test;
 
 package body Configuration.Camera.Setup is
 
@@ -122,7 +123,7 @@ package body Configuration.Camera.Setup is
 --                   Program_Options_Constant_Class_Access :=
 --                      Standard.Camera.Lib.Options.
 --                   Program_Options_Constant_Class_Access (
---                      Ada_Lib.Options.Get_Ada_Lib_Read_Only_Program_Options);
+--                      Ada_Lib.Options.Verification.Get_Ada_Lib_Read_Only_Nested_Options);
 --    Setup_Path  : Ada_Lib.Strings.Unlimited.String_Type
 --                renames Options.Nested_Options.Setup_Path;
 -- begin

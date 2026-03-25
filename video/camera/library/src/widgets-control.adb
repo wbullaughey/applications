@@ -7,7 +7,7 @@ with Camera.Base;
 with Camera.Main;
 with Configuration.Camera.Setup;
 with Configuration.Camera.State;
-with Camera.Configurations;
+--with Camera.Configurations;
 --with GNOGA_Ada_Lib;
 with Gnoga.Gui.Element.Common;
 with Gnoga.Gui.Element.Form;

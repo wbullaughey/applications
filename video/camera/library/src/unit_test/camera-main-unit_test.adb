@@ -2,7 +2,7 @@ with Ada_Lib.GNOGA;
 with Ada_Lib.Timer;
 with Ada_Lib.Unit_Test;
 with AUnit.Test_Cases;
---with Camera.Lib.Options;
+--with Ada_Lib.Options.Verification;
 with Camera.Lib.Options.Unit_Test;
 with Camera.Lib.Unit_Test;
 with Configuration.Camera.State;
@@ -10,13 +10,9 @@ with Configuration.Camera.State;
 separate (Camera.Main)
 package body Unit_Test is
 
-   type Test_Type (
-      Brand                      : Standard.Camera.Brand_Type) is new
-                                    Camera.Lib.Unit_Test.
-                                       With_Camera_With_GNOGA_Test_Type (
-                                          Brand             => Brand,
-                                          Initialize_GNOGA  => True) with
-                                             null record;
+   type Test_Type is new Camera.Lib.Unit_Test.
+      With_Camera_With_GNOGA_Test_Type (Initialize_GNOGA  => True) with
+            null record;
 
    type Test_Access is access Test_Type;
 
@@ -33,10 +29,10 @@ package body Unit_Test is
 -- ) with Pre => not Test.Verify_Set_Up,
 --        Post => Test.Verify_Set_Up;
 
-   overriding
-   procedure Tear_Down (
-      Test                       : in out Test_Type
-   ) with post => Test.Verify_Tear_Down;
+-- overriding
+-- procedure Tear_Down (
+--    Test                       : in out Test_Type
+-- ) with post => Test.Verify_Tear_Down;
 
    procedure Test_Halt (
       Test                       : in out AUnit.Test_Cases.Test_Case'class);
@@ -156,14 +152,14 @@ exception
    function Suite return AUnit.Test_Suites.Access_Test_Suite is
    ---------------------------------------------------------------
 
-      Options     : Camera.Lib.Unit_Test.Unit_Test_Program_Options_Type'class
-                     renames Camera.Lib.Unit_Test.
-                        Get_Camera_Unit_Test_Constant_Options.all;
-      Brand       : Standard.Camera.Brand_Type renames
-                     Options.Nested_Options.Brand;
+--    Options     : Camera.Lib.Unit_Test.Unit_Test_Program_Options_Type'class
+--                   renames Camera.Lib.Unit_Test.
+--                      Get_Camera_Unit_Test_Constant_Options.all;
+--    Brand       : Standard.Camera.Brand_Type renames
+--                   Options.Nested_Options.Brand;
       Test_Suite  : constant AUnit.Test_Suites.Access_Test_Suite :=
                      new AUnit.Test_Suites.Test_Suite;
-      Tests       : constant Test_Access := new Test_Type (Brand);
+      Tests       : constant Test_Access := new Test_Type; -- (Brand);
 
    begin
       Log_In (Debug);
@@ -173,58 +169,58 @@ exception
       return Test_Suite;
    end Suite;
 
-   ---------------------------------------------------------------
-   overriding
-   procedure Tear_Down (
-      Test           : in out Test_Type) is
-   ---------------------------------------------------------------
-
---    Configuration  : Base.Configuration_Type renames Test.Configuration;
-
-   begin
-      Log_In (Debug or Trace_Set_Up_Tear_Down);
-      Camera.Lib.Unit_Test.With_Camera_With_GNOGA_Test_Type (Test).Tear_Down;
---    GNOGA_Ada_Lib.Clear_Connection_Data;
-not_implemented;
---    Configuration.Unload;
-      Log_Out (Debug or Trace_Set_Up_Tear_Down);
-   end Tear_Down;
+--   ---------------------------------------------------------------
+--   overriding
+--   procedure Tear_Down (
+--      Test           : in out Test_Type) is
+--   ---------------------------------------------------------------
+--
+----    Configuration  : Base.Configuration_Type renames Test.Configuration;
+--
+--   begin
+--      Log_In (Debug or Trace_Set_Up_Tear_Down);
+--      Camera.Lib.Unit_Test.With_Camera_With_GNOGA_Test_Type (Test).Tear_Down;
+----    GNOGA_Ada_Lib.Clear_Connection_Data;
+--not_implemented;
+----    Configuration.Unload;
+--      Log_Out (Debug or Trace_Set_Up_Tear_Down);
+--   end Tear_Down;
 
    ---------------------------------------------------------------
    procedure Test_Halt (
       Test                    : in out AUnit.Test_Cases.Test_Case'class) is
+   pragma Unreferenced (Test);
    ---------------------------------------------------------------
 
-      Options                 : Camera.Lib.Unit_Test.Unit_Test_Program_Options_Type'
-                                 class renames Camera.Lib.
-                                    Unit_Test.Unit_Test_Options_Constant_Class_Access (
-                                       Ada_Lib.Options.Get_Ada_Lib_Read_Only_Program_Options).all;
-      Button_Press_Event      : Button_Push_Event_Type;
---    Local_Test              : Test_Type'class renames Test_Type'class (Test);
+--    Options                 : Camera.Lib.Unit_Test.Unit_Test_Program_Options_Type'
+--                               class renames Camera.Lib.
+--                                  Unit_Test.Unit_Test_Options_Constant_Class_Access (
+--                                     Ada_Lib.Options.Verification.Get_Ada_Lib_Read_Only_Nested_Options).all;
+--    Button_Press_Event      : Button_Push_Event_Type;
 
    begin
-      Log_In (Debug, "Test_Driver " & Options.Test_Driver'img);
-      Button_Press_Event.Window := Ada_Lib.GNOGA.Get_Main_Window;
-
-      if not Options.Test_Driver then
-         Log_Here (Debug);
---       Button_Press_Event.Connection_Data :=
---          Ada_Lib.GNOGA.Connection_Data_Class_Access (Local_Test.Connection_Data);
-
-         Button_Press_Event.Start (
-            Wait           => 2.0,
-            Dynamic        => False,
-            Description    => "halt wait");
-            -- leave time for web page to display
-
-         Log_Here (Debug);
---not_implemented;
---       Run (
---          Directory            => Camera.Lib.Options.Current_Directory,
---          Port                 => Options.GNOGA_Options.HTTP_Port,
---          Verbose              => True,
---          Wait_For_Message_Loop_Exit  => True);
-         end if;
+not_implemented;
+--    Log_In (Debug, "Test_Driver " & Options.Test_Driver'img);
+--      Button_Press_Event.Window := Ada_Lib.GNOGA.Get_Main_Window;
+--
+--      if not Options.Test_Driver then
+--         Log_Here (Debug);
+----       Button_Press_Event.Connection_Data :=
+----          Ada_Lib.GNOGA.Connection_Data_Class_Access (Local_Test.Connection_Data);
+--
+--         Button_Press_Event.Start (
+--            Wait           => 2.0,
+--            Dynamic        => False,
+--            Description    => "halt wait");
+--            -- leave time for web page to display
+--
+--         Log_Here (Debug);
+----       Run (
+----          Directory            => Camera.Lib.Options.Current_Directory,
+----          Port                 => Options.GNOGA_Options.HTTP_Port,
+----          Verbose              => True,
+----          Wait_For_Message_Loop_Exit  => True);
+--         end if;
       Log_Out (Debug);
 
    exception

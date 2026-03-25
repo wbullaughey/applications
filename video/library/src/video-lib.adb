@@ -39,7 +39,7 @@ package body Video.Lib is
 
 -- ---------------------------------------------------------------
 -- function Address_Kind (
---   Options                     : in     Options_Type
+--   Options                     : in     Video_Lib_Nested_Options_Type
 -- ) return Address_Kind_Type is
 -- ---------------------------------------------------------------
 --
@@ -158,6 +158,17 @@ package body Video.Lib is
    end Get_Preset;
 
    -------------------------------------------------------------------------
+   function Get_Video_Lib_Read_Only_Nested_Options (
+      From                 : in     String := Ada_Lib.Trace.Here
+   ) return Options_Constant_Class_Access is
+   -------------------------------------------------------------------------
+
+   begin
+not_implemented;
+return null;
+   end Get_Video_Lib_Read_Only_Nested_Options;
+
+   -------------------------------------------------------------------------
    function Have_Preset (
       Which_Preset               : in     Which_Preset_Type
    ) return Boolean is
@@ -194,7 +205,7 @@ package body Video.Lib is
    -------------------------------------------------------------------------
    overriding
    function Initialize (
-     Options                     : in out Options_Type;
+     Options                     : in out Video_Lib_Nested_Options_Type;
      From                        : in     String := Here
    ) return Boolean is
    -------------------------------------------------------------------------
@@ -209,8 +220,8 @@ package body Video.Lib is
          Ada_Lib.Options.Runstring.Without_Parameters,
          Options_Without_Parameters);
 
-      return Log_Out (Ada_Lib.Options.Nested.Nested_Options_Type (
-            Options).Initialize,
+      return Log_Out (Ada_Lib.Options.Verification.
+         Verification_Nested_Options_Type (Options).Initialize,
          Debug or Trace_Options);
    end Initialize;
 
@@ -243,10 +254,31 @@ package body Video.Lib is
    end Parse_Image_Value;
 
    ----------------------------------------------------------------------------
+   overriding
+   procedure Post_Process (      -- final initialization
+     Options                    : in out Video_Lib_Nested_Options_Type) is
+   ----------------------------------------------------------------------------
+
+   begin
+      Log_Here (Debug or Trace_Options,
+         "location " & Options.Location'img &
+         " options post processing completed");
+
+--    case Options.Location is
+--
+--       when others =>
+--
+--    end case;
+
+      Ada_Lib.Options.Verification.Verification_Nested_Options_Type (
+         Options).Post_Process;
+   end Post_Process;
+
+   ----------------------------------------------------------------------------
    -- processes options it knows about and calls parent for others
    overriding
    function Process_Option (
-      Options  : in out Options_Type;
+      Options  : in out Video_Lib_Nested_Options_Type;
       Iterator : in out Ada_Lib.Options.Command_Line_Iterator_Interface'class;
       Option   : in     Ada_Lib.Options.Base_Flag_Option_Type'class
    ) return Boolean is
@@ -269,15 +301,8 @@ package body Video.Lib is
 --             Options.Port_Number := Port_Type (
 --                Ada_Lib.Socket_IO.Port_Type (Iterator.Get_Integer));
 
---          when 'r' =>    -- remote camera
---             if    Options.Simulate and then
---                   not Ada_Lib.Options.Ada_Lib_Environment.Help_Test then
---                Options.Bad_Option (
---                   "Remote option (r) and Simulate (E) are incompatable at " &
---                   Here);
---             end if;
---             Options.Location := Remote;
---log_here ("remote " & Image (Options.Remote'address));
+            when 'r' =>    -- remote camera
+               Options.Location := Remote;
 
 --          when 'S' =>    -- simulate Standard.Camera
 --             if    Options.Location = Remote and then
@@ -297,8 +322,9 @@ package body Video.Lib is
          return Log_Out (True, Debug or Trace_Options,
             " option" & Option.Image & " handled");
       else
-         return Log_Out (Ada_Lib.Options.Nested.Nested_Options_Type (
-            Options).Process_Option (Iterator, Option),
+         return Log_Out (Ada_Lib.Options.Verification.
+            Verification_Nested_Options_Type'class (
+               Options).Process_Option (Iterator, Option),
             Trace_Options or Debug, "other " & Option.Image);
       end if;
    end Process_Option;
@@ -306,7 +332,7 @@ package body Video.Lib is
    ----------------------------------------------------------------------------
    overriding
    procedure Program_Help (
-      Options                    : in     Options_Type;  -- only used for dispatch
+      Options                    : in     Video_Lib_Nested_Options_Type;  -- only used for dispatch
       Help_Mode                  : in     ADA_LIB.Options.Help_Mode_Type) is
    ----------------------------------------------------------------------------
 
@@ -324,7 +350,7 @@ package body Video.Lib is
             Component, Ada_Lib.Help.Unmodified_Flag);
 --       Ada_Lib.Help.Create_Option ('p', "port option",
 --          "port option", Component, Ada_Lib.Help.Unmodified_Flag);
---       Ada_Lib.Help.Create_Option ('r', "", "remote camera", Component, Ada_Lib.Help.Unmodified_Flag);
+         Ada_Lib.Help.Create_Option ('r', "", "remote camera", Component, Ada_Lib.Help.Unmodified_Flag);
 --       Ada_Lib.Help.Create_Option ('s', "", "simulate camera", Component, Ada_Lib.Help.Unmodified_Flag);
          Ada_Lib.Help.Create_Option (Debug_Option, "trace options",
             "trace options", Component, Ada_Lib.Help.Unmodified_Flag);
@@ -340,7 +366,8 @@ package body Video.Lib is
 
       end case;
 
-      Ada_Lib.Options.Nested.Nested_Options_Type (Options).Program_Help (Help_Mode);
+      Ada_Lib.Options.Verification.Verification_Nested_Options_Type'class (
+         Options).Program_Help (Help_Mode);
       Log_Out (Debug or Trace_Options);
    end Program_Help;
 
@@ -370,7 +397,7 @@ package body Video.Lib is
    ----------------------------------------------------------------------------
    overriding
    procedure Trace_Parse (
-      Options                    : in out Options_Type;
+      Options                    : in out Video_Lib_Nested_Options_Type;
       Iterator                   : in out Ada_Lib.Options.
                                     Command_Line_Iterator_Interface'class) is
    ----------------------------------------------------------------------------

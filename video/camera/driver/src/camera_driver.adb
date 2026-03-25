@@ -3,6 +3,7 @@ with Ada.Text_IO; use Ada.Text_IO;
 with Ada.Directories;
 with Ada_Lib.Help;
 with Ada_Lib.Options.Flags;
+with Ada_Lib.Options.Verification;
 with Ada_Lib.OS;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
 with Ada_Lib.Trace_Tasks;
@@ -24,7 +25,7 @@ procedure Camera_Driver is
                                     Driver_Options.Main_Debug;
 
 begin
-   Ada_Lib.Options.Set_Ada_Lib_Program_Options (
+   Ada_Lib.Options.Verification.Set_Ada_Lib_Nested_Options (
          Protected_Options'unchecked_access);
 
    Protected_Options.Driver_Options.Camera_Directory.Construct (

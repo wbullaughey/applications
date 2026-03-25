@@ -1,4 +1,5 @@
 with Ada.Exceptions;
+with Ada_Lib.Options;
 with Ada_Lib.Strings.Unlimited;
 with Camera.Commands;
 limited with Configuration.Camera.Setup;
@@ -24,6 +25,10 @@ package Camera.Base is
    function Get_Camera (
       Configuration        : in     Configuration_Type
    ) return Camera.Commands.Camera_Class_Access;
+--
+   function Get_Camera_Address (
+      Configuration        : in     Configuration_Type
+   ) return Camera.Address_Type;
 --
    function Get_Camera_Name (
       Configuration       : in     Configuration_Type
@@ -54,10 +59,10 @@ package Camera.Base is
 -- function Get_Current_Camera_ID
 -- return Camera_ID_Type;
 
-   function Get_Location (
-      Configuration       : in     Configuration_Type
-   ) return Video.Lib.Location_Type;
-
+-- function Get_Location (
+--    Configuration       : in     Configuration_Type
+-- ) return Video.Lib.Location_Type;
+--
 -- function Get_Number_Columns (
 --    Configuration       : in     Configuration_Type
 -- ) return Standard.Configuration.Column_Type;
@@ -81,7 +86,11 @@ package Camera.Base is
 -- function Get_State_Path (
 --    Configuration     : in     Configuration_Type
 -- ) return String;
---
+
+   function Get_Video_Port (
+      Configuration     : in     Configuration_Type
+   ) return Video.Lib.Port_Type;
+
 -- function Has_Camera_State (
 --    Configuration      : in     Configuration_Type
 -- ) return Boolean;
@@ -96,6 +105,10 @@ package Camera.Base is
 
 -- function Has_Current_Camera_ID
 -- return Boolean;
+
+-- function Has_Location (
+--    Configuration      : in     Configuration_Type
+-- ) return Boolean;
 
    function Have_Video_Address (
       Configuration      : in     Configuration_Type
@@ -192,7 +205,8 @@ private
       Default_Camera_Tilt_Speed
                            : Property_Type;
       Default_Camera_Zoom  : Property_Type;
-      Location             : Video.Lib.Location_Type;
+--    Location             : Video.Lib.Location_Type := Video.Lib.No_Location;
+-- location is in options
       Setup_Path           : Ada_Lib.Strings.Unlimited.String_Type;
       Simulate             : Boolean := False;
       State_Path           : Ada_Lib.Strings.Unlimited.String_Type;

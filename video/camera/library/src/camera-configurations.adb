@@ -1,4 +1,4 @@
---with Ada.Containers.Indefinite_Hashed_Maps;
+with Ada.Containers.Indefinite_Hashed_Maps;
 with Ada_Lib.Strings; use Ada_Lib.Strings;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
 with Camera.Base;
@@ -10,8 +10,12 @@ with Configuration.Camera.State;
 package body Camera.Configurations is
 
    use type Base.Configuration_Class_Access;
-   use type Configuration.Configuration_Access;
-   use type Configuration.Configuration_Class_Access;
+-- use type Configuration.Configuration_Access;
+-- use type Configuration.Configuration_Class_Access;
+
+   function Resolve_Camera_ID (
+      Camera_ID            : in        Camera_ID_Type := Null_Camera_ID
+   ) return Camera_ID_Type;
 
    function State_Equal (
       Left, Right       : Base.Configuration_Class_Access
@@ -26,8 +30,9 @@ package body Camera.Configurations is
 
    use type State_Package.Cursor;
 
-   Debug    : Boolean renames Lib.Options.Camera_Options.States_Debug;
-   States                  : State_Package.Map;
+   Current_Camera_ID : Camera_ID_Type := Null_Camera_ID;
+   Debug             : Boolean renames Lib.Options.Camera_Options.States_Debug;
+   States            : State_Package.Map;
 
    ----------------------------------------------------------------
    function Allocate_Window_Connection (
@@ -104,7 +109,8 @@ return (1 .. 0 => <>);
 
       declare
          Configuration  : constant Base.Configuration_Class_Access :=
-                           State_Package.Element (States, Camera_ID);
+                           State_Package.Element (States,
+                           Resolve_Camera_ID (Camera_ID));
       begin
          return Configuration;
       end;
@@ -116,8 +122,9 @@ return (1 .. 0 => <>);
    ) return Camera_Configuration_Setup_Constant_Access is
    ----------------------------------------------------------------
 
-      Configuration   : Camera.Configuration.Configuration_Constant_Access :=
-                        Get_Read_Only_Configuration (Camera_ID);
+      Configuration   : constant Camera.Configuration.
+                        Configuration_Constant_Access :=
+                           Get_Read_Only_Configuration (Camera_ID);
    begin
       return Camera_Configuration_Setup_Constant_Access (
          Configuration.Get_Configuration_Setup);
@@ -177,14 +184,16 @@ return (1 .. 0 => <>);
 
      ----------------------------------------------------------------
      function Has_Camera_ID(
-        Camera_ID            : in        Camera_ID_Type := Null_Camera_ID
+        Camera_ID    : in        Camera_ID_Type := Null_Camera_ID
      ) return Boolean is
      ----------------------------------------------------------------
 
+         Result      : constant Boolean :=
+                        Camera_ID.Set or else Current_Camera_ID.Set;
      begin
-        return Log_Here (Camera_ID.Set,
-           Debug or else Trace_Pre_Post_Conditions or else
-           not Camera_ID.Set, Camera_ID.Image);
+        return Log_Here (Result,
+           Debug or else Trace_Pre_Post_Conditions or else not Result,
+           Camera_ID.Image & Current_Camera_ID.Image);
      end Has_Camera_ID;
 
    ----------------------------------------------------------------
@@ -193,14 +202,48 @@ return (1 .. 0 => <>);
    ) return Boolean is
    ----------------------------------------------------------------
 
-      Result   : constant Boolean := State_Package.Find (States, Camera_ID) /=
-                  State_Package.No_Element;
+      Check_Camera_ID   : constant Camera_ID_Type := Resolve_Camera_ID (
+                              Camera_ID);
+      Result            : constant Boolean :=
+                           State_Package.Find (States, Check_Camera_ID) /=
+                              State_Package.No_Element;
    begin
       return Log_Here (Result,
          Debug or else Trace_Pre_Post_Conditions or else not Result,
-         "Camera state for" & Camera_ID'img & " not allocated");
+         "using " & Check_Camera_ID.Image &
+         (if Result then
+            ""
+         else
+            " not") &
+         " allocated");
    end Has_Configuration;
 --
+  ----------------------------------------------------------------
+   function Resolve_Camera_ID (
+      Camera_ID            : in        Camera_ID_Type := Null_Camera_ID
+   ) return Camera_ID_Type is
+  ----------------------------------------------------------------
+
+      Camera_ID_Set     : constant Boolean := Camera_ID /= Null_Camera_ID;
+      Check_Camera_ID   : constant Camera_ID_Type := (
+                           if Camera_ID_Set then
+                              Camera_ID
+                           else
+                              Current_Camera_ID);
+   begin
+      Log_Here (Debug, " Current_Camera_ID " & Current_Camera_ID.Image);
+      return Check_Camera_ID;
+   end Resolve_Camera_ID;
+
+  ----------------------------------------------------------------
+  procedure Set_Current_Camera_ID (
+     Camera_ID   : in     Camera_ID_Type) is
+  ----------------------------------------------------------------
+
+  begin
+     Current_Camera_ID := Camera_ID;
+  end Set_Current_Camera_ID;
+
    ----------------------------------------------------------------
    procedure Set_State (
       Camera_ID      : in     Camera_ID_Type;
@@ -211,7 +254,7 @@ return (1 .. 0 => <>);
       Log_In (Debug, "ID:" & Camera_ID'img);
       State_Package.Insert (States, Camera_ID,
          Base.Configuration_Class_Access (Configuration));
---    Configuration.Set_Current_Camera_ID (Camera_ID);
+      Current_Camera_ID := Camera_ID;
       Log_Out (Debug, "state set");
    end Set_State;
 

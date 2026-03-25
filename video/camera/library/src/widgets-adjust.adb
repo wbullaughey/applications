@@ -4,7 +4,7 @@ with Ada_Lib.Parser;
 with Ada_Lib.String_Quote; use Ada_Lib.String_Quote;
 with Ada_Lib.Strings; use Ada_Lib.Strings;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
-with Camera.Base;
+--with Camera.Base;
 with Camera.Main;
 with Camera.Command_Queue;
 with Configuration.Camera;
@@ -122,8 +122,8 @@ package body Widgets.Adjust is
    -------------------------------------------------------------------
 
    begin
-      Log_Here (Debug, "adjust card class " & Tag_Name (
-         Adjust_Card_Type'class (Adjust_Card)'tag));
+      Log_Here (Debug, "adjust card class " &
+         Tag_Name ("Adjust_Card", Adjust_Card_Type'class (Adjust_Card)'tag));
 
       declare
          Row                     : constant Adjust_Package.Row_Class_Access :=

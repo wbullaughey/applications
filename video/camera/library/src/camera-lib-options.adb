@@ -1,13 +1,13 @@
-with Ada.Text_IO;use Ada.Text_IO;
-with Ada_Lib.Help;
+--with Ada.Text_IO;use Ada.Text_IO;
+--with Ada_Lib.Help;
 with Ada_Lib.Options.Create;
-with Ada_Lib.String_Quote; use Ada_Lib.String_Quote;
+--with Ada_Lib.String_Quote; use Ada_Lib.String_Quote;
 with Ada_Lib.Strings; use Ada_Lib.Strings;
 with ADA_LIB.OS;
 with Ada_Lib.Options.Runstring;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
-with Command_Name;
-with Video.Lib;
+--with Command_Name;
+--with Video.Lib;
 
 package body Camera.Lib.Options is
 
@@ -32,6 +32,17 @@ package body Camera.Lib.Options is
       return Get_Camera_Readonly_Options.Directory.Coerce;
    end Current_Directory;
 
+   -------------------------------------------------------------------------
+   function Get_Camera_Lib_Options_Read_Only_Nested_Options (
+      From                       : in     String
+   ) return Nested_Options_Constant_Class_Access is
+   -------------------------------------------------------------------------
+
+   begin
+not_implemented;
+return null;
+   end Get_Camera_Lib_Options_Read_Only_Nested_Options;
+
 -- -------------------------------------------------------------------------
 -- function Has_Camera
 -- return Boolean is
@@ -42,7 +53,7 @@ package body Camera.Lib.Options is
 --    declare
 --       Options  : Ada_Lib.Options.
 --                   Abstract_Runtime_Options_Constant_Class_Access :=
---                      Ada_Lib.Options.Get_Ada_Lib_Read_Only_Program_Options;
+--                      Ada_Lib.Options.Verification.Get_Ada_Lib_Read_Only_Nested_Options;
 --    begin
 --       if Debug_Options then
 --          Tag_History (Options.all'tag);
@@ -67,8 +78,19 @@ package body Camera.Lib.Options is
 
    -------------------------------------------------------------------------
    overriding
+   function Image (
+     Options                     : in     Camera_Lib_Options_Nested_Options_Type
+   ) return String is
+   -------------------------------------------------------------------------
+
+   begin
+not_implemented;
+return "";
+   end Image;
+   -------------------------------------------------------------------------
+   overriding
    function Initialize (
-     Options                     : in out Nested_Options_Type;
+     Options                     : in out Camera_Lib_Options_Nested_Options_Type;
      From                        : in     String := Ada_Lib.Trace.Here
    ) return Boolean is
    -------------------------------------------------------------------------
@@ -78,7 +100,7 @@ package body Camera.Lib.Options is
          "from " & From & " options address " & Image (Options'address));
 
       return Log_Out_Checked (Recursed,
-         Library_Options_Type (Options).Initialize,
+         Camera_Lib_Nested_Options_Type (Options).Initialize,
          Debug_Options or Trace_Options);
    end Initialize;
 
@@ -110,7 +132,7 @@ package body Camera.Lib.Options is
 --   -- processes options it knows about and calls parent for others
 --   overriding
 --   function Process_Option (
---      Options  : in out Nested_Options_Type;
+--      Options  : in out Camera_Lib_Options_Nested_Options_Type;
 --      Iterator : in out Ada_Lib.Options.Command_Line_Iterator_Interface'class;
 --      Option   : in     Ada_Lib.Options.Base_Flag_Option_Type'class
 --   ) return Boolean is
@@ -201,7 +223,7 @@ not_implemented;
 --   ----------------------------------------------------------------------------
 --   overriding
 --   procedure Program_Help (
---      Options                    : in     Nested_Options_Type;  -- only used for dispatch
+--      Options                    : in     Camera_Lib_Options_Nested_Options_Type;  -- only used for dispatch
 --      Help_Mode                  : in     ADA_LIB.Options.Help_Mode_Type) is
 --   ----------------------------------------------------------------------------
 --

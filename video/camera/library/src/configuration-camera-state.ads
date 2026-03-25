@@ -51,6 +51,10 @@ package Configuration.Camera.State is
 -- function File_Path
 -- return String;
 
+   function Get_Brand (
+      State                      : in     State_Type
+   ) return Standard.Camera.Brand_Type;
+
    function Get_Camera_ID (
       State                      : in     State_Type
    ) return Standard.Camera.Camera_ID_Type
@@ -147,6 +151,8 @@ package Configuration.Camera.State is
 private
 
    type State_Type            is new Configuration.State.State_Type with record
+      Brand                   : Standard.Camera.Brand_Type :=
+                                 Standard.Camera.PTZ_Optics_Camera;
       Camera_ID               : Standard.Camera.Camera_ID_Type;
       Camera_Name             : Ada_Lib.Strings.Unlimited.String_Type;
       CSS_Path                : ADA_LIB.Strings.Unlimited.String_Type;

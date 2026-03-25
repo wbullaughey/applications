@@ -249,7 +249,7 @@ package body Driver is
             Selected_Parameters.Without_Parameters.all);
 
       return Log_Out (
-         Ada_Lib.Options.Nested.Nested_Options_Type (Options).Initialize,
+         Ada_Lib.Options.Nested.Camera_Lib_Options_Nested_Options_Type (Options).Initialize,
          Debug_Options or Trace_Options);
 
    end Initialize;
@@ -461,7 +461,7 @@ package body Driver is
          return Log_Out (True, Debug_Options or Trace_Options, Option.Image &
             " handled");
       else
-         return Log_Out (Ada_Lib.Options.Nested.Nested_Options_Type (
+         return Log_Out (Ada_Lib.Options.Nested.Camera_Lib_Options_Nested_Options_Type (
             Options).Process_Option (Iterator, Option), Debug or Trace_Options,
             "not handled");
       end if;
@@ -591,7 +591,7 @@ package body Driver is
 
    begin
       Log_In (Debug, "testing " & Protected_Options.Testing'img &
-         " Protected_Options tag " & Tag_Name (Protected_Options.all'tag));
+         Tag_Name (" Protected_Options", Protected_Options.all'tag));
 
 --    Quote ("suite", Protected_Options.Suite) & Quote (" routine",
 --       Protected_Options.Routine));

@@ -106,7 +106,7 @@ package body Camera.Lib.Base is
    end Dump_Input_Buffer;
 
    ---------------------------------------------------------------
-   procedure Camera_No_Found (
+   procedure Camera_Not_Found (
       Address                    : in     String;
       Port                       : in     Video.Lib.Port_Type;
       From                       : in     String := Here) is
@@ -116,7 +116,7 @@ package body Camera.Lib.Base is
       raise Failed with Quote ("Camera address", Address) &
          " port" & Port'img & " not found" &
          " called from " & From;
-   end Camera_No_Found;
+   end Camera_Not_Found;
 
    ---------------------------------------------------------------
    overriding
@@ -350,7 +350,7 @@ package body Camera.Lib.Base is
    exception
 
       when GNAT.Sockets.Host_Error | Ada_Lib.Socket_IO.Failed =>
-         Camera_No_Found (Host_Address, Port);
+         Camera_Not_Found (Host_Address, Port);
 
    end Host_Open;
 
@@ -375,7 +375,7 @@ package body Camera.Lib.Base is
    exception
 
       when GNAT.Sockets.Host_Error | Ada_Lib.Socket_IO.Failed =>
-         Camera_No_Found (Address, Port);
+         Camera_Not_Found (Address, Port);
 
    end IP_Open;
 
@@ -397,7 +397,7 @@ package body Camera.Lib.Base is
    exception
 
       when GNAT.Sockets.Host_Error | Ada_Lib.Socket_IO.Failed =>
-         Camera_No_Found (Address.Image, Port);
+         Camera_Not_Found (Address.Image, Port);
 
    end Open;
 

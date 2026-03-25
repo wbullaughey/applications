@@ -4,6 +4,7 @@ with Ada.Text_IO; use Ada.Text_IO;
 with Ada_Lib.Help;
 --with Ada_Lib.Options.Flags;
 with Ada_Lib.Options.Nested;
+with Ada_Lib.Options.Verification;
 with ADA_LIB.OS;
 with Ada_Lib.String_Quote; use Ada_Lib.String_Quote;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
@@ -62,10 +63,10 @@ procedure Camera_Control is
 begin
 --Debug := true;
    Put_Line (Command_Name);
-   Ada_Lib.Options.Set_Ada_Lib_Program_Options (
+   Ada_Lib.Options.Verification.Set_Ada_Lib_Nested_Options (
       Options'unchecked_access);
    Ada_Lib.Options.Nested.Set_Ada_Lib_Nested_Options (
-      Ada_Lib.Options.Nested.Nested_Options_Type (
+      Ada_Lib.Options.Nested.Camera_Lib_Options_Nested_Options_Type (
          Options.Nested_Options)'unchecked_access);
 
    if Options.Initialize then
@@ -93,7 +94,7 @@ begin
                  Handler     => Camera.Main.On_Connect'Unrestricted_Access,
                  Directory   => Camera.Lib.Options.Current_Directory,
                  Port        => Options.Library_Options.GNOGA_Options.HTTP_Port,
-                 Verbose     => Options.Verbose,
+                 Verbose     => Options.Nested_Options.Verbose,
                  Wait_For_Message_Loop_Exit  => True);
                Camera.Base.Halt;
             end;

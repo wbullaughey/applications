@@ -18,10 +18,8 @@ package body Camera.Lib.Base.Command_Tests is
    use type Interfaces.Integer_16;
 -- use type Value_Type;
 
-   type Test_Type (
-      Brand                      : Brand_Type) is new Camera.Lib.Unit_Test.
-                                    With_Camera_No_GNOGA_Test_Type (
-                                       Brand       => Brand) with record
+   type Test_Type is new Camera.Lib.Unit_Test.
+         With_Camera_No_GNOGA_Test_Type with record
       Manual                     : Boolean := False;
    end record;
 
@@ -302,18 +300,18 @@ package body Camera.Lib.Base.Command_Tests is
    function Suite return AUnit.Test_Suites.Access_Test_Suite is
    ---------------------------------------------------------------
 
-      Options     : Standard.Camera.Lib.Unit_Test.
-                     Unit_Test_Program_Options_Type'class
-                        renames Standard.Camera.Lib.Unit_Test.
-                     Get_Camera_Unit_Test_Constant_Options.all;
-      Brand       : Standard.Camera.Brand_Type renames
-                     Options.Nested_Options.Brand;
+--    Options     : Standard.Camera.Lib.Unit_Test.
+--                   Camera_Lib_Unit_Test_Program_Options_Type'class
+--                      renames Standard.Camera.Lib.Unit_Test.
+--                   Get_Camera_Unit_Test_Constant_Options.all;
+--    Brand       : Standard.Camera.Brand_Type renames
+--                   Options.Nested_Options.Brand;
       Test_Suite  : constant AUnit.Test_Suites.Access_Test_Suite :=
                      new AUnit.Test_Suites.Test_Suite;
-      Test        : constant Test_Access := new Test_Type (Brand);
+      Test        : constant Test_Access := new Test_Type; -- (Brand);
 
    begin
-      Log_In (Debug, "brand " & Brand'img & " Suite_Name " & Suite_Name);
+      Log_In (Debug, "Suite_Name " & Suite_Name);
       Ada_Lib.Unit_Test.Suite (Suite_Name);
       Test_Suite.Add_Test (Test);
 --    Test.Allocate_Camera (Brand);
@@ -1145,14 +1143,10 @@ package body Camera.Lib.Base.Command_Tests is
       Length                     : in     Duration) is
    ---------------------------------------------------------------
 
-      Options        : Standard.Camera.Lib.Unit_Test.
-                        Unit_Test_Program_Options_Type'class
-                           renames Standard.Camera.Lib.Unit_Test.
-                              Get_Camera_Unit_Test_Constant_Options.all;
-      If_Emulation   : Boolean renames Options.Nested_Options.
-                        If_Emulation;
+      Nexted_Options : constant Video.Lib.Options_Constant_Class_Access :=
+                           Video.Lib.Get_Video_Lib_Read_Only_Nested_Options;
    begin
-      if not If_Emulation then
+      if not Nexted_Options.If_Emulation then
          delay Length;
       end if;
    end Wait;

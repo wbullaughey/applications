@@ -1,5 +1,5 @@
 with Ada.Exceptions;
-with Ada_Lib.Options;
+--with Ada_Lib.Options.Verification;
 with Ada_Lib.String_Quote; use Ada_Lib.String_Quote;
 with Ada_Lib.Strings; use Ada_Lib.Strings;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
@@ -8,6 +8,7 @@ with AUnit.Assertions; use AUnit.Assertions;
 with AUnit.Test_Cases;
 with Camera.Base;
 with Camera.Lib.Options.Unit_Test;
+with Camera.Lib.Unit_Test;
 with Video.Lib;
 
 package body Configuration.Camera.State.Unit_Tests is
@@ -58,7 +59,7 @@ package body Configuration.Camera.State.Unit_Tests is
 
    procedure Test_Load (
       Test                       : in out AUnit.Test_Cases.Test_Case'class
-   ) with Pre => Ada_Lib.Options.Have_Ada_Lib_Program_Options;
+   ) with Pre => Ada_Lib.Options.Verification.Have_Ada_Lib_Program_Options;
 
    procedure Test_Values (
       Test                       : in out AUnit.Test_Cases.Test_Case'class);
@@ -154,18 +155,18 @@ package body Configuration.Camera.State.Unit_Tests is
    return AUnit.Test_Suites.Access_Test_Suite is
    ---------------------------------------------------------------
 
-      Options     : Standard.Camera.Lib.Unit_Test.
-                     Unit_Test_Program_Options_Type'class
-                        renames Standard.Camera.Lib.Unit_Test.
-                           Get_Camera_Unit_Test_Constant_Options.all;
-      Brand       : Standard.Camera.Brand_Type renames
-                     Options.Nested_Options.Brand;
+--    Options     : Standard.Camera.Lib.Unit_Test.
+--                   Unit_Test_Program_Options_Type'class
+--                      renames Standard.Camera.Lib.Unit_Test.
+--                         Get_Camera_Unit_Test_Constant_Options.all;
+--    Brand       : Standard.Camera.Brand_Type renames
+--                   Options.Nested_Options.Brand;
       Test_Suite  : constant AUnit.Test_Suites.Access_Test_Suite
                      := new AUnit.Test_Suites.Test_Suite;
       Load_Test   : constant Configuration_Load_Test_Access :=
-                     new Configuration_Load_Test_Type (Brand);
+                     new Configuration_Load_Test_Type; -- (Brand);
       Tests       : constant Configuration_Tests_Access :=
-                     new Configuration_Tests_Type (Brand);
+                     new Configuration_Tests_Type; -- (Brand);
 
    begin
       Log_In (Debug, Quote ("suite", Suite_Name));
