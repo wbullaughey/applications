@@ -206,7 +206,7 @@ package body Driver is
    ----------------------------------------------------------------
 
    begin
-      Log_Here (Debug_Options or Trace_Options, "from " & From);
+      Log_Here (Trace_Conversions, "from " & From);
       return Driver_Options_Class_Access (
          Ada_Lib.Options.Nested.Get_Ada_Lib_Modifiable_Nested_Options);
    end Get_Modifiable_Options;
@@ -249,7 +249,7 @@ package body Driver is
             Selected_Parameters.Without_Parameters.all);
 
       return Log_Out (
-         Ada_Lib.Options.Nested.Camera_Lib_Options_Nested_Options_Type (Options).Initialize,
+         Ada_Lib.Options.Nested.Nested_Options_Type (Options).Initialize,
          Debug_Options or Trace_Options);
 
    end Initialize;
@@ -461,7 +461,7 @@ package body Driver is
          return Log_Out (True, Debug_Options or Trace_Options, Option.Image &
             " handled");
       else
-         return Log_Out (Ada_Lib.Options.Nested.Camera_Lib_Options_Nested_Options_Type (
+         return Log_Out (Ada_Lib.Options.Nested.Nested_Options_Type (
             Options).Process_Option (Iterator, Option), Debug or Trace_Options,
             "not handled");
       end if;

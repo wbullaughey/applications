@@ -63,7 +63,7 @@ package body Driver.Unit_Test is
    ----------------------------------------------------------------
 
    begin
-      Log_Here (Debug_Options or Trace_Options, "from " & From);
+      Log_Here (Trace_Conversions, "from " & From);
       return Protected_Options'access;
    end Get_Modifiable_Options;
 
@@ -74,7 +74,7 @@ package body Driver.Unit_Test is
    ---------------------------------------------------------------
 
    begin
-      Log_Here (Debug_Options or Trace_Options, "from " & From);
+      Log_Here (Trace_Conversions, "from " & From);
       return Protected_Options'access;
    end Get_Readonly_Options;
 

@@ -18,6 +18,7 @@ with Widgets.Control.Unit_Test;
 procedure Camera.Lib.Unit_Test.Run_Suite (
    Options  : in     Camera.Lib.Options.Unit_Test.
                         Camera_Unit_Test_Program_Options_Type) is
+   pragma Unreferenced (Options);
    ---------------------------------------------------------------
 
    Debug    : Boolean renames Camera.Lib.Options.Unit_Test.

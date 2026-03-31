@@ -161,9 +161,11 @@ package body Video.Lib is
    function Get_Video_Lib_Read_Only_Nested_Options (
       From                 : in     String := Ada_Lib.Trace.Here
    ) return Options_Constant_Class_Access is
+   pragma Unreferenced (From);
    -------------------------------------------------------------------------
 
    begin
+      Log_Here (Trace_Conversions, "from " & From);
 not_implemented;
 return null;
    end Get_Video_Lib_Read_Only_Nested_Options;
@@ -322,10 +324,7 @@ return null;
          return Log_Out (True, Debug or Trace_Options,
             " option" & Option.Image & " handled");
       else
-         return Log_Out (Ada_Lib.Options.Verification.
-            Verification_Nested_Options_Type'class (
-               Options).Process_Option (Iterator, Option),
-            Trace_Options or Debug, "other " & Option.Image);
+         return Log_Out (False,Trace_Options or Debug, "other " & Option.Image);
       end if;
    end Process_Option;
 
@@ -405,7 +404,7 @@ return null;
       Parameter                  : constant String := Iterator.Get_Parameter;
 
    begin
-      Log (Trace_Options or Debug, Here, Who & Quote (" Parameter", Parameter));
+      Log_In (Trace_Options or Debug, Quote ("Parameter", Parameter));
 
       for Trace of Parameter loop
          Log_Here (Trace_Options or Debug, Quote ("Trace", Trace));
@@ -429,6 +428,7 @@ return null;
 
          end case;
       end loop;
+      Log_Out (Trace_Options or Debug);
    end Trace_Parse;
 
 begin

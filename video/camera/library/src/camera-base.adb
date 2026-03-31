@@ -1,6 +1,7 @@
 --with Ada.Text_IO; use  Ada.Text_IO;
 with Ada_Lib.Configuration;
 with Ada_Lib.Options.Nested;
+with Ada_Lib.Options.Program;
 with Ada_Lib.Options.Verification;
 with Ada_Lib.OS;
 with Ada_Lib.String_Quote; use Ada_Lib.String_Quote;
@@ -651,10 +652,10 @@ return null;
 
       Camera_Suffix        : constant String := Trim (Camera_Index'img);
       Configuration_File   : Ada_Lib.Configuration.Configuration_Type;
-      Options              : constant Ada_Lib.Options.Verification.
-                              Verification_Nested_Options_Constant_Class_Access :=
-                                 Ada_Lib.Options.Verification.
-                                    Get_Ada_Lib_Read_Only_Nested_Options;
+      Options              : constant Ada_Lib.Options.Program.
+                              Nested_Program_Options_Constant_Class_Access :=
+                                 Ada_Lib.Options.Program.
+                                    Get_Read_Only_Nested_Program_Options;
 
       ------------------------------------------------------------
       function Path_Type (
@@ -714,12 +715,16 @@ return null;
 
       declare
          State_Configuration_File
-                        : Ada_Lib.Configuration.Configuration_Type;
+            : Ada_Lib.Configuration.Configuration_Type;
+         Nested_Options
+            : Lib.Options.Nested_Options_Constant_Class_Access :=
+               Lib.Options.Get_Camera_Lib_Options_Read_Only_Nested_Options;
+
       begin
-not_implemented;
---       Configuration.Configuration_State.Load (State_Configuration_File,
---          Video.Lib.Options_Constant_Class_Access (Options).Location,
---          Configuration.Setup_Path.Coerce);
+tag_history ("Options", Options.all'tag);
+         Configuration.Configuration_State.Load (State_Configuration_File,
+            Video.Lib.Options_Constant_Class_Access (Nested_Options).Location,
+            Configuration.Setup_Path.Coerce);
       end;
       Configuration.Configuration_Setup.Load (
          Configuration.Configuration_State.all,

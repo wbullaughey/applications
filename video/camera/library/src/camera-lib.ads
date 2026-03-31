@@ -40,15 +40,17 @@ package Camera.Lib is
       Option_Prefix              : in     Character := '-';
       Skip                       : in     Natural := 0);
 
-   function Get_Camera_Modifiable_Options
-   return Library_Options_Class_Access
+   function Get_Camera_Modifiable_Options (
+      From                       : in  String := Options_Here
+   ) return Library_Options_Class_Access
    with Pre => Have_Options and then
-               Ada_Lib.Options.Verification.Have_Ada_Lib_Program_Options;
+               Ada_Lib.Options.Verification.Have_Ada_Lib_Verification_Options;
 
-   function Get_Camera_Readonly_Options
-   return Library_Options_Constant_Class_Access
+   function Get_Camera_Readonly_Options (
+      From                       : in  String := Options_Here
+   ) return Library_Options_Constant_Class_Access
    with Pre => Have_Options and then
-               Ada_Lib.Options.Verification.Have_Ada_Lib_Program_Options;
+               Ada_Lib.Options.Verification.Have_Ada_Lib_Verification_Options;
 
    function Have_Options
    return Boolean;

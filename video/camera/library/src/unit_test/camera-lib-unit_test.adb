@@ -26,7 +26,7 @@ with Camera.Main;
 --with Camera.Configuration;
 --with Camera.Configurations;
 --with Configuration.Camera.Setup.Unit_Tests;
-with Configuration.Camera.State.Unit_Tests;
+with Configuration.Camera.State; -- .Unit_Tests;
 --with Configuration.State;
 --with Gnoga.Application.Multi_Connect;
 with Gnoga_Ada_Lib.Base;
@@ -157,7 +157,7 @@ return Null_Camera_ID;
    ----------------------------------------------------------------------------
 
    begin
-      Log_Here (Debug, "from " & From);
+      Log_Here (Trace_Conversions, "from " & From);
 not_implemented;
 return null;
 --    return Unit_Test_Options_Constant_Class_Access (

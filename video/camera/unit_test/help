@@ -110,6 +110,7 @@ CAC ada_lib trace library options (-a)
       S               socket Stream
       t               Ada_Lib.Trace
       T               Ada_Lib.Trace_Tasks
+      v               Ada_Lib.Options.Verification
       #c              Template Compile
       #d              Template Detail
       #D              Ada_Lib.Directory trace

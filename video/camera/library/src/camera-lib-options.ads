@@ -38,7 +38,7 @@ package Camera.Lib.Options is
    function Get_Camera_Lib_Options_Read_Only_Nested_Options (
       From                       : in     String
    ) return Nested_Options_Constant_Class_Access
-   with Pre    => Ada_Lib.Options.Verification.Have_Ada_Lib_Program_Options;
+   with Pre    => Ada_Lib.Options.Verification.Have_Ada_Lib_Verification_Options;
 
    overriding
    function Image (

@@ -1,22 +1,26 @@
-with Ada_Lib.Options.Program;
-with Ada_Lib.Options.Unit_Test;
+with Ada_Lib.Options.AUnit_Lib;
+--with Ada_Lib.Options.Program;
+--with Ada_Lib.Options.Unit_Test;
 with Ada_Lib.Unit_Test.Test_Cases;
-with Camera.Lib.Unit_Test;
+--with Camera.Lib.Unit_Test;
 
 package Camera.Lib.Options.Unit_Test is
 
    type Camera_Unit_Test_Program_Options_Type (
       Multi_Test  : Boolean -- perform multiple tests in one
                                             -- execution of test program
-         ) is new Ada_Lib.Options.Program.Program_Options_Type with record
+         ) is new Ada_Lib.Options.AUnit_Lib.Aunit_Program_Options_Type (
+            Multi_Test,
+            Ada_Lib.Options.AUnit_Lib.
+               Unit_Test_With_No_Database_Or_Template) with record
       Camera_Lib_Nested_Options
                   : Camera_Lib_Options_Nested_Options_Type;
-      Camera_Lib_Unit_Test_Program_Options
-                  : Camera.Lib.Unit_Test.Camera_Lib_Unit_Test_Program_Options_Type;
-      Nested_Unit_Test_Options
-                  : aliased Ada_Lib.Options.Unit_Test.
-                     Ada_Lib_Unit_Test_Nested_Options_Type (
-                        Multi_Test => True);
+--    Camera_Lib_Unit_Test_Program_Options
+--                : Camera.Lib.Unit_Test.Camera_Lib_Unit_Test_Program_Options_Type;
+--    Nested_Unit_Test_Options
+--                : aliased Ada_Lib.Options.Unit_Test.
+--                   Ada_Lib_Unit_Test_Nested_Options_Type (
+--                      Multi_Test => True);
    end record;
 
    type Camera_Unit_Test_Program_Options_Class_Access

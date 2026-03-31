@@ -207,11 +207,11 @@ package Camera.Lib.Unit_Test is
       Option   : in     Ada_Lib.Options.Base_Flag_Option_Type'class
    ) return Boolean
    with Pre => Options.Verify_Initialized;
---             not Ada_Lib.Options.Verification.Have_Ada_Lib_Program_Options;
+--             not Ada_Lib.Options.Verification.Have_Ada_Lib_Verification_Options;
 
 -- procedure Run_Suite (
 --    Options  : Options.Unit_Test.Camera_Unit_Test_Program_Options_Type
--- ) with Pre => Ada_Lib.Options.Verification.Have_Ada_Lib_Program_Options;
+-- ) with Pre => Ada_Lib.Options.Verification.Have_Ada_Lib_Verification_Options;
 
    overriding
    procedure Trace_Parse (
@@ -219,13 +219,13 @@ package Camera.Lib.Unit_Test is
       Iterator    : in out Ada_Lib.Options.
                      Command_Line_Iterator_Interface'class
    ) with Pre => Options.Verify_Initialized and then
-                 Ada_Lib.Options.Verification.Have_Ada_Lib_Program_Options;
+                 Ada_Lib.Options.Verification.Have_Ada_Lib_Verification_Options;
 
    type Camera_Test_Suite is new AUnit.Test_Suites.Test_Suite with null record;
 
 -- function Has_Camera
 -- return Boolean
--- with Pre    => Ada_Lib.Options.Verification.Have_Ada_Lib_Program_Options;
+-- with Pre    => Ada_Lib.Options.Verification.Have_Ada_Lib_Verification_Options;
 
    procedure Setup_Camera (
       Load_State     : in     Boolean;
@@ -243,6 +243,6 @@ private
       Options                    : in     Camera_Lib_Unit_Test_Program_Options_Type;  -- only used for dispatch
       Help_Mode                  : in     ADA_LIB.Options.Help_Mode_Type
    ) with Pre => Options.Verify_Initialized and then
-                 Ada_Lib.Options.Verification.Have_Ada_Lib_Program_Options;
+                 Ada_Lib.Options.Verification.Have_Ada_Lib_Verification_Options;
 
 end Camera.Lib.Unit_Test;

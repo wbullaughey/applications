@@ -5,6 +5,7 @@ with Ada_Lib.Help;
 with ADA_LIB.OS;
 with Ada_Lib.Options.Create;
 --with Ada_Lib.Options.Nested;
+with Ada_Lib.Options.Program;
 with Ada_Lib.Options.Runstring;
 --with Ada_Lib.Options.Verification;
 with Ada_Lib.Socket_IO;
@@ -60,15 +61,17 @@ package body Camera.Lib is
    Recursed                      : Boolean := False;
 
    -------------------------------------------------------------------------
-   function Get_Camera_Modifiable_Options
-   return Library_Options_Class_Access is
+   function Get_Camera_Modifiable_Options (
+      From                       : in  String := Options_Here
+   ) return Library_Options_Class_Access is
    -------------------------------------------------------------------------
 
-      Options  : constant Ada_Lib.Options.Verification.
-                  Verification_Nested_Options_Class_Access :=
-                     Ada_Lib.Options.Verification.
-                        Get_Ada_Lib_Modifiable_Nested_Options;
+      Options  : constant Ada_Lib.Options.Program.
+                  Nested_Program_Options_Class_Access :=
+                     Ada_Lib.Options.Program.
+                        Get_Modifiable_Nested_Program_Options;
    begin
+      Log_Here (Trace_Conversions, "from " & From);
       Tag_History (Debug, "options",Options.all'tag);
 not_implemented;
 return null;
@@ -76,11 +79,13 @@ return null;
    end Get_Camera_Modifiable_Options;
 
    -------------------------------------------------------------------------
-   function Get_Camera_Readonly_Options
-   return Library_Options_Constant_Class_Access is
+   function Get_Camera_Readonly_Options (
+      From                       : in  String := Options_Here
+   ) return Library_Options_Constant_Class_Access is
    -------------------------------------------------------------------------
 
    begin
+      Log_Here (Trace_Conversions, "from " & From);
 not_implemented;
 return null;
 --    return Library_Options_Constant_Class_Access (
