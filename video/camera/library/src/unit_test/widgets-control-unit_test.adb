@@ -92,7 +92,7 @@ not_implemented;
       Log_In (Debug);
 
       Test.Add_Optional_Routine (
-         Needs_Camera   => True,
+--         Needs_Camera   => True,
          Routine        => Widgets.Control.Unit_Test.Test_Create_Control'access,
          Routine_Name   => "Test_Create_Control",
          Suite_Name     => Suite_Name);

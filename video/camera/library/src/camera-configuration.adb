@@ -25,30 +25,49 @@ package body Camera.Configuration is
    Debug             : Boolean renames Lib.Options.Camera_Options.State_Debug;
 
    ----------------------------------------------------------------
-   procedure Load (
-      Configuration        : in out Configuration_Type;
-      Setup_Name           : in     String;
-      State_Name           : in     String) is
+   function Get_Window_Connection (
+      Configuration        : in     Configuration_Type
+   ) return access Main.Window_Connection_Type'class is
    ----------------------------------------------------------------
 
-Ada_Lib_Options : constant Ada_Lib.Options.Program.Program_Options_Constant_Class_Access :=
-Ada_Lib.Options.Program.Get_Read_Only_Program_Options;
+   begin
+      return Configuration.Window_Connection;
+   end Get_Window_Connection;
 
-begin
-tag_history (true, "Ada_Lib_Options", Ada_Lib_Options.all'tag);
-declare
---    Options  : Camera.Lib.Unit_Test.
---                   Unit_Test_Options_Constant_Class_Access :=
---                Camera.Lib.Unit_Test.
---                      Unit_Test_Options_Constant_Class_Access (
---                   Ada_Lib.Options.Program.Get_Read_Only_Program_Options);
+   ----------------------------------------------------------------
+   function Has_Window_Connection (
+      Configuration        : in     Configuration_Type
+   ) return Boolean is
+   ----------------------------------------------------------------
 
    begin
-not_implemented;
---    Base.Configuration_Type (Configuration).Load;
---       Setup_Name, State_Name);
-end;
-   end Load;
+      return Configuration.Window_Connection /= Null;
+   end Has_Window_Connection;
+
+--   ----------------------------------------------------------------
+--   procedure Load (
+--      Configuration        : in out Configuration_Type;
+--      Setup_Name           : in     String;
+--      State_Name           : in     String) is
+--   ----------------------------------------------------------------
+--
+--Ada_Lib_Options : constant Ada_Lib.Options.Program.Program_Options_Constant_Class_Access :=
+--Ada_Lib.Options.Program.Get_Read_Only_Program_Options;
+--
+--begin
+--tag_history (true, "Ada_Lib_Options", Ada_Lib_Options.all'tag);
+--declare
+----    Options  : Camera.Lib.Unit_Test.
+----                   Unit_Test_Options_Constant_Class_Access :=
+----                Camera.Lib.Unit_Test.
+----                      Unit_Test_Options_Constant_Class_Access (
+----                   Ada_Lib.Options.Program.Get_Read_Only_Program_Options);
+--
+--   begin
+--      Base.Configuration_Type (Configuration).Load;
+----       Setup_Name, State_Name);
+--end;
+--   end Load;
 
 --   ----------------------------------------------------------------
 --   function Resolve_ID (

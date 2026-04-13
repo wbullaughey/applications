@@ -161,7 +161,6 @@ package body Video.Lib is
    function Get_Video_Lib_Read_Only_Nested_Options (
       From                 : in     String := Ada_Lib.Trace.Here
    ) return Options_Constant_Class_Access is
-   pragma Unreferenced (From);
    -------------------------------------------------------------------------
 
    begin
@@ -169,6 +168,33 @@ package body Video.Lib is
 not_implemented;
 return null;
    end Get_Video_Lib_Read_Only_Nested_Options;
+
+   -------------------------------------------------------------------------
+   function Has_Camera
+   return Boolean is
+   -------------------------------------------------------------------------
+
+      Trace_Log   : constant Boolean := Debug or Trace_Pre_Post_Conditions;
+
+   begin
+      Log_In (Trace_Log);
+      declare
+         Video_Lib_Options
+                  : constant Options_Constant_Class_Access :=
+                     Get_Video_Lib_Read_Only_Nested_Options;
+      begin
+         Tag_History (Trace_Log, "Nested_Options", Video_Lib_Options.all'tag);
+
+         return Log_Out (Video_Lib_Options.Location /= Video.Lib.No_Location,
+            Trace_Log);
+      end;
+
+   exception
+      when Fault: others =>
+         Trace_Exception (Trace_Log, Fault);
+         raise;
+
+   end Has_Camera;
 
    -------------------------------------------------------------------------
    function Have_Preset (
@@ -222,8 +248,8 @@ return null;
          Ada_Lib.Options.Runstring.Without_Parameters,
          Options_Without_Parameters);
 
-      return Log_Out (Ada_Lib.Options.Verification.
-         Verification_Nested_Options_Type (Options).Initialize,
+      return Log_Out (Ada_Lib.Options.Unit_Test.
+         Ada_Lib_Unit_Test_Nested_Options_Type (Options).Initialize,
          Debug or Trace_Options);
    end Initialize;
 
@@ -272,7 +298,7 @@ return null;
 --
 --    end case;
 
-      Ada_Lib.Options.Verification.Verification_Nested_Options_Type (
+      Ada_Lib.Options.Unit_Test.Ada_Lib_Unit_Test_Nested_Options_Type (
          Options).Post_Process;
    end Post_Process;
 
@@ -286,8 +312,10 @@ return null;
    ) return Boolean is
    ----------------------------------------------------------------------------
 
+      Log   : constant Boolean := Debug or Trace_Options;
+
    begin
-      Log_In (Debug or Trace_Options, Option.Image);
+      Log_In (Log, Option.Image);
 
       if Ada_Lib.Options.Has_Option (Option, Options_With_Parameters,
             Options_Without_Parameters) then
@@ -316,15 +344,17 @@ return null;
 --             Options.Simulate := True;
 
             when Others =>
-               Log_Exception (Debug or Trace_Options);
+               Log_Exception (Log);
                raise Failed with "Has_Option incorrectly passed " & Option.Image;
 
          end case;
 
-         return Log_Out (True, Debug or Trace_Options,
-            " option" & Option.Image & " handled");
+         return Log_Out (True, Log, " option" & Option.Image & " handled");
       else
-         return Log_Out (False,Trace_Options or Debug, "other " & Option.Image);
+         return Log_Out (Ada_Lib.Options.Unit_Test.
+            Ada_Lib_Unit_Test_Nested_Options_Type (Options).Process_Option (
+               Iterator, Option),
+            Log, "other " & Option.Image);
       end if;
    end Process_Option;
 
@@ -365,7 +395,7 @@ return null;
 
       end case;
 
-      Ada_Lib.Options.Verification.Verification_Nested_Options_Type'class (
+      Ada_Lib.Options.Unit_Test.Ada_Lib_Unit_Test_Nested_Options_Type (
          Options).Program_Help (Help_Mode);
       Log_Out (Debug or Trace_Options);
    end Program_Help;

@@ -2,29 +2,26 @@ camera_aunit
 
 
 
-
 camera_aunit command line options:
     -1 <trace options>            : Camera Lib unit test            (Camera.Lib.Unit_Test)
     -2 <trace options>            : Camera Lib Debug                (Camera Lib)
-    -3 <trace options>            : Camera Lib Debug                (Camera)
     -?                            : this message                    (Ada_Lib)
     -a <trace options>            : Ada_Lib library trace options   (Ada_Lib)
     -d <directory>                : current directory               (Video Lib)
     -e <routine>                  : routine to test.                (test_ada_lib)
-    -G <trace options>            : GNOGA traces                    (GNOGA library)
     -h                            : this message                    (Ada_Lib)
     -n                            : no camera                       (test_ada_lib)
-    -r                            : remote camera                   (Video Lib)
     -P                            : set pause flag                  (Ada_Lib)
+    -r                            : remote camera                   (Video Lib)
     -s <suite to test>            : select test suite to run.       (test_ada_lib)
     -U <unit test trace Ada_Lib>  : select trace                    (test_ada_lib)
     -v                            : verbose                         (Ada_Lib)
     -V <trace options>            : trace options                   (Video Lib)
-    -w <port number>              : Web server port                 (GNOGA library)
     -x                            : exit on tests complete          (test_ada_lib)
     -@A <suites>                  : enable default disabled suites. (test_ada_lib)
     -@c                           : trace test condition            (Ada_Lib)
     -@d                           : driver suites                   (test_ada_lib)
+    -@G <<TRACE OPTIONS>>         : trace flags.                    (GNOGA_Ada_Lib)
     -@i                           : indent trace                    (Ada_Lib)
     -@l                           : List test suites                (test_ada_lib)
     -@m                           : manual operations.              (test_ada_lib)
@@ -59,70 +56,10 @@ Camera Lib trace options (-2)
       #p              Configuration.Camera.Setup.Debug
       #S              Configuration.Camera.State.Debug
 
-Camera trace options (-3)
-      d               Camera.Camera_Debug
-
 Video Lib trace options (-V)
       a               all
       d               Debug_Option
       s               configuration.state.Debug
-Camera Lib Unit Test (-1)
-      a               all
-      A               Unit_Test Debug
-      b               Base Command_Tests
-      B               Base Test
-      c               Widgets.Control unit_test trace
-      d               Camera.Lib.Unit_Test.Debug
-      m               main unit test trace
-      o               unit_test options
-      p               program trace
-      q               camera queue
-      s               Configuration.Camera.State unit_test options
-      S               Configuration.Camera.Setup unit_test options
-      t               unit_test trace
-      #c              Camera Command trace
-
-GNOGA library trace options (-G)
-      a               all
-      b               GNOGA_Ada_Lib.Base Debug
-      d               GNOGA Library Debug
-      s               GNOGA Server Debug
-
-CAC ada_lib trace library options (-a)
-      a               all
-      b               database subscribe
-      c               Ada_Lib.Command_Line Trace
-      C               Ada_Lib.Configuration Trace
-      e               Event
-      h               Help
-      i               interrupt
-      I               Ada_Lib.interface
-      l               lock
-      m               timer
-      M               mail
-      o               os
-      O               Ada_Lib.Options
-      p               parser
-      P               database post
-      r               run remote, database connect
-      R               Ada_Lib.Options.Runstring.Debug
-      s               socket
-      S               socket Stream
-      t               Ada_Lib.Trace
-      T               Ada_Lib.Trace_Tasks
-      v               Ada_Lib.Options.Verification
-      #c              Template Compile
-      #d              Template Detail
-      #D              Ada_Lib.Directory trace
-      #e              Template Evaluate
-      #E              Template Expand
-      #l              Template Load
-      #o              Trace_Options
-      #p              Trace Pre and Post Condtion functions
-      #P              Trace Pre and Post Condtion false
-      #s              Strings
-      #S              Socket_IO IO
-      #t              Ada_Lib.Text
 Ada_Lib unit test library trace options (-U)
       a               all
       A               all unit tests
@@ -151,4 +88,59 @@ Enable suites disabled by default (-S)
       a               enable all
       d               database server
       t               text
+
+CAC ada_lib trace library options (-a)
+      a               all
+      b               database subscribe
+      c               Ada_Lib.Command_Line Trace
+      C               Ada_Lib.Configuration Trace
+      e               Event
+      h               Help
+      i               interrupt
+      I               Ada_Lib.interface
+      l               lock
+      m               timer
+      M               mail
+      o               os
+      O               Ada_Lib.Options
+      p               parser
+      P               database post
+      r               run remote, database connect
+      R               Ada_Lib.Options.Runstring.Debug
+      s               socket trace
+      S               socket Stream tracing
+      t               Ada_Lib.Trace
+      T               Ada_Lib.Trace_Tasks
+      v               Ada_Lib.Options.Verification.Debug
+      #c              Template Compile
+      #C              trace Conversions
+      #d              Template Detail
+      #D              Ada_Lib.Directory trace
+      #e              Template Evaluate
+      #E              Template Expand
+      #l              Template Load
+      #o              Trace_Options
+      #p              Trace Pre and Post Condtion functions
+      #P              Trace Pre and Post Condtion false
+      #s              Strings
+      #S              Socket_IO IO
+      #t              Ada_Lib.Text
+GNOGA_Ada_Lib trace options (-@G)
+      a               all
+      d               Ada_Lib_GNOGA.Debug
+Camera Lib Unit Test (-1)
+      a               all
+      A               Unit_Test Debug
+      b               Base Command_Tests
+      B               Base Test
+      c               Widgets.Control unit_test trace
+      d               Camera.Lib.Unit_Test.Debug
+      m               main unit test trace
+      o               unit_test options
+      p               program trace
+      q               camera queue
+      s               Configuration.Camera.State unit_test options
+      S               Configuration.Camera.Setup unit_test options
+      t               unit_test trace
+      #c              Camera Command trace
 

@@ -84,18 +84,16 @@ return null;
    return Camera_Names_Type is
    ----------------------------------------------------------------
 
---    Index       : Natural := 0;
---    Result      : Camera_Names_Type (1 .. Positive (States.Length));
+      Index       : Natural := 0;
+      Result      : Camera_Names_Type (1 .. Positive (States.Length));
 
    begin
-not_implemented;
-return (1 .. 0 => <>);
---    for State of States loop
---       Index := Index + 1;
---       Result (Index).Construct (State.Camera_State.Get_Camera_Name);
---    end loop;
---
---    return Result;
+      for State of States loop
+         Index := Index + 1;
+         Result (Index).Construct (State.Get_Camera_Name);
+      end loop;
+
+      return Result;
    end Get_Camera_Names;
 
    ----------------------------------------------------------------
@@ -110,7 +108,10 @@ return (1 .. 0 => <>);
       declare
          Configuration  : constant Base.Configuration_Class_Access :=
                            State_Package.Element (States,
-                           Resolve_Camera_ID (Camera_ID));
+                           Resolve_Camera_ID (if Camera_ID = Null_Camera_ID then
+                              Current_Camera_ID
+                           else
+                              Camera_ID));
       begin
          return Configuration;
       end;

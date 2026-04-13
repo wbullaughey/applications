@@ -1,4 +1,4 @@
-with Ada_Lib.Options.Program;
+with Ada_Lib.Options.Unit_Test;
 with Ada_Lib.Options.Verification;
 with Ada_Lib.Trace;
 with Ada_Lib.Socket_IO; -- .Stream_IO;
@@ -123,9 +123,10 @@ package Video.Lib is
    type Relative_Type   is new Integer;
    type Value_Type      is mod 2**32;
 
-   type Video_Lib_Nested_Options_Type
-         is abstract limited new Ada_Lib.Options.Program.
-                           Nested_Program_Options_Type with record
+   type Video_Lib_Nested_Options_Type (
+      Multi_Test        : Boolean
+   ) is abstract limited new Ada_Lib.Options.Unit_Test.
+                           Ada_Lib_Unit_Test_Nested_Options_Type (Multi_Test) with record
       Address_Kind      : Address_Kind_Type;
       Directory         : ADA_LIB.Strings.Unlimited.String_Type;
                            -- set by runstring option 'c'
@@ -180,6 +181,10 @@ package Video.Lib is
       Buffer                     : in     Buffer_Type;
       Length                     : in     Natural;
       From                       : in     String := Ada_Lib.Trace.Here);
+
+   function Has_Camera
+   return Boolean
+   with Pre    => Ada_Lib.Options.Verification.Have_Ada_Lib_Verification_Options;
 
    function Have_Preset (
       Which_Preset               : in     Which_Preset_Type

@@ -4,6 +4,7 @@ with Ada_Lib.Strings.Unlimited;use Ada_Lib.Strings.Unlimited;
 with Ada.Text_IO; use Ada.Text_IO;
 with Ada_Lib.String_Quote; use Ada_Lib.String_Quote;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
+with Hex_IO;
 --with Video.Lib;
 
 pragma Elaborate (Ada_Lib.Parser);
@@ -40,6 +41,10 @@ package body Configuration.State is
    ----------------------------------------------------------------
 
    begin
+Hex_IO.dump_64 (State.Video_Address'address,64,64, "Video_Address ");
+      Log_Here (Debug, "Video_Address " &
+         Ada_Lib.Strings.Image (State.Video_Address.all'address));
+
       return State.Video_Address;
    end Get_Video_Address;
 
@@ -70,7 +75,8 @@ package body Configuration.State is
    ----------------------------------------------------------------
 
    begin
-      return Log_Here (State.Video_Address /= Null);
+Hex_IO.dump_64 (State.Video_Address'address,64,64, "Video_Address ");
+      return Log_Here (Debug, State.Video_Address /= Null);
    end Have_Video_Address;
 
    ----------------------------------------------------------------

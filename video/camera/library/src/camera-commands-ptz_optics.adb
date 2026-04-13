@@ -75,6 +75,16 @@ package body Camera.Commands.PTZ_Optics is
       end if;
    end Acked;
 
+   ----------------------------------------------------------------------------
+   function Allocate (
+      Description                : in     String
+   ) return PTZ_Optics_Access is
+   ----------------------------------------------------------------------------
+
+   begin
+      return new PTZ_Optics_Type (new String'(Description));
+   end Allocate;
+
 --   ----------------------------------------------------------------------------
 --   procedure Allocate_Preset_ID (
 --      Camera                     : in     PTZ_Optics_Type;

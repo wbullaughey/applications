@@ -3,6 +3,7 @@ with ADA_LIB.Command_Line_Iterator;
 --with Ada_Lib.Options.Flags;
 --with Ada_Lib.Options.Nested;
 with Ada_Lib.Options.Verification;
+with Ada_Lib.Options; use Ada_Lib.Options;
 with Hex_IO;
 with Gnoga.Gui.Base;
 with Video.Lib;
@@ -15,8 +16,9 @@ package Camera.Lib is
                               is Ada_Lib.Command_Line_Iterator.
                                  Abstract_Package.Abstract_Iterator_Type;
 
-   type Camera_Lib_Nested_Options_Type
-      is abstract limited new Video.Lib.Video_Lib_Nested_Options_Type with
+   type Camera_Lib_Nested_Options_Type  (
+      Multi_Test        : Boolean
+   ) is abstract limited new Video.Lib.Video_Lib_Nested_Options_Type (Multi_Test) with
                                  null record;
 
    type Library_Options_Class_Access
@@ -72,6 +74,11 @@ package Camera.Lib is
    with pre => Options.Verify_Initialized;
 
    overriding
+   procedure Program_Help (
+      Options                    : in     Camera_Lib_Nested_Options_Type;
+      Help_Mode                  : in     ADA_LIB.Options.Help_Mode_Type);
+
+   overriding
    procedure Trace_Parse (
       Options                    : in out Camera_Lib_Nested_Options_Type;
       Iterator                   : in out Ada_Lib.Options.
@@ -98,12 +105,5 @@ package Camera.Lib is
    Number_Configurations         : constant String := "configurations";
    Number_Grid_Columns           : constant String := "grid_columns";
    Number_Grid_Rows              : constant String := "grid_rows";
-
-private
-
-   overriding
-   procedure Program_Help (
-      Options                    : in     Camera_Lib_Nested_Options_Type;  -- only used for dispatch
-      Help_Mode                  : in     ADA_LIB.Options.Help_Mode_Type);
 
 end Camera.Lib;

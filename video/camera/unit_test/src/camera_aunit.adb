@@ -18,22 +18,26 @@ with Command_Name;
 
 procedure Camera_AUnit is
 
-   Options
-      : aliased Camera.Lib.Options.Unit_Test.
-            Camera_Unit_Test_Program_Options_Type (
-         Multi_Test        => True);
+   Options        : aliased Camera.Lib.Options.Unit_Test.
+                     Camera_Unit_Test_Program_Options_Type (
+      Multi_Test  => True);
 
    Debug    : Boolean renames Camera.Lib.Options.Camera_Options.Main_Debug;
 
 begin
-Debug := True;
-Trace_Tests := True;
+--Debug := True;
+--Trace_Tests := True;
    Log_In (Debug);
    Put_Line (Command_Name);
    Ada_Lib.Options.Verification.Set_Ada_Lib_Program_Options (
       Ada_Lib.Options.Verification.Verification_Program_Options_Type (
          Options)'unchecked_access);
-Tag_History (true, "options", Camera.Lib.Options.Unit_Test.Camera_Unit_Test_Program_Options_Type'class (Options)'tag);
+   Ada_Lib.Options.Verification.Set_Ada_Lib_Nested_Options (
+      Ada_Lib.Options.Verification.Verification_Nested_Options_Type (
+         Options.Camera_Lib_Nested_Options)'unchecked_access);
+   Tag_History (Debug, "options",
+      Camera.Lib.Options.Unit_Test.Camera_Unit_Test_Program_Options_Type'class (
+         Options)'tag);
    if Options.Initialize then
       Log_Here (Debug);
       if Options.Process (

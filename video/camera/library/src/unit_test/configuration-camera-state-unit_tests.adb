@@ -1,5 +1,4 @@
 with Ada.Exceptions;
---with Ada_Lib.Options.Verification;
 with Ada_Lib.String_Quote; use Ada_Lib.String_Quote;
 with Ada_Lib.Strings; use Ada_Lib.Strings;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
@@ -59,7 +58,7 @@ package body Configuration.Camera.State.Unit_Tests is
 
    procedure Test_Load (
       Test                       : in out AUnit.Test_Cases.Test_Case'class
-   ) with Pre => Ada_Lib.Options.Verification.Have_Ada_Lib_Program_Options;
+   ) with Pre => Ada_Lib.Options.Verification.Have_Ada_Lib_Verification_Options;
 
    procedure Test_Values (
       Test                       : in out AUnit.Test_Cases.Test_Case'class);
@@ -123,7 +122,7 @@ package body Configuration.Camera.State.Unit_Tests is
       Log_In (Debug);
 
       Test.Add_Optional_Routine (
-         Needs_Camera   => True,
+--         Needs_Camera   => True,
          Routine        => Test_Values'access,
          Routine_Name   => "Test_Values",
          Suite_Name     => Suite_Name);

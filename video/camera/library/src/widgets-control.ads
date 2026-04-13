@@ -34,7 +34,7 @@ package Widgets.Control is
       ID                         : in     String := "");
 
    function Get_Card (
-      Card                       : in     Control_Card_Type
+      Card                       : in out Control_Card_Type
    ) return Gnoga.Gui.View.Pointer_To_View_Base_Class is abstract;
 
 -- procedure Verify_Widget (

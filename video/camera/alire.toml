@@ -38,4 +38,4 @@ gnoga_ada_lib = "~0.1.0-dev"
 gnoga_ada_lib = { path='../../../gnoga_lib' }
 
 [[depends-on]]
-gnatcoll = "^25.0.0"
+gnatcoll_minimal = "*"

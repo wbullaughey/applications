@@ -89,7 +89,7 @@ package Configuration.State is
 private
 
    type State_Type   is abstract new Root_State_Type with record
-      Video_Address  : Video.Lib.Address_Constant_Access;
+      Video_Address  : Video.Lib.Address_Constant_Access := Null;
       Video_Port     : Video.Lib.Port_Type :=
                         Video.Lib.Port_Type'last;
    end record;

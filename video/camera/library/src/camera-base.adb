@@ -1,8 +1,8 @@
 --with Ada.Text_IO; use  Ada.Text_IO;
 with Ada_Lib.Configuration;
-with Ada_Lib.Options.Nested;
+--with Ada_Lib.Options.Nested;
 with Ada_Lib.Options.Program;
-with Ada_Lib.Options.Verification;
+--with Ada_Lib.Options.Verification;
 with Ada_Lib.OS;
 with Ada_Lib.String_Quote; use Ada_Lib.String_Quote;
 with Ada_Lib.Strings.Unlimited;use Ada_Lib.Strings.Unlimited;
@@ -717,7 +717,7 @@ return null;
          State_Configuration_File
             : Ada_Lib.Configuration.Configuration_Type;
          Nested_Options
-            : Lib.Options.Nested_Options_Constant_Class_Access :=
+            : Lib.Options.Camera_Lib_Options_Nested_Options_Constant_Class_Access :=
                Lib.Options.Get_Camera_Lib_Options_Read_Only_Nested_Options;
 
       begin

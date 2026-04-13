@@ -11,8 +11,8 @@ with Ada_Lib.String_Quote; use Ada_Lib.String_Quote;
 with Ada_Lib.Strings; use Ada_Lib.Strings;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
 with Ask;
---with Camera.Base;
---with Camera.Commands.PTZ_Optics;
+with Camera.Base;
+with Camera.Commands.PTZ_Optics;
 --with Camera.Configurations;
 with Camera.Lib.Base;
 with Camera.Lib.Options;
@@ -282,23 +282,22 @@ package body Camera.Main is
 --                      Ada_Lib.Options.Verification.
 --                         Get_Ada_Lib_Read_Only_Nested_Options;
    begin
-      Log_In (Debug, " Camera_ID " &  Connection.Camera_ID.Image);
-
+      Log_In (Debug); -- , " Camera_ID " &  Connection.Camera_ID.Image);
 --    Tag_History (Debug, "options", Options.all'tag);
---    case Configurations.Get_Read_Only_Camera_Configuration_State.Get_Brand (
+      case Configurations.Get_Read_Only_Camera_Configuration_State.Get_Brand is
 --          Connection.Camera_ID) is
---
---       when ALPTOP_Camera =>
---          Not_Implemented;
---
---       when PTZ_Optics_Camera =>
---          Connection.Camera :=
---             new Commands.PTZ_Optics.PTZ_Optics_Type ("PTZ_Options");
---
---        when No_Camera =>
---          raise Failed with "no camera";
---
---    end case;
+
+         when ALPTOP_Camera =>
+            Not_Implemented;
+
+         when PTZ_Optics_Camera =>
+            Connection.Camera := Commands.Camera_Class_Access (
+               Camera.Commands.PTZ_Optics.Allocate ("PTZ_Options"));
+
+          when No_Camera =>
+            raise Failed with "no camera";
+
+      end case;
       Log_Out (Debug);
    end Allocate_Camera;
 
@@ -497,9 +496,7 @@ package body Camera.Main is
    ---------------------------------------------------------------
 
    begin
-not_implemented;
-return null;
---    return Window_Connection.Get_Camera;
+      return Window_Connection.Camera;
    end Get_Camera;
 
    ---------------------------------------------------------------
@@ -629,8 +626,17 @@ return Null;
    return Boolean is
 
    begin
-not_implemented;
-return false;
+      if Configurations.Has_Configuration then
+         declare
+            Configuration  : constant Base.Configuration_Class_Access :=
+                              Configurations.Get_Configuration;
+
+         begin
+            return Configuration.Has_Configuration;
+         end;
+      else
+         return False;
+      end if;
    end Has_Main_Window_Connection;
 
 -- ---------------------------------------------------------------
@@ -989,6 +995,7 @@ return false;
          Quote (" Camera_URL", Camera_Address.Image) &
          " port" & Port_Number'img);
 
+Tag_History ("camera_address", Address_Type'class(camera_address.all)'tag);
       Connection.Allocate_Camera;
 
 --    Connection.Camera :=

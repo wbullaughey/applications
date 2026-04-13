@@ -141,7 +141,7 @@ package body Widgets.Control is
 --                                           Verify_Parameter_Class_Access);
 
    type Full_Control_Card_Type   is new Control_Card_Type with record
-      Card                       : Card_Type;
+      Card                       : aliased Card_Type;
    end record;
 
 -- type Full_Control_Card_Class_Access
@@ -157,7 +157,7 @@ package body Widgets.Control is
 
    overriding
    function Get_Card (
-      Card                       : in     Full_Control_Card_Type
+      Card                       : in out Full_Control_Card_Type
    ) return Gnoga.Gui.View.Pointer_To_View_Base_Class;
 
 -- overriding
@@ -267,13 +267,12 @@ not_implemented;
    ----------------------------------------------------------------
    overriding
    function Get_Card (
-      Card                       : in     Full_Control_Card_Type
+      Card                       : in out Full_Control_Card_Type
    ) return Gnoga.Gui.View.Pointer_To_View_Base_Class is
    ----------------------------------------------------------------
 
    begin
-not_implemented;
-return null;
+      return Card.Card'unchecked_access;
    end Get_Card;
 
 --   ----------------------------------------------------------------

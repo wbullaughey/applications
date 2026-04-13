@@ -40,17 +40,26 @@ package Camera.Configuration is
 -- function Get_Current_Camera_ID
 -- return Camera_ID_Type;
 --
+   function Get_Window_Connection (
+      Configuration        : in     Configuration_Type
+   ) return access Main.Window_Connection_Type'class
+   with Pre => Configuration.Has_Window_Connection;
+
 -- function Has_Current_Camera_ID
 -- return Boolean;
+
+   function Has_Window_Connection (
+      Configuration        : in     Configuration_Type
+   ) return Boolean;
 --
 -- procedure Load (
 --    Location    : in     Video.Lib.Location_Type);
 
-   procedure Load (
-      Configuration        : in out Configuration_Type;
-      Setup_Name           : in     String;
-      State_Name           : in     String
-   ) with   Pre => Configuration.Has_Configuration;
+-- procedure Load (
+--    Configuration        : in out Configuration_Type;
+--    Setup_Name           : in     String;
+--    State_Name           : in     String
+-- ) with   Pre => Configuration.Has_Configuration;
 
 -- function Resolve_ID (
 --    Camera_ID   : Camera_ID_Type

@@ -15,7 +15,7 @@ with Configuration.Camera.Setup;
 --with Configuration.Camera.State;
 with GNAT.Source_Info;
 with Gnoga.Application.Multi_Connect;
---with Video.Lib;
+with Video.Lib;
 
 package Camera.Lib.Unit_Test is
 
@@ -32,7 +32,8 @@ package Camera.Lib.Unit_Test is
    type Camera_Info_Type   is record
       Camera               : Standard.Camera.Commands.
                               Camera_Class_Access := Null;
-      Camera_Options       : Options.Camera_Lib_Options_Nested_Options_Type;
+      Camera_Options       : Options.Camera_Lib_Options_Nested_Options_Type (
+                              Multi_Test => False);
       Open_Camera          : Boolean := True;
    end record;
 
@@ -78,9 +79,9 @@ package Camera.Lib.Unit_Test is
       Test                       : in     With_Camera_No_GNOGA_Test_Type
    ) return Camera_ID_Type;
 
-   function Have_Camera (
-      Test                       : in     With_Camera_No_GNOGA_Test_Type
-   ) return Boolean;
+-- function Have_Camera (
+--    Test                       : in     With_Camera_No_GNOGA_Test_Type
+-- ) return Boolean;
 
    function Have_Camera_Address (
       Test                       : in     With_Camera_No_GNOGA_Test_Type
@@ -93,11 +94,11 @@ package Camera.Lib.Unit_Test is
    overriding
    procedure Set_Up (
       Test                       : in out With_Camera_No_GNOGA_Test_Type
-   ) with Pre  => not Test.Have_Camera, --  and then
+   ) with Pre  => not Video.Lib.Has_Camera, --  and then
 --                not Test.Configuration.Get_Configuration_Setup.Is_Loaded,
           Post => Test.Verify_Set_Up and then
                   ( if Test.Load_State then
-                        Test.Have_Camera and then
+                        Video.Lib.Has_Camera and then
                         Test.Configuration.Get_Configuration_Setup.Is_Loaded
                      else
                         True);
@@ -167,10 +168,12 @@ package Camera.Lib.Unit_Test is
 --                   : in     Boolean);
 
    -- allocated options for unit test of camera library
-   type Camera_Lib_Unit_Test_Program_Options_Type is limited new
-      Ada_Lib.Options.Program.Program_Options_Type with record
-         -- camera unit tests only can be run one test per invokation
---    Nested_Options : aliased Options.Camera_Lib_Options_Nested_Options_Type;
+   type Camera_Lib_Unit_Test_Program_Options_Type (
+      Multi_Test        : Boolean
+   ) is limited new
+         Ada_Lib.Options.Program.Program_Options_Type with record
+      Nested_Options : aliased Options.Camera_Lib_Options_Nested_Options_Type (
+                        Multi_Test);
       Main_Debug     : Boolean := False;
    end record;
 

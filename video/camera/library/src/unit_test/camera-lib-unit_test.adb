@@ -3,6 +3,7 @@ with Ada.Text_IO;use Ada.Text_IO;
 with Ada_Lib.Help;
 with Ada_Lib.Options.Create;
 --with Ada_Lib.Options.Nested;
+--with Ada_Lib.Options.Program;
 with Ada_Lib.Options.Runstring;
 --with Ada_Lib.Options.Unit_Test;
 --with Ada_Lib.Options.Verification;
@@ -30,7 +31,7 @@ with Configuration.Camera.State; -- .Unit_Tests;
 --with Configuration.State;
 --with Gnoga.Application.Multi_Connect;
 with Gnoga_Ada_Lib.Base;
-with Video.Lib;
+--with Video.Lib;
 --with Widgets.Adjust.Unit_Test;
 with Widgets.Control.Unit_Test;
 
@@ -105,16 +106,16 @@ package body Camera.Lib.Unit_Test is
 --    return Nested_Options.Configuration_Path.Coerce;
 -- end Get_Configuration_Path;
 
-   ----------------------------------------------------------------------------
-   function Have_Camera (
-      Test                       : in     With_Camera_No_GNOGA_Test_Type
-   ) return Boolean is
-   ----------------------------------------------------------------------------
-
-   begin
-      return Log_Here (Test.Camera_Info.Camera /= Null, Debug or else
-         Trace_Pre_Post_Conditions, "camera set");
-   end Have_Camera;
+-- ----------------------------------------------------------------------------
+-- function Have_Camera (
+--    Test                       : in     With_Camera_No_GNOGA_Test_Type
+-- ) return Boolean is
+-- ----------------------------------------------------------------------------
+--
+-- begin
+--    return Log_Here (Test.Camera_Info.Camera /= Null, Debug or else
+--       Trace_Pre_Post_Conditions, "camera set");
+-- end Have_Camera;
 
    ----------------------------------------------------------------------------
    function Have_Camera_Address (
@@ -187,7 +188,8 @@ return null;
 
       return Log_Out_Checked (Initialize_Recursed,
 --       Options.Initialize and then
-         Ada_Lib.Options.Program.Program_Options_Type (Options).Initialize,
+         Ada_Lib.Options.Program.Program_Options_Type (
+            Options).Initialize,
          Debug_Options or Trace_Options);
    end Initialize;
 
@@ -332,8 +334,7 @@ return null;
 
       end case;
 
-     Ada_Lib.Options.Program.Program_Options_Type (
-         Options).Program_Help (Help_Mode);
+--   Options.Program_Help (Help_Mode);
      Log_Out_Checked (Help_Recursed, Debug_Options or Trace_Options);
 
    end Program_Help;

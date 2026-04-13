@@ -84,12 +84,19 @@ return null;
    ) return Library_Options_Constant_Class_Access is
    -------------------------------------------------------------------------
 
+      Nested_Program_Options :
+         constant Ada_Lib.Options.Program.
+               Nested_Program_Options_Constant_Class_Access :=
+            Ada_Lib.Options.Program.
+               Get_Read_Only_Nested_Program_Options;
    begin
-      Log_Here (Trace_Conversions, "from " & From);
-not_implemented;
-return null;
---    return Library_Options_Constant_Class_Access (
---       Ada_Lib.Options.Nested.Get_Ada_Lib_Read_Only_Nested_Options);
+      if Debug or else Trace_Conversions then
+         Log_Here ( "from " & From);
+         Tag_History ("Nested_Program_Options", Nested_Program_Options.all'tag);
+      end if;
+
+      return Library_Options_Constant_Class_Access (
+         Nested_Program_Options);
    end Get_Camera_Readonly_Options;
 
    -------------------------------------------------------------------------
@@ -98,7 +105,7 @@ return null;
    -------------------------------------------------------------------------
 
       Result   : constant Boolean :=
-                           Ada_Lib.Options.Verification.Have_Ada_Lib_Program_Options;
+                  Ada_Lib.Options.Verification.Have_Ada_Lib_Verification_Options;
    begin
       return Log_Here (Result,
          Debug or else Trace_Pre_Post_Conditions or else not Result);

@@ -1,6 +1,7 @@
 with Ada.Exceptions;
 --with Ada.Strings.Fixed;
 with Ada.Text_IO;use Ada.Text_IO;
+--with Ada_Lib.Options.Program;
 with Ada_Lib.Unit_Test;
 with AUnit.Assertions; use AUnit.Assertions;
 with AUnit.Test_Cases;
@@ -8,6 +9,7 @@ with Ada_Lib.Trace; use Ada_Lib.Trace;
 with Camera.Lib.Options.Unit_Test;
 with Camera.Lib.Unit_Test;
 with Configuration.Camera.State;
+with Video.Lib;
 
 package body Camera.Lib.Base.Test is
 
@@ -43,8 +45,7 @@ package body Camera.Lib.Base.Test is
 
    procedure Test_Open (
       Test                       : in out AUnit.Test_Cases.Test_Case'class)
-   with Pre => Camera.Lib.Unit_Test.With_Camera_No_GNOGA_Test_Type (
-                  Test).Have_Camera and then
+   with Pre => Video.Lib.Has_Camera and then
                Camera.Lib.Unit_Test.With_Camera_No_GNOGA_Test_Type (
                   Test).Have_Camera_Address;
 
@@ -264,7 +265,7 @@ package body Camera.Lib.Base.Test is
    begin
       Log_In (Debug);
       Test.Add_Optional_Routine (
-         Needs_Camera   => True,
+--         Needs_Camera   => True,
          Routine        => Test_Open'access,
          Routine_Name   => "Test_Open",
          Suite_Name     => Suite_Name);
@@ -274,7 +275,7 @@ package body Camera.Lib.Base.Test is
 --       Routine_Name   => "Port_Scan",
 
       Test.Add_Optional_Routine (
-         Needs_Camera   => True,
+--         Needs_Camera   => True,
          Routine        => Read_Write'access,
          Routine_Name   => "Read_Write",
          Suite_Name     => Suite_Name);

@@ -18,6 +18,12 @@ package Camera.Commands.PTZ_Optics is
    ) is new Commands.Camera_Type (
       Description) with null record;
 
+   type PTZ_Optics_Access is access PTZ_Optics_Type;
+
+   function Allocate (
+      Description                : in     String
+   ) return PTZ_Optics_Access;
+
    Default_Read_Timeout          : constant Ada_Lib.Socket_IO.Timeout_Type := 0.2;
    Default_Speed                 : constant Speed_Type := (Maximum_Speed -
                                     Minimum_Speed) /2;

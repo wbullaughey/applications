@@ -35,8 +35,7 @@ package body Camera.Lib.Options is
    -------------------------------------------------------------------------
    function Get_Camera_Lib_Options_Read_Only_Nested_Options (
       From                       : in     String := Ada_Lib.Trace.Here
-   ) return Nested_Options_Constant_Class_Access is
-   pragma Unreferenced (From);
+   ) return Camera_Lib_Options_Nested_Options_Constant_Class_Access is
    -------------------------------------------------------------------------
 
       Nested_Program_Options
@@ -47,7 +46,7 @@ package body Camera.Lib.Options is
    begin
       Log_Here (Trace_Conversions, "from " & From);
 tag_history ("Nested_Program_Options", Nested_Program_Options.all'tag);
-      return Nested_Options_Constant_Class_Access (Nested_Program_Options);
+      return Camera_Lib_Options_Nested_Options_Constant_Class_Access (Nested_Program_Options);
    end Get_Camera_Lib_Options_Read_Only_Nested_Options;
 
 -- -------------------------------------------------------------------------
@@ -86,7 +85,7 @@ tag_history ("Nested_Program_Options", Nested_Program_Options.all'tag);
    -------------------------------------------------------------------------
    overriding
    function Image (
-     Options                     : in     Nested_Options_Type
+     Options                     : in     Camera_Lib_Options_Nested_Options_Type
    ) return String is
    -------------------------------------------------------------------------
 
@@ -97,7 +96,7 @@ return "";
    -------------------------------------------------------------------------
    overriding
    function Initialize (
-     Options                     : in out Nested_Options_Type;
+     Options                     : in out Camera_Lib_Options_Nested_Options_Type;
      From                        : in     String := Ada_Lib.Trace.Here
    ) return Boolean is
    -------------------------------------------------------------------------
@@ -130,7 +129,7 @@ return "";
          Ada_Lib.Options.Null_Flag_List);
 
       return Log_Out (
-         Options.Nested_Options.Initialize and then
+         Options.Camera_Lib_Options_Nested_Options.Initialize and then
          Ada_Lib.Options.Program.Program_Options_Type (Options).Initialize,
          Debug_Options or Trace_Options);
    end Initialize;
@@ -139,7 +138,7 @@ return "";
 --   -- processes options it knows about and calls parent for others
 --   overriding
 --   function Process_Option (
---      Options  : in out Nested_Options_Type;
+--      Options  : in out Camera_Lib_Options_Nested_Options_Type;
 --      Iterator : in out Ada_Lib.Options.Command_Line_Iterator_Interface'class;
 --      Option   : in     Ada_Lib.Options.Base_Flag_Option_Type'class
 --   ) return Boolean is
@@ -230,7 +229,7 @@ not_implemented;
 --   ----------------------------------------------------------------------------
 --   overriding
 --   procedure Program_Help (
---      Options                    : in     Nested_Options_Type;  -- only used for dispatch
+--      Options                    : in     Camera_Lib_Options_Nested_Options_Type;  -- only used for dispatch
 --      Help_Mode                  : in     ADA_LIB.Options.Help_Mode_Type) is
 --   ----------------------------------------------------------------------------
 --

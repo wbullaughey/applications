@@ -20,24 +20,25 @@ package Camera.Lib.Options is
    end record;
 
    -- type used for application options
-   type Camera_Lib_Options_Nested_Options_Type
-         is limited new Camera_Lib_Nested_Options_Type with record
+   type Camera_Lib_Options_Nested_Options_Type(
+      Multi_Test        : Boolean
+   ) is limited new Camera_Lib_Nested_Options_Type (Multi_Test) with record
       Configuration_Path         : Ada_Lib.Strings.Unlimited.String_Type;
       Setup_Path                 : Ada_Lib.Strings.Unlimited.String_Type;
       State_Path                 : Ada_Lib.Strings.Unlimited.String_Type;
-      Debug                      : Boolean := False;
+--    Debug                      : Boolean := False;
       Template                   : Ada_Lib.Strings.Unlimited.String_Type;
    end record;
 
-   type Nested_Options_Access    is access all Camera_Lib_Options_Nested_Options_Type;
-   type Nested_Options_Class_Access
+   type Camera_Lib_Options_Nested_Options_Access    is access all Camera_Lib_Options_Nested_Options_Type;
+   type Camera_Lib_Options_Nested_Options_Class_Access
                                  is access all Camera_Lib_Options_Nested_Options_Type'class;
-   type Nested_Options_Constant_Class_Access
+   type Camera_Lib_Options_Nested_Options_Constant_Class_Access
                                  is access constant Camera_Lib_Options_Nested_Options_Type'class;
 
    function Get_Camera_Lib_Options_Read_Only_Nested_Options (
-      From                       : in     String
-   ) return Nested_Options_Constant_Class_Access
+      From                       : in     String := Ada_Lib.Trace.Here
+   ) return Camera_Lib_Options_Nested_Options_Constant_Class_Access
    with Pre    => Ada_Lib.Options.Verification.Have_Ada_Lib_Verification_Options;
 
    overriding
@@ -66,9 +67,13 @@ package Camera.Lib.Options is
 --    Options                    : in     Camera_Lib_Options_Nested_Options_Type;  -- only used for dispatch
 --    Help_Mode                  : in     ADA_LIB.Options.Help_Mode_Type);
 
-   type Program_Options_Type     is limited new Ada_Lib.Options.Program.
+   type Program_Options_Type (
+      Multi_Test        : Boolean
+   ) is limited new Ada_Lib.Options.Program.
                                     Program_Options_Type with record
-      Nested_Options             : aliased Camera_Lib_Options_Nested_Options_Type;
+      Camera_Lib_Options_Nested_Options
+                                 : aliased Camera_Lib_Options_Nested_Options_Type (
+                                    Multi_Test);
       Camera_State_Path          : Ada_Lib.Strings.Unlimited.String_Type;
    end record;
 

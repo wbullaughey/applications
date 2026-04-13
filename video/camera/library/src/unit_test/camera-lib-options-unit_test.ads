@@ -1,26 +1,22 @@
-with Ada_Lib.Options.AUnit_Lib;
+--with Ada_Lib.Options.AUnit_Lib;
 --with Ada_Lib.Options.Program;
 --with Ada_Lib.Options.Unit_Test;
 with Ada_Lib.Unit_Test.Test_Cases;
---with Camera.Lib.Unit_Test;
+with Camera.Lib.Unit_Test;
 
 package Camera.Lib.Options.Unit_Test is
 
    type Camera_Unit_Test_Program_Options_Type (
-      Multi_Test  : Boolean -- perform multiple tests in one
-                                            -- execution of test program
-         ) is new Ada_Lib.Options.AUnit_Lib.Aunit_Program_Options_Type (
-            Multi_Test,
-            Ada_Lib.Options.AUnit_Lib.
-               Unit_Test_With_No_Database_Or_Template) with record
+      Multi_Test        : Boolean
+   ) is new Camera.Lib.Unit_Test.
+            Camera_Lib_Unit_Test_Program_Options_Type (Multi_Test)
+             with record
       Camera_Lib_Nested_Options
-                  : Camera_Lib_Options_Nested_Options_Type;
---    Camera_Lib_Unit_Test_Program_Options
---                : Camera.Lib.Unit_Test.Camera_Lib_Unit_Test_Program_Options_Type;
---    Nested_Unit_Test_Options
---                : aliased Ada_Lib.Options.Unit_Test.
---                   Ada_Lib_Unit_Test_Nested_Options_Type (
---                      Multi_Test => True);
+                  : aliased Camera_Lib_Options_Nested_Options_Type  (Multi_Test);
+--    Nested_Ada_Lib_Unit_Test_Options
+--                         : aliased Ada_Lib.Options.Unit_Test.
+--                            Ada_Lib_Unit_Test_Nested_Options_Type (
+--                               Multi_Test => True);
    end record;
 
    type Camera_Unit_Test_Program_Options_Class_Access
@@ -30,12 +26,12 @@ package Camera.Lib.Options.Unit_Test is
 
    Failure                       : exception;
 
-   overriding
-   procedure Display_Help (
-                              -- prints full help, aborts program
-     Options   : in     Camera_Unit_Test_Program_Options_Type;  -- only used for dispatch
-     Message   : in     String := "";   -- leave blank no error help
-     Halt      : in     Boolean := True);
+-- overriding
+-- procedure Display_Help (
+--                            -- prints full help, aborts program
+--   Options   : in     Camera_Unit_Test_Program_Options_Type;  -- only used for dispatch
+--   Message   : in     String := "";   -- leave blank no error help
+--   Halt      : in     Boolean := True);
 
    function Get_Modifiable_Camera_Unit_Test_Options (
       From                       : in  String := Ada_Lib.Trace.Here
@@ -64,6 +60,14 @@ package Camera.Lib.Options.Unit_Test is
      Options   : in out Camera_Unit_Test_Program_Options_Type;
      Iterator  : in out Ada_Lib.Options.Command_Line_Iterator_Interface'class
    ) return Boolean;
+
+-- function Process (     -- processes whole command line calling Process_Option for each option
+--   Options                     : in out Camera_Unit_Test_Program_Options_Type;
+--   Include_Options             : in     Boolean;
+--   Include_Non_Options         : in     Boolean;
+--   Option_Prefix               : in     Character := '-';
+--   Modifiers                   : in     String := ""
+-- ) return Boolean;
 
 -- procedure Set_Options;
 
