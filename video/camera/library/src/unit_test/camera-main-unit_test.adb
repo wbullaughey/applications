@@ -107,7 +107,7 @@ exception
       Log_In (Debug);
 
       Test.Add_Optional_Routine (
---         Needs_Camera   => True,
+         Needs_Camera   => True,
          Routine        => Test_Halt'access,
          Routine_Name   => "Test_Halt",
          Suite_Name     => Suite_Name);

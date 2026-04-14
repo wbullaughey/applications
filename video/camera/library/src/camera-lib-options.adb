@@ -46,7 +46,8 @@ package body Camera.Lib.Options is
    begin
       Log_Here (Trace_Conversions, "from " & From);
 tag_history ("Nested_Program_Options", Nested_Program_Options.all'tag);
-      return Camera_Lib_Options_Nested_Options_Constant_Class_Access (Nested_Program_Options);
+      return Camera_Lib_Options_Nested_Options_Constant_Class_Access (
+         Nested_Program_Options);
    end Get_Camera_Lib_Options_Read_Only_Nested_Options;
 
 -- -------------------------------------------------------------------------

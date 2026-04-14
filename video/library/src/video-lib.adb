@@ -248,8 +248,8 @@ return null;
          Ada_Lib.Options.Runstring.Without_Parameters,
          Options_Without_Parameters);
 
-      return Log_Out (Ada_Lib.Options.Unit_Test.
-         Ada_Lib_Unit_Test_Nested_Options_Type (Options).Initialize,
+      return Log_Out (Ada_Lib.Options.Program.
+         Nested_Program_Options_Type (Options).Initialize,
          Debug or Trace_Options);
    end Initialize;
 
@@ -298,7 +298,7 @@ return null;
 --
 --    end case;
 
-      Ada_Lib.Options.Unit_Test.Ada_Lib_Unit_Test_Nested_Options_Type (
+      Ada_Lib.Options.Program.Nested_Program_Options_Type (
          Options).Post_Process;
    end Post_Process;
 
@@ -351,8 +351,8 @@ return null;
 
          return Log_Out (True, Log, " option" & Option.Image & " handled");
       else
-         return Log_Out (Ada_Lib.Options.Unit_Test.
-            Ada_Lib_Unit_Test_Nested_Options_Type (Options).Process_Option (
+         return Log_Out (Ada_Lib.Options.Program.
+            Nested_Program_Options_Type (Options).Process_Option (
                Iterator, Option),
             Log, "other " & Option.Image);
       end if;
@@ -395,7 +395,7 @@ return null;
 
       end case;
 
-      Ada_Lib.Options.Unit_Test.Ada_Lib_Unit_Test_Nested_Options_Type (
+      Ada_Lib.Options.Program.Nested_Program_Options_Type (
          Options).Program_Help (Help_Mode);
       Log_Out (Debug or Trace_Options);
    end Program_Help;

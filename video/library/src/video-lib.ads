@@ -1,4 +1,4 @@
-with Ada_Lib.Options.Unit_Test;
+with Ada_Lib.Options.Program;
 with Ada_Lib.Options.Verification;
 with Ada_Lib.Trace;
 with Ada_Lib.Socket_IO; -- .Stream_IO;
@@ -125,8 +125,8 @@ package Video.Lib is
 
    type Video_Lib_Nested_Options_Type (
       Multi_Test        : Boolean
-   ) is abstract limited new Ada_Lib.Options.Unit_Test.
-                           Ada_Lib_Unit_Test_Nested_Options_Type (Multi_Test) with record
+   ) is abstract limited new Ada_Lib.Options.Program.
+                           Nested_Program_Options_Type with record
       Address_Kind      : Address_Kind_Type;
       Directory         : ADA_LIB.Strings.Unlimited.String_Type;
                            -- set by runstring option 'c'

@@ -137,90 +137,90 @@ package body Camera.Lib.Base.Command_Tests is
 --       Routine_Name   => "Test_Manual_Focus",
 --
       Test.Add_Optional_Routine (
---         Needs_Camera   => True,
+         Needs_Camera   => True,
          Routine        => Test_Position_Absolute'access,
          Routine_Name   => "Test_Position_Absolute",
          Suite_Name     => Suite_Name);
 
       Test.Add_Optional_Routine (
---         Needs_Camera   => True,
+         Needs_Camera   => True,
          Routine        => Test_Position_Down_Left'access,
          Routine_Name   => "Test_Position_Down_Left",
          Suite_Name     => Suite_Name);
 
       Test.Add_Optional_Routine (
---         Needs_Camera   => True,
+         Needs_Camera   => True,
          Routine        => Test_Position_Down_Right'access,
          Routine_Name   => "Test_Position_Down_Right",
          Suite_Name     => Suite_Name);
 
       Test.Add_Optional_Routine (
---         Needs_Camera   => True,
+         Needs_Camera   => True,
          Routine        => Test_Position_Down'access,
          Routine_Name   => "Test_Position_Down",
          Suite_Name     => Suite_Name);
 
       Test.Add_Optional_Routine (
---         Needs_Camera   => True,
+         Needs_Camera   => True,
          Routine        => Test_Position_Relative'access,
          Routine_Name   => "Test_Position_Relative",
          Suite_Name     => Suite_Name);
 
       Test.Add_Optional_Routine (
---         Needs_Camera   => True,
+         Needs_Camera   => True,
          Routine        => Test_Position_Request'access,
          Routine_Name   => "Test_Position_Request",
          Suite_Name     => Suite_Name);
 
       Test.Add_Optional_Routine (
---         Needs_Camera   => True,
+         Needs_Camera   => True,
          Routine        => Test_Position_Right'access,
          Routine_Name   => "Test_Position_Right",
          Suite_Name     => Suite_Name);
 
       Test.Add_Optional_Routine (
---         Needs_Camera   => True,
+         Needs_Camera   => True,
          Routine        => Test_Position_Left'access,
          Routine_Name   => "Test_Position_Left",
          Suite_Name     => Suite_Name);
 
       Test.Add_Optional_Routine (
---         Needs_Camera   => True,
+         Needs_Camera   => True,
          Routine        => Test_Position_Stop'access,
          Routine_Name   => "Test_Position_Stop",
          Suite_Name     => Suite_Name);
 
       Test.Add_Optional_Routine (
---         Needs_Camera   => True,
+         Needs_Camera   => True,
          Routine        => Test_Position_Up'access,
          Routine_Name   => "Test_Position_Up",
          Suite_Name     => Suite_Name);
 
       Test.Add_Optional_Routine (
---         Needs_Camera   => True,
+         Needs_Camera   => True,
          Routine        => Test_Position_Up_Left'access,
          Routine_Name   => "Test_Position_Up_Left",
          Suite_Name     => Suite_Name);
 
       Test.Add_Optional_Routine (
---         Needs_Camera   => True,
+         Needs_Camera   => True,
          Routine        => Test_Position_Up_Right'access,
          Routine_Name   => "Test_Position_Up_Right",
          Suite_Name     => Suite_Name);
 
 --    Test.Add_Routine (AUnit.Test_Cases.Routine_Spec'(
---       Needs_Camera   => True,
+--     Needs_Camera   => True,
 --       Routine        => Test_Power'access,
 --       Routine_Name   => "Test_Power",
 
       Test.Add_Optional_Routine (
---         Needs_Camera   => True,
+         Needs_Camera   => True,
          Routine        => Test_Recall_Memory'access,
          Routine_Name   => "Test_Recall_Memory",
          Suite_Name     => Suite_Name);
 
       Test.Add_Optional_Routine (
---         Needs_Camera   => True,
+         Needs_Camera   => True,
          Routine        => Test_Recall_Set'access,
          Routine_Name   => "Test_Recall_Set",
          Suite_Name     => Suite_Name);

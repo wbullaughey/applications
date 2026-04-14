@@ -30,7 +30,7 @@ procedure Camera.Lib.Unit_Test.Run_Suite (
             Get_Readonly_Ada_Lib_Unit_Test_Nested_Options;
 
 begin
-debug := true;
+--debug := true;
    Log_In (Debug);
    declare
       AUnit_Options  : AUnit.Options.AUnit_Options;
