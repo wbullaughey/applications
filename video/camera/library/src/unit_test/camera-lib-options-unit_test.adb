@@ -71,8 +71,8 @@ return "";
       Log_In_Checked (Initialize_Recursed, Debug or Trace_Options);
 
       return Log_Out_Checked (Initialize_Recursed,
-             Options.Camera_Lib_Nested_Options.Initialize (From) and then
---           Options.Nested_Ada_Lib_Unit_Test_Options.Initialize (From) and then
+--           Options.Camera_Lib_Nested_Options.Initialize (From) and then
+             Options.Nested_Ada_Lib_Unit_Test_Options.Initialize (From) and then
              Camera.Lib.Unit_Test.Camera_Lib_Unit_Test_Program_Options_Type (
                Options).Initialize (From),
              Debug or Trace_Options);
@@ -109,8 +109,8 @@ return "";
 
                begin
                   Log_Here (Debug or Trace_Options, Option.Image);
-                  if    Options.Camera_Lib_Nested_Options.Process_Option (
-                           Iterator, Option) or else
+                  if    -- Options.Camera_Lib_Nested_Options.Process_Option (
+--                         Iterator, Option) or else
 --                      Options.Nested_Ada_Lib_Unit_Test_Options.
 --                         Process_Option (Iterator, Option) or else
                         Camera.Lib.Unit_Test.Camera_Lib_Unit_Test_Program_Options_Type (
@@ -232,9 +232,8 @@ not_implemented;
    begin
       Log_In_Checked (Program_Help_Recursed, Debug or Trace_Options);
 
-      Options.Camera_Lib_Nested_Options.Program_Help (Help_Mode);
---    Options.Nested_Ada_Lib_Unit_Test_Options.Program_Help (Help_Mode);
---    Options.Nested_Unit_Test_Options.Program_Help (Help_Mode);
+--    Options.Camera_Lib_Nested_Options.Program_Help (Help_Mode);
+      Options.Nested_Ada_Lib_Unit_Test_Options.Program_Help (Help_Mode);
       Camera.Lib.Unit_Test.Camera_Lib_Unit_Test_Program_Options_Type (Options).Program_Help (Help_Mode);
       Log_Out_Checked (Program_Help_Recursed, Debug or Trace_Options);
    end Program_Help;
@@ -254,10 +253,10 @@ not_implemented;
       Log_In_Checked (Process_Option_Recursed, Log);
 
       return Log_Out_Checked (Process_Option_Recursed,
-             Options.Camera_Lib_Nested_Options.Process_Option (
-               Iterator, Option) or else
---           Options.Nested_Ada_Lib_Unit_Test_Options.Process_Option (
+--           Options.Camera_Lib_Nested_Options.Process_Option (
 --             Iterator, Option) or else
+             Options.Nested_Ada_Lib_Unit_Test_Options.Process_Option (
+               Iterator, Option) or else
              Camera.Lib.Unit_Test.Camera_Lib_Unit_Test_Program_Options_Type (
                Options).Process_Option (Iterator, Option),
              Log);

@@ -265,7 +265,7 @@ package body Camera.Lib.Base.Test is
    begin
       Log_In (Debug);
       Test.Add_Optional_Routine (
-         Needs_Camera   => True,
+--         Needs_Camera   => True,
          Routine        => Test_Open'access,
          Routine_Name   => "Test_Open",
          Suite_Name     => Suite_Name);
@@ -275,7 +275,7 @@ package body Camera.Lib.Base.Test is
 --       Routine_Name   => "Port_Scan",
 
       Test.Add_Optional_Routine (
-         Needs_Camera   => True,
+--         Needs_Camera   => True,
          Routine        => Read_Write'access,
          Routine_Name   => "Read_Write",
          Suite_Name     => Suite_Name);

@@ -187,7 +187,7 @@ return null;
          Ada_Lib.Options.Null_Flag_List);
 
       return Log_Out_Checked (Initialize_Recursed,
---       Options.Initialize and then
+         Options.Nested_Options.Initialize and then
          Ada_Lib.Options.Program.Program_Options_Type (
             Options).Initialize,
          Debug_Options or Trace_Options);

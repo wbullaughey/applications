@@ -122,7 +122,7 @@ package body Configuration.Camera.State.Unit_Tests is
       Log_In (Debug);
 
       Test.Add_Optional_Routine (
-         Needs_Camera   => True,
+--         Needs_Camera   => True,
          Routine        => Test_Values'access,
          Routine_Name   => "Test_Values",
          Suite_Name     => Suite_Name);

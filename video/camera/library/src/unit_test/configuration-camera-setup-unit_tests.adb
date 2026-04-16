@@ -116,7 +116,7 @@ package body Configuration.Camera.Setup.Unit_Tests is
       Log_In (Debug);
 
       Test.Add_Optional_Routine (
-         Needs_Camera   => True,
+--         Needs_Camera   => True,
          Routine        => Test_Setup_Camera'access,
          Routine_Name   => "Test_Setup_Camera",
          Suite_Name     => Suite_Name);
@@ -135,13 +135,13 @@ package body Configuration.Camera.Setup.Unit_Tests is
       Log_In (Debug);
 
       Test.Add_Optional_Routine (
-         Needs_Camera   => True,
+--         Needs_Camera   => True,
          Routine        => Test_Values'access,
          Routine_Name   => "Test_Values",
          Suite_Name     => Suite_Name);
 
       Test.Add_Optional_Routine (
-         Needs_Camera   => True,
+--         Needs_Camera   => True,
          Routine        => Test_Update'access,
          Routine_Name   => "Test_Update",
          Suite_Name     => Suite_Name);
