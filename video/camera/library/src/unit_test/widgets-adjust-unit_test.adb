@@ -97,7 +97,7 @@ package body Widgets.Adjust.Unit_Test is
       Log_In (Debug);
 
       Test.Add_Optional_Routine (
---         Needs_Camera   => True,
+         Needs_Camera   => True,
          Routine        => Test_Mouse_Move'access,
          Routine_Name   => "Test_Mouse_Move",
          Suite_Name     => Suite_Name);

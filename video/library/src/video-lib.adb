@@ -5,7 +5,7 @@ with ADA_LIB.OS;
 with Ada_Lib.Parser;
 with Ada_Lib.Options.Create;
 with Ada_Lib.Options.Runstring;
-with Ada_Lib.Options.Unit_Test;
+--with Ada_Lib.Options.Unit_Test;
 with Ada_Lib.Socket_IO.Stream_IO;
 with Ada_Lib.String_Quote; use Ada_Lib.String_Quote;
 with Ada_Lib.Trace; use Ada_Lib.Trace;

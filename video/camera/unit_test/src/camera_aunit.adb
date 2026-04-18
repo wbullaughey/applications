@@ -33,10 +33,12 @@ Debug := True;
    Put_Line (Command_Name);
    Ada_Lib.Options.Verification.Set_Ada_Lib_Program_Options (
       Ada_Lib.Options.Verification.Verification_Program_Options_Type'class (
-         Options)'unchecked_access);
-   Ada_Lib.Options.Verification.Set_Ada_Lib_Nested_Options (
-      Ada_Lib.Options.Verification.Verification_Nested_Options_Type'class (
-         Nested_Program_Options)'unchecked_access);
+            Options)'unchecked_access,
+         Ada_Lib.Options.Verification.Verification_Nested_Options_Type (
+            Nested_Program_Options)'unchecked_access);
+-- Ada_Lib.Options.Verification.Set_Ada_Lib_Nested_Options (
+--    Ada_Lib.Options.Verification.Verification_Nested_Options_Type'class (
+--       Nested_Program_Options)'unchecked_access);
 
    Tag_History (Debug, "options",
       Camera.Lib.Options.Unit_Test.Camera_Unit_Test_Program_Options_Type'class (

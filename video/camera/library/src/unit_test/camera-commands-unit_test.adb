@@ -131,20 +131,20 @@ package body Camera.Commands.Unit_Test is
 --          Routine_Name   => AUnit.Format ("Test_Get_Absolute")));
 
       Test.Add_Optional_Routine (
---         Needs_Camera   => True,
+         Needs_Camera   => True,
          Routine        => Test_Position_Relative'access,
          Routine_Name   => "Test_Position_Relative",
          Suite_Name     => Suite_Name);
 
       Test.Add_Optional_Routine (
---         Needs_Camera   => True,
+         Needs_Camera   => True,
          Routine        => Test_Set_Absolute'access,
          Routine_Name   => "Test_Set_Absolute",
          Suite_Name     => Suite_Name);
 
 
       Test.Add_Optional_Routine (
---         Needs_Camera   => True,
+         Needs_Camera   => True,
          Routine        => Test_Zoom'access,
          Routine_Name   => "Test_Zoom",
          Suite_Name     => Suite_Name);
@@ -162,13 +162,13 @@ package body Camera.Commands.Unit_Test is
       Log_In (Debug);
 
       Test.Add_Optional_Routine (
---         Needs_Camera   => True,
+         Needs_Camera   => True,
          Routine        => Test_Set_One_Preset'access,
          Routine_Name   => "Test_Set_One_Preset",
          Suite_Name     => Suite_Name);
 
       Test.Add_Optional_Routine (
---         Needs_Camera   => True,
+         Needs_Camera   => True,
          Routine        => Test_Set_Preset_Speed'access,
          Routine_Name   => "Test_Set_Preset_Speed",
          Suite_Name     => Suite_Name);
