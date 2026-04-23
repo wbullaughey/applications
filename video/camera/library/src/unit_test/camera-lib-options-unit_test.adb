@@ -250,6 +250,7 @@ not_implemented;
       Log   : constant Boolean := Debug or Trace_Options;
 
    begin
+tag_history ("options",Camera_Unit_Test_Program_Options_Type'class (options)'tag);
       Log_In_Checked (Process_Option_Recursed, Log);
 
       return Log_Out_Checked (Process_Option_Recursed,

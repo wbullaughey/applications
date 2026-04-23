@@ -53,6 +53,7 @@ package body Camera.Lib.Unit_Test is
                                        Ada_Lib.Options.Unmodified_Flag);
    Help_Recursed           : Boolean := False;
    Initialize_Recursed     : Boolean := False;
+   Process_Option_Recursed : Boolean := False;
 
 -- Camera_State_Path       : constant String := "camera_state_path.cfg";
 -- Test_Setup              : constant String := "test_setup.cfg";
@@ -242,28 +243,13 @@ return null;
    ) return Boolean is
    ----------------------------------------------------------------------------
 
-      -------------------------------------------------------------------------
-      function Call_Nested (
-         Message        : in     String
-      ) return Boolean is
-      pragma Unreferenced (Message);
-      -------------------------------------------------------------------------
-
-      begin
-         return Log_Out (Options.Process_Option (
-               Iterator, Option) or else
-            Ada_Lib.Options.Program.Program_Options_Type (
-               Options).Process_Option (Iterator, Option),
-            Trace_Options or Debug_Options);
-      end Call_Nested;
-      -------------------------------------------------------------------------
+      Log   : constant Boolean := Trace_Options or Debug_Options;
 
    begin
-      Log_In (Trace_Options or Debug_Options, Option.Image &
+      Log_In_Checked (Process_Option_Recursed, Log, Option.Image &
          " options address " & Image (Options'address) &
          " initialized " & Options.Verify_Initialized'img &
          Tag_Name (" options", Camera_Lib_Unit_Test_Program_Options_Type'class (Options)'tag));
-
       if Ada_Lib.Options.Has_Option (Option, Options_With_Parameters,
             Ada_Lib.Options.Null_Flag_List) then
          case Option.Option is
@@ -276,16 +262,23 @@ return null;
                   Message  : constant String :=
                               "Has_Option incorrectly passed " & Option.Image;
                begin
-                  Log_Exception (Trace_Options or Debug_Options, Message);
+                  Log_Exception (Log, Message);
                   raise Failed with Message;
                end;
 
          end case;
 
-         return Log_Out (True, Trace_Options or Debug_Options,
+         return Log_Out_Checked (Process_Option_Recursed, True, Log,
             " option" & Option.Image & " handled");
       else
-         return Call_Nested ("other " & Option.Image);
+--       return Log_Out_Checked (Process_Option_Recursed,
+--          Ada_Lib.Options.Program.Program_Options_Type (
+--             Options).Process_Option (Iterator, Option), Log,
+--             "not handled");
+         return Log_Out_Checked (Process_Option_Recursed,
+            Ada_Lib.Options.Program.Process_Option (
+               Ada_Lib.Options.Program.Program_Options_Type (Options),
+               Iterator, Option), Log, "not handled");
       end if;
 
    end Process_Option;

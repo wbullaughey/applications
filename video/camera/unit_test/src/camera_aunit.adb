@@ -23,11 +23,11 @@ procedure Camera_AUnit is
       Multi_Test  => True);
 
    Debug    : Boolean renames Camera.Lib.Options.Camera_Options.Main_Debug;
-   Nested_Program_Options
-            : aliased Camera.Lib.Options.
-               Camera_Lib_Options_Nested_Options_Type (Multi_Test => True);
+-- Nested_Program_Options
+--          : aliased Camera.Lib.Options.
+--             Camera_Lib_Options_Nested_Options_Type (Multi_Test => True);
 begin
-Debug := True;
+--Debug := True;
 --Trace_Tests := True;
    Log_In (Debug);
    Put_Line (Command_Name);
@@ -35,7 +35,7 @@ Debug := True;
       Ada_Lib.Options.Verification.Verification_Program_Options_Type'class (
             Options)'unchecked_access,
          Ada_Lib.Options.Verification.Verification_Nested_Options_Type (
-            Nested_Program_Options)'unchecked_access);
+            Options.Nested_Options)'unchecked_access);
 -- Ada_Lib.Options.Verification.Set_Ada_Lib_Nested_Options (
 --    Ada_Lib.Options.Verification.Verification_Nested_Options_Type'class (
 --       Nested_Program_Options)'unchecked_access);
