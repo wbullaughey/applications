@@ -1,5 +1,6 @@
 with Ada_Lib.GNOGA.Unit_Test; -- .Base;
-with Ada_Lib.Options.Program;
+with Ada_Lib.Options.AUnit_Lib;
+--with Ada_Lib.Options.Program;
 with Ada_Lib.Options.Verification;
 with Ada_Lib.Trace;
 with Ada_Lib.Unit_Test.Test_Cases;
@@ -171,7 +172,11 @@ package Camera.Lib.Unit_Test is
    type Camera_Lib_Unit_Test_Program_Options_Type (
       Multi_Test        : Boolean
    ) is limited new
-         Ada_Lib.Options.Program.Program_Options_Type with record
+         Ada_Lib.Options.AUnit_Lib.Aunit_Program_Options_Type (
+            Multi_Test        => Multi_Test,
+            Options_Selection => Ada_Lib.Options.AUnit_Lib.
+                                    Unit_Test_With_Database_And_Template
+      ) with record
       Nested_Options : aliased Options.Camera_Lib_Options_Nested_Options_Type (
                         Multi_Test);
       Main_Debug     : Boolean := False;

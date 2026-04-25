@@ -189,7 +189,7 @@ return null;
 
       return Log_Out_Checked (Initialize_Recursed,
          Options.Nested_Options.Initialize and then
-         Ada_Lib.Options.Program.Program_Options_Type (
+         Ada_Lib.Options.AUnit_Lib.Aunit_Program_Options_Type (
             Options).Initialize,
          Debug_Options or Trace_Options);
    end Initialize;
@@ -271,14 +271,14 @@ return null;
          return Log_Out_Checked (Process_Option_Recursed, True, Log,
             " option" & Option.Image & " handled");
       else
---       return Log_Out_Checked (Process_Option_Recursed,
---          Ada_Lib.Options.Program.Program_Options_Type (
---             Options).Process_Option (Iterator, Option), Log,
---             "not handled");
          return Log_Out_Checked (Process_Option_Recursed,
-            Ada_Lib.Options.Program.Process_Option (
-               Ada_Lib.Options.Program.Program_Options_Type (Options),
-               Iterator, Option), Log, "not handled");
+            Ada_Lib.Options.AUnit_Lib.Aunit_Program_Options_Type (
+               Options).Process_Option (Iterator, Option), Log,
+               "not handled");
+--       return Log_Out_Checked (Process_Option_Recursed,
+--          Ada_Lib.Options.AUnit_Lib.Aunit_Program_Options_Type (
+--             Options),
+--          Iterator, Option), Log, "not handled");
       end if;
 
    end Process_Option;
@@ -327,7 +327,8 @@ return null;
 
       end case;
 
---   Options.Program_Help (Help_Mode);
+     Ada_Lib.Options.AUnit_Lib.Aunit_Program_Options_Type (
+         Options).Program_Help (Help_Mode);
      Log_Out_Checked (Help_Recursed, Debug_Options or Trace_Options);
 
    end Program_Help;
