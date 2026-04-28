@@ -288,15 +288,16 @@ return null;
       Help_Mode                  : in     ADA_LIB.Options.Help_Mode_Type) is
    ----------------------------------------------------------------------------
 
-      Component                  : constant String := "Camera Lib";
+      Component   : constant String := "Camera Lib";
+      Log_It      : constant Boolean := Debug_Options or Trace_Options;
 
    begin
-      Log_In (Debug_Options or Trace_Options, "help mode " & Help_Mode'img);
+      Log_In (Log_It, "help mode " & Help_Mode'img);
 
       case Help_Mode is
 
       when Ada_Lib.Options.Program_Mode =>
-         Log_Here (Debug_Options or Trace_Options,
+         Log_Here (Log_It,
             Quote ("Component", Component));
 
          Ada_Lib.Help.Create_Option (Trace_Option, "trace options", "Camera Lib Debug",
@@ -343,7 +344,7 @@ return null;
 
       Video.Lib.Video_Lib_Nested_Options_Type (Options).Program_Help (
          Help_Mode);
-      Log_Out (Debug_Options or Trace_Options);
+      Log_Out (Log_It);
    end Program_Help;
 
    ----------------------------------------------------------------------------

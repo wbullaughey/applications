@@ -127,8 +127,8 @@ package Camera is
       Options               : in out Camera_Options_Type;
       From                        : in     String := Ada_Lib.Trace.Here
    ) return Boolean
-   with pre    => Options.Verify_Preinitialize,
-        post   => Options.Verify_Initialized;
+   with pre    => not Options.Verify_Step (Ada_Lib.Options.Initialized),
+        post   => Options.Verify_Step (Ada_Lib.Options.Initialized);
 
    overriding
    function Process_Option (  -- process one option

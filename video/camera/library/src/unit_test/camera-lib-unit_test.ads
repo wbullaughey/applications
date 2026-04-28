@@ -205,8 +205,8 @@ package Camera.Lib.Unit_Test is
      Options                     : in out Camera_Lib_Unit_Test_Program_Options_Type;
      From                        : in     String := Ada_Lib.Trace.Here
    ) return Boolean
-   with pre    => Options.Verify_Preinitialize,
-        post   => Options.Verify_Initialized;
+   with pre    => not Options.Verify_Step (Initialized),
+        post   => Options.Verify_Step (Initialized);
 
    overriding
    function Process_Option (  -- process one option
@@ -214,7 +214,7 @@ package Camera.Lib.Unit_Test is
       Iterator : in out Ada_Lib.Options.Command_Line_Iterator_Interface'class;
       Option   : in     Ada_Lib.Options.Base_Flag_Option_Type'class
    ) return Boolean
-   with Pre => Options.Verify_Initialized;
+   with Pre => Options.Verify_Step (Initialized);
 --             not Ada_Lib.Options.Verification.Have_Ada_Lib_Verification_Options;
 
 -- procedure Run_Suite (
@@ -226,7 +226,7 @@ package Camera.Lib.Unit_Test is
       Options     : in out Camera_Lib_Unit_Test_Program_Options_Type;
       Iterator    : in out Ada_Lib.Options.
                      Command_Line_Iterator_Interface'class
-   ) with Pre => Options.Verify_Initialized and then
+   ) with Pre => Options.Verify_Step (Initialized) and then
                  Ada_Lib.Options.Verification.Have_Ada_Lib_Verification_Options;
 
    type Camera_Test_Suite is new AUnit.Test_Suites.Test_Suite with null record;
@@ -250,7 +250,7 @@ private
    procedure Program_Help (
       Options                    : in     Camera_Lib_Unit_Test_Program_Options_Type;  -- only used for dispatch
       Help_Mode                  : in     ADA_LIB.Options.Help_Mode_Type
-   ) with Pre => Options.Verify_Initialized and then
+   ) with Pre => Options.Verify_Step (Initialized) and then
                  Ada_Lib.Options.Verification.Have_Ada_Lib_Verification_Options;
 
 end Camera.Lib.Unit_Test;

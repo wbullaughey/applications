@@ -62,8 +62,8 @@ package Camera.Lib is
       Options              : in out Camera_Lib_Nested_Options_Type;
       From                 : in     String := Ada_Lib.Trace.Here
    ) return Boolean
-   with pre    => Options.Verify_Preinitialize,
-        post   => Options.Verify_Initialized;
+   with pre    => not Options.Verify_Step (Initialized),
+        post   => Options.Verify_Step (Initialized);
 
    overriding
    function Process_Option (  -- process one option
@@ -71,7 +71,7 @@ package Camera.Lib is
       Iterator : in out Ada_Lib.Options.Command_Line_Iterator_Interface'class;
       Option   : in     Ada_Lib.Options.Base_Flag_Option_Type'class
    ) return Boolean
-   with pre => Options.Verify_Initialized;
+   with pre => Options.Verify_Step (Initialized);
 
    overriding
    procedure Program_Help (

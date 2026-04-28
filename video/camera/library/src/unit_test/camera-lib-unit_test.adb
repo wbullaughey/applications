@@ -248,7 +248,7 @@ return null;
    begin
       Log_In_Checked (Process_Option_Recursed, Log, Option.Image &
          " options address " & Image (Options'address) &
-         " initialized " & Options.Verify_Initialized'img &
+         " initialized " & Options.Verify_Step (Initialized)'img &
          Tag_Name (" options", Camera_Lib_Unit_Test_Program_Options_Type'class (Options)'tag));
       if Ada_Lib.Options.Has_Option (Option, Options_With_Parameters,
             Ada_Lib.Options.Null_Flag_List) then

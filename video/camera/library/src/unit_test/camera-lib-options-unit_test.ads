@@ -1,6 +1,6 @@
 --with Ada_Lib.Options.AUnit_Lib;
 --with Ada_Lib.Options.Program;
-with Ada_Lib.Options.Unit_Test;
+--with Ada_Lib.Options.Unit_Test;
 with Ada_Lib.Unit_Test.Test_Cases;
 with Camera.Lib.Unit_Test;
 
@@ -10,14 +10,14 @@ package Camera.Lib.Options.Unit_Test is
       Multi_Test        : Boolean
    ) is new Camera.Lib.Unit_Test.
             Camera_Lib_Unit_Test_Program_Options_Type (Multi_Test)
-             with record
+             with null record;
 --    Camera_Lib_Nested_Options
 --                : aliased Camera_Lib_Options_Nested_Options_Type  (Multi_Test);
-      Nested_Ada_Lib_Unit_Test_Options
-                           : aliased Ada_Lib.Options.Unit_Test.
-                              Ada_Lib_Unit_Test_Nested_Options_Type (
-                                 Multi_Test => True);
-   end record;
+--    Nested_Ada_Lib_Unit_Test_Options
+--                         : aliased Ada_Lib.Options.Unit_Test.
+--                            Ada_Lib_Unit_Test_Nested_Options_Type (
+--                               Multi_Test => True);
+-- end record;
 
    type Camera_Unit_Test_Program_Options_Class_Access
                                  is access all Camera_Unit_Test_Program_Options_Type'class;
@@ -52,8 +52,8 @@ package Camera.Lib.Options.Unit_Test is
      Options                     : in out Camera_Unit_Test_Program_Options_Type;
      From                        : in     String := Standard.Ada_Lib.Trace.Here
    ) return Boolean
-   with pre    => Options.Verify_Preinitialize,
-        Post   => Options.Verify_Initialized;
+   with pre    => not Options.Verify_Step (Initialized),
+        Post   => Options.Verify_Step (Initialized);
 
    overriding
    function Process (     -- process command line options
@@ -87,10 +87,10 @@ package Camera.Lib.Options.Unit_Test is
 
 private
 
-   overriding
-   procedure Program_Help (
-      Options     : in     Camera_Unit_Test_Program_Options_Type;  -- only used for dispatch
-      Help_Mode   : in     Ada_Lib.Options.Help_Mode_Type);
+-- overriding
+-- procedure Program_Help (
+--    Options     : in     Camera_Unit_Test_Program_Options_Type;  -- only used for dispatch
+--    Help_Mode   : in     Ada_Lib.Options.Help_Mode_Type);
 
    overriding
    function Process_Option (
@@ -98,7 +98,7 @@ private
       Iterator    : in out Ada_Lib.Options.Command_Line_Iterator_Interface'class;
       Option      : in     Ada_Lib.Options.Base_Flag_Option_Type'class
    ) return Boolean
-   with pre => Options.Verify_Initialized;
+   with pre => Options.Verify_Step (Initialized);
 
    procedure Register_Tests (
       Options     : in     Camera_Unit_Test_Program_Options_Type;

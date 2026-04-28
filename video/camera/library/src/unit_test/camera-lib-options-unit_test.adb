@@ -10,7 +10,7 @@ package body Camera.Lib.Options.Unit_Test is
                               Camera_Lib_Unit_Test.Unit_Test_Debug;
    Initialize_Recursed     : Boolean := False;
    Process_Option_Recursed : Boolean := False;
-   Program_Help_Recursed   : Boolean := False;
+-- Program_Help_Recursed   : Boolean := False;
 
 --   ----------------------------------------------------------------------------
 --   overriding
@@ -72,7 +72,7 @@ return "";
 
       return Log_Out_Checked (Initialize_Recursed,
 --           Options.Camera_Lib_Nested_Options.Initialize (From) and then
-             Options.Nested_Ada_Lib_Unit_Test_Options.Initialize (From) and then
+--           Options.Nested_Ada_Lib_Unit_Test_Options.Initialize (From) and then
              Camera.Lib.Unit_Test.Camera_Lib_Unit_Test_Program_Options_Type (
                Options).Initialize (From),
              Debug or Trace_Options);
@@ -222,21 +222,21 @@ not_implemented;
 --
 --   end Process;
 
-   ----------------------------------------------------------------------------
-   overriding
-   procedure Program_Help (
-      Options     : in     Camera_Unit_Test_Program_Options_Type;  -- only used for dispatch
-      Help_Mode   : in     Ada_Lib.Options.Help_Mode_Type) is
-   ----------------------------------------------------------------------------
-
-   begin
-      Log_In_Checked (Program_Help_Recursed, Debug or Trace_Options);
-
---    Options.Camera_Lib_Nested_Options.Program_Help (Help_Mode);
-      Options.Nested_Ada_Lib_Unit_Test_Options.Program_Help (Help_Mode);
-      Camera.Lib.Unit_Test.Camera_Lib_Unit_Test_Program_Options_Type (Options).Program_Help (Help_Mode);
-      Log_Out_Checked (Program_Help_Recursed, Debug or Trace_Options);
-   end Program_Help;
+--   ----------------------------------------------------------------------------
+--   overriding
+--   procedure Program_Help (
+--      Options     : in     Camera_Unit_Test_Program_Options_Type;  -- only used for dispatch
+--      Help_Mode   : in     Ada_Lib.Options.Help_Mode_Type) is
+--   ----------------------------------------------------------------------------
+--
+--   begin
+--      Log_In_Checked (Program_Help_Recursed, Debug or Trace_Options);
+--
+----    Options.Camera_Lib_Nested_Options.Program_Help (Help_Mode);
+----    Options.Nested_Ada_Lib_Unit_Test_Options.Program_Help (Help_Mode);
+--      Camera.Lib.Unit_Test.Camera_Lib_Unit_Test_Program_Options_Type (Options).Program_Help (Help_Mode);
+--      Log_Out_Checked (Program_Help_Recursed, Debug or Trace_Options);
+--   end Program_Help;
 
    ----------------------------------------------------------------------------
    overriding
@@ -256,8 +256,8 @@ tag_history ("options",Camera_Unit_Test_Program_Options_Type'class (options)'tag
       return Log_Out_Checked (Process_Option_Recursed,
 --           Options.Camera_Lib_Nested_Options.Process_Option (
 --             Iterator, Option) or else
-             Options.Nested_Ada_Lib_Unit_Test_Options.Process_Option (
-               Iterator, Option) or else
+--           Options.Nested_Ada_Lib_Unit_Test_Options.Process_Option (
+--             Iterator, Option) or else
              Camera.Lib.Unit_Test.Camera_Lib_Unit_Test_Program_Options_Type (
                Options).Process_Option (Iterator, Option),
              Log);
