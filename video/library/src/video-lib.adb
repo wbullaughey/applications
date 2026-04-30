@@ -22,12 +22,13 @@ package body Video.Lib is
 
    Debug_Option                  : constant Character := 'V';
    Debug                         : Boolean renames Video_Options.Library_Debug;
+   Directory_Option              : constant Character := 'q';
    Options_With_Parameters       : aliased constant
                                     Ada_Lib.Options.Flag_List_Type :=
                                        Ada_Lib.Options.Create.Create_One (
-                                          'V', Ada_Lib.Options.Unmodified_Flag) &
+                                          Directory_Option, Ada_Lib.Options.Unmodified_Flag) &
                                        Ada_Lib.Options.Create.Create_One (
-                                          'D', Ada_Lib.Help.Modifier);
+                                          'V', Ada_Lib.Help.Modifier);
    Options_Without_Parameters    : aliased constant
                                     Ada_Lib.Options.Flag_List_Type :=
                                        Ada_Lib.Options.Create.Create_Multiple (
@@ -376,10 +377,10 @@ return null;
       when Ada_Lib.Options.Program_Mode =>
          Log_Here (Debug or Trace_Options, Quote ("Component", Component));
 
-         Ada_Lib.Help.Create_Option ('d', "directory", "current directory",
-            Component, Ada_Lib.Help.Unmodified_Flag);
+         Ada_Lib.Help.Create_Option (Directory_Option, "directory",
+            "current directory", Component, Ada_Lib.Help.Unmodified_Flag);
 --       Ada_Lib.Help.Create_Option ('p', "port option",
---          "port option", Component, Ada_Lib.Help.Unmodified_Flag);
+--          "port option", Component, Ada_Lib.Help.Modified);
          Ada_Lib.Help.Create_Option ('r', "", "remote camera", Component, Ada_Lib.Help.Unmodified_Flag);
 --       Ada_Lib.Help.Create_Option ('s', "", "simulate camera", Component, Ada_Lib.Help.Unmodified_Flag);
          Ada_Lib.Help.Create_Option (Debug_Option, "trace options",

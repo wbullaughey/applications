@@ -253,7 +253,7 @@ return 0;
         when Ada_Lib.Options.Program_Mode =>
            Log_Here (Debug or Trace_Options, Quote ("Component", Component));
            Ada_Lib.Help.Create_Option (Trace_Flag, "trace options",
-               "Camera Lib Debug", Component, Ada_Lib.Help.Unmodified_Flag);
+               "Camera Debug", Component, Ada_Lib.Help.Unmodified_Flag);
            New_Line;
 
         when Ada_Lib.Options.Trace_Mode =>

@@ -300,7 +300,7 @@ return null;
          Log_Here (Log_It,
             Quote ("Component", Component));
 
-         Ada_Lib.Help.Create_Option (Trace_Option, "trace options", "Camera Lib Debug",
+         Ada_Lib.Help.Create_Option (Trace_Option, "trace lib options", "Camera Lib Debug",
             Component, Ada_Lib.Help.Unmodified_Flag);
 --       Ada_Lib.Help.Create_Option ('u', "camera URL", "URL", Component, Ada_Lib.Help.Unmodified_Flag);
          New_Line;
