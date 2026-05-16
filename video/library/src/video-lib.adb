@@ -3,7 +3,7 @@ with Ada.Text_IO;use Ada.Text_IO;
 with Ada_Lib.Help;
 with ADA_LIB.OS;
 with Ada_Lib.Parser;
-with Ada_Lib.Options.Create;
+--with Ada_Lib.Options.Create;
 with Ada_Lib.Options.Runstring;
 --with Ada_Lib.Options.Unit_Test;
 with Ada_Lib.Socket_IO.Stream_IO;
@@ -25,13 +25,13 @@ package body Video.Lib is
    Directory_Option              : constant Character := 'q';
    Options_With_Parameters       : aliased constant
                                     Ada_Lib.Options.Flag_List_Type :=
-                                       Ada_Lib.Options.Create.Create_One (
+                                       Ada_Lib.Options.Initialize (
                                           Directory_Option, Ada_Lib.Options.Unmodified_Flag) &
-                                       Ada_Lib.Options.Create.Create_One (
+                                       Ada_Lib.Options.Initialize (
                                           'V', Ada_Lib.Help.Modifier);
    Options_Without_Parameters    : aliased constant
                                     Ada_Lib.Options.Flag_List_Type :=
-                                       Ada_Lib.Options.Create.Create_Multiple (
+                                       Ada_Lib.Options.Initialize (
                                           "rS", Ada_Lib.Options.Unmodified_Flag);
    Presets                       : array (Which_Preset_Type) of
                                     Preset_ID_Type := (
@@ -241,7 +241,10 @@ return null;
    -------------------------------------------------------------------------
 
    begin
-      Log_In (Debug or Trace_Options, "from " & From);
+      Log_In (Debug or Trace_Options,
+         Tag_Name ("options",
+            Video_Lib_Nested_Options_Type'class (Options)'tag) &
+         " from " & From);
 
       Ada_Lib.Options.Runstring.Options.Register (
          Ada_Lib.Options.Runstring.With_Parameters,
@@ -283,26 +286,26 @@ return null;
       return Iterator.Get_Value (False);
    end Parse_Image_Value;
 
-   ----------------------------------------------------------------------------
-   overriding
-   procedure Post_Process (      -- final initialization
-     Options                    : in out Video_Lib_Nested_Options_Type) is
-   ----------------------------------------------------------------------------
-
-   begin
-      Log_Here (Debug or Trace_Options,
-         "location " & Options.Location'img &
-         " options post processing completed");
-
---    case Options.Location is
+--   ----------------------------------------------------------------------------
+--   overriding
+--   procedure Post_Process (      -- final initialization
+--     Options                    : in out Video_Lib_Nested_Options_Type) is
+--   ----------------------------------------------------------------------------
 --
---       when others =>
+--   begin
+--      Log_Here (Debug or Trace_Options,
+--         "location " & Options.Location'img &
+--         " options post processing completed");
 --
---    end case;
-
-      Ada_Lib.Options.Program.Nested_Program_Options_Type  (
-         Options).Post_Process;
-   end Post_Process;
+----    case Options.Location is
+----
+----       when others =>
+----
+----    end case;
+--
+--      Ada_Lib.Options.Program.Nested_Program_Options_Type  (
+--         Options).Post_Process;
+--   end Post_Process;
 
    ----------------------------------------------------------------------------
    -- processes options it knows about and calls parent for others
@@ -310,7 +313,7 @@ return null;
    function Process_Option (
       Options  : in out Video_Lib_Nested_Options_Type;
       Iterator : in out Ada_Lib.Options.Command_Line_Iterator_Interface'class;
-      Option   : in     Ada_Lib.Options.Base_Flag_Option_Type'class
+      Option   : in     Ada_Lib.Options.Flag_Option_Type'class
    ) return Boolean is
    ----------------------------------------------------------------------------
 
@@ -377,17 +380,18 @@ return null;
       when Ada_Lib.Options.Program_Mode =>
          Log_Here (Debug or Trace_Options, Quote ("Component", Component));
 
-         Ada_Lib.Help.Create_Option (Directory_Option, "directory",
+         Ada_Lib.Help.Create_Option (Directory_Option, False, "directory",
             "current directory", Component, Ada_Lib.Help.Unmodified_Flag);
---       Ada_Lib.Help.Create_Option ('p', "port option",
+--       Ada_Lib.Help.Create_Option ('p', True, "port option",
 --          "port option", Component, Ada_Lib.Help.Modified);
-         Ada_Lib.Help.Create_Option ('r', "", "remote camera", Component, Ada_Lib.Help.Unmodified_Flag);
---       Ada_Lib.Help.Create_Option ('s', "", "simulate camera", Component, Ada_Lib.Help.Unmodified_Flag);
-         Ada_Lib.Help.Create_Option (Debug_Option, "trace options",
+         Ada_Lib.Help.Create_Option ('r', False, "", "remote camera", Component, Ada_Lib.Help.Unmodified_Flag);
+--       Ada_Lib.Help.Create_Option ('s', False, "", "simulate camera", Component, Ada_Lib.Help.Unmodified_Flag);
+         Ada_Lib.Help.Create_Option (Debug_Option, True, "trace options",
             "trace options", Component, Ada_Lib.Help.Unmodified_Flag);
          New_Line;
 
       when Ada_Lib.Options.Trace_Mode =>
+         Ada_Lib.Help.Set_Has_Trace (Debug_Option, Ada_Lib.Help.Unmodified_Flag);
          New_Line;
 
          Put_Line (Component & " trace options (-" & Debug_Option & ")");

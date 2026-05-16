@@ -157,15 +157,15 @@ package Video.Lib is
    with pre    => not Options.Verify_Step (Ada_Lib.Options.Initialized),
         post   => Options.Verify_Step (Ada_Lib.Options.Initialized);
 
-   overriding
-   procedure Post_Process (
-     Options                    : in out Video_Lib_Nested_Options_Type);
+-- overriding
+-- procedure Post_Process (
+--   Options                    : in out Video_Lib_Nested_Options_Type);
 
    overriding
    function Process_Option (  -- process one option
      Options   : in out Video_Lib_Nested_Options_Type;
       Iterator : in out Ada_Lib.Options.Command_Line_Iterator_Interface'class;
-      Option   : in     Ada_Lib.Options.Base_Flag_Option_Type'class
+      Option   : in     Ada_Lib.Options.Flag_Option_Type'class
    ) return Boolean
    with pre => Options.Verify_Step (Ada_Lib.Options.Initialized);
 -- with Pre => not Ada_Lib.Options.Have_Options;

@@ -30,7 +30,7 @@ package body Camera.Base is
 --    Camera_Tilt       : Absolute_Type;
 --    Camera_Tilt_Speed : Property_Type;
 --    Camera_Zoom       : Property_Type;
---    Options           : Ada_Lib.Options.Base_Flag_Option_Class_Access :=
+--    Options           : Ada_Lib.Options.Flag_Option_Class_Access :=
 --                         Null;
 -- end record;
 --

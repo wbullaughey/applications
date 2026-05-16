@@ -3,7 +3,7 @@ with Ada.Text_IO;use Ada.Text_IO;
 with Ada_Lib.Help;
 --with Ada_Lib.Options;
 with ADA_LIB.OS;
-with Ada_Lib.Options.Create;
+--with Ada_Lib.Options.Create;
 --with Ada_Lib.Options.Nested;
 with Ada_Lib.Options.Program;
 with Ada_Lib.Options.Runstring;
@@ -48,7 +48,7 @@ package body Camera.Lib is
                                        Ada_Lib.Help.Trace_Modifier;
    Options_With_Parameters : aliased constant
                               Ada_Lib.Options.Flag_List_Type :=
-                                 Ada_Lib.Options.Create.Create_One (
+                                 Ada_Lib.Options.Initialize (
                                     Trace_Option, Ada_Lib.Options.
                                        Unmodified_Flag);
 -- Options_Without_Parameters    : aliased constant
@@ -121,7 +121,9 @@ return null;
 
    begin
       Log_In_Checked (Recursed, Debug_Options or Trace_Options,
-         "With Parameters " & Options_With_Parameters.Image);
+         Tag_Name ("options",
+            Camera_Lib_Nested_Options_Type'class (Options)'tag) &
+         " With Parameters " & Options_With_Parameters.Image);
 --       " Without Parameters " & Ada_Lib.Options.Image (
 --          Options_Without_Parameters, False) & " from " & From);
 
@@ -239,7 +241,7 @@ return null;
       Options  : in out Camera_Lib_Nested_Options_Type;
       Iterator : in out Ada_Lib.Options.
                            Command_Line_Iterator_Interface'class;
-      Option   : in     Ada_Lib.Options.Base_Flag_Option_Type'class
+      $*'class
    ) return Boolean is
    ----------------------------------------------------------------------------
 
@@ -300,12 +302,13 @@ return null;
          Log_Here (Log_It,
             Quote ("Component", Component));
 
-         Ada_Lib.Help.Create_Option (Trace_Option, "trace lib options", "Camera Lib Debug",
-            Component, Ada_Lib.Help.Unmodified_Flag);
+         Ada_Lib.Help.Create_Option (Trace_Option, True, "trace lib options",
+            "Camera Lib Debug", Component, Ada_Lib.Help.Unmodified_Flag);
 --       Ada_Lib.Help.Create_Option ('u', "camera URL", "URL", Component, Ada_Lib.Help.Unmodified_Flag);
          New_Line;
 
       when Ada_Lib.Options.Trace_Mode =>
+         Ada_Lib.Help.Set_Has_Trace (Trace_Option, Ada_Lib.Help.Unmodified_Flag);
          New_Line;
 
          Put_Line (Component & " trace options (-" &

@@ -17,7 +17,7 @@ pragma Elaborate (Ada_Lib.Parser);
 package body Driver is
 
    use Ada_Lib.Strings.Unlimited;
-   use type Ada_Lib.Options.Base_Flag_Option_Type;
+   use type Ada_Lib.Options.Flag_Option_Type;
    use type Ada_Lib.OS.OS_Exit_Code_Type;
 
 -- subtype String_Type           is String_Type;
@@ -233,7 +233,10 @@ package body Driver is
       Selected_Parameters        : Parameter_Type renames
                                     Parameters (Options.Testing);
    begin
-      Log_In (Debug_Options or Trace_Options, "testing " & Options.Testing'img &
+      Log_In (Debug_Options or Trace_Options,
+         Tag_Name ("options",
+            Driver_Options_Type'class (Options)'tag) &
+         " testing " & Options.Testing'img &
          " with parameters " & Ada_Lib.Options.Image (
             Selected_Parameters.With_Parameters.all) &
          " without parameters " & Ada_Lib.Options.Image (
@@ -263,7 +266,10 @@ package body Driver is
    ---------------------------------------------------------------
 
    begin
-      Log_In (Debug_Options or Trace_Options, "from " & From);
+      Log_In (Debug_Options or Trace_Options,
+         Tag_Name ("options",
+            Program_Options_Type'class (Options)'tag) &
+         " from " & From);
       return Log_Out (Options.Driver_Options.Initialize and then
          Ada_Lib.Options.Program.Program_Options_Type (Options).Initialize,
          Debug_Options or Trace_Options);
@@ -333,7 +339,7 @@ package body Driver is
    function Process_Option (  -- process one option
      Options   : in out Driver_Options_Type;
       Iterator : in out Ada_Lib.Options.Command_Line_Iterator_Interface'class;
-      Option   : in     Ada_Lib.Options.Base_Flag_Option_Type'class
+      $*'class
    ) return Boolean is
    ---------------------------------------------------------------
 
@@ -480,7 +486,7 @@ package body Driver is
       Options     : in out Program_Options_Type;
       Iterator    : in out Ada_Lib.Options.
                               Command_Line_Iterator_Interface'class;
-      Option      : in     Ada_Lib.Options.Base_Flag_Option_Type'class
+      $*'class
    ) return Boolean is
    ---------------------------------------------------------------
 
@@ -532,6 +538,7 @@ package body Driver is
             Component, Option_Modifier);
 
       when Ada_Lib.Options.Trace_Mode =>
+         Ada_Lib.Help.Set_Has_Trace (Driver_Test_Trace_Option, Ada_Lib.Help.Unmodified_Flag);
          New_Line;
          Put_Line ("driver trace options (-" &
             (if Options.Testing then

@@ -192,6 +192,13 @@ package Camera.Lib.Unit_Test is
                      is Ada_Lib.Command_Line_Iterator.
                         Abstract_Package.Abstract_Iterator_Type;
 
+   overriding
+   procedure Display_Help (
+                              -- prints full help, aborts program
+     Options   : in     Camera_Lib_Unit_Test_Program_Options_Type;  -- only used for dispatch
+     Message   : in     String := "";   -- leave blank no error help
+     Halt      : in     Boolean := True);
+
    function Get_Camera_Unit_Test_Constant_Options (
       From           : in     String := Standard.GNAT.Source_Info.
                                           Source_Location
@@ -212,7 +219,7 @@ package Camera.Lib.Unit_Test is
    function Process_Option (  -- process one option
       Options  : in out Camera_Lib_Unit_Test_Program_Options_Type;
       Iterator : in out Ada_Lib.Options.Command_Line_Iterator_Interface'class;
-      Option   : in     Ada_Lib.Options.Base_Flag_Option_Type'class
+      Option   : in     Ada_Lib.Options.Flag_Option_Type'class
    ) return Boolean
    with Pre => Options.Verify_Step (Initialized);
 --             not Ada_Lib.Options.Verification.Have_Ada_Lib_Verification_Options;

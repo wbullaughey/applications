@@ -1,6 +1,6 @@
 --with Ada.Text_IO;use Ada.Text_IO;
 --with Ada_Lib.Help;
-with Ada_Lib.Options.Create;
+--with Ada_Lib.Options.Create;
 --with Ada_Lib.String_Quote; use Ada_Lib.String_Quote;
 with Ada_Lib.Strings; use Ada_Lib.Strings;
 with ADA_LIB.OS;
@@ -18,7 +18,7 @@ package body Camera.Lib.Options is
    Trace_Option            : constant Character := 'T';
    Options_With_Parameters : aliased constant
                               Ada_Lib.Options.Flag_List_Type :=
-                                 Ada_Lib.Options.Create.Create_One (
+                                 Ada_Lib.Options.Initialize (
                                     Trace_Option, Ada_Lib.Options.
                                        Unmodified_Flag);
    Recursed                : Boolean := False;
@@ -104,7 +104,9 @@ return "";
 
    begin
       Log_In_Checked (Recursed, Debug_Options or Trace_Options,
-         "from " & From & " options address " & Image (Options'address));
+         Tag_Name ("options",
+            Camera_Lib_Options_Nested_Options_Type'class (Options)'tag) &
+         " from " & From & " options address " & Image (Options'address));
 
       return Log_Out_Checked (Recursed,
          Camera_Lib_Nested_Options_Type (Options).Initialize,
@@ -120,7 +122,10 @@ return "";
    -------------------------------------------------------------------------
 
    begin
-      Log_In (Debug_Options or Trace_Options, "from " & From & " options address " &
+      Log_In (Debug_Options or Trace_Options,
+         Tag_Name ("options",
+            Program_Options_Type'class (Options)'tag) &
+         " from " & From & " options address " &
          Image (Options'address));
       Ada_Lib.Options.Runstring.Options.Register (
          Ada_Lib.Options.Runstring.With_Parameters,
@@ -141,7 +146,7 @@ return "";
 --   function Process_Option (
 --      Options  : in out Camera_Lib_Options_Nested_Options_Type;
 --      Iterator : in out Ada_Lib.Options.Command_Line_Iterator_Interface'class;
---      Option   : in     Ada_Lib.Options.Base_Flag_Option_Type'class
+--      $*'class
 --   ) return Boolean is
 --   ----------------------------------------------------------------------------
 --
@@ -159,7 +164,7 @@ return "";
    function Process_Option (
       Options  : in out Program_Options_Type;
       Iterator : in out Ada_Lib.Options.Command_Line_Iterator_Interface'class;
-      Option   : in     Ada_Lib.Options.Base_Flag_Option_Type'class
+      $*'class
    ) return Boolean is
    ----------------------------------------------------------------------------
 

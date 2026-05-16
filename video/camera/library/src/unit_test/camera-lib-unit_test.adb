@@ -1,7 +1,7 @@
 with Ada.Exceptions;
 with Ada.Text_IO;use Ada.Text_IO;
 with Ada_Lib.Help;
-with Ada_Lib.Options.Create;
+--with Ada_Lib.Options.Create;
 --with Ada_Lib.Options.Nested;
 --with Ada_Lib.Options.Program;
 with Ada_Lib.Options.Runstring;
@@ -48,7 +48,7 @@ package body Camera.Lib.Unit_Test is
    Trace_Option            : constant Character := '1';
    Options_With_Parameters : aliased constant
                               Ada_Lib.Options.Flag_List_Type :=
-                                    Ada_Lib.Options.Create.Create_One (
+                                    Ada_Lib.Options.Initialize (
                                        Trace_Option, -- & "R",
                                        Ada_Lib.Options.Unmodified_Flag);
    Help_Recursed           : Boolean := False;
@@ -75,6 +75,22 @@ package body Camera.Lib.Unit_Test is
          raise;
 
    end Check_Preset;
+
+   ----------------------------------------------------------------------------
+   overriding
+   procedure Display_Help (
+     Options   : in     Camera_Lib_Unit_Test_Program_Options_Type;  -- only used for dispatch
+     Message   : in     String := "";   -- leave blank no error help
+     Halt      : in     Boolean := True) is
+   ----------------------------------------------------------------------------
+
+   begin
+      Log_In (Debug);
+      Options.Nested_Options.Display_Help (Message, Halt);
+      Ada_Lib.Options.AUnit_Lib.Aunit_Program_Options_Type (Options).
+         Display_Help (Message, Halt);
+      Log_Out (Debug);
+   end Display_Help;
 
    ----------------------------------------------------------------------------
    procedure Dump (
@@ -176,7 +192,9 @@ return null;
 
    begin
       Log_In_Checked (Initialize_Recursed, Debug_Options or Trace_Options,
-         "from " & From);
+         Tag_Name ("options",
+            Camera_Lib_Unit_Test_Program_Options_Type'class (Options)'tag) &
+         " from " & From);
 --    Unit_Test_Options := Options'unchecked_access;
 --    Ada_Lib.Options.Set_Ada_Lib_Options (Protected_Options'access);
 
@@ -239,7 +257,7 @@ return null;
    function Process_Option (
       Options  : in out Camera_Lib_Unit_Test_Program_Options_Type;
       Iterator : in out Ada_Lib.Options.Command_Line_Iterator_Interface'class;
-      Option   : in     Ada_Lib.Options.Base_Flag_Option_Type'class
+      Option   : in     Ada_Lib.Options.Flag_Option_Type'class
    ) return Boolean is
    ----------------------------------------------------------------------------
 
@@ -299,12 +317,13 @@ return null;
       case Help_Mode is
 
       when Ada_Lib.Options.Program_Mode =>
-         Ada_Lib.Help.Create_Option (Trace_Option, "trace options",
+         Ada_Lib.Help.Create_Option (Trace_Option, True, "trace options",
             "Camera Lib unit test", "Camera.Lib.Unit_Test",
             Ada_Lib.Help.Unmodified_Flag);
          New_Line;
 
       when Ada_Lib.Options.Trace_Mode =>
+         Ada_Lib.Help.Set_Has_Trace (Trace_Option, Ada_Lib.Help.Unmodified_Flag);
          Put_Line ("Camera Lib Unit Test (-" &
             Trace_Option & ")");
          Put_Line ("      a               all");
@@ -329,7 +348,7 @@ return null;
 
      Ada_Lib.Options.AUnit_Lib.Aunit_Program_Options_Type (
          Options).Program_Help (Help_Mode);
-     Log_Out_Checked (Help_Recursed, Debug_Options or Trace_Options);
+     Log_Out_Checked (Help_Recursed, True, Debug_Options or Trace_Options);
 
    end Program_Help;
 

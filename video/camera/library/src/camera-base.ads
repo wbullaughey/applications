@@ -210,7 +210,7 @@ private
       Setup_Path           : Ada_Lib.Strings.Unlimited.String_Type;
       Simulate             : Boolean := False;
       State_Path           : Ada_Lib.Strings.Unlimited.String_Type;
-      Options              : Ada_Lib.Options.Base_Flag_Option_Class_Access :=
+      Options              : Ada_Lib.Options.Flag_Option_Class_Access :=
                               Null;
    end record;
 

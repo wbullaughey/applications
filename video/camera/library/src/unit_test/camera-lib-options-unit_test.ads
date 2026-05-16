@@ -96,7 +96,7 @@ private
    function Process_Option (
       Options     : in out Camera_Unit_Test_Program_Options_Type;
       Iterator    : in out Ada_Lib.Options.Command_Line_Iterator_Interface'class;
-      Option      : in     Ada_Lib.Options.Base_Flag_Option_Type'class
+      Option      : in     Ada_Lib.Options.Flag_Option_Type'class
    ) return Boolean
    with pre => Options.Verify_Step (Initialized);
 

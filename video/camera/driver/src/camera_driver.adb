@@ -2,7 +2,7 @@
 with Ada.Text_IO; use Ada.Text_IO;
 with Ada.Directories;
 with Ada_Lib.Help;
-with Ada_Lib.Options.Flags;
+with Ada_Lib.Options;
 with Ada_Lib.Options.Verification;
 with Ada_Lib.OS;
 with Ada_Lib.Trace; use Ada_Lib.Trace;

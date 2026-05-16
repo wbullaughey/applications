@@ -68,7 +68,9 @@ return "";
    ----------------------------------------------------------------------------
 
    begin
-      Log_In_Checked (Initialize_Recursed, Debug or Trace_Options);
+      Log_In_Checked (Initialize_Recursed, Debug or Trace_Options,
+         Tag_Name ("options",
+            Aunit_Program_Options_Type'class (Options)'tag));
 
       return Log_Out_Checked (Initialize_Recursed,
 --           Options.Camera_Lib_Nested_Options.Initialize (From) and then
@@ -103,7 +105,7 @@ return "";
             if Iterator.Is_Option then
                declare
                   Option   : constant Ada_Lib.Options.
-                              Base_Flag_Option_Type'class :=
+                              Flag_Option_Type :=
                                  Iterator.Get_Option;
                   Message  : constant String := Option.Image & " not defined";
 
@@ -237,13 +239,13 @@ not_implemented;
 --      Camera.Lib.Unit_Test.Camera_Lib_Unit_Test_Program_Options_Type (Options).Program_Help (Help_Mode);
 --      Log_Out_Checked (Program_Help_Recursed, Debug or Trace_Options);
 --   end Program_Help;
-
+--
    ----------------------------------------------------------------------------
    overriding
    function Process_Option (
       Options     : in out Camera_Unit_Test_Program_Options_Type;
       Iterator    : in out Ada_Lib.Options.Command_Line_Iterator_Interface'class;
-      Option      : in     Ada_Lib.Options.Base_Flag_Option_Type'class
+      Option      : in     Ada_Lib.Options.Flag_Option_Type'class
    ) return Boolean is
    ----------------------------------------------------------------------------
 

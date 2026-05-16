@@ -3,7 +3,7 @@ with Ada.Strings.Hash;
 with Ada_Lib.String_Quote; use Ada_Lib.String_Quote;
 with Ada.Text_IO; use Ada.Text_IO;
 with Ada_Lib.Help;
-with Ada_Lib.Options.Create;
+--with Ada_Lib.Options.Create;
 with Ada_Lib.Options.Runstring;
 --with ADA_LIB.String_Quote; use ADA_LIB.String_Quote;
 with ADA_LIB.Strings.Unlimited;use Ada_Lib.Strings.Unlimited;
@@ -21,11 +21,11 @@ package body Camera is
    Trace_Option               : constant Character := 'd';
    Options_With_Parameters    : aliased constant
                                  Ada_Lib.Options.Flag_List_Type :=
-                                    Ada_Lib.Options.Create.Create_One (
+                                    Ada_Lib.Options.Initialize (
                                        'b', Ada_Lib.Options.Unmodified_Flag);
    Options_Without_Parameters : aliased constant
                                  Ada_Lib.Options.Flag_List_Type :=
-                                    Ada_Lib.Options.Create.Create_One (
+                                    Ada_Lib.Options.Initialize (
                                        Trace_Option,  -- local is default
                                        Ada_Lib.Options.Unmodified_Flag);
    Recursed                   : Boolean := False;
@@ -105,7 +105,9 @@ return 0;
 
    begin
       Log_In_Checked (Recursed, Debug or Trace_Options,
-         "Without Parameters " & Options_Without_Parameters.Image &
+         Tag_Name ("options",
+            Camera_Options_Type'class (Options)'tag) &
+         " Without Parameters " & Options_Without_Parameters.Image &
          " from " & From);
 
       Ada_Lib.Options.Runstring.Options.Register (
@@ -174,7 +176,7 @@ return 0;
    function Process_Option (
       Options  : in out Camera_Options_Type;
       Iterator : in out Ada_Lib.Options.Command_Line_Iterator_Interface'class;
-      Option   : in     Ada_Lib.Options.Base_Flag_Option_Type'class
+      Option   : in     Ada_Lib.Options.Flag_Option_Type'class
    ) return Boolean is
    ----------------------------------------------------------------------------
 
@@ -252,11 +254,12 @@ return 0;
 
         when Ada_Lib.Options.Program_Mode =>
            Log_Here (Debug or Trace_Options, Quote ("Component", Component));
-           Ada_Lib.Help.Create_Option (Trace_Flag, "trace options",
+           Ada_Lib.Help.Create_Option (Trace_Flag, True, "trace options",
                "Camera Debug", Component, Ada_Lib.Help.Unmodified_Flag);
            New_Line;
 
         when Ada_Lib.Options.Trace_Mode =>
+            Ada_Lib.Help.Set_Has_Trace (Trace_Flag, Ada_Lib.Help.Unmodified_Flag);
            New_Line;
 
            Put_Line (Component & " trace options (-" &
