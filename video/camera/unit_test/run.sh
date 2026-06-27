@@ -1,4 +1,10 @@
 #!/bin/zsh
+export MODE=$1
+if [[ -z "$MODE" ]]; then
+  echo "var is null/empty"
+else
+   shift 1
+fi
 export OUTPUT=list-camera_aunit.txt
 export PROGRAM=bin/camera_aunit
 export DO_TRACE=0
@@ -7,5 +13,22 @@ export HELP_TEST=" \
 
 export USE_DBDAEMON=FALSE
 
-source ../../../../global_run.sh $OUTPUT $PROGRAM $DO_TRACE $HELP_TEST $USE_DBDAEMON TRUE $*
+case $MODE in
+
+   "help" | "suites")
+      ;;
+
+   "remote" | "local")
+      MODE="-C single_camera.cfg $MODE"
+      ;;
+
+   *)
+      MODE=-C $MODE
+      ;;
+
+esac
+
+echo MODE $MODE
+
+source ../../../../global_run.sh $OUTPUT $PROGRAM $DO_TRACE $HELP_TEST $USE_DBDAEMON TRUE $MODE $*
 

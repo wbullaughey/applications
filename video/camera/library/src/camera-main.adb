@@ -3,6 +3,7 @@ with Ada.Exceptions;
 --with Ada.Directories;
 with Ada.IO_Exceptions;
 with Ada.Text_IO; use  Ada.Text_IO;
+with Ada_Lib.GNOGA;
 with Ada_Lib.Help;
 with Ada_Lib.Options;
 --with Ada_Lib.Options.Verification;
@@ -81,7 +82,6 @@ package body Camera.Main is
       Exited               : Boolean := False;  -- set true by exit button
       GUI_Window           : Gnoga.Gui.Window.Pointer_To_Window_Class :=
                               Null;
-      Main_Created         : Boolean := False;
 --    Main_Window          : Gnoga.Gui.Window.Pointer_To_Window_Class := Null;
       Message_Box_Dialog   : Gnoga.Gui.Plugin.jQueryUI.Widget.
                               Dialog_Access := Null;
@@ -217,11 +217,6 @@ package body Camera.Main is
    procedure Reset_Update_Event (
       Window_Connection            : in out Full_Window_Connection_Type);
 
-   overriding
-   procedure Set_Main_Created (
-      Window_Connection          : in out Full_Window_Connection_Type;
-      Value                      : in     Boolean);
-
 -- procedure Set_Main_Window (
 --    Window_Connection          : in out Full_Window_Connection_Type;
 --    Value                      : in     Boolean);
@@ -270,7 +265,7 @@ package body Camera.Main is
    Description                   : aliased constant String := "main camera";
 -- Main_Window_Connection_ID     : constant Gnoga.Types.Connection_ID :=
 --                                   Gnoga.Types.No_Connection;
-   Started                       : Boolean := False;
+-- Started                       : Boolean := False;
 
    ---------------------------------------------------------------
    procedure Allocate_Camera (
@@ -769,13 +764,15 @@ return Null;
       State    : Configuration.Camera.State.State_Type'class renames
                   State_Pointer.all;
    begin
-      Log_In (Debug, "started " & Started'img &
+      Log_In (Debug,
          " connection id" & Main_Window.Connection_ID'img);
 --       " main window " & Image (Main_Window'address) &
 --       " connection data " & Image (Connection_Data'address));
 
-     Ada_Lib.GNOGA.Set_Main_Window (Main_Window'unchecked_access);
-     Started := True;
+     Ada_Lib.GNOGA.Create_Main_Window_Package.Lock_Create;
+     Ada_Lib.GNOGA.Create_Main_Window_Package.Set_Main_Window (
+         Main_Window'unchecked_access);
+--   Started := True;
 
      declare
         Full_Window_Connection : constant Full_Window_Connection_Access :=
@@ -801,6 +798,8 @@ return Null;
                              Cards.Video_Card;
 
      begin
+        Log_Here (Debug);
+--      Full_Window_Connection.GNOGA_Connection_Data := Connection;
         Cards.Control_Card := Control_Card;
         Full_Window_Connection.Open_Camera (Description'access);
 
@@ -809,7 +808,6 @@ return Null;
               Full_Window_Connection));
         Full_Window_Connection.Main_Window := Main_Window'unchecked_access;
         View.Create (Main_Window); --, ID => "Main View");
-
         declare
            CSS_Path             : constant String :=
                                    State.Get_CSS_Path;
@@ -925,9 +923,10 @@ return Null;
            Unit     => "px");
 --       Tabs.Select_Tab (Widgets.Control.Widget_Name);
 --       Panel.Visible (True);
-        Full_Window_Connection.Main_Created := True;
+        Full_Window_Connection.Set_Main_Created;
      end;
 
+     Ada_Lib.GNOGA.Create_Main_Window_Package.Unlock_Create;
 --    Camera.Run.Set_Base (new Main_Base_Type);
 -- pause ("end of on_connect");
       Log_Out (Debug);
@@ -995,7 +994,8 @@ return Null;
          Quote (" Camera_URL", Camera_Address.Image) &
          " port" & Port_Number'img);
 
-Tag_History ("camera_address", Address_Type'class(camera_address.all)'tag);
+      Tag_History (Debug, "camera_address",
+         Address_Type'class(camera_address.all)'tag);
       Connection.Allocate_Camera;
 
 --    Connection.Camera :=
@@ -1079,18 +1079,6 @@ not_implemented;
       Window_Connection.Update_Event.Reset_Event;
    end Reset_Update_Event;
 
-   ---------------------------------------------------------------
-   overriding
-   procedure Set_Main_Created (
-      Window_Connection          : in out Full_Window_Connection_Type;
-      Value                      : in     Boolean) is
-   ---------------------------------------------------------------
-
-   begin
-      Log_Here (Debug, "value " & Value'img);
-      Window_Connection.Main_Created := Value;
-   end Set_Main_Created;
-
 --   ----------------------------------------------------------------
 --   procedure Run (
 --      Directory                  : in     String;
@@ -1134,13 +1122,13 @@ not_implemented;
 --
 --   end Run;
 --
-   ---------------------------------------------------------------
-   function Running return Boolean is
-   ---------------------------------------------------------------
-
-   begin
-      return Started;
-   end Running;
+-- ---------------------------------------------------------------
+-- function Running return Boolean is
+-- ---------------------------------------------------------------
+--
+-- begin
+--    return Started;
+-- end Running;
 
    ---------------------------------------------------------------
    procedure Set_Mouse_Action (

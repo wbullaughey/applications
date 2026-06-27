@@ -94,7 +94,8 @@ package body Widgets.Generic_Table is
          Table                      : Table_Type renames Grid.Table;
 
       begin
-         Log_In (Debug, "number rows" & Number_Rows'img & " form " & Create_Form'img &
+         Log_In (Debug, Tag_Name ("widget", Widget_Type'class (Widget)'tag) &
+            " number rows" & Number_Rows'img & " form " & Create_Form'img &
             " columns " & Number_Columns'img & Quote (" name", Name) &
             "row header " & Row_Header'img);
          Table.Rows := new Rows_Type (Row_Index_Type'first .. Number_Rows);

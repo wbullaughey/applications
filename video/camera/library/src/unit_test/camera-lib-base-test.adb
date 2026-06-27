@@ -45,7 +45,7 @@ package body Camera.Lib.Base.Test is
 
    procedure Test_Open (
       Test                       : in out AUnit.Test_Cases.Test_Case'class)
-   with Pre => Video.Lib.Has_Camera and then
+   with Pre => Video.Lib.Camera_Configured and then
                Camera.Lib.Unit_Test.With_Camera_No_GNOGA_Test_Type (
                   Test).Have_Camera_Address;
 

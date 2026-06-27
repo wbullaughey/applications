@@ -33,7 +33,7 @@ package body Camera.Commands.PTZ_Optics is
       Position_Up          => ( 9, ( 16#81#,16#01#,16#06#,16#01#,16#00#,16#00#,16#03#,16#01#,16#FF#, others => 0 ), True, Default_Response_Timeout, False, 0),
       Position_Up_Left     => ( 9, ( 16#81#,16#01#,16#06#,16#01#,16#00#,16#00#,16#01#,16#01#,16#FF#, others => 0 ), True, Default_Response_Timeout, False, 0),
       Position_Up_Right    => ( 9, ( 16#81#,16#01#,16#06#,16#01#,16#00#,16#00#,16#02#,16#01#,16#FF#, others => 0 ), True, Default_Response_Timeout, False, 0),
-      Memory_Recall        => ( 7, ( 16#81#,16#01#,16#04#,16#3F#,16#02#,16#02#,16#FF#, others => 0 ), True, Position_Timeout, False, 0),
+      Memory_Recall        => ( 7, ( 16#81#,16#01#,16#04#,16#3F#,16#02#,16#00#,16#FF#, others => 0 ), True, Position_Timeout, False, 0),
       Memory_Set           => ( 7, ( 16#81#,16#01#,16#04#,16#3F#,16#02#,16#01#,16#FF#, others => 0 ), True, Default_Response_Timeout, False, 0),
       Memory_Reset         => ( 7, ( 16#81#,16#01#,16#04#,16#3F#,16#02#,16#00#,16#FF#, others => 0 ), True, Default_Response_Timeout, False, 0),
       Power                => ( 6, ( 16#81#,16#01#,16#04#,16#00#,16#00#,16#FF#, others => 0 ), False, Default_Response_Timeout, true, 3),
@@ -141,6 +141,17 @@ package body Camera.Commands.PTZ_Optics is
    begin
       return Speeds (Which);
    end Get_Camera_Speed_Range;
+
+   ----------------------------------------------------------------------------
+   function Get_Default_Preset_Number (
+      PTZ_Optics                 : in     PTZ_Optics_Type
+   ) return Video.Lib.Preset_Range_Type is
+   pragma Unreferenced (PTZ_Optics);
+   ----------------------------------------------------------------------------
+
+   begin
+      return Default_Preset_Number;
+   end Get_Default_Preset_Number;
 
    ----------------------------------------------------------------------------
    overriding
@@ -275,8 +286,18 @@ package body Camera.Commands.PTZ_Optics is
       Has_Response := Selected_Command.Has_Response;
       Response_Length := Selected_Command.Response_Length;
       Log_Out (Debug, "get ack " & Get_Ack'img &
-         " has response " & Has_Response'img);
+         " has response " & Has_Response'img &
+         " response length" & Response_Length'img);
    end Send_Command;
+
+   ----------------------------------------------------------------------------
+   procedure Set_Default_Preset_Number (
+      PTZ_Optics        : in     PTZ_Optics_Type) is
+   ----------------------------------------------------------------------------
+
+   begin
+      Video.Lib.Set_Default_Preset_ID (Default_Preset_Number);
+   end Set_Default_Preset_Number;
 
 begin
 --Debug := True;

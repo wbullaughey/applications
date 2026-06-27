@@ -138,7 +138,7 @@ package body Driver.Unit_Test is
    function Process_Option (  -- process one option
       Options  : in out Driver_Unit_Test_Options_Type;
       Iterator : in out Ada_Lib.Options.Command_Line_Iterator_Interface'class;
-      $*'class
+      Option   : in     Ada_Lib.Options.Flag_Option_Type'class
    ) return Boolean is
    ---------------------------------------------------------------
 
@@ -237,13 +237,13 @@ package body Driver.Unit_Test is
 
       when Ada_Lib.Options.Program_Mode =>
 --       Ada_Lib.Help.Create_Option ('l', "", "list output from camera app",
---          Component, Ada_Lib.Help.Unmodified_Flag);
---       Ada_Lib.Help.Create_Option ('r', "", "remote camera", Component, Ada_Lib.Help.Unmodified_Flag);
+--          Component, Ada_Lib.Options.Unmodified_Flag);
+--       Ada_Lib.Help.Create_Option ('r', "", "remote camera", Component, Ada_Lib.Options.Unmodified_Flag);
          Ada_Lib.Help.Create_Option (Trace_Option, True, "trace options",
-            "driver unit test trace options", Component, Ada_Lib.Help.Unmodified_Flag);
+            "driver unit test trace options", Component, Ada_Lib.Options.Unmodified_Flag);
 
       when Ada_Lib.Options.Trace_Mode =>
-         Ada_Lib.Help.Set_Has_Trace (Trace_Option, Ada_Lib.Help.Unmodified_Flag);
+         Ada_Lib.Help.Set_Has_Trace (Trace_Option, Ada_Lib.Options.Unmodified_Flag);
          New_Line;
          Put_Line (Command_Name & " trace options (-" & Trace_Option &")");
          Put_Line ("      a               all");

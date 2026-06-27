@@ -16,6 +16,7 @@ with Video.Lib;
 package body Camera.Lib.Base.Command_Tests is
 
    use type Interfaces.Integer_16;
+   use type Video.Lib.Video_Lib_Nested_Options_Constant_Class_Access;
 -- use type Value_Type;
 
    type Test_Type is new Camera.Lib.Unit_Test.
@@ -1143,10 +1144,13 @@ package body Camera.Lib.Base.Command_Tests is
       Length                     : in     Duration) is
    ---------------------------------------------------------------
 
-      Nexted_Options : constant Video.Lib.Options_Constant_Class_Access :=
+      Nested_Options : constant Video.Lib.
+                        Video_Lib_Nested_Options_Constant_Class_Access :=
                            Video.Lib.Get_Video_Lib_Read_Only_Nested_Options;
+
+--                         Video.Lib.Get_Video_Lib_Read_Only_Nested_Options;
    begin
-      if not Nexted_Options.If_Emulation then
+      if not Nested_Options.If_Emulation then
          delay Length;
       end if;
    end Wait;

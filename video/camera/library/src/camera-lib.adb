@@ -12,7 +12,7 @@ with Ada_Lib.Socket_IO;
 --with Ada_Lib.Strings;
 with ADA_LIB.String_Quote; use ADA_LIB.String_Quote;
 with ADA_LIB.Strings.Unlimited;use Ada_Lib.Strings.Unlimited;
-with Ada_Lib.Trace; use Ada_Lib.Trace;
+--with Ada_Lib.Trace; use Ada_Lib.Trace;
 --with Camera.Base;
 --with Camera.Commands;
 with Camera.Lib.Base;
@@ -43,6 +43,7 @@ package body Camera.Lib is
                                        Library_Debug;
    Debug_Options           : Boolean renames Options.Camera_Options.
                                        Options_Debug;
+-- Library_Options         : Camera_Lib_Nested_Options_Class_Access := Null;
    Trace_Option            : constant Character := '2';
    Trace_Prefix            : constant Character :=
                                        Ada_Lib.Help.Trace_Modifier;
@@ -61,9 +62,9 @@ package body Camera.Lib is
    Recursed                      : Boolean := False;
 
    -------------------------------------------------------------------------
-   function Get_Camera_Modifiable_Options (
+   function Get_Camera_Modifiable_Nested_Options (
       From                       : in  String := Options_Here
-   ) return Library_Options_Class_Access is
+   ) return Camera_Lib_Nested_Options_Class_Access is
    -------------------------------------------------------------------------
 
       Options  : constant Ada_Lib.Options.Program.
@@ -71,33 +72,25 @@ package body Camera.Lib is
                      Ada_Lib.Options.Program.
                         Get_Modifiable_Nested_Program_Options;
    begin
-      Log_Here (Trace_Conversions, "from " & From);
+      Log_Here (Debug or else Trace_Conversions, "from " & From);
       Tag_History (Debug, "options",Options.all'tag);
 not_implemented;
 return null;
---    return Library_Options_Class_Access (Options);
-   end Get_Camera_Modifiable_Options;
+--    return Library_Options;
+   end Get_Camera_Modifiable_Nested_Options;
 
    -------------------------------------------------------------------------
-   function Get_Camera_Readonly_Options (
+   function Get_Camera_Readonly_Nested_Options (
       From                       : in  String := Options_Here
-   ) return Library_Options_Constant_Class_Access is
+   ) return Camera_Lib_Nested_Options_Constant_Class_Access is
    -------------------------------------------------------------------------
 
-      Nested_Program_Options :
-         constant Ada_Lib.Options.Program.
-               Nested_Program_Options_Constant_Class_Access :=
-            Ada_Lib.Options.Program.
-               Get_Read_Only_Nested_Program_Options;
    begin
-      if Debug or else Trace_Conversions then
-         Log_Here ( "from " & From);
-         Tag_History ("Nested_Program_Options", Nested_Program_Options.all'tag);
-      end if;
+      Log_Here (Debug or else Trace_Conversions, "from " & From);
 
-      return Library_Options_Constant_Class_Access (
-         Nested_Program_Options);
-   end Get_Camera_Readonly_Options;
+      return Camera_Lib_Nested_Options_Constant_Class_Access (
+         Ada_Lib.Options.Verification.Get_Ada_Lib_Read_Only_Nested_Options);
+   end Get_Camera_Readonly_Nested_Options;
 
    -------------------------------------------------------------------------
    function Have_Options
@@ -151,10 +144,13 @@ return null;
       Skip                 : in     Natural := 0) is
    ----------------------------------------------------------------------------
 
+      Log_It      : constant Boolean := Debug or else
+                                        Debug_Options or else
+                                        Trace_Options;
       Modifiers                  : constant String := "";
 
    begin
-      Log_In (Debug_Options or Trace_Options);
+      Log_In (Log_It);
       Ada_Lib.Command_Line_Iterator.Internal.Iterator_Type (
          Iterator).Initialize (Source, Include_Options, Include_Non_Options,
          Argument_Seperator, Option_Prefix, Modifiers, Skip);
@@ -165,25 +161,25 @@ return null;
                                     Runstring_Iterator_Type;
 
       begin
-         Log_Here (Debug_Options or Trace_Options);
+         Log_Here (Log_It);
          Iterator.Initialize (Include_Options, Include_Non_Options,
             Modifiers   => Ada_Lib.Help.Modifiers);
 --       Protected_Options.Process (Iterator);
 
       exception
          when Fault: Ada_Lib.Options.Failed =>
-            Trace_Exception (Debug_Options or Trace_Options, Fault);
+            Trace_Exception (Log_It, Fault);
 --          Ada_Lib.Options.Flags.Display_Help (
 --             Ada.Exceptions.Exception_Message (Fault), True);
             raise;
 
          when Fault: others =>
-            Trace_Exception (Debug_Options or Trace_Options, Fault);
+            Trace_Exception (Log_It, Fault);
 --          Ada_Lib.Options.Flags.Display_Help (Ada.Exceptions.Exception_Message (Fault), True);
             raise;
       end;
 
-      Log_Out (Debug_Options or Trace_Options);
+      Log_Out (Log_It);
 
    end Initialize;
 
@@ -241,7 +237,7 @@ return null;
       Options  : in out Camera_Lib_Nested_Options_Type;
       Iterator : in out Ada_Lib.Options.
                            Command_Line_Iterator_Interface'class;
-      $*'class
+      Option   : in     Ada_Lib.Options.Flag_Option_Type'class
    ) return Boolean is
    ----------------------------------------------------------------------------
 
@@ -303,21 +299,22 @@ return null;
             Quote ("Component", Component));
 
          Ada_Lib.Help.Create_Option (Trace_Option, True, "trace lib options",
-            "Camera Lib Debug", Component, Ada_Lib.Help.Unmodified_Flag);
---       Ada_Lib.Help.Create_Option ('u', "camera URL", "URL", Component, Ada_Lib.Help.Unmodified_Flag);
+            "Camera Lib Debug", Component, Ada_Lib.Options.Unmodified_Flag);
+--       Ada_Lib.Help.Create_Option ('u', "camera URL", "URL", Component, Ada_Lib.Options.Unmodified_Flag);
          New_Line;
 
       when Ada_Lib.Options.Trace_Mode =>
-         Ada_Lib.Help.Set_Has_Trace (Trace_Option, Ada_Lib.Help.Unmodified_Flag);
+         Ada_Lib.Help.Set_Has_Trace (Trace_Option, Ada_Lib.Options.Unmodified_Flag);
          New_Line;
 
          Put_Line (Component & " trace options (-" &
             Trace_Option & ")");
          Put_Line ("      a               all");
-         Put_Line ("      b               Base.debug");
+         Put_Line ("      b               Camera.Base.debug");
          Put_Line ("      B               Camera.Lib.Base.debug");
 --       Put_Line ("      c               camera configuration");
-         Put_Line ("      C               camera commands");
+         Put_Line ("      C               " &
+            "Camera.Commands.Debug: Camera_Options.Commands_Debug");
          Put_Line ("      d               camera Debug");
          Put_Line ("      g               Widgets.Generic_Table");
          Put_Line ("      l               camera Library");
@@ -349,6 +346,16 @@ return null;
          Help_Mode);
       Log_Out (Log_It);
    end Program_Help;
+
+-- ----------------------------------------------------------------------------
+-- procedure Set_Library_Options (
+--    Library_Options_Pointer    : in        Camera_Lib_Nested_Options_Class_Access;
+--    From                       : in        String := Here) is
+-- ----------------------------------------------------------------------------
+--
+-- begin
+--    Library_Options := Library_Options_Pointer;
+-- end Set_Library_Options;
 
    ----------------------------------------------------------------------------
    overriding

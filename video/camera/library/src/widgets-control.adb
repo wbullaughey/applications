@@ -13,6 +13,7 @@ with Gnoga.Gui.Element.Common;
 with Gnoga.Gui.Element.Form;
 with Gnoga.Gui.Element.Table;
 --with Gnoga.Gui.View;
+--with hex_io;
 with Widgets.Generic_Table;
 --with Video.Lib;
 
@@ -171,8 +172,9 @@ package body Widgets.Control is
    return Control_Card_Class_Access is
    ----------------------------------------------------------------
 
+result : constant Control_Card_Class_Access := new Full_Control_Card_Type;
    begin
-      return new Full_Control_Card_Type;
+      return result;
    end Allocate_Control_Card;
 
    ----------------------------------------------------------------
@@ -181,7 +183,8 @@ package body Widgets.Control is
    ----------------------------------------------------------------
 
    begin
-not_implemented;
+--not_implemented;
+      Log_Here (Debug, "not implemented");
    end Class_Name;
 
    ----------------------------------------------------------------

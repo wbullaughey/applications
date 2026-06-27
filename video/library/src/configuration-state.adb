@@ -23,6 +23,10 @@ package body Configuration.State is
                      Local    => new String'("local_port"),
                      Remote   => new String'("remote_port"),
                      No_Location => new String' ("no camera"));
+   Kind_Key       : constant Address_Key_Type := (
+                     Local    => new String'("local_kind"),
+                     Remote   => new String'("remote_kind"),
+                     No_Location => new String' ("no camera"));
 
    ----------------------------------------------------------------
    procedure Dump (
@@ -74,9 +78,10 @@ Hex_IO.dump_64 (State.Video_Address'address,64,64, "Video_Address ");
    ) return Boolean is
    ----------------------------------------------------------------
 
+      Result   : constant Boolean := State.Video_Address /= Null;
+
    begin
-Hex_IO.dump_64 (State.Video_Address'address,64,64, "Video_Address ");
-      return Log_Here (Debug, State.Video_Address /= Null);
+      return Log_Out (Result, Trace_Pre_Post (Debug));
    end Have_Video_Address;
 
    ----------------------------------------------------------------
@@ -139,7 +144,7 @@ Hex_IO.dump_64 (State.Video_Address'address,64,64, "Video_Address ");
       exception
          when Fault: Ada_Lib.Parser.Underflow =>
             Trace_Exception (Debug, Fault);
-            Put_Line ("Missing " & Field &
+            Put_Line (Quote ("Missing", Field) &
                Quote (" in configuration line", Parser.Get_Original) &
                Quote (" in ", File_Name));
             raise Reported;
@@ -158,10 +163,10 @@ Hex_IO.dump_64 (State.Video_Address'address,64,64, "Video_Address ");
                                         Value          => Address,
                                         Seperators     => ",");
          Kind                     : constant String := Get_Parser_String (
-                                       Parser, "camera address type",
+                                       Parser, "camera_address_type",
                                        Do_Next => True);
          Camera_Address          : constant String := Get_Parser_String (
-                                       Parser, "camera address",
+                                       Parser, Address_Key (Location).all,
                                        Do_Next => False);
       begin
          Log_In (Debug, "location " & Location'img &

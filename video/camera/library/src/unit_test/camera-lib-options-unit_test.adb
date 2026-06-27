@@ -69,8 +69,8 @@ return "";
 
    begin
       Log_In_Checked (Initialize_Recursed, Debug or Trace_Options,
-         Tag_Name ("options",
-            Aunit_Program_Options_Type'class (Options)'tag));
+         Tag_Name ("options", Camera_Unit_Test_Program_Options_Type'class (
+            Options)'tag));
 
       return Log_Out_Checked (Initialize_Recursed,
 --           Options.Camera_Lib_Nested_Options.Initialize (From) and then
@@ -105,7 +105,7 @@ return "";
             if Iterator.Is_Option then
                declare
                   Option   : constant Ada_Lib.Options.
-                              Flag_Option_Type :=
+                              Flag_Option_Type'class :=
                                  Iterator.Get_Option;
                   Message  : constant String := Option.Image & " not defined";
 
@@ -146,11 +146,13 @@ return "";
          exception
 
             when Fault: others =>
-               Trace_Exception (Debug or Trace_Options, Fault);
-not_implemented;
---             if not Nested_Options.Help_Test then
---                raise;
---             end if;
+               Trace_Exception (Debug or Trace_Options, Fault,
+                  "help test " &
+                     Ada_Lib.Options.Ada_Lib_Environment.Help_Test'img);
+--not_implemented;
+               if not Ada_Lib.Options.Ada_Lib_Environment.Help_Test then
+                  raise;
+               end if;
 
          end;
          if not Iterator.At_End then
@@ -252,7 +254,7 @@ not_implemented;
       Log   : constant Boolean := Debug or Trace_Options;
 
    begin
-tag_history ("options",Camera_Unit_Test_Program_Options_Type'class (options)'tag);
+      Tag_History (Log, "options",Camera_Unit_Test_Program_Options_Type'class (options)'tag);
       Log_In_Checked (Process_Option_Recursed, Log);
 
       return Log_Out_Checked (Process_Option_Recursed,
@@ -300,4 +302,3 @@ exception
       ADA_LIB.OS.Immediate_Halt (Ada_Lib.OS.No_Error);
 
 end Camera.Lib.Options.Unit_Test;
-

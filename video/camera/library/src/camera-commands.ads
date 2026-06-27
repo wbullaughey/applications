@@ -39,6 +39,10 @@ package Camera.Commands is
       Which             : in     Which_Speed_Type := Select_Default_Speed
    ) return Data_Type is abstract;
 
+   function Get_Default_Preset_Number (
+      PTZ_Optics        : in     Camera_Type   -- only ussed for dispatch
+   ) return Video.Lib.Preset_Range_Type is abstract;
+
    function Get_Default_Speed (
       Camera            : in     Camera_Type
    ) return Property_Type is abstract;
@@ -66,6 +70,9 @@ package Camera.Commands is
       Wait_For_Complete          : in     Boolean := True;
       Pan_Speed                  : in     Property_Type := 1;
       Tilt_Speed                 : in     Property_Type := 1);
+
+   procedure Set_Default_Preset_Number (
+      PTZ_Optics  : in     Camera_Type) is abstract; -- only ussed for dispatch
 
    procedure Set_Direct_Zoom (
       Camera                     : in out Camera_Type;

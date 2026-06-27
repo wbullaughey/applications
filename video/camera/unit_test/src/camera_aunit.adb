@@ -2,9 +2,10 @@ with Ada.Exceptions;
 with Ada.Text_IO; use Ada.Text_IO;
 with Ada_Lib.Help;
 --with Ada_Lib.Options.Nested;
---with Ada_Lib.Options.Program;
+with Ada_Lib.Options.Program;
 with Ada_Lib.Options.Verification;
 with Ada_Lib.OS;
+with Ada_Lib.Strings.Unlimited;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
 with Ada_Lib.Trace_Tasks;
 with Ada_Lib.Unit_Test;
@@ -18,6 +19,10 @@ with Command_Name;
 
 procedure Camera_AUnit is
 
+   Command_Parameters
+                  : aliased constant Ada_Lib.Options.Argument_Array := (
+                     1 => Ada_Lib.Strings.Unlimited.Coerce (
+                        "<camera configuration>"));
    Options        : aliased Camera.Lib.Options.Unit_Test.
                      Camera_Unit_Test_Program_Options_Type (
       Multi_Test  => True);
@@ -30,6 +35,8 @@ begin
 --Debug := True;
 --Trace_Tests := True;
    Log_In (Debug);
+   Ada_Lib.Options.Program.Set_Command_Parameters (
+      Command_Parameters'unchecked_access);
    Put_Line (Command_Name);
    Ada_Lib.Options.Verification.Set_Ada_Lib_Program_Options (
       Ada_Lib.Options.Verification.Verification_Program_Options_Type'class (
@@ -92,7 +99,7 @@ begin
 exception
 
    when Fault: Camera.Lib.Unit_Test.Failed =>
-      Options.Display_Help (Ada.Exceptions.Exception_Message (
+      Options.Display_Help (Command_Parameters, Ada.Exceptions.Exception_Message (
          Fault), True);
 
    when Fault: others =>

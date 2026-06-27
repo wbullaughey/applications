@@ -1,7 +1,6 @@
---with Ada_Lib.Socket_IO;
+--with Ada_Lib.GNOGA;
 with Ada_Lib.Strings.Unlimited;
 with AUnit.Test_Suites;
---with Camera.Base;
 with Camera.Commands;
 with Camera.Configurations;
 with Configuration.Camera.State;
@@ -123,10 +122,6 @@ package Camera.Main is
 --    Window_Connection            : in   Window_Connection_Type
 -- ) return Base.Camera_State_Class_Access is abstract;
 
-   procedure Set_Main_Created (
-      Window_Connection            : in out Window_Connection_Type;
-      Value                         : in     Boolean) is abstract;
-
 -- overriding
 -- procedure Set_Connection_Data_Main_Window (
 --    Window_Connection : in out Window_Connection_Type;
@@ -185,7 +180,7 @@ package Camera.Main is
       Connection_Data            : in out Window_Connection_Type;
       Action                     : in     Mouse_Click_Action_Type);
 
-   function Running return Boolean;
+-- function Running return Boolean;
 
    function Unit_Test_Suite return AUnit.Test_Suites.Access_Test_Suite;
 
@@ -201,6 +196,7 @@ private
       Camera_Tilt          : Absolute_Type;
       Camera_Tilt_Speed    : Property_Type;
       Camera_Zoom          : Property_Type;
+--    GNOGA_Connection_Data: Ada_Lib.GNOGA.Connection_Data_Access := Null;
       Mouse_Action         : Mouse_Click_Action_Type;
    end record;
 

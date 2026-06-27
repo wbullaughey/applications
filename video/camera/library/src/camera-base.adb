@@ -20,6 +20,7 @@ package body Camera.Base is
 
    use Ada_Lib.Strings;
 -- use type Camera_ID_Type;
+   use type Video.Lib.Video_Lib_Nested_Options_Constant_Class_Access;
 
 -- type Full_Configuration_Type is new Configuration_Type with record
 --    Camera            : Standard.Camera.Commands.Camera_Class_Access := Null;
@@ -394,8 +395,10 @@ return null;
    ) return Boolean is
  ----------------------------------------------------------------
 
+      Result   : constant Boolean :=
+                  Configuration.Configuration_State.Have_Video_Address;
    begin
-      return Configuration.Configuration_State.Have_Video_Address;
+      return Log_Out (Result, Trace_Pre_Post (Debug));
    end Have_Video_Address;
 
  ----------------------------------------------------------------
@@ -417,7 +420,8 @@ return null;
       Log_In (Debug, Quote ("Current_Directory", Current_Directory) &
          Quote (" File_Name", File_Name) &
          Quote (" path", Path));
-      Configuration_File.Load (Path, Create => False);
+      Camera_Configurations.Load (Path);
+--    Configuration_File.Load (Path, Create => False);
       Camera_Configurations.Number_Configurations :=
          Configuration_File.Get_Integer ("number_cameras");
 
@@ -719,11 +723,14 @@ return null;
          Nested_Options
             : Lib.Options.Camera_Lib_Options_Nested_Options_Constant_Class_Access :=
                Lib.Options.Get_Camera_Lib_Options_Read_Only_Nested_Options;
+         Video_Lib_Nested_Options
+            : Video.Lib.Video_Lib_Nested_Options_Constant_Class_Access :=
+               Video.Lib.Get_Video_Lib_Read_Only_Nested_Options;
 
       begin
-tag_history ("Options", Options.all'tag);
+         Tag_History (Debug, "Options", Options.all'tag);
          Configuration.Configuration_State.Load (State_Configuration_File,
-            Video.Lib.Options_Constant_Class_Access (Nested_Options).Location,
+            Video_Lib_Nested_Options.Location,
             Configuration.Setup_Path.Coerce);
       end;
       Configuration.Configuration_Setup.Load (

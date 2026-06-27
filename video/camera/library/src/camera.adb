@@ -84,6 +84,19 @@ return 0;
 
    -------------------------------------------------------------------------
    function Image (
+      Options               : in    Camera_Options_Type
+   ) return String is
+   -------------------------------------------------------------------------
+
+   begin
+      return
+         "brand " & Options.Brand'img &
+         " Camera_ID " & Options.Camera_ID'img &
+         " Port_Number" & Options.Port_Number'img;
+   end Image;
+
+   -------------------------------------------------------------------------
+   function Image (
       Camera_ID                  : in        Camera_ID_Type
    ) return String is
    -------------------------------------------------------------------------
@@ -255,11 +268,11 @@ return 0;
         when Ada_Lib.Options.Program_Mode =>
            Log_Here (Debug or Trace_Options, Quote ("Component", Component));
            Ada_Lib.Help.Create_Option (Trace_Flag, True, "trace options",
-               "Camera Debug", Component, Ada_Lib.Help.Unmodified_Flag);
+               "Camera Debug", Component, Ada_Lib.Options.Unmodified_Flag);
            New_Line;
 
         when Ada_Lib.Options.Trace_Mode =>
-            Ada_Lib.Help.Set_Has_Trace (Trace_Flag, Ada_Lib.Help.Unmodified_Flag);
+            Ada_Lib.Help.Set_Has_Trace (Trace_Flag, Ada_Lib.Options.Unmodified_Flag);
            New_Line;
 
            Put_Line (Component & " trace options (-" &

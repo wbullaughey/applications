@@ -9,12 +9,13 @@ with Configuration.Camera.Setup;
 -- use Configuration.Camera.Setup;
 with Configuration.Camera.State;
 with GNOGA_Ada_Lib;
+with hex_io;
 with Video.Lib;
 
 package body Widgets.Configured is
 
    use type Ada.Tags.Tag;
--- use type Camera.Preset_Range_Type;
+   use type Widgets.Control.Control_Card_Class_Access;
 
       type Update_Parameter_Type    is new Generic_Cell_Package.
                                        Update_Parameter_Type with record
@@ -300,6 +301,7 @@ package body Widgets.Configured is
 
             when Control_Grid_Field =>
                Local_Column.Cell := new Control_Grid_Cell_Type;
+put_line ("column cell address " & hex_io.hex (local_column.cell.all'address));
 
          end case;
          Log_Out (Debug);
@@ -543,10 +545,10 @@ package body Widgets.Configured is
                   Quote (" column id", Column.ID) &
                   " number presets" &
                      Video.Lib.Get_Last_Preset_ID'img);
-               Cell.Control_Table.Create (
-                  Connection_Data.Get_Main_Window.all,
-                  Parent   => Column,
-                  ID       => ID);
+--             Cell.Control_Table.Create (   commented out 6/11/26
+--                Connection_Data.Get_Main_Window.all,
+--                Parent   => Column,
+--                ID       => ID);
             end;
          end if;
       end Create_Cell;
@@ -1047,6 +1049,18 @@ not_implemented;
 --       return Generic_Cell_Package.Cell_Class_Access'(
 --          Generic_Cell_Package.Cell_Class_Access (Column.Cell));
 --    end Get_Cell;
+
+--      ----------------------------------------------------------------
+--      function Has_Control_Table (   6/11/26
+--         Cell           : in     Control_Grid_Cell_Type
+--      ) return Boolean is
+--      ----------------------------------------------------------------
+--
+--      begin
+--log_here ("cell address " & hex_io.hex (cell'address));
+--         return Log_Here (Cell.Control_Table /= Null, Debug or else
+--            Trace_Pre_Post_Conditions);
+--      end Has_Control_Table;
 
       ----------------------------------------------------------------
       procedure On_Submit (

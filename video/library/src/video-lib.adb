@@ -17,27 +17,28 @@ pragma Elaborate (Ada_Lib.Parser);
 
 package body Video.Lib is
 
-   use type Ada_Lib.Options.Flag_List_Type;
+-- use type Ada_Lib.Options.Flag_List_Type;
    use type Index_Type;
 
-   Debug_Option                  : constant Character := 'V';
-   Debug                         : Boolean renames Video_Options.Library_Debug;
-   Directory_Option              : constant Character := 'q';
-   Options_With_Parameters       : aliased constant
-                                    Ada_Lib.Options.Flag_List_Type :=
-                                       Ada_Lib.Options.Initialize (
-                                          Directory_Option, Ada_Lib.Options.Unmodified_Flag) &
-                                       Ada_Lib.Options.Initialize (
-                                          'V', Ada_Lib.Help.Modifier);
-   Options_Without_Parameters    : aliased constant
-                                    Ada_Lib.Options.Flag_List_Type :=
-                                       Ada_Lib.Options.Initialize (
-                                          "rS", Ada_Lib.Options.Unmodified_Flag);
-   Presets                       : array (Which_Preset_Type) of
-                                    Preset_ID_Type := (
-                                       others => (
-                                          Is_Set      => False,
-                                          ID          => 0));
+   Debug_Option: constant Character := 'V';
+   Debug       : Boolean renames Video_Options.Library_Debug;
+   Directory_Option
+               : constant Character := 'q';
+   Options_With_Parameters
+               : aliased constant
+                  Ada_Lib.Options.Flag_List_Type :=
+                     Ada_Lib.Options.Initialize (
+                        Directory_Option & 'V', Ada_Lib.Options.Unmodified_Flag);
+   Options_Without_Parameters
+               : aliased constant
+                  Ada_Lib.Options.Flag_List_Type :=
+                     Ada_Lib.Options.Initialize (
+                        "rS", Ada_Lib.Options.Unmodified_Flag);
+   Presets     : array (Which_Preset_Type) of
+                  Preset_ID_Type := (
+                     others => (
+                        Is_Set      => False,
+                        ID          => 0));
 
 -- ---------------------------------------------------------------
 -- function Address_Kind (
@@ -162,17 +163,17 @@ package body Video.Lib is
    -------------------------------------------------------------------------
    function Get_Video_Lib_Read_Only_Nested_Options (
       From                 : in     String := Ada_Lib.Trace.Here
-   ) return Options_Constant_Class_Access is
+   ) return Video_Lib_Nested_Options_Constant_Class_Access is
    -------------------------------------------------------------------------
 
    begin
       Log_Here (Trace_Conversions, "from " & From);
-not_implemented;
-return null;
+      return Video_Lib_Nested_Options_Constant_Class_Access (
+         Ada_Lib.Options.Verification.Get_Ada_Lib_Read_Only_Nested_Options);
    end Get_Video_Lib_Read_Only_Nested_Options;
 
    -------------------------------------------------------------------------
-   function Has_Camera
+   function Camera_Configured
    return Boolean is
    -------------------------------------------------------------------------
 
@@ -182,7 +183,7 @@ return null;
       Log_In (Trace_Log);
       declare
          Video_Lib_Options
-                  : constant Options_Constant_Class_Access :=
+                  : constant Video_Lib_Nested_Options_Constant_Class_Access :=
                      Get_Video_Lib_Read_Only_Nested_Options;
       begin
          Tag_History (Trace_Log, "Nested_Options", Video_Lib_Options.all'tag);
@@ -196,7 +197,7 @@ return null;
          Trace_Exception (Trace_Log, Fault);
          raise;
 
-   end Has_Camera;
+   end Camera_Configured;
 
    -------------------------------------------------------------------------
    function Have_Preset (
@@ -209,7 +210,8 @@ return null;
    begin
       return Log_Here (Result,
          Debug or Trace_Pre_Post_Conditions or not Result,
-         "Preset_ID " & Presets (Which_Preset).Image);
+         "Which_Preset " & Which_Preset'img &
+         " Preset_ID " & Presets (Which_Preset).Image);
    end Have_Preset;
 
    ---------------------------------------------------------------
@@ -253,8 +255,8 @@ return null;
          Ada_Lib.Options.Runstring.Without_Parameters,
          Options_Without_Parameters);
 
-      return Log_Out (Ada_Lib.Options.Program.
-            Nested_Program_Options_Type (Options).Initialize,
+      return Log_Out (Ada_Lib.Options.Verification.
+            Verification_Nested_Options_Type (Options).Initialize,
          Debug or Trace_Options);
    end Initialize;
 
@@ -303,7 +305,7 @@ return null;
 ----
 ----    end case;
 --
---      Ada_Lib.Options.Program.Nested_Program_Options_Type  (
+--      Ada_Lib.Options.Verification.Verification_Nested_Options_Type  (
 --         Options).Post_Process;
 --   end Post_Process;
 
@@ -317,10 +319,10 @@ return null;
    ) return Boolean is
    ----------------------------------------------------------------------------
 
-      Log   : constant Boolean := Debug or Trace_Options;
+      Log_Id   : constant Boolean := Debug or Trace_Options;
 
    begin
-      Log_In (Log, Option.Image);
+      Log_In (Log_Id, Option.Image);
 
       if Ada_Lib.Options.Has_Option (Option, Options_With_Parameters,
             Options_Without_Parameters) then
@@ -349,17 +351,14 @@ return null;
 --             Options.Simulate := True;
 
             when Others =>
-               Log_Exception (Log);
+               Log_Exception (Log_Id);
                raise Failed with "Has_Option incorrectly passed " & Option.Image;
 
          end case;
 
-         return Log_Out (True, Log, " option" & Option.Image & " handled");
+         return Log_Out (True, Log_Id, " option" & Option.Image & " handled");
       else
-         return Log_Out (Ada_Lib.Options.Program.Nested_Program_Options_Type  (
-            Options).Process_Option (
-               Iterator, Option),
-            Log, "other " & Option.Image);
+         return Log_Out (False, Log_Id, "other " & Option.Image);
       end if;
    end Process_Option;
 
@@ -381,28 +380,27 @@ return null;
          Log_Here (Debug or Trace_Options, Quote ("Component", Component));
 
          Ada_Lib.Help.Create_Option (Directory_Option, False, "directory",
-            "current directory", Component, Ada_Lib.Help.Unmodified_Flag);
---       Ada_Lib.Help.Create_Option ('p', True, "port option",
---          "port option", Component, Ada_Lib.Help.Modified);
-         Ada_Lib.Help.Create_Option ('r', False, "", "remote camera", Component, Ada_Lib.Help.Unmodified_Flag);
---       Ada_Lib.Help.Create_Option ('s', False, "", "simulate camera", Component, Ada_Lib.Help.Unmodified_Flag);
+            "current directory", Component, Ada_Lib.Options.Unmodified_Flag);
+         Ada_Lib.Help.Create_Option ('r', False, "", "remote camera",
+            Component, Ada_Lib.Options.Unmodified_Flag);
          Ada_Lib.Help.Create_Option (Debug_Option, True, "trace options",
-            "trace options", Component, Ada_Lib.Help.Unmodified_Flag);
+            "trace options", Component, Ada_Lib.Options.Unmodified_Flag);
          New_Line;
 
       when Ada_Lib.Options.Trace_Mode =>
-         Ada_Lib.Help.Set_Has_Trace (Debug_Option, Ada_Lib.Help.Unmodified_Flag);
+         Ada_Lib.Help.Set_Has_Trace (Debug_Option, Ada_Lib.Options.Unmodified_Flag);
          New_Line;
 
          Put_Line (Component & " trace options (-" & Debug_Option & ")");
          Put_Line ("      a               all");
-         Put_Line ("      d               Debug_Option");
-         Put_Line ("      s               configuration.state.Debug");
+         Put_Line ("      d               Video.Lib.Debug: Library_Debug");
+         Put_Line ("      s               " &
+            "Configuration.State.Debug: Configuration_State_Debug");
 
       end case;
 
-      Ada_Lib.Options.Program.Nested_Program_Options_Type  (
-         Options).Program_Help (Help_Mode);
+--    Ada_Lib.Options.Verification.Verification_Nested_Options_Type  (
+--       Options).Program_Help (Help_Mode);
       Log_Out (Debug or Trace_Options);
    end Program_Help;
 
@@ -416,6 +414,15 @@ return null;
       Preset_ID.ID := ID;
    end Set;
 
+   -------------------------------------------------------------------------
+   procedure Set_Default_Preset_ID (
+      ID                         : in     Preset_Range_Type) is
+   -------------------------------------------------------------------------
+
+   begin
+      Set_Preset_ID (Default_Preset, Constructor (ID));
+   end Set_Default_Preset_ID;
+
    ----------------------------------------------------------------------------
    procedure Set_Preset_ID (
       Which_Preset               : in     Which_Preset_Type;
@@ -423,7 +430,7 @@ return null;
    ----------------------------------------------------------------------------
 
    begin
-      Log_In (Debug, "which " & Which_Preset'img &
+      Log_In (Debug, "which " & Which_Preset'img & " " &
          Preset_ID.Image);
       Presets (Which_Preset) := Preset_ID;
       Log_Out (Debug);

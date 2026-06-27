@@ -31,7 +31,7 @@ procedure Camera.Lib.Unit_Test.Run_Suite (
 
 begin
 --debug := true;
-   Log_In (Debug);
+   Log_In (Debug, "mode " & Nested_Options.Mode'img);
    declare
       AUnit_Options  : AUnit.Options.AUnit_Options;
       Outcome        : AUnit.Status;

@@ -391,7 +391,7 @@ return Null;
       Config.Load (Path, False);
       Standard.Configuration.State.State_Type (State).Load (Config, Location,
          File_Name);
---    State.Load (Path);
+      Configuration.State.State_Type (State).Load (Config, Location, File_Name);
       State.Camera_ID := Standard.Camera.Make_Camera_ID (State.Get_Video_Address.all);
       State.Camera_Name.Construct (Config.Get_String ("camera_name"));
       State.CSS_Path.Construct (Config.Get_String ("css_path"));

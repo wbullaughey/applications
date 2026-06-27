@@ -339,7 +339,7 @@ package body Driver is
    function Process_Option (  -- process one option
      Options   : in out Driver_Options_Type;
       Iterator : in out Ada_Lib.Options.Command_Line_Iterator_Interface'class;
-      $*'class
+      Option   : in     Ada_Lib.Options.Flag_Option_Type'class
    ) return Boolean is
    ---------------------------------------------------------------
 
@@ -486,7 +486,7 @@ package body Driver is
       Options     : in out Program_Options_Type;
       Iterator    : in out Ada_Lib.Options.
                               Command_Line_Iterator_Interface'class;
-      $*'class
+      Option      : in     Ada_Lib.Options.Flag_Option_Type'class
    ) return Boolean is
    ---------------------------------------------------------------
 
@@ -510,7 +510,7 @@ package body Driver is
 
    begin
       Log_In (Debug_Options or Trace_Options, "help mode " & Help_Mode'img &
-         Quote (" component", Component, Ada_Lib.Help.Unmodified_Flag));
+         Quote (" component", Component, Ada_Lib.Options.Unmodified_Flag));
       Ada_Lib.Options.Nested.Nested_Options_Type (Options).Program_Help (Help_Mode);
 
       case Help_Mode is
@@ -519,9 +519,9 @@ package body Driver is
          Ada_Lib.Help.Create_Option (Directory_Option, "subdirectory",
             "subdirectory to run camera app from", Component, Option_Modifier);
          Ada_Lib.Help.Create_Option ('l', "", "list output from camera app",
-            Component, Ada_Lib.Help.Unmodified_Flag);
+            Component, Ada_Lib.Options.Unmodified_Flag);
 --       Ada_Lib.Help.Create_Option ('r', "",
---          "remote camera", Component, Ada_Lib.Help.Unmodified_Flag);
+--          "remote camera", Component, Ada_Lib.Options.Unmodified_Flag);
          Ada_Lib.Help.Create_Option ('R', "routine",
             "routine to run, multiple allowed", Component, Option_Modifier);
 
@@ -533,12 +533,12 @@ package body Driver is
                Driver_Test_Trace_Option
             else
                Driver_Trace_Option
-            ), "Trace Options", "driver trace options", Component, Ada_Lib.Help.Unmodified_Flag);
+            ), "Trace Options", "driver trace options", Component, Ada_Lib.Options.Unmodified_Flag);
          Ada_Lib.Help.Create_Option (Driver_Directory, "options", "options to pass",
             Component, Option_Modifier);
 
       when Ada_Lib.Options.Trace_Mode =>
-         Ada_Lib.Help.Set_Has_Trace (Driver_Test_Trace_Option, Ada_Lib.Help.Unmodified_Flag);
+         Ada_Lib.Help.Set_Has_Trace (Driver_Test_Trace_Option, Ada_Lib.Options.Unmodified_Flag);
          New_Line;
          Put_Line ("driver trace options (-" &
             (if Options.Testing then
@@ -567,7 +567,7 @@ package body Driver is
 
    begin
       Log_In (Debug_Options or Trace_Options, "help mode " & Help_Mode'img &
-         Quote (" component", Component, Ada_Lib.Help.Unmodified_Flag));
+         Quote (" component", Component, Ada_Lib.Options.Unmodified_Flag));
       Ada_Lib.Options.Program.Program_Options_Type (Options).Program_Help (Help_Mode);
       Options.Driver_Options.Program_Help (Help_Mode);
       Log_Out (Debug_Options or Trace_Options);

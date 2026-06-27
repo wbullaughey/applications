@@ -200,9 +200,10 @@ package body Camera.Commands.Unit_Test is
 
    exception
       when Fault: others =>
-         Trace_Exception (Debug, Fault);
-         Assert (False, "exception message " &
-            Ada.Exceptions.Exception_Message (Fault));
+         Test.Set_Up_Exception (Fault);
+--       Trace_Exception (Debug, Fault);
+--       Assert (False, "exception message " &
+--          Ada.Exceptions.Exception_Message (Fault));
 
    end Set_Up;
 

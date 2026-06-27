@@ -238,12 +238,14 @@ package body Configuration.Camera.Setup is
       Log_In (Debug, "preset id " & Preset_ID.Image);
 
       declare
-         Result                     : constant Boolean :=
-                                       Preset_ID.Is_Set and then
-                                       Setup.Presets (
-                                          Preset_Id.Get_ID).Row /= Row_Not_Set;
+         Has_Row     : constant Boolean :=
+                        Setup.Presets (Preset_Id.Get_ID).Row /= Row_Not_Set;
+         Result      : constant Boolean :=
+                        Preset_ID.Is_Set and then
+                        Has_Row;
       begin
-         return Log_Out (Result, Debug);
+         return Log_Out (Result, Debug, "Is_Set " & Preset_ID.Is_Set'img &
+            " Has_Row " & Has_Row'img);
       end;
    end Has_Preset;
 

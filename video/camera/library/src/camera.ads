@@ -118,9 +118,9 @@ package Camera is
    type Camera_Options_Constant_Class_Access
                                  is access constant Camera_Options_Type'class;
 
-   function Has_Location (
-      Location       : in     Configuration.State.Location_Type
-   ) return Boolean;
+   function Image (
+      Options               : in    Camera_Options_Type
+   ) return String;
 
    overriding
    function Initialize (
@@ -191,6 +191,10 @@ package Camera is
       Data                       : in     Buffer_Type;
       From                       : in     String := Ada_Lib.Trace.Here
    ) renames Ada_Lib.Socket_IO.Stream_IO.Dump;
+
+   function Has_Location (
+      Location       : in     Configuration.State.Location_Type
+   ) return Boolean;
 
    function Hex is new Hex_IO.Modular_Hex (Data_Type);
 

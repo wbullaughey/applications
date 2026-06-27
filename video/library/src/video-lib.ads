@@ -127,6 +127,8 @@ package Video.Lib is
       Multi_Test        : Boolean
    ) is abstract limited new Ada_Lib.Options.Program.
                            Nested_Program_Options_Type with record
+-- ) is abstract limited new Ada_Lib.Options.Verification.
+--                         Verification_Nested_Options_Type with record
       Address_Kind      : Address_Kind_Type;
       Directory         : ADA_LIB.Strings.Unlimited.String_Type;
                            -- set by runstring option 'c'
@@ -135,10 +137,12 @@ package Video.Lib is
       Simulate          : Boolean := False;
    end record;
 
-   type Options_Access  is access all Video_Lib_Nested_Options_Type;
-   type Options_Class_Access     is access all Video_Lib_Nested_Options_Type'class;
-   type Options_Constant_Class_Access
-                                 is access constant Video_Lib_Nested_Options_Type'class;
+   type Video_Lib_Nested_Options_Access
+                        is access all Video_Lib_Nested_Options_Type;
+   type Video_Lib_Nested_Options_Class_Access
+                        is access all Video_Lib_Nested_Options_Type'class;
+   type Video_Lib_Nested_Options_Constant_Class_Access
+                        is access constant Video_Lib_Nested_Options_Type'class;
 
 -- function Address_Kind (
 --   Options                     : in     Video_Lib_Nested_Options_Type
@@ -146,8 +150,10 @@ package Video.Lib is
 
    function Get_Video_Lib_Read_Only_Nested_Options (
       From                 : in     String := Ada_Lib.Trace.Here
-   ) return Options_Constant_Class_Access
-   with Pre    => Ada_Lib.Options.Verification.Have_Ada_Lib_Verification_Options;
+   ) return Video_Lib_Nested_Options_Constant_Class_Access
+   with Pre    => Ada_Lib.Options.Verification.
+                     Have_Ada_Lib_Verification_Options,
+        Post   => Get_Video_Lib_Read_Only_Nested_Options'result /= Null;
 
    overriding
    function Initialize (
@@ -182,7 +188,7 @@ package Video.Lib is
       Length                     : in     Natural;
       From                       : in     String := Ada_Lib.Trace.Here);
 
-   function Has_Camera
+   function Camera_Configured
    return Boolean
    with Pre    => Ada_Lib.Options.Verification.Have_Ada_Lib_Verification_Options;
 
@@ -201,6 +207,9 @@ package Video.Lib is
       Value                      : in     String;
       Preset                     :    out Preset_ID_Type'class
    ) return String;
+
+   procedure Set_Default_Preset_ID (
+      ID                         : in     Preset_Range_Type);
 
    procedure Set_Preset_ID (
       Which_Preset               : in     Which_Preset_Type;

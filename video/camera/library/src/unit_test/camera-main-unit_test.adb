@@ -1,8 +1,9 @@
 with Ada_Lib.GNOGA;
+with Ada_Lib.Options.Program;
 with Ada_Lib.Timer;
 with Ada_Lib.Unit_Test;
 with AUnit.Test_Cases;
---with Ada_Lib.Options.Verification;
+with Ada_Lib.Options.Verification;
 with Camera.Lib.Options.Unit_Test;
 with Camera.Lib.Unit_Test;
 with Configuration.Camera.State;
@@ -192,35 +193,36 @@ exception
    pragma Unreferenced (Test);
    ---------------------------------------------------------------
 
---    Options                 : Camera.Lib.Unit_Test.Unit_Test_Program_Options_Type'
---                               class renames Camera.Lib.
---                                  Unit_Test.Unit_Test_Options_Constant_Class_Access (
---                                     Ada_Lib.Options.Verification.Get_Ada_Lib_Read_Only_Nested_Options).all;
---    Button_Press_Event      : Button_Push_Event_Type;
+      Options  : Ada_Lib.Options.Program.Nested_Program_Options_Type'class
+                  renames Ada_Lib.Options.Program.
+                        Nested_Program_Options_Type'class (
+                     Ada_Lib.Options.Verification.
+                        Get_Ada_Lib_Read_Only_Nested_Options.all);
+      Button_Press_Event      : Button_Push_Event_Type;
 
    begin
-not_implemented;
---    Log_In (Debug, "Test_Driver " & Options.Test_Driver'img);
---      Button_Press_Event.Window := Ada_Lib.GNOGA.Get_Main_Window;
---
---      if not Options.Test_Driver then
---         Log_Here (Debug);
-----       Button_Press_Event.Connection_Data :=
-----          Ada_Lib.GNOGA.Connection_Data_Class_Access (Local_Test.Connection_Data);
---
---         Button_Press_Event.Start (
---            Wait           => 2.0,
---            Dynamic        => False,
---            Description    => "halt wait");
---            -- leave time for web page to display
---
---         Log_Here (Debug);
-----       Run (
-----          Directory            => Camera.Lib.Options.Current_Directory,
-----          Port                 => Options.GNOGA_Options.HTTP_Port,
-----          Verbose              => True,
-----          Wait_For_Message_Loop_Exit  => True);
---         end if;
+    Log_In (Debug, "Test_Driver " & Options.Test_Driver'img);
+      Button_Press_Event.Window :=
+         Ada_Lib.GNOGA.Create_Main_Window_Package.Get_Main_Window;
+
+      if not Options.Test_Driver then
+         Log_Here (Debug);
+--       Button_Press_Event.Connection_Data :=
+--          Ada_Lib.GNOGA.Connection_Data_Class_Access (Local_Test.Connection_Data);
+
+         Button_Press_Event.Start (
+            Wait           => 2.0,
+            Dynamic        => False,
+            Description    => "halt wait");
+            -- leave time for web page to display
+
+         Log_Here (Debug);
+--       Run (
+--          Directory            => Camera.Lib.Options.Current_Directory,
+--          Port                 => Options.GNOGA_Options.HTTP_Port,
+--          Verbose              => True,
+--          Wait_For_Message_Loop_Exit  => True);
+         end if;
       Log_Out (Debug);
 
    exception

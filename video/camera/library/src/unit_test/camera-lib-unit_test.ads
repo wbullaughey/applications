@@ -1,4 +1,5 @@
 with Ada_Lib.GNOGA.Unit_Test; -- .Base;
+--with Ada_Lib.Help;
 with Ada_Lib.Options.AUnit_Lib;
 --with Ada_Lib.Options.Program;
 with Ada_Lib.Options.Verification;
@@ -95,11 +96,11 @@ package Camera.Lib.Unit_Test is
    overriding
    procedure Set_Up (
       Test                       : in out With_Camera_No_GNOGA_Test_Type
-   ) with Pre  => not Video.Lib.Has_Camera, --  and then
+-- ) with Pre  => not Video.Lib.Camera_Configured, --  and then
 --                not Test.Configuration.Get_Configuration_Setup.Is_Loaded,
-          Post => Test.Verify_Set_Up and then
+   ) with Post => Test.Verify_Set_Up and then
                   ( if Test.Load_State then
-                        Video.Lib.Has_Camera and then
+                        Video.Lib.Camera_Configured and then
                         Test.Configuration.Get_Configuration_Setup.Is_Loaded
                      else
                         True);
@@ -196,6 +197,7 @@ package Camera.Lib.Unit_Test is
    procedure Display_Help (
                               -- prints full help, aborts program
      Options   : in     Camera_Lib_Unit_Test_Program_Options_Type;  -- only used for dispatch
+     Parameters: in     Ada_Lib.Options.Argument_Array;
      Message   : in     String := "";   -- leave blank no error help
      Halt      : in     Boolean := True);
 
@@ -214,6 +216,14 @@ package Camera.Lib.Unit_Test is
    ) return Boolean
    with pre    => not Options.Verify_Step (Initialized),
         post   => Options.Verify_Step (Initialized);
+
+   -- get 1 argument which specifies the camers to use in the test
+   overriding
+   function Process_Argument (  -- process one argument
+      Options                  : in out Camera_Lib_Unit_Test_Program_Options_Type;
+      Iterator                 : in out Command_Line_Iterator_Interface'class;
+      Argument                 : in     String
+   ) return Boolean;
 
    overriding
    function Process_Option (  -- process one option
@@ -238,9 +248,8 @@ package Camera.Lib.Unit_Test is
 
    type Camera_Test_Suite is new AUnit.Test_Suites.Test_Suite with null record;
 
--- function Has_Camera
--- return Boolean
--- with Pre    => Ada_Lib.Options.Verification.Have_Ada_Lib_Verification_Options;
+   function Has_Camera_Specification
+   return Boolean;
 
    procedure Setup_Camera (
       Load_State     : in     Boolean;

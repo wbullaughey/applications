@@ -24,6 +24,13 @@ package Camera.Commands.PTZ_Optics is
       Description                : in     String
    ) return PTZ_Optics_Access;
 
+   function Get_Default_Preset_Number (
+      PTZ_Optics        : in     PTZ_Optics_Type   -- only ussed for dispatch
+   ) return Video.Lib.Preset_Range_Type;
+
+   procedure Set_Default_Preset_Number (
+      PTZ_Optics        : in     PTZ_Optics_Type);   -- only ussed for dispatch
+
    Default_Read_Timeout          : constant Ada_Lib.Socket_IO.Timeout_Type := 0.2;
    Default_Speed                 : constant Speed_Type := (Maximum_Speed -
                                     Minimum_Speed) /2;

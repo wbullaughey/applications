@@ -147,7 +147,7 @@ package Widgets.Configured is
                                        Update_Parameter_Type'class);
       -- used in only 1st row of preset table.
       type Control_Grid_Cell_Type is new Cell_Type with record
-         Control_Table     : Widgets.Control.Control_Card_Class_Access;
+--       Control_Table     : Widgets.Control.Control_Card_Class_Access; 6/11/26
          Table_Row         : Configuration.Row_Type;
       end record;
 
@@ -162,7 +162,8 @@ package Widgets.Configured is
                                              GNOGA_Column_Type'class;
          Table_Column            : in     Preset_Column_Index_Type;
          Table_Row               : in     Configuration.Row_Type
-      ) with Pre  => Camera.Main.Has_Main_Window_Connection,
+      ) with Pre  => Camera.Main.Has_Main_Window_Connection, -- and then
+--                   Cell.Has_Control_Table, 6/11/26
              Post => Cell.Configuration_ID /=
                         Configuration.No_Configuration;
 
@@ -172,6 +173,10 @@ package Widgets.Configured is
          Enable                  : in     Boolean;
          Caller                  : in     String;
          From                    : in     String := Ada_Lib.Trace.Here);
+
+--    function Has_Control_Table ( 6/11/26
+--       Cell                    : in     Control_Grid_Cell_Type
+--    ) return Boolean;
 
       overriding
       procedure Update_Cell (
