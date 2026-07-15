@@ -9,6 +9,7 @@ camera_aunit <camera configuration> <command line options>:
     -2 <trace lib options>        : Camera Lib Debug                  (Camera Lib)
     -?                            : this message                      (Ada_Lib)
     -a <trace options>            : Ada_Lib library trace options     (Ada_Lib)
+    -C <camera configuration>     : camera configuration file         (Camera.Lib.Unit_Test)
     -e <routine>                  : routine to test.                  (test_ada_lib)
     -g <trace options>            : GNOGA Unit Test traces            (Ada_Lib.GNOGA)
     -h                            : this message                      (Ada_Lib)
@@ -38,6 +39,7 @@ camera_aunit <camera configuration> <command line options>:
     -@l                           : List test suites                  (test_ada_lib)
     -@m                           : manual operations.                (test_ada_lib)
     -@n <number of random seeds>  : number seeds.                     (test_ada_lib)
+    -@N                           : No Camera attached                (Video Lib)
     -@p                           : include program in trace          (Ada_Lib)
     -@P                           : Print test suites.                (test_ada_lib)
     -@Q <dbdaemon>                : remote dbdaemon.                  (Ada_Lib.Options.Database)
@@ -52,7 +54,7 @@ camera_aunit <camera configuration> <command line options>:
 
 Camera Lib Unit Test (-1)
       a               all
-      A               Camera.Lib.Unit_Test Debug
+      A               Camera.Lib.Options.Unit_Test Debug
       b               Base Command_Tests
       B               Base Test
       c               Widgets.Control unit_test trace
@@ -68,7 +70,7 @@ Camera Lib Unit Test (-1)
 
 Camera Lib trace options (-2)
       a               all
-      b               Camera.Base.debug
+      b               Camera.Base.Debug (Base_Debug)
       B               Camera.Lib.Base.debug
       C               Camera.Commands.Debug: Camera_Options.Commands_Debug
       d               camera Debug
@@ -77,12 +79,13 @@ Camera Lib trace options (-2)
       L               camera library options
       m               Camera.Main.Debug
       M               Camera_Control.Debug
-      s               Camera.Configuration.Debug
+      s               Camera.Configuration.Debug (Camera_Debug)
       S               Camera.Configurations.Debug
       V               Trace Video widgets
       #a              Adjust Window
       #c              Widgets.Control debyg
       #C              Widgets.Configured debug
+      #D              Configuration.Debug
       #l              List camera commands
       #p              Configuration.Camera.Setup.Debug
       #S              Configuration.Camera.State.Debug
@@ -94,7 +97,7 @@ Video Lib trace options (-V)
 Ada_Lib.Options.AUnit_Lib.Program_Help trace options (-t)
       a               all
       A               AUnit debug
-      c               configuration
+      c               Ada_Lib.Configuration.Test
       C               command line iterator
       d               directory compare and copy
       h               help test
@@ -139,6 +142,7 @@ CAC ada_lib trace library options (-a)
       c               Ada_Lib.Command_Line Trace
       C               Ada_Lib.Configuration Trace
       e               Event
+      E               Ada_Lib.Trace.Trace_Errors
       h               Help
       i               interrupt
       I               Ada_Lib.interface
@@ -157,6 +161,7 @@ CAC ada_lib trace library options (-a)
       T               Ada_Lib.Trace_Tasks
       v               Ada_Lib.Options.Verification.Debug
       V               Ada_Lib.Options.Trace_Conversions
+      x               Ada_Lib.Trace.Trace_Exceptionss
       #b              database connect
       #c              Template Compile
       #d              Template Detail
@@ -197,7 +202,8 @@ Ada_Lib unit test library trace options (-U)
       T               Ada_Lib.Trace.Debug_Trace
       u               Ada_Lib.Unit_Test.Debug Library
       U               Ada_Lib.Unit_Test.Test_Cases.Debug Library
-      #a              AUnit.Ada_Lib.Debug
+      #a              Ada_Lib_Aunit.Debug
+      #A              AUnit.Ada_Lib.Debug
       #s              Ada_Lib.Unit_Test.Test_States.Debug
       #S              Database Server Debug
       #u              Unit_Test Debug

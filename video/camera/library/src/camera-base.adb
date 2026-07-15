@@ -1,5 +1,5 @@
 --with Ada.Text_IO; use  Ada.Text_IO;
-with Ada_Lib.Configuration;
+--with Ada_Lib.Configuration;
 --with Ada_Lib.Options.Nested;
 with Ada_Lib.Options.Program;
 --with Ada_Lib.Options.Verification;
@@ -85,15 +85,16 @@ package body Camera.Base is
 
    ----------------------------------------------------------------
    procedure Deallocate (
-      Configuration     : in     Configuration_Access) is
-   pragma Unreferenced (Configuration);
+      Configuration      : in out Configuration_Type) is
    ----------------------------------------------------------------
 
    begin
-      Log_In (Debug);
-not_implemented;
---    Free (Configuration.Configuration_Setup);
---    Free (Configuration.Configuration_State);
+      Log_In (Debug, "configuration " &
+         Ada_Lib.Strings.Image (Configuration'address));
+      Configuration.Configuration_State.Free;
+      Configuration.Configuration_State := Null;
+      Configuration.Configuration_Setup.Free;
+      Configuration.Configuration_Setup:= Null;
       Log_Out (Debug);
    end Deallocate;
 
@@ -362,9 +363,10 @@ return null;
    ) return Boolean is
    ----------------------------------------------------------------
 
+      Result   : constant Boolean := Configuration.Configuration_Setup /= Null;
+
    begin
-      return Log_Here (Configuration.Configuration_Setup /= Null,
-         Debug or Trace_Pre_Post_Conditions);
+      return Log_Here (Result, Trace_Pre_Post (Result, Debug));
    end Has_Configuration_Setup;
 
    ----------------------------------------------------------------
@@ -373,9 +375,10 @@ return null;
    ) return Boolean is
    ----------------------------------------------------------------
 
+      Result   : constant Boolean := Configuration.Configuration_State /= Null;
+
    begin
-      return Log_Here (Configuration.Configuration_State /= Null,
-         Debug or Trace_Pre_Post_Conditions);
+      return Log_Here (Result, Debug);
    end Has_Configuration;
 
 --   ----------------------------------------------------------------
@@ -390,16 +393,15 @@ return null;
 --   end Has_Current_Camera_ID;
 
  ----------------------------------------------------------------
-   function Have_Video_Address (
+   function Has_Video_Address (
       Configuration      : in     Configuration_Type
    ) return Boolean is
  ----------------------------------------------------------------
 
-      Result   : constant Boolean :=
-                  Configuration.Configuration_State.Have_Video_Address;
    begin
-      return Log_Out (Result, Trace_Pre_Post (Debug));
-   end Have_Video_Address;
+      return Log_Here (Configuration.Configuration_State.Has_Video_Address,
+         Debug);
+   end Has_Video_Address;
 
  ----------------------------------------------------------------
  procedure Load (
@@ -655,7 +657,7 @@ return null;
    ---------------------------------------------------------------
 
       Camera_Suffix        : constant String := Trim (Camera_Index'img);
-      Configuration_File   : Ada_Lib.Configuration.Configuration_Type;
+--    Configuration_File   : Ada_Lib.Configuration.Configuration_Type;
       Options              : constant Ada_Lib.Options.Program.
                               Nested_Program_Options_Constant_Class_Access :=
                                  Ada_Lib.Options.Program.
@@ -684,10 +686,10 @@ return null;
             Quote (" root", Root) &
             Quote (" parameter", Parameter));
 
-         if Configuration_File.Has (Parameter) then
+         if Configuration.Has (Parameter) then
             declare
                Result         : constant String :=
-                                 Configuration_File.Get_String (Parameter);
+                                 Configuration.Get_String (Parameter);
             begin
                Log_Out (Debug, Quote ("Result", Result));
                return Result;
@@ -706,8 +708,10 @@ return null;
 
    begin
       Log_In (Debug, Quote ("path", Path) & " camera index" &
-         Camera_Index'img);
-      Configuration_File.Load (Path, Create => False);
+         Camera_Index'img &
+         " configuration address " &
+            Ada_Lib.Strings.Image (Configuration'address));
+      Configuration.Load (Path, Create => False);
       Configuration.Setup_Path.Construct (Path_Type (
          Camera_Index, "camera_setup_", "setup"));
       Configuration.Setup_Path.Construct (Path_Type (
@@ -718,8 +722,8 @@ return null;
          new Standard.Configuration.Camera.State.State_Type;
 
       declare
-         State_Configuration_File
-            : Ada_Lib.Configuration.Configuration_Type;
+--       State_Configuration_File
+--          : Ada_Lib.Configuration.Configuration_Type;
          Nested_Options
             : Lib.Options.Camera_Lib_Options_Nested_Options_Constant_Class_Access :=
                Lib.Options.Get_Camera_Lib_Options_Read_Only_Nested_Options;
@@ -728,10 +732,13 @@ return null;
                Video.Lib.Get_Video_Lib_Read_Only_Nested_Options;
 
       begin
+         Log_Here (Debug, "location " & Video_Lib_Nested_Options.Location'img &
+            Quote (" path", Configuration.Setup_Path));
          Tag_History (Debug, "Options", Options.all'tag);
-         Configuration.Configuration_State.Load (State_Configuration_File,
-            Video_Lib_Nested_Options.Location,
-            Configuration.Setup_Path.Coerce);
+
+--       Configuration.Configuration_State.Load (  are all fields loaded?
+--          Video_Lib_Nested_Options.Location,
+--          Configuration.Setup_Path.Coerce);
       end;
       Configuration.Configuration_Setup.Load (
          Configuration.Configuration_State.all,

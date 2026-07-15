@@ -7,7 +7,7 @@ else
 fi
 export OUTPUT=list-camera_aunit.txt
 export PROGRAM=bin/camera_aunit
-export DO_TRACE=0
+export DO_TRACE=1
 export HELP_TEST=" \
    -E -h -P -r -v -x -@c -@d -@i -@l -@m -@p -@P -@S -@t -@u -@x"
 
@@ -18,17 +18,22 @@ case $MODE in
    "help" | "suites")
       ;;
 
-   "remote" | "local")
+   "remote-camera" | "local-canera")
       MODE="-C single_camera.cfg $MODE"
       ;;
 
+   "local-no-camera")
+      ;;
+
    *)
-      MODE=-C $MODE
+      echo bad mode MODE
+      echo valid: local-camera local-no-camera remote-camera
+      exit
       ;;
 
 esac
 
-echo MODE $MODE
+#echo MODE $MODE
 
 source ../../../../global_run.sh $OUTPUT $PROGRAM $DO_TRACE $HELP_TEST $USE_DBDAEMON TRUE $MODE $*
 

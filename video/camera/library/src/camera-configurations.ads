@@ -85,15 +85,13 @@ package Camera.Configurations is
       Camera_ID            : in        Camera_ID_Type := Null_Camera_ID
    ) return Boolean;
 
-   procedure Set_Current_Camera_ID (
-      Camera_ID   : in     Camera_ID_Type
-   ) with Pre  => Camera_ID.Is_Set;
-
    procedure Set_State (
       Camera_ID      : in     Camera_ID_Type;
       Configuration  : access Camera.Base.Configuration_Type'class
    ) with Pre  => Camera_ID.Is_Set and then
                   Configuration /= Null;
+
+   procedure Clear_Configuration;
 
 private
 
