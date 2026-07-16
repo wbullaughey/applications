@@ -135,7 +135,7 @@ package body Camera.Lib.Unit_Test is
       Result   : constant Boolean := Test.Configuration.Have_Video_Address;
 
    begin
-      return Log_Here (Result, Trace_Pre_Post (Debug));
+      return Log_Here (Result, Ada_Lib.Trace.Trace_Pre_Post (Result, Debug));
    end Have_Camera_Address;
 
    ----------------------------------------------------------------------------

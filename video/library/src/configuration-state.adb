@@ -81,7 +81,7 @@ Hex_IO.dump_64 (State.Video_Address'address,64,64, "Video_Address ");
       Result   : constant Boolean := State.Video_Address /= Null;
 
    begin
-      return Log_Out (Result, Trace_Pre_Post (Debug));
+      return Log_Out (Result, Trace_Pre_Post (Result, Debug));
    end Have_Video_Address;
 
    ----------------------------------------------------------------

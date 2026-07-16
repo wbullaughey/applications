@@ -398,7 +398,7 @@ return null;
       Result   : constant Boolean :=
                   Configuration.Configuration_State.Have_Video_Address;
    begin
-      return Log_Out (Result, Trace_Pre_Post (Debug));
+      return Log_Out (Result, Trace_Pre_Post (Result, Debug));
    end Have_Video_Address;
 
  ----------------------------------------------------------------
