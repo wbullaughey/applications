@@ -21,7 +21,6 @@ with Camera.Lib.Options;
 with Configuration.Camera;
 --with Configuration.Camera.Setup;
 --with Configuration.Camera.State;
---with Configuration.State;
 --with Emulator;
 --with Camera.Main;
 with Camera.Options;
@@ -35,7 +34,7 @@ with Widgets.Video;
 
 package body Camera.Lib is
 
--- use type Configuration.State.Location_Type;
+-- use type Video.Lib.Location_Type;
 -- use type Ada_Lib.Options.Flag_List_Type;
 -- use type Ada_Lib.Options.Interface_Options_Constant_Class_Access;
 
@@ -100,8 +99,7 @@ return null;
       Result   : constant Boolean :=
                   Ada_Lib.Options.Verification.Have_Ada_Lib_Verification_Options;
    begin
-      return Log_Here (Result,
-         Debug or else Trace_Pre_Post_Conditions or else not Result);
+      return Log_Here (Result, Ada_Lib.Trace.Trace_Pre_Post (Result, Debug));
    end Have_Options;
 
    -------------------------------------------------------------------------
@@ -310,7 +308,7 @@ return null;
          Put_Line (Component & " trace options (-" &
             Trace_Option & ")");
          Put_Line ("      a               all");
-         Put_Line ("      b               Camera.Base.debug");
+         Put_Line ("      b               Camera.Base.Debug (Base_Debug)");
          Put_Line ("      B               Camera.Lib.Base.debug");
 --       Put_Line ("      c               camera configuration");
          Put_Line ("      C               " &
@@ -321,7 +319,7 @@ return null;
          Put_Line ("      L               camera library options");
          Put_Line ("      m               Camera.Main.Debug");
          Put_Line ("      M               Camera_Control.Debug");
-         Put_Line ("      s               Camera.Configuration.Debug");
+         Put_Line ("      s               Camera.Configuration.Debug (Camera_Debug)");
          Put_Line ("      S               Camera.Configurations.Debug");
 --       Put_Line ("      v               Trace Video communications");
          Put_Line ("      V               Trace Video widgets");
@@ -331,6 +329,8 @@ return null;
                           "c              Widgets.Control debyg");
          Put_Line ("      " & Trace_Prefix &
                           "C              Widgets.Configured debug");
+         Put_Line ("      " & Trace_Prefix &
+                          "D              Configuration.Debug");
          Put_Line ("      " & Trace_Prefix &
                           "l              List camera commands");
          Put_Line ("      " & Trace_Prefix &
@@ -390,6 +390,7 @@ return null;
                      Lib.Options.Camera_Options.Commands_Debug := True;
                      Lib.Options.Camera_Options.State_Debug := True;
                      Lib.Options.Camera_Options.States_Debug := True;
+                     Lib.Options.Configuration_Options.Camera_Debug := True;
                      Lib.Options.Configuration_Options.State_Debug := True;
                      Configuration.Debug := True;
                      Debug_Options := True;
@@ -413,6 +414,9 @@ return null;
                   when 'd' =>
                      Lib.Options.Camera_Options.Camera_Debug := True;
 
+                  when 'D' =>
+                     Configuration.Debug := True;
+
                   when 'g' =>
                      Widgets.Generic_Table.Debug := True;
 
@@ -429,7 +433,7 @@ return null;
                      Lib.Options.Camera_Options.Camera_Control_Debug := True;
 
                   when 's' =>
-                     Lib.Options.Camera_Options.State_Debug := True;
+                     Lib.Options.Configuration_Options.Camera_Debug := True;
 --                   Emulator.Debug := True;
 
                   when 'S' =>

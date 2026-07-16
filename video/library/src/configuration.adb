@@ -4,65 +4,69 @@ with Ada_Lib.Trace; use Ada_Lib.Trace;
 
 package body Configuration is
 
+   With_Camera    : Boolean := True;   -- default to have a camera
+
    ----------------------------------------------------------------
-   function Is_Loaded (
-      State                      : in     Root_State_Type;
-      From                       : in     String := Ada_Lib.Trace.Here
-   ) return Boolean is
+   function Have_Camera
+   return Boolean is
    ----------------------------------------------------------------
 
    begin
-      return Log_Here (State.Loaded,
-         Debug or Trace_Pre_Post_Conditions,
-         "state from " & From & " " &
-         "address " & Image (State'address) &
-         " class " & Ada.Tags.Expanded_Name (Root_State_Type'class (State)'tag));
-   end Is_Loaded;
+      return With_Camera;
+   end Have_Camera;
 
    ----------------------------------------------------------------
-   function Is_Loaded (
-      Setup                      : in     Root_Setup_Type;
-      From                       : in     String := Ada_Lib.Trace.Here
-   ) return Boolean is
+   procedure No_Camera is
    ----------------------------------------------------------------
 
    begin
-      return Log_Here (Setup.Loaded,
-         Debug or Trace_Pre_Post_Conditions,
-         "setup from " & From & " " &
-         "address " & Image (Setup'address) &
-         " class " & Ada.Tags.Expanded_Name (Root_Setup_Type'class (Setup)'tag));
-   end Is_Loaded;
+      With_Camera := False;
+   end No_Camera;
 
-   ----------------------------------------------------------------
-   procedure Set_Loaded (
-      State                      :    out Root_State_Type;
-      Value                      : in     Boolean;
-      From                       : in     String := Ada_Lib.Trace.Here) is
-   ----------------------------------------------------------------
+   package body Configuration_Package is
 
-   begin
-      Log_Here (Debug, "value " & Value'img & " class " &
-         Ada.Tags.Expanded_Name (Root_State_Type'class (State)'tag) &
-         " address " & Image (State'address) &
-         " from " & From);
-      State.Loaded := Value;
-   end Set_Loaded;
+      ----------------------------------------------------------------
+      function Is_Loaded (
+         Configuration           : in     Configuration_Type;
+         From                    : in     String := Ada_Lib.Trace.Here
+      ) return Boolean is
+      ----------------------------------------------------------------
 
-   ----------------------------------------------------------------
-   procedure Set_Loaded (
-      Setup                      :    out Root_Setup_Type;
-      Value                      : in     Boolean;
-      From                       : in     String := Ada_Lib.Trace.Here) is
-   ----------------------------------------------------------------
+         Result   : constant Boolean := Configuration.Loaded;
 
-   begin
-      Log_Here (Debug, "value " & Value'img &
-         Ada.Tags.Expanded_Name (Root_Setup_Type'class (Setup)'tag) &
-         " address " & Image (Setup'address) &
-         " from " & From);
-      Setup.Loaded := Value;
-   end Set_Loaded;
+      begin
+         return Log_Here (Result, Trace_Pre_Post (Result, Debug),
+            "state from " & From & " " &
+            "address " & Image (Configuration'address) &
+            " class " & Ada.Tags.Expanded_Name (
+               Configuration_Type'class (Configuration)'tag));
+      end Is_Loaded;
+
+      ----------------------------------------------------------------
+      procedure Set_Loaded (
+         Configuration           : in out Configuration_Type;
+         Value                   : in     Boolean;
+         From                    : in     String := Ada_Lib.Trace.Here) is
+      ----------------------------------------------------------------
+
+      begin
+         Log_Here (Debug, "value " & Value'img & " class " &
+            Ada.Tags.Expanded_Name (Configuration_Type'class (Configuration)'tag) &
+            " address " & Image (Configuration'address) &
+            " from " & From);
+         Configuration.Loaded := Value;
+      end Set_Loaded;
+
+      ----------------------------------------------------------------
+      procedure Unload (
+         Configuration            : in out Configuration_Type) is
+      ----------------------------------------------------------------
+
+      begin
+         Configuration.Loaded := False;
+      end Unload;
+
+   end Configuration_Package;
 
 begin
 --Debug := True;

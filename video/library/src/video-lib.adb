@@ -9,7 +9,7 @@ with Ada_Lib.Options.Runstring;
 with Ada_Lib.Socket_IO.Stream_IO;
 with Ada_Lib.String_Quote; use Ada_Lib.String_Quote;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
---with Configuration.State;
+with Configuration;
 -- with Debug_Options;
 with Interfaces;
 
@@ -17,7 +17,7 @@ pragma Elaborate (Ada_Lib.Parser);
 
 package body Video.Lib is
 
--- use type Ada_Lib.Options.Flag_List_Type;
+   use type Ada_Lib.Options.Flag_List_Type;
    use type Index_Type;
 
    Debug_Option: constant Character := 'V';
@@ -33,7 +33,9 @@ package body Video.Lib is
                : aliased constant
                   Ada_Lib.Options.Flag_List_Type :=
                      Ada_Lib.Options.Initialize (
-                        "rS", Ada_Lib.Options.Unmodified_Flag);
+                        "rS", Ada_Lib.Options.Unmodified_Flag) &
+                     Ada_Lib.Options.Initialize (
+                        "N", Ada_Lib.Help.Modifier);
    Presets     : array (Which_Preset_Type) of
                   Preset_ID_Type := (
                      others => (
@@ -177,20 +179,17 @@ package body Video.Lib is
    return Boolean is
    -------------------------------------------------------------------------
 
-      Trace_Log   : constant Boolean := Debug or Trace_Pre_Post_Conditions;
+      Video_Lib_Options
+                  : constant Video_Lib_Nested_Options_Constant_Class_Access :=
+                     Get_Video_Lib_Read_Only_Nested_Options;
+      Result      : constant Boolean := Video_Lib_Options.Location /= Video.Lib.No_Location;
+      Trace_Log   : constant Boolean := Trace_Pre_Post (Result, Debug);
 
    begin
       Log_In (Trace_Log);
-      declare
-         Video_Lib_Options
-                  : constant Video_Lib_Nested_Options_Constant_Class_Access :=
-                     Get_Video_Lib_Read_Only_Nested_Options;
-      begin
-         Tag_History (Trace_Log, "Nested_Options", Video_Lib_Options.all'tag);
+      Tag_History (Trace_Log, "Nested_Options", Video_Lib_Options.all'tag);
 
-         return Log_Out (Video_Lib_Options.Location /= Video.Lib.No_Location,
-            Trace_Log);
-      end;
+      return Log_Out (Result, Trace_Log);
 
    exception
       when Fault: others =>
@@ -208,8 +207,7 @@ package body Video.Lib is
       Result         : constant Boolean := Presets (Which_Preset).Is_Set;
 
    begin
-      return Log_Here (Result,
-         Debug or Trace_Pre_Post_Conditions or not Result,
+      return Log_Here (Result, Trace_Pre_Post (Result, Debug),
          "Which_Preset " & Which_Preset'img &
          " Preset_ID " & Presets (Which_Preset).Image);
    end Have_Preset;
@@ -267,9 +265,10 @@ package body Video.Lib is
    ) return Boolean is
    -------------------------------------------------------------------------
 
+      Result   : constant Boolean := Preset_ID.Is_Set;
+
    begin
-      return Log_Here (Preset_ID.Is_Set,
-         Debug or Trace_Pre_Post_Conditions,
+      return Log_Here (Result, Debug,
          "Preset_ID " & Preset_ID.Image & " from " & From);
    end Is_Set;
 
@@ -326,36 +325,58 @@ package body Video.Lib is
 
       if Ada_Lib.Options.Has_Option (Option, Options_With_Parameters,
             Options_Without_Parameters) then
-         case Option.Option is
+         case Option.Kind is
 
-            when Debug_Option =>
-               Options.Trace_Parse (Iterator);
+            when Ada_Lib.Options.Plain =>
 
-            when 'd' =>
-               Options.Directory.Construct (Iterator.Get_Parameter);
+               case Option.Option is
 
---          when 'p' => get it from configuration state
---             Options.Port_Number := Port_Type (
---                Ada_Lib.Socket_IO.Port_Type (Iterator.Get_Integer));
+                  when Debug_Option =>
+                     Options.Trace_Parse (Iterator);
 
-            when 'r' =>    -- remote camera
-               Options.Location := Remote;
+                  when 'd' =>
+                     Options.Directory.Construct (Iterator.Get_Parameter);
 
---          when 'S' =>    -- simulate Standard.Camera
---             if    Options.Location = Remote and then
---                   not Ada_Lib.Options.Ada_Lib_Environment.Help_Test then
---                Options.Bad_Option (
---                   "Remote option (r) and Simulate (E) are incompatable at " &
---                   Here);
---             end if;
---             Options.Simulate := True;
+      --          when 'p' => get it from configuration state
+      --             Options.Port_Number := Port_Type (
+      --                Ada_Lib.Socket_IO.Port_Type (Iterator.Get_Integer));
 
-            when Others =>
-               Log_Exception (Log_Id);
-               raise Failed with "Has_Option incorrectly passed " & Option.Image;
+                  when 'r' =>    -- remote camera
+                     Options.Location := Remote;
+
+      --          when 'S' =>    -- simulate Standard.Camera
+      --             if    Options.Location = Remote and then
+      --                   not Ada_Lib.Options.Ada_Lib_Environment.Help_Test then
+      --                Options.Bad_Option (
+      --                   "Remote option (r) and Simulate (E) are incompatable at " &
+      --                   Here);
+      --             end if;
+      --             Options.Simulate := True;
+
+                  when Others =>
+                     Log_Exception (Log_Id);
+                     raise Failed with "Has_Option incorrectly passed " & Option.Image;
+
+               end case;
+
+            when Ada_Lib.Options.Modified =>
+
+               case Option.Option is
+
+                  when 'N' =>
+                     Configuration.No_Camera;
+
+                  when others =>
+                     Log_Exception (Trace_Options or Debug, " other option" &
+                        Option.Image);
+                     raise Failed with "Has_Option incorrectly passed " &
+                        Option.Image;
+               end case;
+
+            when Ada_Lib.Options. Nil_Option =>
+               pragma Assert (False, "unexpected kind");
 
          end case;
-
          return Log_Out (True, Log_Id, " option" & Option.Image & " handled");
       else
          return Log_Out (False, Log_Id, "other " & Option.Image);
@@ -385,6 +406,8 @@ package body Video.Lib is
             Component, Ada_Lib.Options.Unmodified_Flag);
          Ada_Lib.Help.Create_Option (Debug_Option, True, "trace options",
             "trace options", Component, Ada_Lib.Options.Unmodified_Flag);
+         Ada_Lib.Help.Create_Option ('N', False, "",
+            "No Camera attached", Component, Ada_Lib.Help.Modifier);
          New_Line;
 
       when Ada_Lib.Options.Trace_Mode =>
@@ -395,7 +418,7 @@ package body Video.Lib is
          Put_Line ("      a               all");
          Put_Line ("      d               Video.Lib.Debug: Library_Debug");
          Put_Line ("      s               " &
-            "Configuration.State.Debug: Configuration_State_Debug");
+            "Video.Lib.Debug: Configuration_State_Debug");
 
       end case;
 

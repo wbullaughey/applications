@@ -159,9 +159,9 @@ package Video.Lib is
    function Initialize (
      Options                     : in out Video_Lib_Nested_Options_Type;
      From                        : in     String := Ada_Lib.Trace.Here
-   ) return Boolean
-   with pre    => not Options.Verify_Step (Ada_Lib.Options.Initialized),
-        post   => Options.Verify_Step (Ada_Lib.Options.Initialized);
+   ) return Boolean;
+-- with pre    => not Options.Verify_Step (Ada_Lib.Options.Initialized),
+--      post   => Options.Verify_Step (Ada_Lib.Options.Initialized);
 
 -- overriding
 -- procedure Post_Process (
