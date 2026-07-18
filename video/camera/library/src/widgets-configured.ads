@@ -9,7 +9,6 @@ with Gnoga.Gui.Element.Form;
 with Gnoga.Gui.Element.Table;
 with Gnoga.Gui.View;
 with Gnoga.GUI.Window;
-with Widgets.Control;
 with Widgets.Generic_Table;
 
 ------------------------------------------------------------------------------

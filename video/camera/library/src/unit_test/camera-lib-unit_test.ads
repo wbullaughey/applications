@@ -22,9 +22,7 @@ with Video.Lib;
 package Camera.Lib.Unit_Test is
 
    use type Camera.Commands.Camera_Class_Access;
--- use type Address_Constant_Access;
--- use type Port_Type;
--- use type Video.Lib.Location_Type;
+   use type Camera.Base.Configuration_Class_Access;
 
    Failed               : exception;
 
@@ -55,9 +53,11 @@ package Camera.Lib.Unit_Test is
    type With_Camera_No_GNOGA_Test_Type
          is abstract new Ada_Lib.Unit_Test.Test_Cases.Test_Case_Type with record
       Brand                : Brand_Type := PTZ_Optics_Camera;
+      Camera_ID            : Camera_ID_Type := Default_Camera_ID;
       Camera_Info          : Camera_Info_Type;
 --    Camera_State         : Standard.Configuration.Camera.State.State_Type;
-      Configuration        : Standard.Camera.Base.Configuration_Type;
+      Configuration        : Standard.Camera.Base.
+                              Configuration_Class_Access := Null;
 --    Configuration_Setup  : Standard.Configuration.Camera.Setup.Setup_Type;
 --    Configuration_State  : Standard.Configuration.Camera.State.State_Type;
       Load_State           : Boolean := True;
@@ -85,13 +85,15 @@ package Camera.Lib.Unit_Test is
 --    Test                       : in     With_Camera_No_GNOGA_Test_Type
 -- ) return Boolean;
 
-   function Have_Camera_Address (
+   function Has_Video_Address (
       Test                       : in     With_Camera_No_GNOGA_Test_Type
-   ) return Boolean;
+   ) return Boolean
+   with Pre => Test.Test_Has_Configuration;
 
-   function Have_Video_Address (
-      Test                       : in     With_Camera_No_GNOGA_Test_Type
-   ) return Boolean;
+-- function Has_Video_Address (
+--    Test                       : in     With_Camera_No_GNOGA_Test_Type
+-- ) return Boolean
+-- with Pre -> Test_Has_Configuration;
 
    overriding
    procedure Set_Up (
@@ -109,22 +111,27 @@ package Camera.Lib.Unit_Test is
       Test                       : in out With_Camera_No_GNOGA_Test_Type
    ) with Post => Test.Verify_Tear_Down;
 
+   function Test_Has_Configuration (
+      Test                       : in     With_Camera_No_GNOGA_Test_Type
+   ) return Boolean;
+
    type Camera_Lib_GNOGA_Test_Type (
       Initialize_GNOGA     : Boolean) is abstract new
                               Ada_Lib.GNOGA.Unit_Test.GNOGA_Tests_Type (
                                  Initialize_GNOGA  => Initialize_GNOGA,
                                  Test_Driver       => False) with record
 --    Camera_State         : aliased State.State_Type;
-      Configuration        : aliased Standard.Camera.Base.Configuration_Type;
+      Configuration        : Standard.Camera.Base.
+                                 Configuration_Class_Access := Null;
 --    Configuration_Setup  : Standard.Configuration.Camera.Setup.Setup_Type;
 --    Configuration_State  : Standard.Configuration.Camera.State.State_Type;
       Load_State           : Boolean := True;
    end record;
 
-   overriding
-   procedure Set_Up (
-      Test                       : in out Camera_Lib_GNOGA_Test_Type
-   ) with Post => Test.Verify_Set_Up;
+-- overriding
+-- procedure Set_Up (
+--    Test                       : in out Camera_Lib_GNOGA_Test_Type
+-- ) with Post => Test.Verify_Set_Up;
 
    overriding
    procedure Set_Up_With_Handler (
@@ -255,7 +262,8 @@ package Camera.Lib.Unit_Test is
       Load_State     : in     Boolean;
       Brand          : in     Standard.Camera.Brand_Type;
       Camera_Info    : in out Camera_Info_Type;
-      Configuration  : in out Standard.Camera.Base.Configuration_Type);
+      Configuration  : in out Standard.Camera.Base.Configuration_Class_Access
+   ) with Post => Configuration /= Null;
 
    Camera_Commands_Debug         : Boolean := False;
 -- Unit_Test_Options             : Unit_Test_Options_Constant_Class_Access := Null;

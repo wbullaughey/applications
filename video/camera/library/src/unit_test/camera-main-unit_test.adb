@@ -50,9 +50,9 @@ package body Unit_Test is
    procedure Callback (
       Event                      : in out Button_Push_Event_Type);
 
-   Debug       : Boolean renames Lib.Options.Unit_Test.Camera_Main_Unit_Test.Debug;
+   Debug       : Boolean renames
+                  Lib.Options.Unit_Test.Camera_Main_Unit_Test.Debug;
    Suite_Name  : constant String := "Main";
-
 
    ---------------------------------------------------------------
    overriding

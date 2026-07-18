@@ -11,11 +11,12 @@ with Configuration.Camera.State;
 with GNOGA_Ada_Lib;
 with hex_io;
 with Video.Lib;
+--with Widgets.Control;
 
 package body Widgets.Configured is
 
    use type Ada.Tags.Tag;
-   use type Widgets.Control.Control_Card_Class_Access;
+-- use type Widgets.Control.Control_Card_Class_Access;
 
       type Update_Parameter_Type    is new Generic_Cell_Package.
                                        Update_Parameter_Type with record
@@ -495,10 +496,10 @@ put_line ("column cell address " & hex_io.hex (local_column.cell.all'address));
             ID             => Field_ID,
             Form           => Form.all,
             Value          => (if Has_Preset then
-                                 Trim (Preset.Column'img)
+                                 Trim (Preset.Get_Column'img)
                               else
                                  ""));
-         Cell.Column_Number := Preset.Column;
+         Cell.Column_Number := Preset.Get_Column;
          Cell.Column_Coordinate.Class_Name (Configuration.Camera.Coordinate_Style);
          Cell.Column_Coordinate.Parent (Cell'unchecked_access);
          Cell.Column_Coordinate.On_Focus_Out_Handler (
@@ -519,9 +520,9 @@ put_line ("column cell address " & hex_io.hex (local_column.cell.all'address));
          Table_Row               : in     Configuration.Row_Type) is
       ----------------------------------------------------------------
 
-         Connection_Data         : Camera.Main.Window_Connection_Type'class renames
-                                    Camera.Main.Window_Connection_Type'class (
-                                       Form.Connection_Data.all);
+--       Connection_Data         : Camera.Main.Window_Connection_Type'class renames
+--                                  Camera.Main.Window_Connection_Type'class (
+--                                     Form.Connection_Data.all);
          Configuration_ID        : Preset_Row_Index_Type renames
                                     Preset_Row_Index_Type (Table_Row);
          Name                    : constant String := Row.ID;
@@ -778,10 +779,10 @@ put_line ("column cell address " & hex_io.hex (local_column.cell.all'address));
             ID             => Field_ID,
             Form           => Form.all,
             Value          => (if Has_Preset then
-                                 Trim (Preset.Row'img)
+                                 Trim (Preset.Get_Row'img)
                               else
                                  ""));
-         Cell.Row_Number := Preset.Row;
+         Cell.Row_Number := Preset.Get_Row;
          Cell.Row_Coordinate.Class_Name (Configuration.Camera.Coordinate_Style);
          Cell.Row_Coordinate.Parent (Cell);
          Cell.Row_Coordinate.On_Focus_Out_Handler (Update_Handler'access);
@@ -1266,7 +1267,7 @@ not_implemented;
 --                                  Configured_Card.ID;
          Preset                  : constant Configuration.Camera.Setup.Preset_Type'class :=
                                     Configuration.Camera.Setup.Global_Camera_Setup.Get_Preset (
-                                       Camera_Configuration.Preset_ID);
+                                       Camera_Configuration.Get_Preset_ID);
 --       State                   : Camera.Configurations.State_Type
 --                                  renames Standard.Camera.Configurations.
 --                                  Get_Read_Only_Global_State.all;
@@ -1426,7 +1427,7 @@ not_implemented;
          -------------------------------------------------------------
 
          begin
-            return Preset.Column;
+            return Preset.Get_Column;
          end Row_Preset_Other_Coordinate;
 
          -------------------------------------------------------------
@@ -1482,7 +1483,7 @@ not_implemented;
          -------------------------------------------------------------
 
          begin
-            return Preset.Row;
+            return Preset.Get_Row;
          end Column_Preset_Other_Coordinate;
 
          -------------------------------------------------------------
@@ -1525,10 +1526,10 @@ not_implemented;
          declare
             Update_Parameter  : constant Update_Parameter_Type := (
                                  Column_Coordinate => Column_Cell_Coordinate,
-                                 Column_Number     => Preset.Column,
-                                 Preset_ID         => Preset.Preset_ID,
+                                 Column_Number     => Preset.Get_Column,
+                                 Preset_ID         => Preset.Get_Preset_ID,
                                  Row_Coordinate    => Row_Cell_Coordinate,
-                                 Row_Number        => Preset.Row);
+                                 Row_Number        => Preset.Get_Row);
          begin
             Log_Here (Debug, "update parameters: " &
                " column corrdinate" & Update_Parameter.Column_Coordinate'img &
@@ -1622,25 +1623,27 @@ not_implemented;
          else
             Log_Here (Debug);
             declare
---             Column_Cell       :  Preset_Package.Column_Cell_Type
---                                     renames Preset_Package.Column_Cell_Type (
---                                        Configured_Card.Get_Cell (Column_Field,
---                                           Configuration_ID).all);
-               Image_Cell        : Preset_Package.Image_Cell_Type
-                                    renames Preset_Package.Image_Cell_Type (
-                                          Configured_Card.Get_Cell (Image_Field,
-                                             Configuration.Row_Type (Configuration_ID)).all);
-               Preset            : constant
-                                    Configuration.Camera.Setup.Preset_Type'class :=
-                                       (if not New_Preset_ID.Is_Set then
-                                             Configuration.Camera.Setup.Null_Preset
-                                          else
-                                             Configuration.Camera.Setup.Global_Camera_Setup.Get_Preset (
-                                                New_Preset_ID));
-               Preset_Number     : Natural := 0;
+--             Column_Cell    :  Preset_Package.Column_Cell_Type
+--                                  renames Preset_Package.Column_Cell_Type (
+--                                     Configured_Card.Get_Cell (Column_Field,
+--                                        Configuration_ID).all);
+               Image_Cell     : Preset_Package.Image_Cell_Type
+                                 renames Preset_Package.Image_Cell_Type (
+                                       Configured_Card.Get_Cell (Image_Field,
+                                          Configuration.Row_Type (Configuration_ID)).all);
+               Preset         : constant
+                                 Configuration.Camera.Setup.Preset_Type'class :=
+                                    (  if New_Preset_ID.Is_Set then
+                                          Configuration.Camera.Setup.
+                                             Global_Camera_Setup.Get_Preset (
+                                                New_Preset_ID)
+                                       else
+                                          Configuration.Camera.Setup.Null_Preset
+                                    );
+               Preset_Number  : Natural := 0;
                Path              : constant String := Configuration.Camera.State.Image_Name (
-                                    Row      => Preset.Row,
-                                    Column   => Preset.Column);
+                                    Row      => Preset.Get_Row,
+                                    Column   => Preset.Get_Column);
 --             Row_Cell          :  Preset_Package.Row_Cell_Type
 --                                     renames Preset_Package.Row_Cell_Type (
 --                                        Configured_Card.Get_Cell (Row_Field,
@@ -1653,10 +1656,10 @@ not_implemented;
                Preset_ID_Package.Update (State, Preset_Number,
                   Preset_Cell.Preset_ID_Field, Natural (New_Preset_ID.Get_ID));
 
-               Column_Package_Update (Preset_Cell, Preset.Column);
+               Column_Package_Update (Preset_Cell, Preset.Get_Column);
                Image_Cell.Image_Div.Image.URL_Source (Path);
                Image_Cell.Image_Div.Path.Construct (Path);
-               Row_Package_Update (Preset_Cell, Preset.Row);
+               Row_Package_Update (Preset_Cell, Preset.Get_Row);
             end;
          end if;
       end Update_Preset_Cell;

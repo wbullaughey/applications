@@ -1,10 +1,9 @@
 with Ada.Exceptions;
---with Ada.Streams;
+--with Ada_Lib.Configuration;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
 with Ada_Lib.Unit_Test;
 with AUnit.Assertions; use AUnit.Assertions;
 with AUnit.Test_Cases;
---with Camera.Commands.PTZ_Optics;
 with Camera.Lib.Unit_Test;
 with Interfaces;
 with Video.Lib;
@@ -244,6 +243,7 @@ package body Camera.Commands.Unit_Test is
                            Select_Maximum_Speed);
    begin
       Log_In (Debug or Trace_Set_Up_Tear_Down, "speed " & Speed'img);
+      Test.Configuration.Unload;
       Test.Camera_Info.Camera.Set_Preset (Get_Test_Preset,     -- normally same as preset 0
          Speed => Speed);
       Standard.Camera.Lib.Unit_Test.With_Camera_No_GNOGA_Test_Type (Test).Tear_Down;

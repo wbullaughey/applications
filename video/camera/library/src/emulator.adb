@@ -135,7 +135,7 @@ package body Emulator is
          Log_in (Debug, "good command first" & Command'first'img);
          delay 0.2;     -- let requester have time to do socket read
 
-hex_io.dump_8 (command'address, command'size, 32);
+--hex_io.dump_8 (command'address, command'size, 32);
          case Command (2) is
 
             when 1 =>

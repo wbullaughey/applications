@@ -245,23 +245,23 @@ package body Configuration.Camera.Setup.Unit_Tests is
       Test                       : in out AUnit.Test_Cases.Test_Case'class) is
    ---------------------------------------------------------------
 
-      Configuration_ID           : constant Configuration_ID_Type := 3;
-      Expected_Setup             : constant String :=
-                                    "expected_updated_test_setup.cfg";
-      Local_Test                 : Configuration_Tests_Type renames
-                                    Configuration_Tests_Type (Test);
-      Configuration              : Standard.Camera.Base.Configuration_Type renames
-                                    Local_Test.Configuration;
-      New_Column                 : constant := 1;
-      New_Label                  : constant String := "New Label";
-      New_Preset_ID              : constant Video.Lib.Preset_ID_Type :=
-                                    Video.Lib.Constructor (5);
-      New_Row                    : constant := 2;
-      Preset_ID                  : constant Video.Lib.Preset_ID_Type :=
-                                    Video.Lib.Constructor (3);
-      Update_Setup               : constant String := "updated_setup.cfg";
-      Updated_Setup              : Setup_Type;
-                                    -- new cfg file "updated_setup.cfg"
+      Configuration_ID  : constant Configuration_ID_Type := 3;
+      Expected_Setup    : constant String :=
+                           "expected_updated_test_setup.cfg";
+      Local_Test        : Configuration_Tests_Type renames
+                           Configuration_Tests_Type (Test);
+      Configuration     : Standard.Camera.Base.Configuration_Class_Access
+                           renames Local_Test.Configuration;
+      New_Column        : constant := 1;
+      New_Label         : constant String := "New Label";
+      New_Preset_ID     : constant Video.Lib.Preset_ID_Type :=
+                           Video.Lib.Constructor (5);
+      New_Row           : constant := 2;
+      Preset_ID         : constant Video.Lib.Preset_ID_Type :=
+                           Video.Lib.Constructor (3);
+      Update_Setup      : constant String := "updated_setup.cfg";
+      Updated_Setup     : Setup_Type;
+                           -- new cfg file "updated_setup.cfg"
 
    begin
       Log_In (Debug);
@@ -355,22 +355,22 @@ package body Configuration.Camera.Setup.Unit_Tests is
          Expected_Presets            : constant Expected_Preset_Type := (
                                        Expected_Preset_Type'(
             0  => (
-               Initial_Root_State with
+               Configuration_Package.Configuration_Type with
                Column      => 2,
                Row         => 2,
                Preset_ID   => Video.Lib.Constructor (0)),
             1  => (
-               Initial_Root_State with
+               Configuration_Package.Configuration_Type with
                Column      => 1,
                Row         => 1,
                Preset_ID   => Video.Lib.Constructor (0)),
             3  => (
-               Initial_Root_State with
+               Configuration_Package.Configuration_Type with
                Column      => 3,
                Row         => 1,
                Preset_ID   => Video.Lib.Constructor (0)),
             5 =>  (
-               Initial_Root_State with
+               Configuration_Package.Configuration_Type with
                Column      => 2,
                Row         => 1,
                Preset_ID   => Video.Lib.Constructor (0)),
@@ -378,22 +378,22 @@ package body Configuration.Camera.Setup.Unit_Tests is
          Expected_Configurations    : constant Configurations_Type (
                                        1 .. Number_Configurations) := (
             1 => (
-               Initial_Root_State with
+               Configuration_Package.Configuration_Type with
                Configuration_ID  => 1,
                Label             => Coerce ("Label 5"),
                Preset_ID         => Video.Lib.Constructor (5)),
             2 => (
-               Initial_Root_State with
+               Configuration_Package.Configuration_Type with
                Configuration_ID  => 2,
                Label             => Coerce ("Label 3"),
                Preset_ID         => Video.Lib.Constructor (3)),
             3 => (
-               Initial_Root_State with
+               Configuration_Package.Configuration_Type with
                Configuration_ID  => 3,
                Label             => Coerce ("Label 1"),
                Preset_ID         => Video.Lib.Constructor (1)),
             4 => (
-               Initial_Root_State with
+               Configuration_Package.Configuration_Type with
                Configuration_ID  => 4,
                Label             => Coerce ("Label 0"),
                Preset_ID         => Video.Lib.Constructor (0)),

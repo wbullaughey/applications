@@ -47,7 +47,7 @@ package body Camera.Lib.Base.Test is
       Test                       : in out AUnit.Test_Cases.Test_Case'class)
    with Pre => Video.Lib.Camera_Configured and then
                Camera.Lib.Unit_Test.With_Camera_No_GNOGA_Test_Type (
-                  Test).Have_Camera_Address;
+                  Test).Has_Video_Address;
 
    Debug       : Boolean renames Options.Unit_Test.Camera_Lib_Unit_Test.
                   Base_Debug;
@@ -363,12 +363,12 @@ package body Camera.Lib.Base.Test is
 -- begin
 --    return (case Global_Camera_Lib_Options.Location is
 --
---       when Configuration.State.Local =>
+--       when Video.Lib.Local =>
 --          Global_Camera_Lib_Options.
 --            URL_Address.Coerce &
 --             Global_Camera_Lib_Options.Port_Number'img,
 --
---       when Configuration.State.Remote =>
+--       when Video.Lib.Remote =>
 --          PTZ_Optics_Remote_URL_Address & Remote_Port);
 -- end URL;
 

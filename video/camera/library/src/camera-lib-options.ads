@@ -128,6 +128,7 @@ package Camera.Lib.Options is
 -- end Camera_Main;
 --
    package Configuration_Options is
+      Camera_Debug               : aliased Boolean := False;
       Setup_Debug                : aliased Boolean := False;
       State_Debug                : aliased Boolean := False;
    end Configuration_Options;

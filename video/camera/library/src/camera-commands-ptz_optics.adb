@@ -279,7 +279,8 @@ package body Camera.Commands.PTZ_Optics is
                                     Selected_Command.Command;
 
    begin
-      Log_In (Debug, "Command " & Command'img);
+      Log_In (Debug, "Command " & Command'img &
+         " timeout " & Selected_Command.Response_Timeout'img);
       Lib.Base.Apply_Parameters (Buffer, Options);
       Camera.Write (Buffer ( 1 .. Selected_Command.Length));
       Get_Ack := Selected_Command.Get_Ack;

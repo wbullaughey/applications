@@ -63,6 +63,18 @@ return 0;
       return Key.Value;
    end Camera_ID_Hash;
 
+   ----------------------------------------------------------------
+   function Default_Camera_ID
+   return Camera_ID_Type is
+   ----------------------------------------------------------------
+
+   begin
+      return (
+         Default_ID  => True,
+         Set         => True,
+         Value       => 0);
+   end Default_Camera_ID;
+
    -------------------------------------------------------------------------
    procedure Dump (
       Camera_ID                  : in        Camera_ID_Type) is
@@ -74,7 +86,7 @@ return 0;
 
    -------------------------------------------------------------------------
    function Has_Location (
-      Location       : in     Configuration.State.Location_Type
+      Location       : in     Video.Lib.Location_Type
    ) return Boolean is
    -------------------------------------------------------------------------
 
@@ -326,5 +338,6 @@ begin
 --Elaborate := True;
 --Trace_Options := True;
 --Trace_Pre_Post_Conditions := True;
-   Log_Here (Elaborate or else Trace_Options or else Trace_Pre_Post_Conditions);
+   Log_Here (Elaborate or else Trace_Options or else
+      Trace_Pre_Post_Conditions or else Trace_Pre_Post_False);
 end Camera;

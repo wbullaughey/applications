@@ -8,7 +8,7 @@ package body Camera.Lib.Options.Unit_Test is
 
    Debug                   : Boolean renames
                               Camera_Lib_Unit_Test.Unit_Test_Debug;
-   Initialize_Recursed     : Boolean := False;
+-- Initialize_Recursed     : Boolean := False;
    Process_Option_Recursed : Boolean := False;
 -- Program_Help_Recursed   : Boolean := False;
 
@@ -59,26 +59,26 @@ not_implemented;
 return "";
    end Image;
 
-   ----------------------------------------------------------------------------
-   overriding
-   function Initialize (
-     Options                     : in out Camera_Unit_Test_Program_Options_Type;
-     From                        : in     String := Standard.Ada_Lib.Trace.Here
-   ) return Boolean is
-   ----------------------------------------------------------------------------
-
-   begin
-      Log_In_Checked (Initialize_Recursed, Debug or Trace_Options,
-         Tag_Name ("options", Camera_Unit_Test_Program_Options_Type'class (
-            Options)'tag));
-
-      return Log_Out_Checked (Initialize_Recursed,
---           Options.Camera_Lib_Nested_Options.Initialize (From) and then
---           Options.Nested_Ada_Lib_Unit_Test_Options.Initialize (From) and then
-             Camera.Lib.Unit_Test.Camera_Lib_Unit_Test_Program_Options_Type (
-               Options).Initialize (From),
-             Debug or Trace_Options);
-   end Initialize;
+--   ----------------------------------------------------------------------------
+--   overriding
+--   function Initialize (
+--     Options                     : in out Camera_Unit_Test_Program_Options_Type;
+--     From                        : in     String := Standard.Ada_Lib.Trace.Here
+--   ) return Boolean is
+--   ----------------------------------------------------------------------------
+--
+--   begin
+--      Log_In_Checked (Initialize_Recursed, Debug or Trace_Options,
+--         Tag_Name ("options", Camera_Unit_Test_Program_Options_Type'class (
+--            Options)'tag));
+--
+--      return Log_Out_Checked (Initialize_Recursed,
+----           Options.Camera_Lib_Nested_Options.Initialize (From) and then
+----           Options.Nested_Ada_Lib_Unit_Test_Options.Initialize (From) and then
+--             Camera.Lib.Unit_Test.Camera_Lib_Unit_Test_Program_Options_Type (
+--               Options).Initialize (From),
+--             Debug or Trace_Options);
+--   end Initialize;
 
    ----------------------------------------------------------------------------
    overriding

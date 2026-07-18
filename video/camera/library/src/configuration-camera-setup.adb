@@ -9,11 +9,10 @@ with Ada_Lib.String_Quote; use Ada_Lib.String_Quote;
 with ADA_LIB.Strings;use Ada_Lib.Strings;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
 with Camera.Lib.Options;
---with Camera.Lib.Options.Unit_Test;
 
 package body Configuration.Camera.Setup is
 
---pragma Elaborate (Ada_Lib.Parser);
+   use type Video.Lib.Preset_Range_Type;
 
    procedure Free is new Ada.Unchecked_Deallocation (
       Configurations_Type,
@@ -73,7 +72,7 @@ package body Configuration.Camera.Setup is
          Put_Line ("Preset" & Preset'img);
          Setup.Presets (Preset).Dump;
       end loop;
-      Put_Line ("Loaded " & Setup.Loaded'img);
+      Put_Line ("Loaded " & Setup.Is_Loaded'img);
       Put_Line ("Modified " & Setup.Modified'img);
    end Dump;
 
@@ -114,6 +113,46 @@ package body Configuration.Camera.Setup is
       end if;
    end Dump;
 
+   ----------------------------------------------------------------
+   function Get_Column (
+      Preset               : in     Preset_Type
+   ) return Column_Type is
+   ----------------------------------------------------------------
+
+   begin
+      return Preset.Column;
+   end Get_Column;
+
+   ----------------------------------------------------------------
+   function Get_Preset_ID (
+      Configuration        : in     Configuration_Type
+   ) return Standard.Camera.Preset_ID_Type is
+   ----------------------------------------------------------------
+
+   begin
+      return Configuration.Preset_ID;
+   end Get_Preset_ID;
+
+   ----------------------------------------------------------------
+   function Get_Preset_ID (
+      Preset               : in     Preset_Type
+   ) return Standard.Camera.Preset_ID_Type is
+   ----------------------------------------------------------------
+
+   begin
+      return Preset.Preset_ID;
+   end Get_Preset_ID;
+
+   ----------------------------------------------------------------
+   function Get_Row (
+      Preset               : in     Preset_Type
+   ) return Row_Type is
+   ----------------------------------------------------------------
+
+   begin
+      return Preset.Row;
+   end Get_Row;
+
 -- ----------------------------------------------------------------
 -- function File_Path
 -- return String is
@@ -132,6 +171,27 @@ package body Configuration.Camera.Setup is
 --            else
 --                Default_Setup);
 -- end File_Path;
+
+   ----------------------------------------------------------------
+   procedure Free (
+      Configurations          : in     Configurations_Type) is
+   ----------------------------------------------------------------
+
+   begin
+      Log_Here (Debug);
+   end Free;
+
+   ----------------------------------------------------------------
+   procedure Free (
+      Setup                   : in     Setup_Type) is
+   ----------------------------------------------------------------
+
+   begin
+      Log_Here (Debug);
+      if Setup.Configurations /= Null then
+         Free (Setup.Configurations.all);
+      end if;
+   end Free;
 
    ----------------------------------------------------------------
    function Get_Configuration (
@@ -153,10 +213,10 @@ package body Configuration.Camera.Setup is
 
    begin
       Log_Here (Debug, "Preset_Id " & Preset_Id.Get_ID'img);
-      return (if not Preset_ID.Is_Set then
-            Null_Preset
+      return (if Preset_ID.Is_Set then
+            Setup.Presets (Preset_Id.Get_ID)
          else
-            Setup.Presets (Preset_Id.Get_ID));
+            Null_Preset);
    end Get_Preset;
 
    ----------------------------------------------------------------
@@ -234,19 +294,35 @@ package body Configuration.Camera.Setup is
    ) return Boolean is
    ----------------------------------------------------------------
 
+      ID       : constant Video.Lib.Preset_Range_Type := Preset_Id.Get_ID;
+      Trace    : constant String := "preset id " & Preset_ID.Image & " ID" & ID'img;
+
    begin
-      Log_In (Debug, "preset id " & Preset_ID.Image);
+      Log_In (Debug, Trace);
+
+      if ID > Setup.Presets'last then
+         return Log_Out (False, Debug, "ID" & ID'img &" out of range " &
+            Setup.Presets'first'img & " .." & Setup.Presets'last'img);
+      end if;
 
       declare
-         Has_Row     : constant Boolean :=
-                        Setup.Presets (Preset_Id.Get_ID).Row /= Row_Not_Set;
-         Result      : constant Boolean :=
-                        Preset_ID.Is_Set and then
-                        Has_Row;
+         Row         : constant Row_Type := Setup.Presets (ID).Row;
+         Has_Row     : constant Boolean := Row /= Row_Not_Set;
+         Result      : constant Boolean := Preset_ID.Is_Set and then Has_Row;
+
       begin
          return Log_Out (Result, Debug, "Is_Set " & Preset_ID.Is_Set'img &
-            " Has_Row " & Has_Row'img);
+            " Has_Row " & Has_Row'img &
+            " ID" & ID'img & " row" & Row'img);
       end;
+
+   exception
+
+      when others =>
+         Log_Exception (Debug, Trace & " presets range " &
+            Setup.Presets'first'img & " .." & Setup.Presets'last'img);
+         raise;
+
    end Has_Preset;
 
 -- ----------------------------------------------------------------
@@ -343,7 +419,7 @@ package body Configuration.Camera.Setup is
 
                   -- put preset in to presets array
                   Setup.Presets (Preset_Number) := Preset_Type'(
-                        Initial_Root_State with
+                        Configuration_Package.Configuration_Type with
                      Column      => Column,
                      Row         => Row,
                      Preset_ID   => Video.Lib.Constructor (Preset_Number));
@@ -402,7 +478,7 @@ package body Configuration.Camera.Setup is
                      end if;
                   end if;
                   Setup.Configurations (Configuration_ID) := (
-                     Initial_Root_State with
+                     Configuration_Package.Configuration_Type with
                      Configuration_ID  => Configuration_ID,
                      Label             => Ada_Lib.Strings.Unlimited.Coerce (Label),
                      Preset_ID         => Preset_ID);
@@ -412,7 +488,7 @@ package body Configuration.Camera.Setup is
       end loop;
 
       Config.Close;
-      Setup.Loaded := True;
+      Setup.Set_Loaded (True);
       Log_Out (Debug);
 
    exception
@@ -515,7 +591,8 @@ package body Configuration.Camera.Setup is
    ----------------------------------------------------------------
 
    begin
-      Log_In (Debug, Setup.Loaded'img & " Save_Changes " & Save_Changes'img &
+      Log_In (Debug, Setup.Is_Loaded'img &
+         " Save_Changes " & Save_Changes'img &
          " modified " & Setup.Modified'img);
 
       if Setup.Is_Loaded then
@@ -523,7 +600,7 @@ package body Configuration.Camera.Setup is
             Setup.Update (State);
             Setup.Modified := False;
          end if;
-         Setup.Loaded := False;
+         Setup.Set_Loaded (False);
          Free (Setup.Configurations);
          Free (Setup.Presets);
       end if;

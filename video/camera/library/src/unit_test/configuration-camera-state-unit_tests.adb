@@ -138,9 +138,13 @@ package body Configuration.Camera.State.Unit_Tests is
 
    begin
       Log_In (Debug or Trace_Set_Up_Tear_Down);
+      Test.Configuration := new Standard.Camera.Base.Configuration_Type;
       Test.Load_State := False;
       Standard.Camera.Lib.Unit_Test.With_Camera_No_GNOGA_Test_Type (Test).Set_Up ;
-      Log_Out (Debug or Trace_Set_Up_Tear_Down);
+      Standard.Camera.Configurations.Set_State (
+         Standard.Camera.Default_Camera_ID, Test.Configuration);
+      Log_Out (Debug or Trace_Set_Up_Tear_Down,
+         " configuration " & Image (Test.Configuration.all'address));
 
    exception
       when Fault: others =>
@@ -204,8 +208,8 @@ package body Configuration.Camera.State.Unit_Tests is
 --                         Get_Camera_Unit_Test_Constant_Options;
 
       Configuration
-                  : Standard.Camera.Base.Configuration_Type renames
-                     Local_Test.Configuration;
+                  : Standard.Camera.Base.Configuration_Class_Access
+                     renames Local_Test.Configuration;
       Configuration_Path
                   : constant String := "test_configuration.cfg";
       Configuration_Default_Path
@@ -213,6 +217,7 @@ package body Configuration.Camera.State.Unit_Tests is
    begin
       Log_In (Debug);
       Configuration.Load (Configuration_Path, Camera_Index => 1);
+      Standard.Camera.Configurations.Clear_Configuration;
       Configuration.Load (Configuration_Default_Path, Camera_Index => 1);
       Log_Out (Debug);
 

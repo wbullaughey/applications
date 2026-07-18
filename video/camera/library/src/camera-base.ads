@@ -1,4 +1,5 @@
 with Ada.Exceptions;
+with Ada_lib.Configuration;
 with Ada_Lib.Options;
 with Ada_Lib.Strings.Unlimited;
 with Camera.Commands;
@@ -12,15 +13,15 @@ package Camera.Base is
 
    Failed                        : exception;
 
-   type Configuration_Type          is tagged private;
+   type Configuration_Type    is new Ada_lib.Configuration.
+                                    Configuration_Type with private;
    type Configuration_Access        is access Configuration_Type;
+   type Configuration_Constant_Class_Access
+                                    is access constant Configuration_Type'class;
    type Configuration_Class_Access  is access all Configuration_Type'class;
 
--- function Allocate
--- return Configuration_Access;
-
    procedure Deallocate (
-      Configuration        : in     Configuration_Access);
+      Configuration        : in out Configuration_Type);
 
    function Get_Camera (
       Configuration        : in     Configuration_Type
@@ -52,48 +53,9 @@ package Camera.Base is
    ) return access Standard.Configuration.Camera.State.State_Type
    with Pre    => Configuration.Has_Configuration;
 
--- function Get_Configurations_Tilt_Speed (
---    Configuration       : in     Configuration_Type
--- ) return Data_Type ;
---
--- function Get_Current_Camera_ID
--- return Camera_ID_Type;
-
--- function Get_Location (
---    Configuration       : in     Configuration_Type
--- ) return Video.Lib.Location_Type;
---
--- function Get_Number_Columns (
---    Configuration       : in     Configuration_Type
--- ) return Standard.Configuration.Column_Type;
---
--- function Get_Number_Configurations (
---    Configuration       : in     Configuration_Type
--- ) return Standard.Configuration.Configuration_ID_Type;
---
--- function Get_Number_Rows (
---    Configuration       : in     Configuration_Type
--- ) return Standard.Configuration.Row_Type;
---
--- function Get_Setup_Path (
---    Configuration     : in     Configuration_Type
--- ) return String;
---
--- function Get_Simulate (
---    Configuration     : in     Configuration_Type
--- ) return Boolean;
---
--- function Get_State_Path (
---    Configuration     : in     Configuration_Type
--- ) return String;
-
    function Get_Video_Port (
       Configuration     : in     Configuration_Type
    ) return Video.Lib.Port_Type;
-
--- function Has_Camera_State (
---    Configuration      : in     Configuration_Type
--- ) return Boolean;
 
    function Has_Configuration_Setup (
       Configuration      : in     Configuration_Type
@@ -103,26 +65,9 @@ package Camera.Base is
       Configuration      : in     Configuration_Type
    ) return Boolean;
 
--- function Has_Current_Camera_ID
--- return Boolean;
-
--- function Has_Location (
---    Configuration      : in     Configuration_Type
--- ) return Boolean;
-
-   function Have_Video_Address (
+   function Has_Video_Address (
       Configuration      : in     Configuration_Type
    ) return Boolean;
-
--- function Has_Image (
---    Row                  : in     Configuration.Row_Type;
---    Column               : in     Configuration.Column_Type
--- ) return Boolean;
---
--- function Image_Path (
---    Row                  : in     Configuration.Row_Type;
---    Column               : in     Configuration.Column_Type
--- ) return String;
 
    procedure Load (
       Configuration        : in out Configuration_Type;
@@ -136,25 +81,6 @@ package Camera.Base is
    procedure Load_State (
       Configuration        : in out Configuration_Type;
       Path                 : in     String);
-
--- procedure Open_Camera (
---    Configuration       : in out Configuration_Type;
---    Description       : in     Ada_Lib.Strings.String_Constant_Access);
-
--- procedure Set_Configuration_Setup (
---    Configuration        : in out Configuration_Type;
---    Configuration_Setup  : in     Standard.Configuration.Camera.Setup.
---                                     Setup_Access);
-
--- procedure Set_Configuration_State (
---    Configuration        : in out Configuration_Type;
---    Configuration_State  : in     Standard.Configuration.Camera.State.
---                                     State_Access);
-
--- procedure Set_Mouse_Action (
---    Configuration        : in     Configuration_Type;
---    Action               : in     Mouse_Click_Action_Type
--- );
 
    type Configurations_Type is tagged limited private;
    type Camera_Read_Only_State_Access is access constant Configurations_Type;
@@ -191,13 +117,17 @@ package Camera.Base is
 
 private
 
-   type Configuration_Type is tagged record
+   type Configuration_Setup_Access
+                        is access Configuration.Camera.Setup.Setup_Type;
+   type Configuration_State_Access
+                        is access Configuration.Camera.State.State_Type;
+
+   type Configuration_Type    is new Ada_lib.Configuration.
+                                    Configuration_Type with record
       Camera_ID            : Camera_ID_Type;
       Camera_Name          : Ada_Lib.Strings.Unlimited.String_Type;
-      Configuration_Setup  : access Configuration.Camera.Setup.Setup_Type :=
-                              Null;
-      Configuration_State  : access Configuration.Camera.State.State_Type :=
-                              Null;
+      Configuration_Setup  : Configuration_Setup_Access := Null;
+      Configuration_State  : Configuration_State_Access := Null;
       Default_Camera_Pan   : Absolute_Type;
       Default_Camera_Pan_Speed
                            : Property_Type;

@@ -31,7 +31,8 @@ package body Camera.Configurations is
    use type State_Package.Cursor;
 
    Current_Camera_ID : Camera_ID_Type := Null_Camera_ID;
-   Debug             : Boolean renames Lib.Options.Camera_Options.States_Debug;
+   Debug             : Boolean renames
+                        Lib.Options.Configuration_Options.Camera_Debug;
    States            : State_Package.Map;
 
    ----------------------------------------------------------------
@@ -58,6 +59,32 @@ not_implemented;
 --    return Camera_State.Window_Connection;
 return null;
    end Allocate_Window_Connection;
+
+   ----------------------------------------------------------------
+   procedure Clear_Configuration is
+   ----------------------------------------------------------------
+
+      -------------------------------------------------------------
+      procedure Process (
+         Position       : in  State_Package.Cursor) is
+      -------------------------------------------------------------
+
+         Configuration  : constant Base.Configuration_Class_Access :=
+                           State_Package.Reference (States, Position);
+      begin
+         Log_Here (Debug,
+            Tag_Name ("configuration tag", Configuration.all'tag) &
+            " address " & Ada_Lib.Strings.Image (Configuration.all'address));
+         Configuration.Deallocate;
+      end Process;
+      -------------------------------------------------------------
+
+   begin
+      Log_In (Debug);
+      State_Package.Iterate (States, Process'access);
+      State_Package.Clear (States);
+      Log_Out (Debug);
+   end Clear_Configuration;
 
    ----------------------------------------------------------------
    function Get_Camera_Configuration_Setup (
@@ -164,8 +191,7 @@ return null;
         Result   : constant Boolean := Configuration.Has_Configuration_Setup;
 
      begin
-        return Log_Here (Result,
-           Debug or else Trace_Pre_Post_Conditions or else not Result);
+        return Log_Here (Result, Trace_Pre_Post (Result, Debug));
      end Has_Camera_Configuration_Setup;
 
      ----------------------------------------------------------------
@@ -179,8 +205,7 @@ return null;
         Result   : constant Boolean := Configuration.Has_Configuration;
 
      begin
-        return Log_Here (Result,
-           Debug or else Trace_Pre_Post_Conditions or else not Result);
+        return Log_Here (Result, Trace_Pre_Post (Result, Debug));
      end Has_Camera_Configuration_State;
 
      ----------------------------------------------------------------
@@ -192,8 +217,7 @@ return null;
          Result      : constant Boolean :=
                         Camera_ID.Set or else Current_Camera_ID.Set;
      begin
-        return Log_Here (Result,
-           Debug or else Trace_Pre_Post_Conditions or else not Result,
+        return Log_Here (Result, Trace_Pre_Post (Result, Debug),
            Camera_ID.Image & Current_Camera_ID.Image);
      end Has_Camera_ID;
 
@@ -209,8 +233,7 @@ return null;
                            State_Package.Find (States, Check_Camera_ID) /=
                               State_Package.No_Element;
    begin
-      return Log_Here (Result,
-         Debug or else Trace_Pre_Post_Conditions or else not Result,
+      return Log_Here (Result, Trace_Pre_Post (Result, Debug),
          "using " & Check_Camera_ID.Image &
          (if Result then
             ""
@@ -232,18 +255,23 @@ return null;
                            else
                               Current_Camera_ID);
    begin
-      Log_Here (Debug, " Current_Camera_ID " & Current_Camera_ID.Image);
+      Log_Here (Debug, " Current_Camera_ID " & Current_Camera_ID.Image &
+         " Camera_ID_Set " & Camera_ID_Set'img &
+         " camera id " & Camera_ID.Image &
+         " check camera id " & Check_Camera_ID.Image &
+         " Null_Camera_ID " & Null_Camera_ID.Image);
       return Check_Camera_ID;
    end Resolve_Camera_ID;
 
-  ----------------------------------------------------------------
-  procedure Set_Current_Camera_ID (
-     Camera_ID   : in     Camera_ID_Type) is
-  ----------------------------------------------------------------
-
-  begin
-     Current_Camera_ID := Camera_ID;
-  end Set_Current_Camera_ID;
+------------------------------------------------------------------
+--procedure Set_Current_Camera_ID (
+--   Camera_ID   : in     Camera_ID_Type) is
+------------------------------------------------------------------
+--
+--begin
+--   Log_Here (Debug, "Camera_ID " & Camera_ID.Image);
+--   Current_Camera_ID := Camera_ID;
+--end Set_Current_Camera_ID;
 
    ----------------------------------------------------------------
    procedure Set_State (
@@ -252,7 +280,9 @@ return null;
    ----------------------------------------------------------------
 
    begin
-      Log_In (Debug, "ID:" & Camera_ID'img);
+      Log_In (Debug, "ID:" & Camera_ID.Image &
+         Tag_Name ("configuration tag", Configuration'tag) &
+         " address " & Ada_Lib.Strings.Image (Configuration'address));
       State_Package.Insert (States, Camera_ID,
          Base.Configuration_Class_Access (Configuration));
       Current_Camera_ID := Camera_ID;
@@ -270,6 +300,6 @@ return null;
    end State_Equal;
 
 begin
-   --Debug := False;
+--Debug := True;
    Log_Here (Debug);
 end Camera.Configurations;

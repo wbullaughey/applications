@@ -3,7 +3,7 @@ with Ada_Lib.GNOGA;
 with Ada_Lib.Options;
 with Ada_Lib.Socket_IO.Stream_IO;
 with Ada_Lib.Trace;
-with Configuration.State;
+--with Configuration.State;
 --with Gnoga_Ada_Lib;
 with Hex_IO;
 with Interfaces;
@@ -108,7 +108,7 @@ package Camera is
       Brand          : Brand_Type := PTZ_Optics_Camera;
       Camera_Address : Address_Constant_Access := Null;
       Camera_ID      : Camera_ID_Type;
---    Location       : Configuration.State.Location_Type :=
+--    Location       : Video.Lib.Location_Type :=
 --                      Video.Lib.No_Location;
       Port_Number    : Port_Type; -- := Standard.Camera.Commands.PTZ_Optics.Port;
    end record;
@@ -186,6 +186,9 @@ package Camera is
       Address                    : in     Address_Type
    ) return Ada.Containers.Hash_Type;
 
+   function Default_Camera_ID
+   return Camera_ID_Type;
+
    procedure Dump (
       Description                : in     String;
       Data                       : in     Buffer_Type;
@@ -193,7 +196,7 @@ package Camera is
    ) renames Ada_Lib.Socket_IO.Stream_IO.Dump;
 
    function Has_Location (
-      Location       : in     Configuration.State.Location_Type
+      Location       : in     Video.Lib.Location_Type
    ) return Boolean;
 
    function Hex is new Hex_IO.Modular_Hex (Data_Type);
@@ -211,11 +214,13 @@ package Camera is
 private
 
    type Camera_ID_Type           is tagged record
+      Default_ID                 : Boolean := False;
       Set                        : Boolean := False;
       Value                      : Ada.Containers.Hash_Type;
    end record;
 
    Null_Camera_ID                : constant Camera_ID_Type := (
+      Default_ID  => False,
       Set   => False,
       Value => 0);
    Null_Options                  : constant Command_Options_Type (1 .. 0) :=

@@ -2,17 +2,20 @@ with Ada_Lib.Configuration;
 with ADA_LIB.Strings.Unlimited;use Ada_Lib.Strings.Unlimited;
 with Ada_Lib.Trace;
 with Camera.Configurations;
-with Configuration.State;
+with Video.Lib;
 
 package Configuration.Camera.State is
 
+   type Address_Key_Type      is array (Video.Lib.Location_Type) of
+                                 ADA_LIB.Strings.String_Access;
+
    type Images_Type              is array (Row_Type range <>,
-                                       Column_Type range <>) of
-                                          ADA_LIB.Strings.Unlimited.String_Type;
+                                    Column_Type range <>) of
+                                       ADA_LIB.Strings.Unlimited.String_Type;
    type Images_Access            is access Images_Type;
 
-   type State_Type               is new Configuration.State.State_Type with
-                                    private;
+   type State_Type               is new Configuration.State_Type
+                                    with private;
 
    type State_Access             is access all State_Type;
    type State_Class_Access       is access all State_Type'class;
@@ -46,10 +49,11 @@ package Configuration.Camera.State is
 
    procedure Dump (
       State                      : in     State_Type;
+      What                       : in     String := "";
       From                       : in     String := Ada_Lib.Trace.Here);
 
--- function File_Path
--- return String;
+   procedure Free (
+      State                      : in out State_Type);
 
    function Get_Brand (
       State                      : in     State_Type
@@ -96,6 +100,26 @@ package Configuration.Camera.State is
       State                      : in     State_Type'class
    ) return Row_Type;
 
+-- function Root_State_Type (
+--    Camera                     : in     State_Type
+-- ) return Ada_Lib.Socket_IO.Address_Constant_Access
+-- with Pre => Camera.Has_Video_Address;
+
+   function Get_Video_Address (
+      Camera                      : in     State_Type
+   ) return Ada_Lib.Socket_IO.Address_Constant_Access;
+
+   function Get_Video_Address_URL (
+      Camera                  : in        State_Type
+   ) return String
+   with Pre => Camera.Has_Video_Address and then
+               Camera.Is_URL_Video_Address;
+
+   function Get_Video_Port (
+      Camera                  : in        State_Type
+   ) return Video.Lib.Port_Type
+   with Pre => Camera.Has_Video_Port;
+
    function Has_Camera_ID (
       State                      : in     State_Type
    ) return Boolean;
@@ -107,6 +131,14 @@ package Configuration.Camera.State is
    ) return Boolean
    with Pre => State.Is_Loaded and then
                Check_Image (Column, Row);
+
+   function Has_Video_Address (
+      Camera                      : in     State_Type
+   ) return Boolean;
+
+   function Has_Video_Port (
+      Camera                      : in     State_Type
+   ) return Boolean;
 
    function Image_Name (
       Column                     : in     Column_Type;
@@ -126,15 +158,16 @@ package Configuration.Camera.State is
                   Column   => Column,
                   Row      => Row);
 
+   function Is_URL_Video_Address (
+      Camera                      : in     State_Type
+   ) return Boolean;
+
    overriding
    procedure Load (
       State       : in out State_Type;
       Config      : in out Ada_Lib.Configuration.Configuration_Type;
-      Location    : in     Configuration.State.Location_Type;
-      File_Name   : in     String
-   ) with Pre => not State.Is_Loaded,
-          Post => State.Is_Loaded and then
-                  State.Have_Video_Address;
+      Location    : in     Video.Lib.Location_Type;
+      File_Name   : in     String);
 
 -- procedure Set_State (
 --    State                      : in     State_Access;
@@ -150,7 +183,8 @@ package Configuration.Camera.State is
 
 private
 
-   type State_Type            is new Configuration.State.State_Type with record
+   type State_Type            is new Configuration.State_Type
+                                 with record
       Brand                   : Standard.Camera.Brand_Type :=
                                  Standard.Camera.PTZ_Optics_Camera;
       Camera_ID               : Standard.Camera.Camera_ID_Type;
@@ -164,6 +198,9 @@ private
       Number_Columns          : Column_Type;
       Number_Configurations   : Configuration_ID_Type;
       Number_Rows             : Row_Type;
+      Video_Address           : Video.Lib.Address_Constant_Access := Null;
+      Video_Port              : Video.Lib.Port_Type :=
+                                 Video.Lib.Port_Type'last;
    end record;
 
 

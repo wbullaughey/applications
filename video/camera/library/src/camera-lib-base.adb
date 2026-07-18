@@ -266,6 +266,8 @@ package body Camera.Lib.Base is
                               declare
                                  Error_Code  : constant Data_Type :=
                                                 Response (3);
+                                 Log_It      : constant Boolean :=
+                                                Debug or else Trace_Errors;
                               begin
                                  --
                                  Start_Read := Start_Read + Ack_Length;
@@ -273,11 +275,11 @@ package body Camera.Lib.Base is
                                  End_Read := Start_Read + Read_Length - 1;
                                  Camera.Socket.Read (Response (Start_Read .. End_Read),
                                     Time_Left);
-                                 if Debug then
+                                 if Log_It then
                                     Video.Lib.Dump ("response", Response (Response'first ..
                                        End_Read), Natural (Ack_Length + 1));
                                  end if;
-                                 Log_Here (Debug, "error code " & Hex (Response (3)));
+                                 Log_Here (Log_It, "error code " & Hex (Response (3)));
                                  case Error_Code is
 
                                     when 2 =>      -- bad format

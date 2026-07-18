@@ -47,13 +47,13 @@ package Camera.Lib.Options.Unit_Test is
      Options                     : in     Camera_Unit_Test_Program_Options_Type
    ) return String;
 
-   overriding
-   function Initialize (
-     Options                     : in out Camera_Unit_Test_Program_Options_Type;
-     From                        : in     String := Standard.Ada_Lib.Trace.Here
-   ) return Boolean
-   with pre    => not Options.Verify_Step (Initialized),
-        Post   => Options.Verify_Step (Initialized);
+-- overriding
+-- function Initialize (
+--   Options                     : in out Camera_Unit_Test_Program_Options_Type;
+--   From                        : in     String := Standard.Ada_Lib.Trace.Here
+-- ) return Boolean
+-- with pre    => not Options.Verify_Step (Initialized),
+--      Post   => Options.Verify_Step (Initialized);
 
    overriding
    function Process (     -- process command line options

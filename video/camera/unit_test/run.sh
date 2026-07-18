@@ -18,17 +18,27 @@ case $MODE in
    "help" | "suites")
       ;;
 
-   "remote" | "local")
-      MODE="-C single_camera.cfg $MODE"
+   "remote-camera")
+      MODE="-C test_configuration-1-remote_camera.cfg $MODE"
+      ;;
+
+
+   "local-canera")
+      MODE="-C test_configuration-1-local_camera.cfg $MODE"
+      ;;
+
+   "local-no-camera")
       ;;
 
    *)
-      MODE=-C $MODE
+      echo bad mode MODE
+      echo valid: local-camera local-no-camera remote-camera
+      exit
       ;;
 
 esac
 
-echo MODE $MODE
+#echo MODE $MODE
 
 source ../../../../global_run.sh $OUTPUT $PROGRAM $DO_TRACE $HELP_TEST $USE_DBDAEMON TRUE $MODE $*
 

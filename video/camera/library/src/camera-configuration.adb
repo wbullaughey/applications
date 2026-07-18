@@ -1,7 +1,7 @@
 --with Ada.Containers.Indefinite_Hashed_Maps;
 --with Ada.Unchecked_Deallocation;
 --with Ada_Lib.Configuration;
-with Ada_Lib.Options.Program;
+--with Ada_Lib.Options.Program;
 --with Ada_Lib.Strings; use Ada_Lib.Strings;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
 with Camera.Lib.Options;
@@ -11,17 +11,6 @@ with Camera.Lib.Options;
 
 package body Camera.Configuration is
 
--- use type Standard.Configuration.Camera.State.State_Access;
--- use type Camera.Base.Camera_State_Class_Access;
---
--- procedure Free is new Ada.Unchecked_Deallocation (
---    Name     => Standard.Configuration.Camera.Setup.Setup_Access,
---    Object   => Standard.Configuration.Camera.Setup.Setup_Type);
---
--- procedure Free is new Ada.Unchecked_Deallocation (
---    Name     => Standard.Configuration.Camera.State.State_Access,
---    Object   => Standard.Configuration.Camera.State.State_Type);
---
    Debug             : Boolean renames Lib.Options.Camera_Options.State_Debug;
 
    ----------------------------------------------------------------

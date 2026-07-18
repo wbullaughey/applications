@@ -612,8 +612,8 @@ return Null;
       Result   : constant Boolean :=
                               Window_Connection.Camera_State /= Null;
    begin
-      return Log_Here (Result,
-         Trace_Pre_Post_Conditions or not Result, "Camera state not set");
+      return Log_Here (Result, Trace_Pre_Post (Result, Debug),
+         "Camera state not set");
    end Has_Camera_State;
 
    ---------------------------------------------------------------

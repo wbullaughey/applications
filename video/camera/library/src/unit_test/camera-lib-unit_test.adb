@@ -1,4 +1,4 @@
-with Ada.Exceptions;
+--with Ada.Exceptions;
 with Ada.Text_IO;use Ada.Text_IO;
 with Ada_Lib.GNOGA;
 with Ada_Lib.Help;
@@ -7,9 +7,9 @@ with Ada_Lib.OS;
 with Ada_Lib.Strings.Unlimited; use Ada_Lib.Strings;
 with Ada_Lib.String_Quote; use Ada_Lib.String_Quote;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
-with AUnit.Assertions; use AUnit.Assertions;
 with Camera.Command_Queue;
 with Camera.Commands.PTZ_Optics;
+with Camera.Configuration;
 with Camera.Configurations;
 with Camera.Lib.Base.Command_Tests;
 with Camera.Lib.Options.Unit_Test;
@@ -20,8 +20,7 @@ with Widgets.Control.Unit_Test;
 
 package body Camera.Lib.Unit_Test is
 
--- use type Ada_Lib.Options.Mode_Type;
-
+-- use type Camera.Base.Configuration_Class_Access;
 
    Camera_Arument_Parameter: constant Ada_Lib.Options.Argument_Array := (
                               1 => Ada_Lib.Strings.Unlimited.
@@ -96,7 +95,10 @@ package body Camera.Lib.Unit_Test is
          Put_Line ("Initialize_GNOGA " &
             " Load_State " & Test.Load_State'img &
 --          " Location " & Test.Configuration.Get_Location'img &
-            " Port_Number " & Test.Configuration.Get_Video_Port'img &
+            (if Test.Configuration = Null then
+                  "no configuration"
+               else
+                  " Port_Number " & Test.Configuration.Get_Video_Port'img) &
             Quote ("Setup_Path", Test.Setup_Path) &
             Quote ("State_Path", Test.State_Path));
       end if;
@@ -127,16 +129,18 @@ package body Camera.Lib.Unit_Test is
 -- end Have_Camera;
 
    ----------------------------------------------------------------------------
-   function Have_Camera_Address (
+   function Has_Video_Address (
       Test                       : in     With_Camera_No_GNOGA_Test_Type
    ) return Boolean is
    ----------------------------------------------------------------------------
 
-      Result   : constant Boolean := Test.Configuration.Have_Video_Address;
-
+      Result   : constant Boolean := (if Test.Configuration = Null then
+                     False
+                  else
+                     Test.Configuration.Has_Video_Address);
    begin
-      return Log_Here (Result, Trace_Pre_Post (Debug));
-   end Have_Camera_Address;
+      return Log_Here (Result, Debug);
+   end Has_Video_Address;
 
    ----------------------------------------------------------------------------
    function Has_Camera_Specification
@@ -147,17 +151,21 @@ package body Camera.Lib.Unit_Test is
       return Camera_Specification.Length > 0;
    end Has_Camera_Specification;
 
-   ----------------------------------------------------------------------------
-   function Have_Video_Address (
-      Test                       : in     With_Camera_No_GNOGA_Test_Type
-   ) return Boolean is
-   ----------------------------------------------------------------------------
-
-      Configuration_State  : Standard.Camera.Base.Configuration_Type
-                              renames Test.Configuration;
-   begin
-      return Log_Here (Configuration_State.Have_Video_Address, Debug);
-   end Have_Video_Address;
+-- ----------------------------------------------------------------------------
+-- function Has_Video_Address (
+--    Test                       : in     With_Camera_No_GNOGA_Test_Type
+-- ) return Boolean is
+-- ----------------------------------------------------------------------------
+--
+--    Result   : constant Boolean := (if Test.Configuration = Null then
+--                   False
+--                else
+--                   Test.Configuration.Has_Video_Address;
+--    Configuration_State  : Standard.Camera.Base.Configuration_Type
+--                            renames Test.Configuration.all;
+-- begin
+--    return Log_Here (Configuration_State.Has_Video_Address, Debug);
+-- end Has_Video_Address;
 
    ----------------------------------------------------------------------------
    function Get_Camera_ID (
@@ -166,8 +174,7 @@ package body Camera.Lib.Unit_Test is
    ----------------------------------------------------------------------------
 
    begin
-not_implemented;
-return Null_Camera_ID;
+      return Test.Camera_ID;
    end Get_Camera_ID;
 
    ----------------------------------------------------------------------------
@@ -353,8 +360,8 @@ return null;
       case Help_Mode is
 
       when Ada_Lib.Options.Program_Mode =>
-         Ada_Lib.Help.Create_Option (Camera_Configuration, True,
-            "<camera configuration>",
+         Ada_Lib.Help.Create_Option (Camera_Configuration, False,
+            "camera configuration",
             "camera configuration file", "Camera.Lib.Unit_Test",
             Ada_Lib.Options.Unmodified_Flag);
          Ada_Lib.Help.Create_Option (Trace_Option, True, "trace options",
@@ -367,7 +374,7 @@ return null;
          Put_Line ("Camera Lib Unit Test (-" &
             Trace_Option & ")");
          Put_Line ("      a               all");
-         Put_Line ("      A               Camera.Lib.Unit_Test Debug");
+         Put_Line ("      A               Camera.Lib.Options.Unit_Test Debug");
          Put_Line ("      b               Base Command_Tests");
          Put_Line ("      B               Base Test");
          Put_Line ("      c               Widgets.Control unit_test trace");
@@ -501,13 +508,20 @@ procedure Setup_Camera (
       Load_State     : in     Boolean;
       Brand          : in     Standard.Camera.Brand_Type;
       Camera_Info    : in out Camera_Info_Type;
-      Configuration  : in out Standard.Camera.Base.Configuration_Type) is
+      Configuration  : in out Standard.Camera.Base.
+                                 Configuration_Class_Access) is
 ---------------------------------------------------------------
 
+   Have_Camera       : constant Boolean :=
+                        Standard.Configuration.Have_Camera;
    begin
       Log_In (Debug or Trace_Set_Up_Tear_Down, "load state " & Load_State'img &
-         " brand " & Brand'img);
+         " brand " & Brand'img &
+         " Have_Camera " & Have_Camera'img);
+--       " configuration address " & Ada_Lib.Strings.Image (
+--          Configuration.all'address));
 
+      Configuration := new Standard.Camera.Configuration.Configuration_Type;
       Configuration.Load (Configuration_Path, Camera_Index => 1);
 
       case Brand is
@@ -532,30 +546,40 @@ procedure Setup_Camera (
 --          "Camera_Address not initialized");
 --    end if;
 
-      if Camera_Info.Open_Camera then
-         Camera_Info.Camera.Open (
-            Configuration.Get_Camera_Address, Configuration.Get_Video_Port);
+      if Have_Camera then
+         declare
+            Camera_Address    : constant Address_Type :=
+                                 Configuration.Get_Camera_Address;
+         begin
+            if Camera_Info.Open_Camera then
+               Camera_Info.Camera.Open (
+                  Camera_Address, Configuration.Get_Video_Port);
+            end if;
+
+            Configurations.Set_State (Make_Camera_ID (
+               Camera_Address), Configuration);
+         end;
       end if;
       Log_Out (Debug or Trace_Set_Up_Tear_Down);
    end Setup_Camera;
 
-   ---------------------------------------------------------------
-   overriding
-   procedure Set_Up (
-      Test                    : in out Camera_Lib_GNOGA_Test_Type) is
-   ---------------------------------------------------------------
-
-   begin
-      Log_In (Debug or Trace_Set_Up_Tear_Down, "load state " & Test.Load_State'img);
-      Ada_Lib.GNOGA.Unit_Test.GNOGA_Tests_Type (Test).Set_Up;
-      Log_Out (Debug or Trace_Set_Up_Tear_Down);
-
-   exception
-      when Fault: others =>
-         Trace_Exception (Debug, Fault);
-         Assert (False, "exception message " & Ada.Exceptions.Exception_Message (Fault));
-
-   end Set_Up;
+-- ---------------------------------------------------------------
+-- overriding
+-- procedure Set_Up (
+--    Test                    : in out Camera_Lib_GNOGA_Test_Type) is
+-- ---------------------------------------------------------------
+--
+-- begin
+--    Log_In (Debug or Trace_Set_Up_Tear_Down, "load state " & Test.Load_State'img);
+--    Ada_Lib.GNOGA.Unit_Test.GNOGA_Tests_Type (Test).Set_Up;
+--    Log_Out (Debug or Trace_Set_Up_Tear_Down);
+--
+-- exception
+--    when Fault: others =>
+--       Trace_Exception (Debug, Fault);
+--       Assert (False, "exception message " & Ada.Exceptions.Exception_Message (Fault));
+--
+-- end Set_Up;
 
 ---------------------------------------------------------------
   overriding
@@ -570,7 +594,9 @@ procedure Setup_Camera (
 
   begin
       Log_In (Debug or Trace_Set_Up_Tear_Down, "load " & Test.Load_State'img &
-         " brand " & Test.Brand'img);
+         " brand " & Test.Brand'img &
+         " test address " & Image (Test'address));
+--       " configuration " & Image (Test.Configuration.all'address));
 
       if Test.Load_State then
          Setup_Camera (Test.Load_State, Test.Brand, Test.Camera_Info,
@@ -599,19 +625,21 @@ procedure Setup_Camera (
          " brand " & Test.Brand'img &
          " Load_State " & Test.Load_State'img &
          " Initialize_GNOGA " & Test.Initialize_GNOGA'img);
+--       " configuration address " & Ada_Lib.Strings.Image (
+--          Test.Configuration.all'address));
 
       if Test.Load_State then
          Setup_Camera (Test.Load_State, Test.Brand, Test.Camera_Info,
             Test.Configuration);
-         declare
-            Camera_State
-               : Standard.Configuration.Camera.State.State_Type renames
-                  Test.Configuration.Get_Configuration_State.all;
-         begin
-            Camera.Configurations.Set_State (
-               Make_Camera_ID (Camera_State.Get_Video_Address.all),
-               Test.Configuration'unchecked_access);
-         end;
+--       declare
+--          Camera_State
+--             : Standard.Configuration.Camera.State.State_Type renames
+--                Test.Configuration.Get_Configuration_State.all;
+--       begin
+--          Camera.Configurations.Set_State (
+--             Make_Camera_ID (Camera_State.Get_Video_Address.all),
+--             Test.Configuration'unchecked_access);
+--       end;
       end if;
       Log_Here (Debug);
       Camera_Lib_GNOGA_Test_Type (Test).Set_Up;
@@ -699,7 +727,7 @@ procedure Setup_Camera (
       Test           : in out Camera_Lib_GNOGA_Test_Type) is
    ---------------------------------------------------------------
 
-      Configuration  : Camera.Base.Configuration_Type renames
+      Configuration  : Camera.Base.Configuration_Class_Access renames
                         Test.Configuration;
    begin
       Log_In (Debug or Trace_Set_Up_Tear_Down);
@@ -712,12 +740,11 @@ procedure Setup_Camera (
                      Configuration.Get_Configuration_State;
          begin
             if Configuration_State.Is_Loaded then
-               Configuration_State.Unload;
+--             Configuration_State.Unload;
                Configuration_State.Clear_Global_Camera_State;
             end if;
          end;
 
---       Test.Configuration.Deallocate;
       end if;
 
       Gnoga.Application.Multi_Connect.End_Application;
@@ -725,6 +752,8 @@ procedure Setup_Camera (
 
 --    Ada_Lib.Test_States.Clear_Window_Connection_Data (Test.Main_Window);
       Ada_Lib.Unit_Test.Test_Cases.Test_Case_Type (Test).Tear_Down;
+      Configurations.Clear_Configuration;
+      Test.Configuration := Null;
       Log_Out (Debug or Trace_Set_Up_Tear_Down);
 
    exception
@@ -791,8 +820,20 @@ procedure Setup_Camera (
             Log_Exception (Debug or Trace_Set_Up_Tear_Down);
 
       end;
+      Test.Configuration := Null;
+      Configurations.Clear_Configuration;
       Log_Out (Debug or Trace_Set_Up_Tear_Down);
    end Tear_Down;
+
+   ----------------------------------------------------------------------------
+   function Test_Has_Configuration (
+      Test                       : in     With_Camera_No_GNOGA_Test_Type
+   ) return Boolean is
+   ----------------------------------------------------------------------------
+
+   begin
+      return Test.Configuration /= Null;
+   end Test_Has_Configuration;
 
    ----------------------------------------------------------------------------
    overriding

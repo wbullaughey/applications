@@ -1,28 +1,44 @@
 with Ada.Exceptions;
+with Ada.Text_IO; use Ada.Text_IO;
 with Ada.Unchecked_Deallocation;
 --with Ada_Lib.Configuration;
 with Ada_Lib.Directory;
 --with Ada_Lib.Options;
+with Ada_Lib.Parser;
 --with Ada_Lib.Socket_IO;
 with Ada_Lib.Strings; use Ada_Lib.Strings;
 with Ada_Lib.String_Quote; use Ada_Lib.String_Quote;
-with Ada.Text_IO; use Ada.Text_IO;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
 with AUnit.Assertions; use AUnit.Assertions;
 with Camera.Lib.Options;
 --with Camera.Configurations;
-with Video.Lib;
+--with Hex_IO;
+--with Video.Lib;
 
 package body Configuration.Camera.State is
 
--- use type Standard.Camera.Camera_ID_Type;
+   use type Video.Lib.Address_Constant_Access;
+   use type Video.Lib.Address_Kind_Type;
+   use type Video.Lib.Port_Type;
 
    procedure Free is new Ada.Unchecked_Deallocation (
       Images_Type,
       Images_Access);
 
+   Address_Key    : constant Address_Key_Type := (
+      Video.Lib.Local    => new String'("local_camera"),
+      Video.Lib.Remote   => new String'("remote_camera"),
+      Video.Lib.No_Location => new String' ("no camera"));
    Debug : Boolean renames Standard.Camera.Lib.Options.
             Configuration_Options.State_Debug;
+   Port_Key       : constant Address_Key_Type := (
+      Video.Lib.Local    => new String'("local_port"),
+      Video.Lib.Remote   => new String'("remote_port"),
+      Video.Lib.No_Location => new String' ("no camera"));
+-- Kind_Key       : constant Address_Key_Type := (
+--    Video.Lib.Local    => new String'("local_kind"),
+--    Video.Lib.Remote   => new String'("remote_kind"),
+--    Video.Lib.No_Location => new String' ("no camera"));
 
    ----------------------------------------------------------------
    function Check_Column (
@@ -40,9 +56,8 @@ package body Configuration.Camera.State is
       Result         : constant Boolean := State.Images /= Null and then
                         Column <= Number_Columns;  -- column number starts at 0
    begin
-      return Log_Here (Result,
-         Trace_Pre_Post_Conditions or not Result, "column" & Column'img &
-            " number columns" & Number_Columns'img);
+      return Log_Here (Result, Trace_Pre_Post (Result, Debug),
+         " number columns" & Number_Columns'img);
    end Check_Column;
 
    ----------------------------------------------------------------
@@ -55,8 +70,7 @@ package body Configuration.Camera.State is
       Result         : constant Boolean := Check_Column (Column) and then
                                              Check_Row (Row);
    begin
-      return Log_Here (Result,
-         Trace_Pre_Post_Conditions or not Result,
+      return Log_Here (Result, Trace_Pre_Post (Result, Debug),
          "no image for column" & Column'img &
             " row" & Row'img);
    end Check_Image;
@@ -79,7 +93,7 @@ package body Configuration.Camera.State is
                                              Row <= State.Number_Rows;
 
    begin
-      return Log_Here (Result, Trace_Pre_Post_Conditions or not Result,
+      return Log_Here (Result, Trace_Pre_Post (Result, Debug),
          "row" & Row'img &
             " number rows" & Number_Rows'img);
    end Check_Row;
@@ -107,11 +121,12 @@ package body Configuration.Camera.State is
    ----------------------------------------------------------------
    procedure Dump (
       State                      : in     State_Type;
+      What                       : in     String := "";
       From                       : in     String := Ada_Lib.Trace.Here) is
    ----------------------------------------------------------------
 
    begin
-      Put_Line ("dump Configuration state type from " & From);
+      Put_Line ("dump " & What & " from " & From);
       State.Dump (From);
       Put_Line (Quote ("  CSS Path", State.CSS_Path));
       Put_Line ("  Number Columns:" & State.Get_Number_Columns'img);
@@ -144,6 +159,16 @@ package body Configuration.Camera.State is
 --    else
 --       Default_State);
 -- end File_Path;
+
+   ----------------------------------------------------------------
+   procedure Free (
+      State                      : in out State_Type) is
+   pragma Unreferenced (State);
+   ----------------------------------------------------------------
+
+   begin
+      Log_Here (Debug or true, "not implemented");
+   end Free;
 
    ----------------------------------------------------------------
    function Get_Brand (
@@ -259,14 +284,49 @@ return Null;
    end Get_Number_Rows;
 
    ----------------------------------------------------------------
+   function Get_Video_Address (
+      Camera                      : in     State_Type
+   ) return Ada_Lib.Socket_IO.Address_Constant_Access is
+   ----------------------------------------------------------------
+
+   begin
+--Hex_IO.dump_64 (Camera.Video_Address'address,64,64, "Video_Address ");
+      Log_Here (Debug, "Video_Address " &
+         Ada_Lib.Strings.Image (Camera.Video_Address.all'address));
+
+      return Camera.Video_Address;
+   end Get_Video_Address;
+
+   ----------------------------------------------------------------
+   function Get_Video_Port (
+      Camera                      : in     State_Type
+   ) return Video.Lib.Port_Type is
+   ----------------------------------------------------------------
+
+   begin
+      return Camera.Video_Port;
+   end Get_Video_Port;
+
+   ----------------------------------------------------------------
+   function Get_Video_Address_URL (
+      Camera                      : in     State_Type
+   ) return String is
+   ----------------------------------------------------------------
+
+   begin
+      return Camera.Video_Address.URL_Address.Coerce;
+   end Get_Video_Address_URL;
+
+   ----------------------------------------------------------------
    function Has_Camera_ID (
       State                      : in     State_Type
    ) return Boolean is
    ----------------------------------------------------------------
 
+      Result   : constant Boolean := State.Camera_ID.Is_Set;
+
    begin
-      return Log_Here (State.Camera_ID.Is_Set,
-         Debug or else Trace_Pre_Post_Conditions,
+      return Log_Here (Result, Trace_Pre_Post (Result, Debug),
          "camera id" & State.Camera_ID'img);
    end Has_Camera_ID;
 
@@ -287,6 +347,28 @@ return Null;
       else
          State.Images (Row, Column).Length > 0);
    end Has_Image;
+
+   ----------------------------------------------------------------
+   function Has_Video_Address (
+      Camera                      : in     State_Type
+   ) return Boolean is
+   ----------------------------------------------------------------
+
+      Result   : constant Boolean := Camera.Video_Address /= Null;
+
+   begin
+      return Log_Out (Result, Debug);
+   end Has_Video_Address;
+
+   ----------------------------------------------------------------
+   function Has_Video_Port (
+      Camera                      : in     State_Type
+   ) return Boolean is
+   ----------------------------------------------------------------
+
+   begin
+      return Log_Here (Camera.Video_Port /= Video.Lib.Port_Type'last, Debug);
+   end Has_Video_Port;
 
    ----------------------------------------------------------------
    function Image_Name (
@@ -367,13 +449,134 @@ return Null;
 -- end Is_Loaded;
 
    ----------------------------------------------------------------
-   overriding
+   function Is_URL_Video_Address (
+      Camera                      : in     State_Type
+   ) return Boolean is
+   ----------------------------------------------------------------
+
+   begin
+      return Camera.Video_Address.Address_Kind = Ada_Lib.Socket_IO.URL;
+   end Is_URL_Video_Address;
+
+   ----------------------------------------------------------------
    procedure Load (
       State       : in out State_Type;
       Config      : in out Ada_Lib.Configuration.Configuration_Type;
-      Location    : in     Configuration.State.Location_Type;
+      Location    : in     Video.Lib.Location_Type;
       File_Name   : in     String) is
    ----------------------------------------------------------------
+
+      Reported                   : exception;
+
+      -------------------------------------------------------------
+      function Get_Config_String (
+        Key                     : in     String
+      ) return String is
+      -------------------------------------------------------------
+
+      begin
+        return Config.Get_String (Key);
+
+      exception
+        when Fault: Ada_Lib.Configuration.Failed =>
+           Trace_Exception (Debug, Fault);
+           Put_Line (Key & Quote (" not found in configuration file", File_Name));
+           raise Reported;
+
+      end Get_Config_String;
+
+      -------------------------------------------------------------
+      function Get_Parser_String (
+        Parser                  : in out Ada_Lib.Parser.Iterator_Type;
+        Field                   : in     String;
+        Do_Next                 : Boolean
+      ) return String is
+      -------------------------------------------------------------
+
+      begin
+        return Parser.Get_Value (Do_Next);
+
+      exception
+        when Fault: Ada_Lib.Parser.Underflow =>
+           Trace_Exception (Debug, Fault);
+           Put_Line (Quote ("Missing", Field) &
+              Quote (" in configuration line", Parser.Get_Original) &
+              Quote (" in ", File_Name));
+           raise Reported;
+
+      end Get_Parser_String;
+
+      -------------------------------------------------------------
+      function Load_Address
+      return Ada_Lib.Socket_IO.Address_Constant_Access is
+      -------------------------------------------------------------
+
+          Address                  : constant String :=
+                                      Get_Config_String (Address_Key (Location).all);
+          Parser                   : Ada_Lib.Parser.Iterator_Type :=
+                                      Ada_Lib.Parser.Initialize (
+                                         Value          => Address,
+                                         Seperators     => ",");
+          Kind                     : constant String := Get_Parser_String (
+                                        Parser, "camera_address_type",
+                                        Do_Next => True);
+          Camera_Address          : constant String := Get_Parser_String (
+                                        Parser, Address_Key (Location).all,
+                                        Do_Next => False);
+      begin
+          Log_In (Debug, "location " & Location'img &
+             Quote (" address", Address) & Quote (" kind", Kind) &
+             " Camera_Address " & Camera_Address);
+          if Kind = "IP" then
+             declare
+                Result            : constant Ada_Lib.Socket_IO.Address_Access :=
+                                     new Ada_Lib.Socket_IO.Address_Type (
+                                        Ada_Lib.Socket_IO.IP);
+                IP_Parser         : Ada_Lib.Parser.Iterator_Type :=
+                                      Ada_Lib.Parser.Initialize (
+                                         Value          => Camera_Address,
+                                         Seperators     => ".");
+
+             begin
+                for Segment in Result.IP_Address'range loop
+                   Log_Here (Debug, Segment'img);
+                   declare
+                      Value       : Ada_Lib.Socket_IO.IP_Address_Segment_Type
+                                     renames Result.IP_Address (Segment);
+                   begin
+                      Value := Ada_Lib.Socket_IO.IP_Address_Segment_Type'value (
+                         Get_Parser_String (IP_Parser,
+                         "IP setment" & Segment'img, Do_Next => True));
+                   end;
+                end loop;
+                Log_Out (Debug, "ip address" & Result.Image);
+                return Ada_Lib.Socket_IO.Address_Constant_Access (Result);
+             end;
+          elsif Kind = "URL" then
+             declare
+                Result            : constant Ada_Lib.Socket_IO.Address_Access :=
+                                     new Ada_Lib.Socket_IO.Address_Type (
+                                        Ada_Lib.Socket_IO.URL);
+             begin
+                Result.URL_Address.Append (Camera_Address);
+                Log_Out (Debug, "url address " & Result.Image);
+                return Ada_Lib.Socket_IO.Address_Constant_Access (Result);
+             end;
+          else
+             Log_Exception (Debug);
+             raise Failed with Quote ("Invalid camera address prefix at " &
+                Here, Kind);
+          end if;
+
+         exception
+          when Fault: Ada_Lib.Parser.Underflow =>
+             Trace_Exception (Debug, Fault);
+             Put_Line ("Invalid configuration file " &
+                Ada.Exceptions.Exception_Message (Fault));
+             raise;
+
+      end Load_Address;
+      -------------------------------------------------------------
 
       Current_Directory : constant String :=
                            Standard.Camera.Lib.Options.Current_Directory;
@@ -385,13 +588,12 @@ return Null;
                               "") &
                            File_Name;
    begin
-      Log_In (Debug, Quote ("file name", File_Name) &
+      Log_In (Debug, Quote ("locatin " & Location'img & " file name", File_Name) &
          Quote (" Current_Directory", Current_Directory) &
          Quote (" path", Path));
-      Config.Load (Path, False);
-      Standard.Configuration.State.State_Type (State).Load (Config, Location,
-         File_Name);
-      Configuration.State.State_Type (State).Load (Config, Location, File_Name);
+      State.Video_Address := Load_Address;
+      State.Video_Port := Video.Lib.Port_Type'value (
+         Get_Config_String (Port_Key (Location).all));
       State.Camera_ID := Standard.Camera.Make_Camera_ID (State.Get_Video_Address.all);
       State.Camera_Name.Construct (Config.Get_String ("camera_name"));
       State.CSS_Path.Construct (Config.Get_String ("css_path"));
@@ -410,8 +612,12 @@ return Null;
 
       Log_Here (Debug,
          "camera id " & State.Camera_ID.Image &
-         Quote (" video address", State.Get_Video_Address.Image) &
-         " camera id" & State.Camera_ID.Image &
+         Quote (" video address", (
+            if State.Has_Video_Address then
+               State.Get_Video_Address.Image &
+                  " camera id" & State.Camera_ID.Image
+            else
+               "no video address")) &
          Quote ("video port", State.Get_Video_Port'img) &
          Quote (" CSS_Path", State.CSS_Path) &
          " Number_Columns" & State.Number_Columns'img &
@@ -451,7 +657,7 @@ return Null;
       end loop;
 
 --    Config.Close;
-      State.Set_Loaded (True);
+--    State.Set_Loaded (True);
       Log_Out (Debug, "loaded " & State.Is_Loaded'img);
 
    exception
@@ -467,6 +673,196 @@ return Null;
          raise;
 
    end Load;
+
+  ----------------------------------------------------------------
+  procedure Load (
+     Camera                      : in out State_Type;
+     Location                   : in     Video.Lib.Location_Type;
+     Name                       : in     String) is
+  ----------------------------------------------------------------
+
+     Config                     : Ada_Lib.Configuration.Configuration_Type;
+
+  begin
+     Log_In (Debug, Quote ("name", Name) & " location " & Location'img);
+
+     Config.Load (Name, False);
+     Camera.Load (Config, Location, Name);
+
+     Log_Here (Debug,
+        Quote ("video address", Camera.Video_Address.Image) &
+        Quote ("video port", Camera.Video_Port'img));
+
+
+     Camera.Set_Loaded (True);
+     Log_Out (Debug);
+
+  exception
+
+     when Fault: Ada_Lib.Configuration.Failed =>
+        Trace_Exception (Debug, Fault);
+        Put_Line ("Invalid configuration file: " &
+           Ada.Exceptions.Exception_Message (Fault));
+        raise;
+
+     when Fault: others =>
+        Trace_Exception (Debug, Fault);
+        raise;
+
+  end Load;
+
+------------------------------------------------------------------
+--   overriding
+--   procedure Load (   see duplicate definition above with differet implementation
+--      State       : in out State_Type;
+--      Config      : in out Ada_Lib.Configuration.Configuration_Type;
+--      Location    : in     Video.Lib.Location_Type;
+--      File_Name   : in     String) is
+--   ----------------------------------------------------------------
+--
+--      Reported                   : exception;
+--
+--      -------------------------------------------------------------
+--      function Get_Config_String (
+--         Key                     : in     String
+--      ) return String is
+--      -------------------------------------------------------------
+--
+--      begin
+--         return Config.Get_String (Key);
+--
+--      exception
+--         when Fault: Ada_Lib.Configuration.Failed =>
+--            Trace_Exception (Debug, Fault);
+--            Put_Line (Key & Quote (" not found in configuration file", File_Name));
+--            raise Reported;
+--
+--      end Get_Config_String;
+--
+--      -------------------------------------------------------------
+--      function Get_Parser_String (
+--         Parser                  : in out Ada_Lib.Parser.Iterator_Type;
+--         Field                   : in     String;
+--         Do_Next                 : Boolean
+--      ) return String is
+--      -------------------------------------------------------------
+--
+--      begin
+--         return Parser.Get_Value (Do_Next);
+--
+--      exception
+--         when Fault: Ada_Lib.Parser.Underflow =>
+--            Trace_Exception (Debug, Fault);
+--            Put_Line (Quote ("Missing", Field) &
+--               Quote (" in configuration line", Parser.Get_Original) &
+--               Quote (" in ", File_Name));
+--            raise Reported;
+--
+--      end Get_Parser_String;
+--
+--     -------------------------------------------------------------
+--     function Load_Address
+--     return Ada_Lib.Socket_IO.Address_Constant_Access is
+--     -------------------------------------------------------------
+--
+--        Address                  : constant String :=
+--                                    Get_Config_String (Address_Key (Location).all);
+--        Parser                   : Ada_Lib.Parser.Iterator_Type :=
+--                                    Ada_Lib.Parser.Initialize (
+--                                       Value          => Address,
+--                                       Seperators     => ",");
+--        Kind                     : constant String := Get_Parser_String (
+--                                      Parser, "camera_address_type",
+--                                      Do_Next => True);
+--        Camera_Address          : constant String := Get_Parser_String (
+--                                      Parser, Address_Key (Location).all,
+--                                      Do_Next => False);
+--     begin
+--        Log_In (Debug, "location " & Location'img &
+--           Quote (" address", Address) & Quote (" kind", Kind) &
+--           " Camera_Address " & Camera_Address);
+--        if Kind = "IP" then
+--           declare
+--              Result            : constant Ada_Lib.Socket_IO.Address_Access :=
+--                                   new Ada_Lib.Socket_IO.Address_Type (
+--                                      Ada_Lib.Socket_IO.IP);
+--              IP_Parser         : Ada_Lib.Parser.Iterator_Type :=
+--                                    Ada_Lib.Parser.Initialize (
+--                                       Value          => Camera_Address,
+--                                       Seperators     => ".");
+--
+--           begin
+--              for Segment in Result.IP_Address'range loop
+--                 Log_Here (Debug, Segment'img);
+--                 declare
+--                    Value       : Ada_Lib.Socket_IO.IP_Address_Segment_Type
+--                                   renames Result.IP_Address (Segment);
+--                 begin
+--                    Value := Ada_Lib.Socket_IO.IP_Address_Segment_Type'value (
+--                       Get_Parser_String (IP_Parser,
+--                       "IP setment" & Segment'img, Do_Next => True));
+--                 end;
+--              end loop;
+--              Log_Out (Debug, "ip address" & Result.Image);
+--              return Ada_Lib.Socket_IO.Address_Constant_Access (Result);
+--           end;
+--        elsif Kind = "URL" then
+--           declare
+--              Result            : constant Ada_Lib.Socket_IO.Address_Access :=
+--                                   new Ada_Lib.Socket_IO.Address_Type (
+--                                      Ada_Lib.Socket_IO.URL);
+--           begin
+--              Result.URL_Address.Append (Camera_Address);
+--              Log_Out (Debug, "url address " & Result.Image);
+--              return Ada_Lib.Socket_IO.Address_Constant_Access (Result);
+--           end;
+--        else
+--           Log_Exception (Debug);
+--           raise Failed with Quote ("Invalid camera address prefix at " &
+--              Here, Kind);
+--        end if;
+--
+--     exception
+--        when Fault: Ada_Lib.Parser.Underflow =>
+--           Trace_Exception (Debug, Fault);
+--           Put_Line ("Invalid configuration file " &
+--              Ada.Exceptions.Exception_Message (Fault));
+--           raise;
+--
+--     end Load_Address;
+--    -------------------------------------------------------------
+--
+-- begin
+--    Log_In (Debug, "location " & Location'img &
+--       " configuration address " & Ada_Lib.Strings.Image (Config'address));
+--
+--    State.Video_Address := Load_Address;
+--
+--    State.Video_Port := Video.Lib.Port_Type'value (
+--    Get_Config_String (Port_Key (Location).all));
+--    Load_State (State, Config, Location, File_Name);
+--
+--    Log_Out (Debug);
+--
+--    exception
+--
+--    when Fault: Ada_Lib.Configuration.Failed =>
+--      Trace_Exception (Debug, Fault);
+--      Put_Line ("Invalid configuration file: " &
+--         Ada.Exceptions.Exception_Message (Fault));
+--      raise;
+--
+--    when Fault: Ada_Lib.Parser.Underflow =>
+--      Trace_Exception (Debug, Fault);
+--      Put_Line ("Invalid configuration file " &
+--          Ada.Exceptions.Exception_Message (Fault));
+--      raise;
+--
+--    when Fault: others =>
+--      Trace_Exception (Debug, Fault);
+--      raise;
+--
+--   end Load;
 
 --   ----------------------------------------------------------------
 --   procedure Set_State (
