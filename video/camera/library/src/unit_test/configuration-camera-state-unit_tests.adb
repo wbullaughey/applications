@@ -202,23 +202,24 @@ package body Configuration.Camera.State.Unit_Tests is
 
       Local_Test  : Configuration_Load_Test_Type renames
                      Configuration_Load_Test_Type (Test);
---    Options     : Standard.Camera.Lib.Unit_Test.
---                   Unit_Test_Options_Constant_Class_Access :=
---                      Standard.Camera.Lib.Unit_Test.
---                         Get_Camera_Unit_Test_Constant_Options;
+      Options     : constant Standard.Camera.Lib.Unit_Test.
+                     Camera_Lib_Unit_Test_Program_Options_Constant_Class_Access :=
+                        Standard.Camera.Lib.Unit_Test.
+                           Get_Camera_Unit_Test_Constant_Options;
 
-      Configuration
-                  : Standard.Camera.Base.Configuration_Class_Access
-                     renames Local_Test.Configuration;
+--    Configuration
+--                : Standard.Camera.Base.Configuration_Class_Access
+--                   renames Local_Test.Configuration;
       Configuration_Path
-                  : constant String := "test_configuration.cfg";
-      Configuration_Default_Path
-                  : constant String := "test_configuration_defaults.cfg";
+                  : constant String := "single_camera_test.cfg";
+--    Configuration_Default_Path
+--                : constant String := "test_configuration_defaults.cfg";
    begin
       Log_In (Debug);
-      Configuration.Load (Configuration_Path, Camera_Index => 1);
-      Standard.Camera.Configurations.Clear_Configuration;
-      Configuration.Load (Configuration_Default_Path, Camera_Index => 1);
+      Standard.Camera.Base.Load (Options.Nested_Options.Location, Configuration_Path);
+--    Configuration.Load (Configuration_Path, Camera_Index => 1);
+--    Standard.Camera.Configurations.Clear_Configuration;
+--    Configuration.Load (Configuration_Default_Path, Camera_Index => 1);
       Log_Out (Debug);
 
    exception

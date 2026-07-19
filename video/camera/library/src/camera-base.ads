@@ -107,6 +107,11 @@ package Camera.Base is
       Path                 : in     String
    ) with Pre    => Path'length > 0;
 
+   procedure Load (
+      Location             : in     Video.Lib.Location_Type;
+      Configuration_Name   : in     String
+   ) with Pre => Configuration_Name'length > 0;
+
    procedure Halt;
 
    procedure Report_Exception (

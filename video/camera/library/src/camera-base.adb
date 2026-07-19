@@ -405,22 +405,22 @@ return null;
 
  ----------------------------------------------------------------
  procedure Load (
-    Location    : in     Video.Lib.Location_Type) is
+   Location                : in     Video.Lib.Location_Type;
+   Configuration_Name      : in     String) is
  ----------------------------------------------------------------
 
     Camera_Configurations  : Configurations_Type;
     Configuration_File     : Ada_Lib.Configuration.Configuration_Type;
     Current_Directory      : constant String :=
                               Standard.Camera.Lib.Options.Current_Directory;
-    File_Name              : constant String := "cameras.cfg";
     Path                   : constant String :=
                               (if Current_Directory'length > 0 then
                                  Current_Directory & "/"
                               else
-                                 "") & File_Name;
+                                 "") & Configuration_Name;
    begin
       Log_In (Debug, Quote ("Current_Directory", Current_Directory) &
-         Quote (" File_Name", File_Name) &
+         Quote (" Configuration_Name", Configuration_Name) &
          Quote (" path", Path));
       Camera_Configurations.Load (Path);
 --    Configuration_File.Load (Path, Create => False);

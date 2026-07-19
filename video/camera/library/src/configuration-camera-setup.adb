@@ -175,10 +175,12 @@ package body Configuration.Camera.Setup is
    ----------------------------------------------------------------
    procedure Free (
       Configurations          : in     Configurations_Type) is
+   pragma Unreferenced (Configurations);
    ----------------------------------------------------------------
 
    begin
       Log_Here (Debug);
+log_here ("free not implemented");
    end Free;
 
    ----------------------------------------------------------------

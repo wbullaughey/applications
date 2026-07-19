@@ -2,6 +2,7 @@
 with Ada.Text_IO;use Ada.Text_IO;
 with Ada_Lib.GNOGA;
 with Ada_Lib.Help;
+with Ada_Lib.Options.Nested;
 with Ada_Lib.Options.Runstring;
 with Ada_Lib.OS;
 with Ada_Lib.Strings.Unlimited; use Ada_Lib.Strings;
@@ -184,12 +185,20 @@ package body Camera.Lib.Unit_Test is
    ) return Camera_Lib_Unit_Test_Program_Options_Constant_Class_Access is
    ----------------------------------------------------------------------------
 
+      Verification_Nested_Options
+         : constant Ada_Lib.Options.Verification.
+               Verification_Nested_Options_Constant_Class_Access :=
+            Ada_Lib.Options.Verification.Get_Ada_Lib_Read_Only_Nested_Options;
+--    Nested_Options
+--       : Ada_Lib.Options.Nested.Nested_Options_Type renames
+--          Ada_Lib.Options.Nested.Nested_Options_Type (Verification_Nested_Options.all);
    begin
       Log_Here (Trace_Conversions, "from " & From);
+Tag_History ("Verification_Nested_Options", Verification_Nested_Options.all'tag);
 not_implemented;
 return null;
---    return Unit_Test_Options_Constant_Class_Access (
---       Ada_Lib.Options.Verification.Get_Ada_Lib_Read_Only_Nested_Options);
+--    return Camera_Lib_Unit_Test_Program_Options_Constant_Class_Access (
+--       );
    end Get_Camera_Unit_Test_Constant_Options;
 
    -------------------------------------------------------------------------

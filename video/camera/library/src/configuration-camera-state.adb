@@ -677,8 +677,8 @@ return Null;
   ----------------------------------------------------------------
   procedure Load (
      Camera                      : in out State_Type;
-     Location                   : in     Video.Lib.Location_Type;
-     Name                       : in     String) is
+     Location                    : in     Video.Lib.Location_Type;
+     Name                        : in     String) is
   ----------------------------------------------------------------
 
      Config                     : Ada_Lib.Configuration.Configuration_Type;
