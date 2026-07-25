@@ -1,0 +1,11 @@
+dependency:ada_lib=0.1.0-dev=0c5d82b60004150ccbd2bc225711940c4eedbfd1bc499d3f993c66518cf944d4
+dependency:alr_environment=0.1.0-dev=75ef080155aa575aef1fa91c206f796f8e87fbc0ae7aeeaaba93d2f43834facd
+dependency:aunit=0.1.0-dev=4a9d07aa9f0b432dc1dc6ac15bd945c10890bb90a5b3f5a8a76fbfb3fb5633ed
+dependency:camera_lib=0.1.0-dev=8961a74beda01c315649b71d2787e57d907dc714be860d13298d47651606c510
+dependency:gnoga=0.1.0-dev=7bb5f19b155b11e8911dc126c45c5446b334fec19a143da8e2f07b55e2c84ffa
+dependency:gnoga_ada_lib=0.1.0-dev=a1d6fe1665029bdee783fc2ffb64d23d57412b397fa2458c8aace1b32d92c7d1
+dependency:video_lib=0.1.0-dev=0c27f3d290abc51012b361b8dd3d93634673bf022d06be45f3d3f7b9a99ee2f6
+external:CAMERA_TESTS_LIBRARY_TYPE=default
+external:LIBRARY_TYPE=default
+profile:camera_tests=DEVELOPMENT
+switches:camera_tests=-Og,-fdata-sections,-ffunction-sections,-g,-gnatVa,-gnatW8,-gnatw.X,-gnatwa,-gnaty-d,-gnaty3,-gnatyA,-gnatyB,-gnatyI,-gnatyO,-gnatyS,-gnatya,-gnatyb,-gnatyc,-gnatye,-gnatyf,-gnatyh,-gnatyi,-gnatyk,-gnatyl,-gnatym,-gnatyn,-gnatyp,-gnatyr,-gnatyt,-gnatyu,-gnatyx

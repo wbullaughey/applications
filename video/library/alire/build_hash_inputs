@@ -1,0 +1,7 @@
+dependency:ada_lib=0.1.0-dev=0c5d82b60004150ccbd2bc225711940c4eedbfd1bc499d3f993c66518cf944d4
+dependency:alr_environment=0.1.0-dev=75ef080155aa575aef1fa91c206f796f8e87fbc0ae7aeeaaba93d2f43834facd
+external:LIBRARY_TYPE=default
+external:VIDEO_LIB_LIBRARY_TYPE=default
+profile:video_lib=RELEASE
+switches:video_lib=-O3,-fdata-sections,-ffunction-sections,-gnatW8,-gnatn
+version:gnat_native=16.1.0

@@ -736,13 +736,11 @@ return null;
             Quote (" path", Configuration.Setup_Path));
          Tag_History (Debug, "Options", Options.all'tag);
 
-log_here;
          Configuration.Configuration_State.Load (  -- are all fields loaded?
             Ada_lib.Configuration.Configuration_Type  (Configuration),
             Video_Lib_Nested_Options.Location,
             Configuration.Setup_Path.Coerce);
       end;
-log_here;
       Configuration.Configuration_Setup.Load (
          Configuration.Configuration_State.all,
             Configuration.Setup_Path.Coerce);

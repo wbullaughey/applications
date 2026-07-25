@@ -1,0 +1,2 @@
+last_build_profile = "ada_lib=RELEASE,ada_lib_aunit=RELEASE,ada_lib_base=RELEASE,ada_lib_options=RELEASE,ada_lib_test_lib=RELEASE,alr_environment=RELEASE,aunit=RELEASE,camera_lib=RELEASE,camera_tests=DEVELOPMENT,gnat_native=RELEASE,gnatcoll_minimal=RELEASE,gnoga=RELEASE,gnoga_ada_lib=RELEASE,video_lib=RELEASE"
+
