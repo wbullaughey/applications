@@ -1,7 +1,7 @@
 --with Ada_Lib.Socket_IO;
 with Ada_Lib.Strings; -- .Unlimited;
 with Ada_Lib.Trace;
---with Camera.Lib;
+with Camera;
 with Gnoga.Gui.Base;
 with Gnoga.Gui.Element.Common;
 with Gnoga.Gui.Element.Form;
@@ -12,7 +12,10 @@ with Gnoga.GUI.Window;
 package Widgets.Generic_Table is
 
    type Root_Cell_Type              is abstract new Gnoga.Gui.Element.Common.DIV_Type
-                                       with null record;
+                                       with record
+      Camera_ID                     : Camera.Camera_ID_Type := Camera.Null_Camera_ID;
+   end record;
+
    type Root_Cell_Class_Access      is access all Root_Cell_Type'class;
 
    type Verify_Parameter_Type is tagged null record;

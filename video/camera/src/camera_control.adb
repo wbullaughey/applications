@@ -17,16 +17,23 @@ with Command_Name;
 with Camera.Main;
 with Camera.Configuration;
 with Camera.Configurations;
-with Configuration.Camera.Setup;
-with Configuration.Camera.State;
---with Configuration.State;
+with Video.Lib;
+with Video.Configuration.Camera.Setup;
+with Video.Configuration.Camera.State;
+--with Video.Configuration.State;
 with Emulator;
 
 procedure Camera_Control is
 
-   Debug          : Boolean renames Camera.Lib.Options.Camera_Options.
-                     Camera_Control_Debug;
-   Options        : aliased Camera.Lib.Options.Program_Options_Type;
+   Debug             : Boolean renames Camera.Lib.Options.Camera_Options.
+                        Camera_Control_Debug;
+   Options           : aliased Camera.Lib.Options.Program_Options_Type;
+   Standard_Presets  : array (Video.Lib.Which_Preset_Type) of
+                        Video.Preset.Preset_ID_Type := (
+                           others => (
+                              Camera   => Null,
+                              ID       => 0,
+                              Is_Set   => False));
 
 --   ----------------------------------------------------------------------------
 --   procedure Load_Configuration (
@@ -90,6 +97,8 @@ begin
             begin
                Log_Here (Debug, Quote ("path", Path));
                Configurations.Load (Path);
+               Video.Lib.Set_Presets (new Video.Lib.Presets_Type (
+                  Prset_Type'first .. Options.Number_Presets + 1
                GNOGA_Ada_Lib.Base.Run (
                  Handler     => Camera.Main.On_Connect'Unrestricted_Access,
                  Directory   => Camera.Lib.Options.Current_Directory,

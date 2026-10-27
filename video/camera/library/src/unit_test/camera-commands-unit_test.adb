@@ -6,7 +6,7 @@ with AUnit.Assertions; use AUnit.Assertions;
 with AUnit.Test_Cases;
 with Camera.Lib.Unit_Test;
 with Interfaces;
-with Video.Lib;
+--with Video.Lib;
 
 package body Camera.Commands.Unit_Test is
 
@@ -50,7 +50,7 @@ package body Camera.Commands.Unit_Test is
    ) with post => Verify_Tear_Down (Test);
 
    function Get_Test_Preset
-   return Video.Lib.Preset_ID_Type renames Video.Lib.Get_Default_Preset_ID;
+   return Video.Preset.Preset_ID_Type renames Video.Preset.Get_Default_Preset_ID;
 
 -- procedure Test_Get_Absolute (
 --    Test                       : in out AUnit.Test_Cases.Test_Case'class);
@@ -192,7 +192,7 @@ package body Camera.Commands.Unit_Test is
       begin
          Log_Here (Debug or Trace_Set_Up_Tear_Down, "speed " & Speed'img);
 
-         Test.Camera_Info.Camera.Set_Preset (Video.Lib.Get_Default_Preset_ID,
+         Test.Camera_Info.Camera.Set_Preset (Video.Preset.Get_Default_Preset_ID,
             Speed => Speed);     -- normally same as preset 0
       end;
       Log_Out (Debug or Trace_Set_Up_Tear_Down);
@@ -450,7 +450,7 @@ package body Camera.Commands.Unit_Test is
 --    Test_Pan    : Absolute_Type;
 --    Pan         : Absolute_Type;
 --    Pan_Set     : Absolute_Type;
-      Preset      : constant Preset_ID_Type := Video.Lib.Constructor (0);
+      Preset      : constant Preset_ID_Type := 0;
 --    Tilt        : Absolute_Type;
 --    Test_Tilt   : Absolute_Type;
 --    Tilt_Set    : Absolute_Type;

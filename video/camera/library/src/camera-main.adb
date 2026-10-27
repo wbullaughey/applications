@@ -12,12 +12,12 @@ with Ada_Lib.String_Quote; use Ada_Lib.String_Quote;
 with Ada_Lib.Strings; use Ada_Lib.Strings;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
 with Ask;
-with Camera.Base;
+--with Camera.Base;
 with Camera.Commands.PTZ_Optics;
 --with Camera.Configurations;
 with Camera.Lib.Base;
 with Camera.Lib.Options;
---with Configuration.Camera.State;
+--with Video.Configuration.Camera.State;
 with Gnoga.Gui.Base;
 with Gnoga.Gui.Element.Section;
 with Gnoga.Gui.Plugin.jQueryUI.Widget;
@@ -32,7 +32,7 @@ with Widgets.Video;
 package body Camera.Main is
 
 -- use type Base.Connection_Data_Class_Access;
-   use type Configuration.Camera.State.State_Access;
+   use type Video.Configuration.Camera.State.State_Access;
    use type Gnoga.Types.Pointer_to_Connection_Data_Class;
    use type GNOGA.GUI.Plugin.JQueryui.Widget.Dialog_Access;
 -- use type Base.Camera_State_Class_Access;
@@ -78,7 +78,7 @@ package body Camera.Main is
 
    type Full_Window_Connection_Type
                            is new Window_Connection_Type with record
-      Camera_State         : Configuration.Camera.State.State_Access := Null;
+      Camera_State         : Video.Configuration.Camera.State.State_Access := Null;
       Exited               : Boolean := False;  -- set true by exit button
       GUI_Window           : Gnoga.Gui.Window.Pointer_To_Window_Class :=
                               Null;
@@ -136,7 +136,7 @@ package body Camera.Main is
    overriding
    function Get_Camera_State (
       Window_Connection                  : in     Full_Window_Connection_Type
-   ) return Configuration.Camera.State.State_Access
+   ) return Video.Configuration.Camera.State.State_Access
    with Pre    => Window_Connection.Has_Camera_State;
 
    overriding
@@ -508,7 +508,7 @@ package body Camera.Main is
    overriding
    function Get_Camera_State (
       Window_Connection                  : in     Full_Window_Connection_Type
-   ) return Configuration.Camera.State.State_Access is
+   ) return Video.Configuration.Camera.State.State_Access is
    ---------------------------------------------------------------
 
    begin
@@ -617,18 +617,13 @@ return Null;
    end Has_Camera_State;
 
    ---------------------------------------------------------------
-   function Has_Main_Window_Connection
-   return Boolean is
+   function Has_Main_Window_Connection (
+      Camera_ID            : in        Camera_ID_Type
+   ) return Boolean is
 
    begin
       if Configurations.Has_Configuration then
-         declare
-            Configuration  : constant Base.Configuration_Class_Access :=
-                              Configurations.Get_Configuration;
-
-         begin
-            return Configuration.Has_Configuration;
-         end;
+         return Configurations.Has_Configuration (Camera_ID);
       else
          return False;
       end if;
@@ -761,7 +756,7 @@ return Null;
                         Camera_Configuration_State_Constant_Class_Access :=
                            Camera.Configurations.Get_Read_Only_Camera_Configuration_State;
 
-      State    : Configuration.Camera.State.State_Type'class renames
+      State    : Video.Configuration.Camera.State.State_Type'class renames
                   State_Pointer.all;
    begin
       Log_In (Debug,
@@ -981,7 +976,7 @@ return Null;
       Description    : in     Ada_Lib.Strings.String_Constant_Access) is
    ---------------------------------------------------------------
 
-      State       : Configuration.Camera.State.State_Type'class
+      State       : Video.Configuration.Camera.State.State_Type'class
                      renames Configurations.
                         Get_Read_Only_Camera_Configuration_State (
                            Connection.Camera_ID).all;
@@ -1056,7 +1051,7 @@ not_implemented;
       Windows_Connection   : constant Full_Window_Connection_Class_Access :=
                               Full_Window_Connection_Class_Access (
                                  Object.Connection_Data);
-      State                : Configuration.Camera.State.State_Type'class renames
+      State                : Video.Configuration.Camera.State.State_Type'class renames
                               Standard.Camera.Configurations.
                                  Get_Read_Only_Camera_Configuration_State.all;
       Camera_CSS           : constant String := State.Get_CSS_Path;

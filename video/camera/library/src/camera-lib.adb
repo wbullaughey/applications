@@ -18,9 +18,9 @@ with ADA_LIB.Strings.Unlimited;use Ada_Lib.Strings.Unlimited;
 with Camera.Lib.Base;
 with Camera.Lib.Options;
 --with Camera.Configurations;
-with Configuration.Camera;
---with Configuration.Camera.Setup;
---with Configuration.Camera.State;
+with Video.Configuration.Camera;
+--with Video.Configuration.Camera.Setup;
+--with Video.Configuration.Camera.State;
 --with Emulator;
 --with Camera.Main;
 with Camera.Options;
@@ -319,7 +319,7 @@ return null;
          Put_Line ("      L               camera library options");
          Put_Line ("      m               Camera.Main.Debug");
          Put_Line ("      M               Camera_Control.Debug");
-         Put_Line ("      s               Camera.Configuration.Debug (Camera_Debug)");
+--       Put_Line ("      s               Camera.Configuration.Debug (Camera_Debug)");
          Put_Line ("      S               Camera.Configurations.Debug");
 --       Put_Line ("      v               Trace Video communications");
          Put_Line ("      V               Trace Video widgets");
@@ -330,11 +330,9 @@ return null;
          Put_Line ("      " & Trace_Prefix &
                           "C              Widgets.Configured debug");
          Put_Line ("      " & Trace_Prefix &
-                          "D              Configuration.Debug");
-         Put_Line ("      " & Trace_Prefix &
                           "l              List camera commands");
          Put_Line ("      " & Trace_Prefix &
-                          "p              Configuration.Camera.Setup.Debug");
+                          "p              Video.Configuration.Camera.Setup.Debug (Setup_Debug)");
 --       Put_Line ("      " & Trace_Prefix &
 --                        "s              Configuration");
          Put_Line ("      " & Trace_Prefix &
@@ -392,7 +390,6 @@ return null;
                      Lib.Options.Camera_Options.States_Debug := True;
                      Lib.Options.Configuration_Options.Camera_Debug := True;
                      Lib.Options.Configuration_Options.State_Debug := True;
-                     Configuration.Debug := True;
                      Debug_Options := True;
                      Debug := True;
 --                   Emulator.Debug := True;
@@ -413,9 +410,6 @@ return null;
 
                   when 'd' =>
                      Lib.Options.Camera_Options.Camera_Debug := True;
-
-                  when 'D' =>
-                     Configuration.Debug := True;
 
                   when 'g' =>
                      Widgets.Generic_Table.Debug := True;

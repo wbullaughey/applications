@@ -1,16 +1,19 @@
 with Ada_Lib.Strings.Unlimited;use Ada_Lib.Strings.Unlimited;
 with Ada_Lib.Trace;
 with Camera;
-with Configuration.Camera.State;
+with Video.Configuration.Camera.State;
 with Video.Lib;
+with Video.Preset;
 
-package Configuration.Camera.Setup is
+package Video.Configuration.Camera.Setup is
 
    Failed         : exception;
 
    type Configuration_Type is new Configuration_Package.Configuration_Type
                               with private;
 
+   type Configuration_Constant_Access
+                           is access constant Configuration_Type;
    procedure Dump (
       Configuration        : in     Configuration_Type;
       What                 : in     String := "";
@@ -21,46 +24,14 @@ package Configuration.Camera.Setup is
    ) return Standard.Camera.Preset_ID_Type
    with Pre => Configuration.Is_Loaded;
 
+   function Image (
+      Configuration        : in     Configuration_Type
+   ) return String;
+
    type Configurations_Type      is array (Configuration_ID_Type range <>)
-                                    of Configuration_Type ;
+                                    of aliased Configuration_Type ;
 
    type Configurations_Access    is access Configurations_Type;
-
-   type Preset_Type
-                  is new Configuration_Package.Configuration_Type with private;
-
-   procedure Dump (
-      Preset               : in     Preset_Type;
-      What                 : in     String := "";
-      From                 : in     String := Ada_Lib.Trace.Here);
-
-   function Get_Column (
-      Preset               : in     Preset_Type
-   ) return Column_Type
-   with Pre => Preset.Is_Loaded;
-
-   function Get_Preset_ID (
-      Preset               : in     Preset_Type
-   ) return Standard.Camera.Preset_ID_Type
-   with Pre => Preset.Is_Loaded;
-
-   function Get_Row (
-      Preset               : in     Preset_Type
-   ) return Row_Type
-   with Pre => Preset.Is_Loaded;
-
-   function Make_Image_Name (
-      Preset               : in     Preset_Type
-   ) return String;
-
-   function Preset_Image (
-      Preset               : in     Preset_Type
-   ) return String;
-
-   type Presets_Type       is array (Video.Lib.Preset_Range_Type range <>)
-                              of Preset_Type;
-
-   type Presets_Access     is access Presets_Type;
 
    type Setup_Type         is new Configuration.Setup_Type with private;
    type Setup_Access       is access all Setup_Type;
@@ -95,17 +66,11 @@ package Configuration.Camera.Setup is
    ) return Configuration_Type'class
    with Pre => Setup.Has_Configuration (Configuration_ID);
 
-   function Get_Preset (
-      Setup                      : in     Setup_Type;
-      Preset_Id                  : in     Standard.Camera.Preset_ID_Type
-   ) return Preset_Type'class
-   with Pre => Setup.Is_Loaded;
-
-   function Get_Preset_ID (
-      Setup                      : in     Setup_Type;
-      Row                        : in     Row_Type;
-      Column                     : in     Column_Type
-   ) return Standard.Camera.Preset_ID_Type;
+-- function Get_Preset (
+--    Setup                      : in     Setup_Type;
+--    Preset_Id                  : in     Standard.Camera.Preset_ID_Type
+-- ) return Preset_Type'class
+-- with Pre => Setup.Is_Loaded;
 
    function Get_Preset_ID (
       Setup                      : in     Setup_Type;
@@ -121,21 +86,23 @@ package Configuration.Camera.Setup is
 
    function Has_Preset (
       Setup                      : in     Setup_Type;
+      Camera_ID                  : in     Lib.Camera_ID_Type;
       Preset_Id                  : in     Standard.Camera.Preset_ID_Type
    ) return Boolean
    with Pre => Setup.Is_Loaded;
 
--- function Is_Loaded (
---    Setup                      : in     Setup_Type
--- ) return Boolean;
+   function Has_Presets (
+      Setup                      : in     Setup_Type;
+      Expect                     : in     Boolean
+   ) return Boolean;
 
    procedure Load  (
       Setup                      : in out Setup_Type;
       State                      : in     Configuration.Camera.State.State_Type'class;
       Name                       : in     String
-   ) with Pre => State.Is_Loaded and then
-                 not Setup.Is_Loaded,
-          Post => Setup.Is_Loaded;
+   ) with Pre  => State.Is_Loaded and then
+                  not Setup.Has_Presets (False),
+          Post => Setup.Has_Presets (True);
 
    function Make_Image_Name (
       Row                        : in     Row_Type;
@@ -185,19 +152,10 @@ package Configuration.Camera.Setup is
       State                      : in     Configuration.Camera.State.State_Type'class
    ) with Pre => State.Is_Loaded;
 
--- type Configurations_Type
---                         is array (Configuration_ID_Type range <>)
---                            of Setup_Type ;
---
--- type Configurations_Access
---                         is access Configurations_Type;
---
    Default_Setup                 : constant String := "setup.cfg";
 
    Global_Camera_Setup           : Setup_Access := Null;
    Null_Configuration            : constant Configuration_Type;
-
-   Null_Preset                   : constant Preset_Type;
 
 private
 
@@ -207,38 +165,25 @@ private
       Preset_ID                  : Standard.Camera.Preset_ID_Type;
    end record;
 
-   type Preset_Type  is new Configuration_Package.Configuration_Type with record
-      Column         : Column_Type := Column_Not_Set;
-      Preset_ID      : Standard.Camera.Preset_ID_Type :=
-                        Video.Lib.Null_Preset_ID;
-      Row            : Row_Type := Row_Not_Set;
-   end record;
-
    type Setup_Type   is new Configuration.Setup_Type with record
       Configurations : Configurations_Access := Null;
                         -- pointer to array of configurations
       Modified       : Boolean := False;
       Path           : Ada_Lib.Strings.Unlimited.String_Type;
-      Presets        : Presets_Access := Null;
-                        -- pointer to array of presets
+--    Presets        : Presets_Access := Null;  local varialble in Video.Lib
+--                      -- pointer to array of presets
    end record;
 
    Null_Configuration            : constant Configuration_Type := (
                                     Configuration_Package.Configuration_Type with
       Configuration_ID => Configuration_ID_Type'last,
       Label             => Ada_Lib.Strings.Unlimited.Null_String,
-      Preset_ID         => Video.Lib.Null_Preset_ID);  -- ID field is 255 (last)
-
-   Null_Preset    : constant Preset_Type := (
-                     Configuration_Package.Configuration_Type with
-      Column      => Column_Not_Set,
-      Preset_ID   => Video.Lib.Null_Preset_ID,  -- ID field is 255 (last)
-      Row         => Row_Not_Set);
+      Preset_ID         => Preset.Preset_ID_Not_Set);  -- ID field is 255 (last)
 
 -- Null_Setup            : constant Setup_Type := (
 --                                  Configuration.Setup_Type with
 --    Configuration_ID  => Configuration_Not_Set,
 --    Label             => Ada_Lib.Strings.Unlimited.Null_String,
---    Preset_ID         => Video.Lib.Null_Preset_ID);
+--    Preset_ID         => Video.Lib.Preset_ID_Not_Set);
 
-end Configuration.Camera.Setup;
+end Video.Configuration.Camera.Setup;

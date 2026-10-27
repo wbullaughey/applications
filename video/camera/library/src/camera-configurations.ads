@@ -4,8 +4,8 @@ limited with Camera.Base;
 --limited with Camera.Lib.Base;
 limited with Camera.Main;
 with Camera.Configuration;
-limited with Configuration.Camera.State;
-limited with Configuration.Camera.Setup;
+limited with Video.Configuration.Camera.State;
+limited with Video.Configuration.Camera.Setup;
 
 package Camera.Configurations is
 
@@ -17,19 +17,19 @@ package Camera.Configurations is
 -- type Camera_Base_Configuration_Constant_Class_Access
 --                   is access constant Base.Configuration_Type'class;
    type Camera_Configuration_Setup_Access
-                     is access all Standard.Configuration.Camera.Setup.Setup_Type;
+                     is access all Standard.Video.Configuration.Camera.Setup.Setup_Type;
    type Camera_Configuration_Setup_Class_Access
-                     is access all Standard.Configuration.Camera.Setup.Setup_Type'class;
+                     is access all Standard.Video.Configuration.Camera.Setup.Setup_Type'class;
    type Camera_Configuration_Setup_Constant_Access
-                     is access all Standard.Configuration.Camera.Setup.Setup_Type;
+                     is access constant Standard.Video.Configuration.Camera.Setup.Setup_Type;
    type Camera_Configuration_Setup_Constant_Class_Access
-                     is access all Standard.Configuration.Camera.Setup.Setup_Type'class;
+                     is access constant Standard.Video.Configuration.Camera.Setup.Setup_Type'class;
    type Camera_Configuration_State_Access
-                     is access all Standard.Configuration.Camera.State.State_Type;
+                     is access all Standard.Video.Configuration.Camera.State.State_Type;
    type Camera_Configuration_State_Class_Access
-                     is access all Standard.Configuration.Camera.State.State_Type'class;
+                     is access all Standard.Video.Configuration.Camera.State.State_Type'class;
    type Camera_Configuration_State_Constant_Class_Access
-                     is access constant Standard.Configuration.Camera.State.State_Type'class;
+                     is access constant Standard.Video.Configuration.Camera.State.State_Type'class;
    type Camera_Main_Window_Connection_Class_Access
                      is access all Main.Window_Connection_Type'class;
    type Camera_Names_Type
@@ -56,7 +56,7 @@ package Camera.Configurations is
 
    function Get_Read_Only_Camera_Configuration_Setup (
       Camera_ID   : Camera_ID_Type := Null_Camera_ID
-   ) return Camera_Configuration_Setup_Constant_Access
+   ) return Camera_Configuration_Setup_Constant_Class_Access
    with Pre    => Has_Camera_Configuration_State (Camera_ID);
 
    function Get_Read_Only_Camera_Configuration_State (

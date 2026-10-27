@@ -11,7 +11,7 @@ echo pwd `pwd`
 #   help_test  - builds help_test at level
 
 #export ALR_OPTIONS=-O0
-echo build WHICH $WHICH ALR_OPTIONS $ALR_OPTIONS NO_WARNINGS $NO_WARNINGS
+echo build WHICH $WHICH PROGRAM $PROGRAM ALR_OPTIONS $ALR_OPTIONS NO_WARNINGS $NO_WARNINGS
 if [[ -z "$PROGRAM" ]]; then
    echo PROGRAM not set in SlickEdit build command
    exit

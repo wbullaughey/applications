@@ -13,11 +13,12 @@ with Camera.Commands;
 with Camera.Lib.Options;
 --with Camera.Configuration;
 --with Camera.Configurations;
-with Configuration.Camera.Setup;
---with Configuration.Camera.State;
+with Video.Configuration.Camera.Setup;
+--with Video.Configuration.Camera.State;
 with GNAT.Source_Info;
 with Gnoga.Application.Multi_Connect;
 with Video.Lib;
+with Video.Preset;
 
 package Camera.Lib.Unit_Test is
 
@@ -40,7 +41,7 @@ package Camera.Lib.Unit_Test is
 --   procedure Load_Test_State (
 --      Configuration      : in out Standard.Camera.Base.Configuration_Type;
 --      Camera_Info       : in out Camera_Info_Type;
---      Setup             : in out Standard.Configuration.Camera.Setup.Setup_Type
+--      Setup             : in out Standard.Video.Configuration.Camera.Setup.Setup_Type
 ----    State             : in out Configuration.Camera.State.State_Type
 --   ) with Pre  => Camera_Info.Camera /= Null,
 --          Post => Camera_Info.Camera_Options.Camera_Address /= Null and then
@@ -55,12 +56,13 @@ package Camera.Lib.Unit_Test is
       Brand                : Brand_Type := PTZ_Optics_Camera;
       Camera_ID            : Camera_ID_Type := Default_Camera_ID;
       Camera_Info          : Camera_Info_Type;
---    Camera_State         : Standard.Configuration.Camera.State.State_Type;
+--    Camera_State         : Standard.Video.Configuration.Camera.State.State_Type;
       Configuration        : Standard.Camera.Base.
                               Configuration_Class_Access := Null;
---    Configuration_Setup  : Standard.Configuration.Camera.Setup.Setup_Type;
---    Configuration_State  : Standard.Configuration.Camera.State.State_Type;
+--    Configuration_Setup  : Standard.Video.Configuration.Camera.Setup.Setup_Type;
+--    Configuration_State  : Standard.Video.Configuration.Camera.State.State_Type;
       Load_State           : Boolean := True;
+      Presets              : aliased Video.Preset.Presets_Type;
       Setup_Path           : access constant String := Null;
       State_Path           : access constant String := Null;
    end record;
@@ -123,8 +125,8 @@ package Camera.Lib.Unit_Test is
 --    Camera_State         : aliased State.State_Type;
       Configuration        : Standard.Camera.Base.
                                  Configuration_Class_Access := Null;
---    Configuration_Setup  : Standard.Configuration.Camera.Setup.Setup_Type;
---    Configuration_State  : Standard.Configuration.Camera.State.State_Type;
+--    Configuration_Setup  : Standard.Video.Configuration.Camera.Setup.Setup_Type;
+--    Configuration_State  : Standard.Video.Configuration.Camera.State.State_Type;
       Load_State           : Boolean := True;
    end record;
 
@@ -161,7 +163,7 @@ package Camera.Lib.Unit_Test is
                                        Initialize_GNOGA) with record
       Brand                      : Brand_Type := PTZ_Optics_Camera;
       Camera_Info                : Camera_Info_Type;
-      Setup                      : Standard.Configuration.Camera.Setup.Setup_Type;
+      Setup                      : Standard.Video.Configuration.Camera.Setup.Setup_Type;
    end record;
 
    overriding

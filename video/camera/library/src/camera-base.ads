@@ -3,8 +3,8 @@ with Ada_lib.Configuration;
 with Ada_Lib.Options;
 with Ada_Lib.Strings.Unlimited;
 with Camera.Commands;
-limited with Configuration.Camera.Setup;
-limited with Configuration.Camera.State;
+limited with Video.Configuration.Camera.Setup;
+limited with Video.Configuration.Camera.State;
 with GNAT.Source_Info;
 with Gnoga.Gui.Window;
 with Video.Lib;
@@ -45,13 +45,13 @@ package Camera.Base is
 --
    function Get_Configuration_Setup (
       Configuration      : in     Configuration_Type
-   ) return access Standard.Configuration.Camera.Setup.Setup_Type
+   ) return access Standard.Video.Configuration.Camera.Setup.Setup_Type
    with Pre    => Configuration.Has_Configuration_Setup;
 
    function Get_Configuration_State (
       Configuration        : in     Configuration_Type
-   ) return access Standard.Configuration.Camera.State.State_Type
-   with Pre    => Configuration.Has_Configuration;
+   ) return access Standard.Video.Configuration.Camera.State.State_Type
+   with Pre    => Configuration.Has_Configuration_State;
 
    function Get_Video_Port (
       Configuration     : in     Configuration_Type
@@ -61,7 +61,7 @@ package Camera.Base is
       Configuration      : in     Configuration_Type
    ) return Boolean;
 
-   function Has_Configuration (
+   function Has_Configuration_State (
       Configuration      : in     Configuration_Type
    ) return Boolean;
 
@@ -104,10 +104,15 @@ package Camera.Base is
 
    procedure Load (
       Configurations       : in out Configurations_Type;
-      Path                 : in     String
+      Path                 : in     String;
+      Location             : in     Video.Lib.Location_Type
    ) with Pre    => Path'length > 0;
 
    procedure Halt;
+
+   procedure Load (
+      File_Name   : in     String;
+      Location    : in     Video.Lib.Location_Type);
 
    procedure Report_Exception (
       Window               : in out Gnoga.Gui.Window.Window_Type'class;

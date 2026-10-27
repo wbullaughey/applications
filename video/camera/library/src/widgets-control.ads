@@ -1,5 +1,5 @@
 --with Ada_Lib.Socket_IO;
---with Configuration.Camera; use Configuration.Camera;
+--with Video.Configuration.Camera; use Configuration.Camera;
 with Gnoga.Gui.Base;
 --with Gnoga.Gui.Element.Form;
 with Gnoga.Gui.View;

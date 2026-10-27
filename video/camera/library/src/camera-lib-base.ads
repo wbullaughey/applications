@@ -1,7 +1,7 @@
 with Ada_Lib.Lock;
 with Ada_Lib.Socket_IO.Client;
---with Ada_Lib.Strings;
---with Configuration.Camera;
+with Ada_Lib.Strings;
+--with Video.Configuration.Camera;
 with GNAT.Sockets;
 with Video.Lib;
 
@@ -73,6 +73,11 @@ package Camera.Lib.Base is
       Camera                     :    out Base_Camera_Type;
       Host_Address               : in     String;
       Port                       : in     Video.Lib.Port_Type);
+
+   overriding
+   function Image (
+      Camera                     : in     Base_Camera_Type
+   ) return String;
 
    overriding
    procedure IP_Open (
@@ -152,12 +157,14 @@ package Camera.Lib.Base is
 
 private
 
-   Description                   : aliased constant String := "camera";
+   Camera_Description            : aliased constant String := "camera";
 
    type Base_Camera_Type is abstract new General_Camera_Type with record
-      Lock                       : Ada_Lib.Lock.Lock_Type (Description'access);
+      Description                : Ada_Lib.Strings.String_Constant_Access :=
+                                    Camera_Description'access;
+      Lock                       : Ada_Lib.Lock.Lock_Type (Camera_Description'access);
       Socket                     : Ada_Lib.Socket_IO.Client.Client_Socket_Type (
-                                     Description'access);
+                                     Camera_Description'access);
    end record;
 
    Null_Option                   : constant Command_Options_Type (1 .. 0) :=

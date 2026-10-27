@@ -1,16 +1,13 @@
 --with Camera;
 
-package Configuration.Camera is
+package Video.Configuration.Camera is
 
    Failed               : exception;
-
--- type Preset_ID_Type  is new Natural;
 
    Adjust_Card_Style    : constant String := "Adjust_Card";
    Blank_Preset_Root    : constant String := "no_image.png";
    Blank_Preset         : constant String := "img/" & Blank_Preset_Root;
    Center_Box_Style     : constant String := "Center_Box_Style";
-   Column_Not_Set       : constant := Column_Type'last;
    Configuration_Not_Set: constant := Configuration_ID_Type'last;
    Configured_Card_Style: constant String := "Configured_Card";
    Control_Card_Style   : constant String := "Control_Card";
@@ -27,4 +24,4 @@ package Configuration.Camera is
 
 -- Debug                : Boolean := False;
 
-end Configuration.Camera;
+end Video.Configuration.Camera;

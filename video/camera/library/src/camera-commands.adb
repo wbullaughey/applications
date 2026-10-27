@@ -3,7 +3,7 @@ with Ada.Text_IO; use Ada.Text_IO;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
 with Camera.Lib.OPTIONS;
 --with Camera.Main;
-with Configuration.Camera.State;
+with Video.Configuration.Camera.State;
 with Hex_IO;
 with Interfaces;
 with Video.Lib;
@@ -530,11 +530,10 @@ package body Camera.Commands is
       Speed                   : in     Property_Type := 0) is  -- 0 => default
    ---------------------------------------------------------------
 
-      ID                      : constant Preset_Range_Type := Preset_ID.Get_ID;
       Update_Speed            : Property_Type := Speed;
 
    begin
-      Log_In (Debug, "preset id" & ID'img &
+      Log_In (Debug, "preset id" & Preset_ID'img &
          " speed " & Speed'img &
          " wait " & Wait_Until_Finished'img);
 
@@ -543,7 +542,7 @@ package body Camera.Commands is
          if Speed = 0 then                -- use configured speed
             declare
                Speed             : constant Property_Type := Property_Type (
-                                    Configuration.Camera.State.Get_Default_Speed);
+                                    Video.Configuration.Camera.State.Get_Default_Speed);
             begin
                Log_Here (Debug, "configure speed " & Speed'img);
                Update_Speed := Speed;
@@ -556,7 +555,7 @@ package body Camera.Commands is
       Camera.Process_Command (Memory_Recall,
          Options     => ( 1 =>
                (
-                  Data           => ID,
+                  Data           => Preset_ID,
                   Start          => 6,
                   Mode           => Fixed
                )

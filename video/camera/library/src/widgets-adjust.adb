@@ -7,7 +7,7 @@ with Ada_Lib.Trace; use Ada_Lib.Trace;
 --with Camera.Base;
 with Camera.Main;
 with Camera.Command_Queue;
-with Configuration.Camera;
+with Video.Configuration.Camera;
 
 pragma Elaborate (Ada_Lib.Parser);
 
@@ -63,7 +63,7 @@ package body Widgets.Adjust is
          Number_Rows    => Bottom_Row,
          Parent         => Cards,
          Parent_Form    => Null);
---    Adjust_Card.Class_Name (Configuration.Camera.Adjust_Card_Style);
+--    Adjust_Card.Class_Name (Video.Configuration.Camera.Adjust_Card_Style);
 
       Adjust_Card.On_Key_Press_Handler (Key_Down_Handler'access);
       Adjust_Card.On_Mouse_Move_Handler (Mouse_Move_Handler'access);
@@ -410,16 +410,16 @@ package body Outer_Package is
 --         Field_ID               : constant String := Name & "_Field_" &
 --                                    Ada_Lib.Strings.Trim (Table_Row'img) & "_" &
 --                                    Ada_Lib.Strings.Trim (Table_Column'img);
---         Outer_ID               : constant Configuration.Camera.Outer_ID_Type :=
---                                    Configuration.Camera.Camera.Setup.Get_Outer_ID (
+--         Outer_ID               : constant Video.Configuration.Camera.Outer_ID_Type :=
+--                                    Video.Configuration.Camera.Camera.Setup.Get_Outer_ID (
 --                                       Configuration_ID);
 --         Has_Preset              : constant Boolean :=
---                                    Configuration.Camera.Camera.Setup.Has_Preset (Outer_Id);
---         Preset                  : constant Configuration.Camera.Camera.Setup.Outer_Type :=
+--                                    Video.Configuration.Camera.Camera.Setup.Has_Preset (Outer_Id);
+--         Preset                  : constant Video.Configuration.Camera.Camera.Setup.Outer_Type :=
 --                                    (if Has_Preset then
---                                       Configuration.Camera.Camera.Setup.Get_Preset (Outer_ID)
+--                                       Video.Configuration.Camera.Camera.Setup.Get_Preset (Outer_ID)
 --                                    else
---                                        Configuration.Camera.Camera.Setup.Null_Preset_ID);
+--                                        Video.Configuration.Camera.Camera.Setup.Preset_ID_Not_Set);
          begin
             Log_In (Debug, "row " & Table_Row'img &
                " Column " & Table_Column'img &
@@ -441,7 +441,7 @@ package body Outer_Package is
                            Value => 50,
                            ID    => Cell_ID & "-Horizontal_Slider");
                         Cell.Horizontal_Slider.Class_Name (
-                           Configuration.Camera.Horizontal_Slider_Style);
+                           Video.Configuration.Camera.Horizontal_Slider_Style);
                         Cell.Horizontal_Slider.On_Mouse_Move_Handler (
                            Mouse_Move_Handler'access);
 
@@ -449,7 +449,7 @@ package body Outer_Package is
                         Cell.Center_Box.Create (Cell, ID => Center_Box_ID);
                         Cell.Center_Box.On_Mouse_Move_Handler (
                            Mouse_Move_Handler'access);
-                        Cell.Center_Box.Class_Name (Configuration.Camera.Center_Box_Style);
+                        Cell.Center_Box.Class_Name (Video.Configuration.Camera.Center_Box_Style);
 
                      when Bottom_Row =>
                         Null;
@@ -466,10 +466,10 @@ package body Outer_Package is
                         Cell.Vertical_Slider_Blank.On_Mouse_Move_Handler (
                            Mouse_Move_Handler'access);
                         Cell.Vertical_Slider_Blank.Class_Name (
-                           Configuration.Camera.Vertical_Slider_Blank_Style);
+                           Video.Configuration.Camera.Vertical_Slider_Blank_Style);
                         Cell.Vertical_Slider_Solid.Create (Cell, Content=>"solid");
                         Cell.Vertical_Slider_Solid.Class_Name (
-                           Configuration.Camera.Vertical_Slider_Solid_Style);
+                           Video.Configuration.Camera.Vertical_Slider_Solid_Style);
 
                      when Bottom_Row =>
                         Null;

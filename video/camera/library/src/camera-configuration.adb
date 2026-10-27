@@ -6,8 +6,8 @@
 with Ada_Lib.Trace; use Ada_Lib.Trace;
 with Camera.Lib.Options;
 --with Camera.Lib.Unit_Test;
---with Configuration.Camera.State;
---with Configuration.Camera.Setup;
+--with Video.Configuration.Camera.State;
+--with Video.Configuration.Camera.Setup;
 
 package body Camera.Configuration is
 

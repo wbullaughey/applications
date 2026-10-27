@@ -9,11 +9,10 @@ with AUnit.Test_Cases;
 with Camera.Base;
 with Camera.Lib.Options.Unit_Test;
 with Camera.Lib.Unit_Test;
-with Video_Lib;
 
 --with Configuration.State;
 
-package body Configuration.Camera.Setup.Unit_Tests is
+package body Video.Configuration.Camera.Setup.Unit_Tests is
 
    use type Standard.Camera.Preset_ID_Type;
 
@@ -245,6 +244,7 @@ package body Configuration.Camera.Setup.Unit_Tests is
       Test                       : in out AUnit.Test_Cases.Test_Case'class) is
    ---------------------------------------------------------------
 
+      Camera_Index      : constant := 1;
       Configuration_ID  : constant Configuration_ID_Type := 3;
       Expected_Setup    : constant String :=
                            "expected_updated_test_setup.cfg";
@@ -254,11 +254,9 @@ package body Configuration.Camera.Setup.Unit_Tests is
                            renames Local_Test.Configuration;
       New_Column        : constant := 1;
       New_Label         : constant String := "New Label";
-      New_Preset_ID     : constant Video.Lib.Preset_ID_Type :=
-                           Video.Lib.Constructor (5);
+      New_Preset_ID     : constant := 5;
       New_Row           : constant := 2;
-      Preset_ID         : constant Video.Lib.Preset_ID_Type :=
-                           Video.Lib.Constructor (3);
+--    Preset_ID         : constant := 3;
       Update_Setup      : constant String := "updated_setup.cfg";
       Updated_Setup     : Setup_Type;
                            -- new cfg file "updated_setup.cfg"
@@ -266,8 +264,9 @@ package body Configuration.Camera.Setup.Unit_Tests is
    begin
       Log_In (Debug);
       if Debug then
-         Configuration.Get_Configuration_Setup.Get_Configuration (Configuration_ID).Dump ("configuration");
-         Configuration.Get_Configuration_Setup.Get_Preset (Preset_ID).Dump ("preset");
+         Configuration.Get_Configuration_Setup.Get_Configuration (
+            Configuration_ID).Dump ("configuration");
+--       Configuration.Get_Configuration_Setup.Get_Preset.Dump ("preset");
       end if;
       Updated_Setup := Configuration.Get_Configuration_Setup.all;
       Updated_Setup.Set_Path (Update_Setup);
@@ -278,7 +277,7 @@ package body Configuration.Camera.Setup.Unit_Tests is
       Updated_Setup.Update (Configuration.Get_Configuration_State.all);
       if Debug then
          Updated_Setup.Get_Configuration (Configuration_ID).Dump;
-         Updated_Setup.Get_Preset (New_Preset_ID).Dump;
+--       New_Preset_ID.Dump;
       end if;
       Assert (Updated_Setup.Is_Loaded, "setup not loaded");
       Assert (Updated_Setup.Has_Configuration (Configuration_ID),
@@ -286,28 +285,30 @@ package body Configuration.Camera.Setup.Unit_Tests is
       Assert (Updated_Setup.Has_Preset (New_Preset_ID), "preset " &
          New_Preset_ID'img & " deos not exist");
       declare
-         New_Configuration       : constant Configuration_Type'class :=
-                                    Configuration.Get_Configuration_Setup.Get_Configuration (
-                                       Configuration_ID);
-         New_Preset              : constant Preset_Type'class :=
-                                    Configuration.Get_Configuration_Setup.Get_Preset (New_Preset_ID);
+         New_Configuration
+            : constant Configuration_Type'class :=
+               Configuration.Get_Configuration_Setup.Get_Configuration (
+                  Configuration_ID);
+         New_Preset
+            : constant Preset.Preset_Access :=
+               Preset.Get_Preset (Camera_Index, New_Preset_ID);
       begin
          Assert (New_Configuration.Label.Coerce = New_Label,
             Quote ("configuration label has the wrong value. Got ",
                New_Configuration.Label) &
             Quote (" expected", New_Label));
          Assert (New_Configuration.Preset_ID = New_Preset_ID,
-            "wrong preset id. Got" & New_Configuration.Preset_ID.Image &
+            "wrong preset id. Got" & New_Configuration.Preset_ID'img &
             " expected" & New_Preset_ID'img &
             " for configuration" & New_Configuration.Configuration_ID'img);
-         Assert (New_Preset.Row = New_Row, "got wrong row for preset" &
+         Assert (New_Preset.Get_Row = New_Row, "got wrong row for preset" &
             New_Preset_ID'img & ". Got" &
-            New_Preset.Row'img & " expected" & New_Row'img &
-            " for preset" & New_Preset.Preset_ID.Image);
-         Assert (New_Preset.Column = New_Column, "got wrong column for preset" &
+            New_Preset.Get_Row'img & " expected" & New_Row'img &
+            " for preset" & New_Preset.Get_Preset_ID'img);
+         Assert (New_Preset.Get_Column = New_Column, "got wrong column for preset" &
             New_Preset_ID'img & ". Got" &
-            New_Preset.Column'img & " expected" & New_Column'img &
-            " for preset" & New_Preset.Preset_ID.Image);
+            New_Preset.Get_Column'img & " expected" & New_Column'img &
+            " for preset" & New_Preset.Get_Preset_ID'img);
 
          Assert (Ada_Lib.Directory.Compare_Files (Expected_Setup, Update_Setup),
             "File compare failed");
@@ -348,55 +349,55 @@ package body Configuration.Camera.Setup.Unit_Tests is
          Local_Test                 : Configuration_Tests_Type renames
                                        Configuration_Tests_Type (Test);
 
-         type Expected_Preset_Type  is array (Video.Lib.Preset_Range_Type range
-                                       Video.Lib.Preset_Range_Type'first ..
-                                       Expected_Last_Presets) of Preset_Type;
+         type Expected_Preset_Type  is array (Video.Preset.Preset_ID_Type range
+                                       Video.Preset.Preset_ID_Type'first ..
+                                       Expected_Last_Presets) of Preset.Preset_Type;
 
          Expected_Presets            : constant Expected_Preset_Type := (
                                        Expected_Preset_Type'(
-            0  => (
-               Configuration_Package.Configuration_Type with
+            0  => Preset.Constructor (
+               Camera_ID   => 1,
                Column      => 2,
                Row         => 2,
-               Preset_ID   => Video.Lib.Constructor (0)),
-            1  => (
-               Configuration_Package.Configuration_Type with
+               Preset_ID   => 0),
+            1  => Preset.Constructor (
+               Camera_ID   => 1,
                Column      => 1,
                Row         => 1,
-               Preset_ID   => Video.Lib.Constructor (0)),
-            3  => (
-               Configuration_Package.Configuration_Type with
+               Preset_ID   => 0),
+            3  => Preset.Constructor (
+               Camera_ID   => 1,
                Column      => 3,
                Row         => 1,
-               Preset_ID   => Video.Lib.Constructor (0)),
-            5 =>  (
-               Configuration_Package.Configuration_Type with
+               Preset_ID   => 0),
+            5 =>  Preset.Constructor (
+               Camera_ID   => 1,
                Column      => 2,
                Row         => 1,
-               Preset_ID   => Video.Lib.Constructor (0)),
-            others => Null_Preset));
+               Preset_ID   => 0),
+            others => Preset.Null_Preset));
          Expected_Configurations    : constant Configurations_Type (
                                        1 .. Number_Configurations) := (
             1 => (
                Configuration_Package.Configuration_Type with
                Configuration_ID  => 1,
                Label             => Coerce ("Label 5"),
-               Preset_ID         => Video.Lib.Constructor (5)),
+               Preset_ID         => 5),
             2 => (
                Configuration_Package.Configuration_Type with
                Configuration_ID  => 2,
                Label             => Coerce ("Label 3"),
-               Preset_ID         => Video.Lib.Constructor (3)),
+               Preset_ID         => 3),
             3 => (
                Configuration_Package.Configuration_Type with
                Configuration_ID  => 3,
                Label             => Coerce ("Label 1"),
-               Preset_ID         => Video.Lib.Constructor (1)),
+               Preset_ID         => 1),
             4 => (
                Configuration_Package.Configuration_Type with
                Configuration_ID  => 4,
                Label             => Coerce ("Label 0"),
-               Preset_ID         => Video.Lib.Constructor (0)),
+               Preset_ID         => 0),
             others => Null_Configuration);
 
       begin
@@ -404,7 +405,7 @@ package body Configuration.Camera.Setup.Unit_Tests is
             Number_Columns          : constant Column_Type :=
                                        Configuration_State.Get_Number_Columns;
             Last_Preset             : constant Standard.Camera.Preset_ID_Type :=
-                                       Video.Lib.Get_Last_Preset_ID;
+                                       Preset.Get_Last_Preset_ID;
             Number_Rows             : constant Row_Type := Configuration_State.Get_Number_Rows;
 
          begin
@@ -425,7 +426,7 @@ package body Configuration.Camera.Setup.Unit_Tests is
                " not equal Expected_Number_Configurations" &
                Expected_Number_Configurations'img);
 
-            Assert (Last_Preset = Video.Lib.Constructor (Expected_Last_Presets),
+            Assert (Last_Preset = Expected_Last_Presets,
                "Last_Preset" & Last_Preset'img &
                " not equal Expected_Last_Presets" &
                Expected_Last_Presets'img);
@@ -454,39 +455,46 @@ package body Configuration.Camera.Setup.Unit_Tests is
                      " for configuration" & Configuration_ID'img);
 
                   Assert (Configuration.Preset_ID = Expected.Preset_ID,
-                     "got preset id " & Configuration.Preset_ID.Image &
-                     " not equal to " & Expected.Preset_ID.Image &
+                     "got preset id " & Configuration.Preset_ID'img &
+                     " not equal to " & Expected.Preset_ID'img &
                      " for configuration" & Configuration_ID'img);
                end;
             end loop;
 
-            for Preset_Number in Video.Lib.Preset_Range_Type'first ..
-                  Last_Preset.Get_ID loop
+            for Preset_Number in Video.Preset.Preset_ID_Type'first ..
+                  Last_Preset loop
                declare
                   Expected_Preset_Value
-                                    : Preset_Type renames
+                                    : Preset.Preset_Type renames
                                        Expected_Presets (Preset_Number);
                begin
-                  if Expected_Preset_Value.Preset_ID.Is_Set then
+                  if Expected_Preset_Value.Get_Preset_ID /=
+                        Preset.Preset_ID_Not_Set then
                      Log_Here (Debug, "Preset number" & Preset_Number'img &
-                        " column" & Expected_Preset_Value.Column'img &
-                        " row" & Expected_Preset_Value.Row'img);
+                        " column" & Expected_Preset_Value.Get_Column'img &
+                        " row" & Expected_Preset_Value.Get_Row'img);
 
                      declare
+                        Configuration_Setup
+                           : constant Setup_Constant_Access  :=
+                              Local_Test.Configuration.Get_Configuration_Setup;
                         Row_Column_Preset_Id
-                                          : constant Standard.Camera.Preset_ID_Type :=
-                                             Local_Test.Configuration.Get_Configuration_Setup.Get_Preset_ID (
-                                                Expected_Preset_Value.Row,
-                                                Expected_Preset_Value.Column);
-                        Preset_By_Preset  : constant Preset_Type'class :=
-                                             Local_Test.Configuration.Get_Configuration_Setup.Get_Preset (Row_Column_Preset_Id);
-                        Preset_ID         : constant Video.Lib.Preset_ID_Type :=
-                                             Video.Lib.Constructor (Preset_Number);
+                           : constant Standard.Camera.Preset_ID_Type :=
+                              Configuration_Setup.Get_Preset_ID (
+                                 Expected_Preset_Value.Get_Row,
+                                 Expected_Preset_Value.Get_Column);
+                        Preset_By_Preset
+                           : constant Presets.Preset_Type'class :=
+                              Configuration_Setup.Get_Preset (
+                                 Row_Column_Preset_Id);
+                        Preset_ID
+                           : constant Video.Preset.Preset_ID_Type :=
+                                 Preset.Constructor (Local_Test.Camera, Preset_Number);
 
                         ---------------------------------------------------------
                         procedure Check_Preset (
                            Preset_Value
-                                    : in     Preset_Type'class;
+                                    : in     Presets.Preset_Type'class;
                            How      : in     String) is
                         ---------------------------------------------------------
 
@@ -507,27 +515,27 @@ package body Configuration.Camera.Setup.Unit_Tests is
                            end if;
 
                            Assert (Preset_Value.Column =
-                              Expected_Preset_Value.Column,
-                              "got Column" & Preset_Value.Column'img &
-                              " expected column" & Expected_Preset_Value.Column'img &
+                              Expected_Preset_Value.Get_Column,
+                              "got Column" & Preset_Value.Get_Column'img &
+                              " expected column" & Expected_Preset_Value.Get_Column'img &
                               Description);
-                           Assert (Preset_Value.Row = Expected_Preset_Value.Row,
-                              "got row" & Preset_Value.Row'img &
-                              " expected row" & Expected_Preset_Value.Row'img &
+                           Assert (Preset_Value.Row = Expected_Preset_Value.Get_Row,
+                              "got row" & Preset_Value.Get_Row'img &
+                              " expected row" & Expected_Preset_Value.Get_Row'img &
                               Description);
                         end Check_Preset;
                         ------------------------------------------------------------
 
                         Preset_By_Row_Column
-                           : constant Preset_Type'class :=
+                           : constant Video.Preset.Preset_Type'class :=
                               Local_Test.Configuration.
                                  Get_Configuration_Setup.Get_Preset (
                                     Row_Column_Preset_Id);
                      begin
                         Log_Here (Debug, "preset" & Preset_Number'img &
-                           " by row column " & Preset_Image (Preset_By_Row_Column));
+                           Preset_By_Row_Column.Image);
 
-                        Check_Preset (Preset_By_Preset, "by preset" & Preset_ID.Image);
+                        Check_Preset (Preset_By_Preset, "by preset" & Preset_ID'img);
                         Check_Preset (Preset_By_Row_Column, "by row column");
                      end;
                   else
@@ -553,4 +561,4 @@ begin
       Debug := Trace_Tests;
    end if;
 
-end Configuration.Camera.Setup.Unit_Tests;
+end Video.Configuration.Camera.Setup.Unit_Tests;

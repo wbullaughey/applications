@@ -7,7 +7,7 @@ with Ada_Lib.Trace; use Ada_Lib.Trace;
 package body Camera.Lib.Options.Unit_Test is
 
    Debug                   : Boolean renames
-                              Camera_Lib_Unit_Test.Unit_Test_Debug;
+                              Camera_Options.Options_Debug;
 -- Initialize_Recursed     : Boolean := False;
    Process_Option_Recursed : Boolean := False;
 -- Program_Help_Recursed   : Boolean := False;

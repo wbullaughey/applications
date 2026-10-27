@@ -4,8 +4,8 @@ with Camera.Base;
 --limited with Camera.Configurations;
 --limited with Camera.Lib.Base;
 limited with Camera.Main;
---limited with Configuration.Camera.State;
---limited with Configuration.Camera.Setup;
+--limited with Video.Configuration.Camera.State;
+--limited with Video.Configuration.Camera.Setup;
 
 package Camera.Configuration is
 

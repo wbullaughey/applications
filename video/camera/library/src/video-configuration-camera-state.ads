@@ -1,10 +1,10 @@
-with Ada_Lib.Configuration;
+--with Ada_Lib.Configuration;
 with ADA_LIB.Strings.Unlimited;use Ada_Lib.Strings.Unlimited;
 with Ada_Lib.Trace;
 with Camera.Configurations;
 with Video.Lib;
 
-package Configuration.Camera.State is
+package Video.Configuration.Camera.State is
 
    type Address_Key_Type      is array (Video.Lib.Location_Type) of
                                  ADA_LIB.Strings.String_Access;
@@ -165,7 +165,6 @@ package Configuration.Camera.State is
    overriding
    procedure Load (
       State       : in out State_Type;
-      Config      : in out Ada_Lib.Configuration.Configuration_Type;
       Location    : in     Video.Lib.Location_Type;
       File_Name   : in     String);
 
@@ -204,5 +203,5 @@ private
    end record;
 
 
-end Configuration.Camera.State;
+end Video.Configuration.Camera.State;
 

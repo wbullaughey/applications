@@ -5,8 +5,8 @@ with Camera.Commands;
 with Camera.Configurations;
 with Camera.Base;
 with Camera.Main;
-with Configuration.Camera.Setup;
-with Configuration.Camera.State;
+with Video.Configuration.Camera.Setup;
+with Video.Configuration.Camera.State;
 --with Camera.Configurations;
 --with GNOGA_Ada_Lib;
 with Gnoga.Gui.Element.Common;
@@ -16,6 +16,7 @@ with Gnoga.Gui.Element.Table;
 --with hex_io;
 with Widgets.Generic_Table;
 --with Video.Lib;
+with Video.Configuration;
 
 package body Widgets.Control is
 
@@ -220,13 +221,13 @@ not_implemented;
                Camera_Configuration_State_Constant_Class_Access :=
                   Camera.Configurations.
                      Get_Read_Only_Camera_Configuration_State;
-      State : Configuration.Camera.State.State_Type'class renames
+      State : Video.Configuration.Camera.State.State_Type'class renames
                State_Pointer.all;
       Number_Columns
             : constant Control_Column_Index_Type :=
                Control_Column_Index_Type (State.Get_Number_Columns);
       Number_Rows
-            : constant Configuration.Row_Type := State.Get_Number_Rows;
+            : constant Video.Configuration.Row_Type := State.Get_Number_Rows;
    begin
       Log_In (Debug, Quote ("ID", ID) & Quote (" Top_Name", Top_Name) &
          Quote (" Widget_Name", Widget_Name));
@@ -347,7 +348,7 @@ not_implemented;
          Cell.Create (Column, ID => Name & "_Cell_" &
             Ada_Lib.Strings.Trim (Table_Row'img) & "_" &
             Ada_Lib.Strings.Trim (Table_Column'img));
-         Cell.Class_Name (Configuration.Camera.Control_Cell_Style);
+         Cell.Class_Name (Video.Configuration.Camera.Control_Cell_Style);
 
          if Table_Column = Header_Column then
             Cell.Label.Create (
@@ -356,26 +357,26 @@ not_implemented;
                ID       => Name & "Label");
          else
             declare
-               Image             : Gnoga.Gui.Element.Common.IMG_Type
-                                    renames Cell.Image;
-               Preset_ID         : constant Camera.Preset_ID_Type :=
-                                    Configuration.Camera.Setup.Global_Camera_Setup.
-                                       Get_Preset_ID (Table_Row,
-                                          Configuration.Column_Type (
-                                             Table_Column));
-               Preset_Text       :  Gnoga.Gui.Element.Common.P_Type
-                                    renames Cell.Preset_Text;
-               Image_Name        : constant String :=
-                                    Configuration.Camera.State.Image_Name (
-                                       Configuration.Column_Type (
-                                          Table_Column),
-                                       Table_Row);
+               Image       : Gnoga.Gui.Element.Common.IMG_Type
+                              renames Cell.Image;
+               Preset_ID   : constant Camera.Preset_ID_Type :=
+                              Video.Configuration.Camera.Setup.
+                                 Global_Camera_Setup.Get_Preset_ID (Table_Row,
+                                    Video.Configuration.Column_Type (
+                                       Table_Column));
+               Preset_Text :  Gnoga.Gui.Element.Common.P_Type
+                              renames Cell.Preset_Text;
+               Image_Name  : constant String :=
+                              Video.Configuration.Camera.State.Image_Name (
+                                 Video.Configuration.Column_Type (
+                                    Table_Column),
+                                 Table_Row);
             begin
                Log_Here (Debug, "row" & Table_Row'img &
                   " column" & Table_Column'img &
                   Quote (" image Name", Image_Name) &
                   " preset id " & Preset_ID.Get_ID'img &
-                  " is set " & Preset_ID.Is_Set'img);
+                  " is set " & Preset_ID /= Preset.Preset_ID_Not_Set'img);
 
                if Image_Name'length > 0 then
                   Cell.Image_Path.Construct (Image_Name);
@@ -394,7 +395,7 @@ not_implemented;
                else
                   Image.Create (
                      Parent            => Cell,
-                     URL_Source        => Configuration.Camera.Blank_Preset,
+                     URL_Source        => Video.Configuration.Camera.Blank_Preset,
                      Alternative_Text  => Table_Row'img &
                                              Table_Column'img,
                      ID                => Name & "_Image_" &
@@ -402,12 +403,12 @@ not_implemented;
                                           Ada_Lib.Strings.Trim (Table_Column'img));
                end if;
 
-               Image.Class_Name (Configuration.Camera.Control_Image_Style);
-               if not Preset_ID.Is_Set then -- /= Configuration.Camera.Get_Preset_Not_Set then
+               Image.Class_Name (Video.Configuration.Camera.Control_Image_Style);
+               if not Preset_ID /= Preset.Preset_ID_Not_Set then -- /= Video.Configuration.Camera.Get_Preset_Not_Set then
                   Preset_Text.Create (
                      Parent   => Cell,
                      Content  => "no preset"); -- Preset_ID.Get_ID'img);
-                  Preset_Text.Class_Name (Configuration.Camera.Control_Text_Style);
+                  Preset_Text.Class_Name (Video.Configuration.Camera.Control_Text_Style);
                end if;
             end;
          end if;

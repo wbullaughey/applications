@@ -9,8 +9,8 @@ with Camera.Lib.Base.Command_Tests;
 with Camera.Lib.Base.Test;
 with Camera.Lib.Options.Unit_Test;
 with Camera.Main;
-with Configuration.Camera.Setup.Unit_Tests;
-with Configuration.Camera.State.Unit_Tests;
+with Video.Configuration.Camera.Setup.Unit_Tests;
+with Video.Configuration.Camera.State.Unit_Tests;
 with Widgets.Adjust.Unit_Test;
 with Widgets.Control.Unit_Test;
 
@@ -46,8 +46,8 @@ begin
       Test_Suite.Add_Test (Standard.Camera.Commands.Unit_Test.Suite);
       Test_Suite.Add_Test (Standard.Camera.Lib.Base.Command_Tests.Suite);
       Test_Suite.Add_Test (Standard.Camera.Lib.Base.Test.Suite);
-      Test_Suite.Add_Test (Standard.Configuration.Camera.Setup.Unit_Tests.Suite);
-      Test_Suite.Add_Test (Standard.Configuration.Camera.State.Unit_Tests.Suite);
+      Test_Suite.Add_Test (Standard.Video.Configuration.Camera.Setup.Unit_Tests.Suite);
+      Test_Suite.Add_Test (Standard.Video.Configuration.Camera.State.Unit_Tests.Suite);
       Test_Suite.Add_Test (Widgets.Adjust.Unit_Test.Suite);
 --       Test_Suite.Add_Test (Widgets.Configured.Unit_Test.Suite);
       Test_Suite.Add_Test (Widgets.Control.Unit_Test.Suite);

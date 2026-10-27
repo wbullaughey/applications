@@ -8,7 +8,7 @@ with AUnit.Test_Cases;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
 with Camera.Lib.Options.Unit_Test;
 with Camera.Lib.Unit_Test;
-with Configuration.Camera.State;
+with Video.Configuration.Camera.State;
 with Video.Lib;
 
 package body Camera.Lib.Base.Test is
@@ -142,7 +142,7 @@ package body Camera.Lib.Base.Test is
                            554, 1935
                         );
       Configuration_State
-                     : Configuration.Camera.State.State_Type renames
+                     : Video.Configuration.Camera.State.State_Type renames
                         Local_Test.Configuration.Get_Configuration_State.all;
 --    Options        : Standard.Camera.Lib.Unit_Test.
 --                      Unit_Test_Program_Options_Type'class renames
@@ -337,7 +337,7 @@ package body Camera.Lib.Base.Test is
 
       Local_Test     : Test_Type renames Test_Type (Test);
       Configuration_State
-                     : Configuration.Camera.State.State_Type renames
+                     : Video.Configuration.Camera.State.State_Type renames
                         Local_Test.Configuration.Get_Configuration_State.all;
 --    Options                    : Standard.Camera.Lib.Unit_Test.
 --                                  Unit_Test_Program_Options_Type'class

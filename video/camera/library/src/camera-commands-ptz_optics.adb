@@ -11,7 +11,7 @@ package body Camera.Commands.PTZ_Optics is
    Debug                   : Boolean renames
                               Camera.Lib.Options.Camera_Options.Commands_Debug;
    Default_Response_Timeout: constant Duration := 0.6;
-   Position_Request_Timeout: constant Duration := 0.75;
+   Position_Request_Timeout: constant Duration := 2.0;
    Position_Timeout        : constant Duration := 60.0;
    Power_Inquire_Timeout   : constant Duration := 120.0;
    Commands                : constant Array (Commands_Type) of Camera.Lib.Base.Command_Type := (
@@ -89,7 +89,7 @@ package body Camera.Commands.PTZ_Optics is
 --   procedure Allocate_Preset_ID (
 --      Camera                     : in     PTZ_Optics_Type;
 --      Preset_ID                  : in out Preset_ID_Type;
---      ID                         : in     Preset_Range_Type) is
+--      ID                         : in     Preset_ID_Type) is
 --   ----------------------------------------------------------------------------
 --
 ----    Preset_ID.Pointer := new Preset_Pointer_Type;
@@ -145,7 +145,7 @@ package body Camera.Commands.PTZ_Optics is
    ----------------------------------------------------------------------------
    function Get_Default_Preset_Number (
       PTZ_Optics                 : in     PTZ_Optics_Type
-   ) return Video.Lib.Preset_Range_Type is
+   ) return Video.Preset.Preset_ID_Type is
    pragma Unreferenced (PTZ_Optics);
    ----------------------------------------------------------------------------
 
@@ -178,6 +178,16 @@ package body Camera.Commands.PTZ_Optics is
    end Get_Timeout;
 
    ----------------------------------------------------------------------------
+   function Image (
+      PTZ_Optics        : in     PTZ_Optics_Type   -- only ussed for dispatch
+   ) return String is
+   ----------------------------------------------------------------------------
+
+   begin
+      return "PTZ-Options " & Camera.Commands.Camera_Type (PTZ_Optics).Image;
+   end Image;
+
+   ----------------------------------------------------------------------------
    overriding
    procedure Initialize_Standard_Preset_IDs (
       Camera                     : in     PTZ_Optics_Type) is
@@ -187,10 +197,10 @@ package body Camera.Commands.PTZ_Optics is
 
    begin
       Log_In (Debug);
-      Set_Preset_ID (Default_Preset, Constructor (Power_On_Preset_Number));
-      Set_Preset_ID (First_Preset, Constructor (First_Preset_Number));
-      Set_Preset_ID (Maximum_Preset, Constructor (Maximum_Preset_Number));
-      Set_Preset_ID (Power_On_Preset, Constructor (Power_On_Preset_Number));
+      Video.Preset.Set_Preset_ID (Video.Preset.Default_Preset, Power_On_Preset_Number);
+      Video.Preset.Set_Preset_ID (Video.Preset.First_Preset, First_Preset_Number);
+      Video.Preset.Set_Preset_ID (Video.Preset.Maximum_Preset, Maximum_Preset_Number);
+      Video.Preset.Set_Preset_ID (Video.Preset.Power_On_Preset, Power_On_Preset_Number);
       Log_Out (Debug);
    end Initialize_Standard_Preset_IDs;
 
@@ -297,7 +307,7 @@ package body Camera.Commands.PTZ_Optics is
    ----------------------------------------------------------------------------
 
    begin
-      Video.Lib.Set_Default_Preset_ID (Default_Preset_Number);
+      Video.Preset.Set_Default_Preset_ID (Default_Preset_Number);
    end Set_Default_Preset_Number;
 
 begin

@@ -4,8 +4,8 @@ with Ada_Lib.Trace; use Ada_Lib.Trace;
 with Camera.Base;
 with Camera.Lib.Options;
 with Camera.Main;
-with Configuration.Camera.Setup;
-with Configuration.Camera.State;
+with Video.Configuration.Camera.Setup;
+with Video.Configuration.Camera.State;
 
 package body Camera.Configurations is
 
@@ -82,6 +82,7 @@ return null;
    begin
       Log_In (Debug);
       State_Package.Iterate (States, Process'access);
+log_here;
       State_Package.Clear (States);
       Log_Out (Debug);
    end Clear_Configuration;
@@ -147,15 +148,12 @@ return null;
 -- ----------------------------------------------------------------
    function Get_Read_Only_Camera_Configuration_Setup (
       Camera_ID   : Camera_ID_Type := Null_Camera_ID
-   ) return Camera_Configuration_Setup_Constant_Access is
+   ) return Camera_Configuration_Setup_Constant_Class_Access is
    ----------------------------------------------------------------
 
-      Configuration   : constant Camera.Configuration.
-                        Configuration_Constant_Access :=
-                           Get_Read_Only_Configuration (Camera_ID);
    begin
-      return Camera_Configuration_Setup_Constant_Access (
-         Configuration.Get_Configuration_Setup);
+      return Camera_Configuration_Setup_Constant_Class_Access (
+         Get_Camera_Configuration_Setup (Camera_ID));
    end Get_Read_Only_Camera_Configuration_Setup;
 
 -- ----------------------------------------------------------------
@@ -202,7 +200,7 @@ return null;
 
         Configuration      : constant Base.Configuration_Class_Access :=
                               Get_Configuration (Camera_ID);
-        Result   : constant Boolean := Configuration.Has_Configuration;
+        Result   : constant Boolean := Configuration.Has_Configuration_State;
 
      begin
         return Log_Here (Result, Trace_Pre_Post (Result, Debug));

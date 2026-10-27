@@ -10,8 +10,8 @@ with Ada_Lib.Trace; use Ada_Lib.Trace;
 --with Camera.Commands.PTZ_Optics;
 --with Camera.Configurations;
 with Camera.Lib.Options;
-with Configuration.Camera.Setup;
-with Configuration.Camera.State;
+with Video.Configuration.Camera.Setup;
+with Video.Configuration.Camera.State;
 --with GNAT.Sockets;
 
 -- pragma Elaborate (Ada_Lib.OS);
@@ -76,9 +76,9 @@ package body Camera.Base is
 -- begin
 --    Log_In (Debug);
 --    Result.Configuration_Setup :=
---       new Standard.Configuration.Camera.Setup.Setup_Type;
+--       new Standard.Video.Configuration.Camera.Setup.Setup_Type;
 --    Result.Configuration_State :=
---       new Standard.Configuration.Camera.State.State_Type;
+--       new Standard.Video.Configuration.Camera.State.State_Type;
 --    return Result;
 --    Log_Out (Debug);
 -- end Allocate;
@@ -91,11 +91,24 @@ package body Camera.Base is
    begin
       Log_In (Debug, "configuration " &
          Ada_Lib.Strings.Image (Configuration'address));
+      if Configuration.Configuration_State.Is_Loaded then
+         Configuration.Configuration_State.Unload;
+      end if;
       Configuration.Configuration_State.Free;
       Configuration.Configuration_State := Null;
+      if Configuration.Configuration_Setup.Is_Loaded then
+         Configuration.Configuration_Setup.Unload;
+      end if;
       Configuration.Configuration_Setup.Free;
       Configuration.Configuration_Setup:= Null;
+      Configuration.Unload;
       Log_Out (Debug);
+
+   exception
+      when Fault: others =>
+         Trace_Exception (Fault);
+         raise;
+
    end Deallocate;
 
    ----------------------------------------------------------------
@@ -154,7 +167,7 @@ return null;
    ----------------------------------------------------------------
    function Get_Configuration_Setup (
       Configuration      : in     Configuration_Type
-   ) return access Standard.Configuration.Camera.Setup.Setup_Type is
+   ) return access Standard.Video.Configuration.Camera.Setup.Setup_Type is
    ----------------------------------------------------------------
 
    begin
@@ -164,7 +177,7 @@ return null;
    ----------------------------------------------------------------
    function Get_Configuration_State (
       Configuration        : in     Configuration_Type
-   ) return access Standard.Configuration.Camera.State.State_Type is
+   ) return access Standard.Video.Configuration.Camera.State.State_Type is
    ----------------------------------------------------------------
 
    begin
@@ -370,7 +383,7 @@ return null;
    end Has_Configuration_Setup;
 
    ----------------------------------------------------------------
-   function Has_Configuration (
+   function Has_Configuration_State (
       Configuration      : in     Configuration_Type
    ) return Boolean is
    ----------------------------------------------------------------
@@ -379,7 +392,7 @@ return null;
 
    begin
       return Log_Here (Result, Debug);
-   end Has_Configuration;
+   end Has_Configuration_State;
 
 --   ----------------------------------------------------------------
 --   function Has_Current_Camera_ID
@@ -402,62 +415,6 @@ return null;
       return Log_Here (Configuration.Configuration_State.Has_Video_Address,
          Debug);
    end Has_Video_Address;
-
- ----------------------------------------------------------------
- procedure Load (
-    Location    : in     Video.Lib.Location_Type) is
- ----------------------------------------------------------------
-
-    Camera_Configurations  : Configurations_Type;
-    Configuration_File     : Ada_Lib.Configuration.Configuration_Type;
-    Current_Directory      : constant String :=
-                              Standard.Camera.Lib.Options.Current_Directory;
-    File_Name              : constant String := "cameras.cfg";
-    Path                   : constant String :=
-                              (if Current_Directory'length > 0 then
-                                 Current_Directory & "/"
-                              else
-                                 "") & File_Name;
-   begin
-      Log_In (Debug, Quote ("Current_Directory", Current_Directory) &
-         Quote (" File_Name", File_Name) &
-         Quote (" path", Path));
-      Camera_Configurations.Load (Path);
---    Configuration_File.Load (Path, Create => False);
-      Camera_Configurations.Number_Configurations :=
-         Configuration_File.Get_Integer ("number_cameras");
-
-      for Camera in 1 .. Camera_Configurations.Number_Configurations loop
-         declare
-            Camera_Configuration_File
-                           : Ada_Lib.Configuration.Configuration_Type;
-            Configuration  : Configuration_Access renames
-                              Camera_Configurations.Configurations (Camera);
-            Camera_File_Name
-                           : constant String := "camera_" &
-                               Ada_Lib.Strings.Trim (Camera'img);
-         begin
-            Configuration := new Configuration_Type;
-            Camera_Configuration_File.Load (Camera_File_Name,
-               Create => False);
-            declare
-               Configuration_File
-                           : Ada_Lib.Configuration.Configuration_Type;
-               State_Name  : constant String :=
-                              Camera_Configuration_File.Get_String (
-                                 "state_" & Trim (Camera'img));
-               Setup_Name  : constant String :=
-                              Camera_Configuration_File.Get_String (
-                                 "setup_" & Trim (Camera'img));
-            begin
-               Configuration.Configuration_State.Load (
-                  Configuration_File, Location, State_Name);
-               Configuration.Configuration_Setup.Load (
-                  Configuration.Configuration_State.all, Setup_Name);
-            end;
-         end;
-      end loop;
-   end Load;
 
 -- overriding
 -- function Get_Configuration_Pan_Speed (
@@ -622,31 +579,119 @@ return null;
 --         raise Failed with "could not Initialize_GNOGA";
 --   end Initialize_GNOGA;
 
+ ----------------------------------------------------------------
+   procedure Load (
+      File_Name   : in     String;
+      Location    : in     Video.Lib.Location_Type) is
+ ----------------------------------------------------------------
+
+       Camera_Configurations  : Configurations_Type;
+--     Configuration_File     : Ada_Lib.Configuration.Configuration_Type;
+       Current_Directory      : constant String :=
+                                 Standard.Camera.Lib.Options.Current_Directory;
+       Path                   : constant String :=
+                                 (if Current_Directory'length > 0 then
+                                    Current_Directory & "/"
+                                 else
+                                    "") & File_Name;
+   begin
+      Log_In (Debug, Quote ("Current_Directory", Current_Directory) &
+         Quote (" File_Name", File_Name) &
+         Quote (" path", Path));
+      Camera_Configurations.Load (Path, Location);
+
+--      for Camera in 1 .. Camera_Configurations.Number_Configurations loop
+--         declare
+----          Camera_Configuration_File
+----                         : Ada_Lib.Configuration.Configuration_Type;
+--            Configuration  : Configuration_Access renames
+--                              Camera_Configurations.Configurations (Camera);
+----          Camera_File_Name
+----                         : constant String := "camera-" &
+----                             Ada_Lib.Strings.Trim (Camera'img & ".cfg");
+--         begin
+--            Log_Here (Debug); --, Quote ("Camera_File_Name", Camera_File_Name));
+--            Configuration := new Configuration_Type;
+--log_here;
+--            declare
+--               State_Name  : constant String := (case Location is
+--                                 when Video.Lib.Local        => "local_",
+--                                 when Video.Lib.Remote       => "remote_",
+--                                 when Video.Lib.No_Location  => "" ) &
+--                              Configuration.Get_String (
+--                                 "state_" & Trim (Camera'img));
+--               Setup_Name  : constant String :=
+--                              Configuration.Get_String (
+--                                 "setup_" & Trim (Camera'img));
+--            begin
+--               Log_Here (Debug, Quote ("State_Name", State_Name) &
+--                  Quote (" Setup_Name", Setup_Name));
+--               Configuration.Configuration_State.Load (
+--                  Location, State_Name);
+----                Configuration_File, Location, State_Name);
+--               Configuration.Configuration_Setup.Load (
+--                  Configuration.Configuration_State.all, Setup_Name);
+--            end;
+--         end;
+--      end loop;
+      Log_Out (Debug);
+   end Load;
+
    ---------------------------------------------------------------
    procedure Load (
       Configurations       : in out Configurations_Type;
-      Path                 : in     String) is
+      Path                 : in     String;
+      Location             : in     Video.Lib.Location_Type) is
    ---------------------------------------------------------------
 
-         Config            : Ada_Lib.Configuration.Configuration_Type;
+      ------------------------------------------------------------
+      function Value_Name (
+         Base              : in     String;
+         Index             : in     Positive
+      ) return String is
+      ------------------------------------------------------------
+
+      begin
+         return Base & Trim (Index'img);
+      end Value_Name;
+      ------------------------------------------------------------
+
+      Config               : Ada_Lib.Configuration.Configuration_Type;
 
    begin
       Log_In (Debug, Quote ("path", Path));
       Config.Load (Path, False);
 
-      declare
-         Number_Cameras    : constant Natural :=
-                              Natural (Config.Get_Integer ("number_cameras"));
-      begin
-         Configurations.Configurations := new Configuration_Array (
-                                             1 .. Number_Cameras);
+      Configurations.Number_Configurations :=
+      Natural (Config.Get_Integer ("number_cameras"));
+      Configurations.Configurations := new Configuration_Array (
+                                          1 .. Configurations.Number_Configurations);
 
-         for Index in 1 .. Configurations.Number_Configurations loop
-            Configurations.Configurations (Index).Load (Path, Index);
---             Config.Get_String ("setup_" & Trim (Index'img)),
---             Config.Get_String ("state_" & Trim (Index'img)));
-         end loop;
-      end;
+      for Index in 1 .. Configurations.Number_Configurations loop
+         declare
+            Setup_Name     : constant String := "setup_" & Trim (Index'img);
+            Setup_Path     : constant String := Config.Get_String (Setup_Name);
+            State_Name     : constant String := (case Location is
+                                 when Video.Lib.Local        => "local_",
+                                 when Video.Lib.Remote       => "remote_",
+                                 when Video.Lib.No_Location  => "" ) &
+                              "state_" & Trim (Index'img);
+            State_Path     : constant String := Config.Get_String (State_Name);
+            Configuration  : constant Configuration_Access :=
+                              new Configuration_Type;
+            Setup          : Configuration_Setup_Access :=
+                              new Video.Configuration.Camera.Setup.Setup_Type;
+            State          : Configuration_State_Access :=
+                              new Video.Configuration.Camera.State.State_Type;
+         begin
+
+            Configurations.Configurations (Index) := Configuration;
+            Configuration.Configuration_State := State;
+            State.Load (Location, State_Path);
+            Configuration.Configuration_Setup := Setup;
+            Setup.Load (State.all, Setup_Path);
+         end;
+      end loop;
    end Load;
 
    ---------------------------------------------------------------
@@ -717,18 +762,18 @@ return null;
       Configuration.State_Path.Construct (Path_Type (
          Camera_Index, "camera_state_", "state"));
       Configuration.Configuration_Setup :=
-         new Standard.Configuration.Camera.Setup.Setup_Type;
+         new Standard.Video.Configuration.Camera.Setup.Setup_Type;
       Configuration.Configuration_State :=
-         new Standard.Configuration.Camera.State.State_Type;
+         new Standard.Video.Configuration.Camera.State.State_Type;
 
       declare
 --       State_Configuration_File
 --          : Ada_Lib.Configuration.Configuration_Type;
-         Nested_Options
-            : Lib.Options.Camera_Lib_Options_Nested_Options_Constant_Class_Access :=
-               Lib.Options.Get_Camera_Lib_Options_Read_Only_Nested_Options;
+--       Nested_Options
+--          : Lib.Options.Camera_Lib_Options_Nested_Options_Constant_Class_Access :=
+--             Lib.Options.Get_Camera_Lib_Options_Read_Only_Nested_Options;
          Video_Lib_Nested_Options
-            : Video.Lib.Video_Lib_Nested_Options_Constant_Class_Access :=
+            : constant Video.Lib.Video_Lib_Nested_Options_Constant_Class_Access :=
                Video.Lib.Get_Video_Lib_Read_Only_Nested_Options;
 
       begin
@@ -737,9 +782,9 @@ return null;
          Tag_History (Debug, "Options", Options.all'tag);
 
          Configuration.Configuration_State.Load (  -- are all fields loaded?
-            Ada_lib.Configuration.Configuration_Type  (Configuration),
+--          Ada_lib.Configuration.Configuration_Type  (Configuration),
             Video_Lib_Nested_Options.Location,
-            Configuration.Setup_Path.Coerce);
+            Configuration.State_Path.Coerce);
       end;
       Configuration.Configuration_Setup.Load (
          Configuration.Configuration_State.all,
@@ -815,7 +860,7 @@ not_implemented;
 -- ----------------------------------------------------------------
 -- procedure Set_Configuration_Setup (
 --    Configuration        : in out Configuration_Type;
---    Configuration_Setup  : in     Standard.Configuration.Camera.
+--    Configuration_Setup  : in     Standard.Video.Configuration.Camera.
 --                                     Setup.Setup_Access) is
 -- ----------------------------------------------------------------
 --
@@ -826,7 +871,7 @@ not_implemented;
 -- ----------------------------------------------------------------
 -- procedure Set_Configuration_State (
 --    Configuration        : in out Configuration_Type;
---    Configuration_State  : in     Standard.Configuration.Camera.State.State_Access) is
+--    Configuration_State  : in     Standard.Video.Configuration.Camera.State.State_Access) is
 -- ----------------------------------------------------------------
 --
 -- begin

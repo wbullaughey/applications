@@ -1,7 +1,7 @@
 with Ada.Exceptions;
 with Ada.Text_IO; use Ada.Text_IO;
 with Ada.Unchecked_Deallocation;
---with Ada_Lib.Configuration;
+with Ada_Lib.Configuration;
 with Ada_Lib.Directory;
 --with Ada_Lib.Options;
 with Ada_Lib.Parser;
@@ -13,9 +13,9 @@ with AUnit.Assertions; use AUnit.Assertions;
 with Camera.Lib.Options;
 --with Camera.Configurations;
 --with Hex_IO;
---with Video.Lib;
+with Video.Preset;
 
-package body Configuration.Camera.State is
+package body Video.Configuration.Camera.State is
 
    use type Video.Lib.Address_Constant_Access;
    use type Video.Lib.Address_Kind_Type;
@@ -131,7 +131,7 @@ package body Configuration.Camera.State is
       Put_Line (Quote ("  CSS Path", State.CSS_Path));
       Put_Line ("  Number Columns:" & State.Get_Number_Columns'img);
       Put_Line ("  Number Configurations:" & State.Get_Number_Configurations'img);
-      Put_Line ("  Last Preset:" & Video.Lib.Get_Last_Preset_ID'img);
+      Put_Line ("  Last Preset:" & Preset.Get_Last_Preset_ID'img);
       Put_Line ("  Number Rows:" & State.Number_Rows'img);
       for Row in State.Images.all'range (1) loop
          for Column in State.Images.all'range (2) loop
@@ -460,13 +460,13 @@ return Null;
 
    ----------------------------------------------------------------
    procedure Load (
-      State       : in out State_Type;
-      Config      : in out Ada_Lib.Configuration.Configuration_Type;
-      Location    : in     Video.Lib.Location_Type;
-      File_Name   : in     String) is
+      State          : in out State_Type;
+      Location       : in     Video.Lib.Location_Type;
+      File_Name      : in     String) is
    ----------------------------------------------------------------
 
-      Reported                   : exception;
+      Configuration  : Ada_Lib.Configuration.Configuration_Type;
+      Reported       : exception;
 
       -------------------------------------------------------------
       function Get_Config_String (
@@ -475,7 +475,7 @@ return Null;
       -------------------------------------------------------------
 
       begin
-        return Config.Get_String (Key);
+        return Configuration.Get_String (Key);
 
       exception
         when Fault: Ada_Lib.Configuration.Failed =>
@@ -518,10 +518,12 @@ return Null;
                                          Value          => Address,
                                          Seperators     => ",");
           Kind                     : constant String := Get_Parser_String (
-                                        Parser, "camera_address_type",
+                                        Parser,
+                                        Field   => "camera_address_type",
                                         Do_Next => True);
           Camera_Address          : constant String := Get_Parser_String (
-                                        Parser, Address_Key (Location).all,
+                                        Parser,
+                                        Field   => "URL",
                                         Do_Next => False);
       begin
           Log_In (Debug, "location " & Location'img &
@@ -580,7 +582,7 @@ return Null;
 
       Current_Directory : constant String :=
                            Standard.Camera.Lib.Options.Current_Directory;
-      Last_Preset_Number: Video.Lib.Preset_Range_Type;
+      Last_Preset_Number: Preset.Preset_ID_Type;
       Path              : constant String :=
                            (if Current_Directory'length > 0 then
                               Current_Directory & "/"
@@ -591,24 +593,25 @@ return Null;
       Log_In (Debug, Quote ("locatin " & Location'img & " file name", File_Name) &
          Quote (" Current_Directory", Current_Directory) &
          Quote (" path", Path));
+      Configuration.Load (Path, False);
       State.Video_Address := Load_Address;
       State.Video_Port := Video.Lib.Port_Type'value (
          Get_Config_String (Port_Key (Location).all));
       State.Camera_ID := Standard.Camera.Make_Camera_ID (State.Get_Video_Address.all);
-      State.Camera_Name.Construct (Config.Get_String ("camera_name"));
-      State.CSS_Path.Construct (Config.Get_String ("css_path"));
-      State.Default_Speed :=  Speed_Type (Config.Get_Integer (
+      State.Camera_Name.Construct (Configuration.Get_String ("camera_name"));
+      State.CSS_Path.Construct (Configuration.Get_String ("css_path"));
+      State.Default_Speed :=  Speed_Type (Configuration.Get_Integer (
          "default_speed"));
-      State.Number_Columns := Column_Type (Config.Get_Integer (
+      State.Number_Columns := Column_Type (Configuration.Get_Integer (
          "grid_columns"));
       State.Number_Configurations := Configuration_ID_Type (
-         Config.Get_Integer ("configurations"));
-      State.Number_Rows := Row_Type (Config.Get_Integer ("grid_rows"));
-      Last_Preset_Number := Video.Lib.Preset_Range_Type (
-         Config.Get_Integer ("last_preset"));
+         Configuration.Get_Integer ("configurations"));
+      State.Number_Rows := Row_Type (Configuration.Get_Integer ("grid_rows"));
+      Last_Preset_Number := Preset.Preset_ID_Type (
+         Configuration.Get_Integer ("last_preset"));
 
-      Video.Lib.Set_Preset_ID (Video.Lib.Last_Preset,
-         Video.Lib.Constructor (Last_Preset_Number));
+--    Video.Lib.Set_Preset_ID (Video.Lib.Last_Preset,
+--       Preset.Constructor (Last_Preset_Number));
 
       Log_Here (Debug,
          "camera id " & State.Camera_ID.Image &
@@ -638,17 +641,17 @@ return Null;
             begin
                Log_Here (Debug, "Row" & Row'img & " Column" & Column'img &
                   Quote (" name", Name));
-               if Config.Has (Name) then
+               if Configuration.Has (Name) then
                   declare
                      Value       : constant String :=
-                                    Config.Get_String  (Name);
+                                    Configuration.Get_String  (Name);
 
                   begin
                      Log_Here (Debug, Quote ("value", Value));
 --                      Quote (" path", Path));
                      State.Images (Row, Column).Construct (Value);
                   end;
-               else  -- if file name not in config leave zero legnth file name
+               else  -- if file name not in Configuration leave zero legnth file name
                   Log_Here (Debug, "row" & Row'img &
                      " column" & Column'img & " not configured");
                end if;
@@ -656,8 +659,8 @@ return Null;
          end loop;
       end loop;
 
---    Config.Close;
---    State.Set_Loaded (True);
+      Configuration.Close;
+      State.Set_Loaded (True);
       Log_Out (Debug, "loaded " & State.Is_Loaded'img);
 
    exception
@@ -674,42 +677,42 @@ return Null;
 
    end Load;
 
-  ----------------------------------------------------------------
-  procedure Load (
-     Camera                      : in out State_Type;
-     Location                   : in     Video.Lib.Location_Type;
-     Name                       : in     String) is
-  ----------------------------------------------------------------
-
-     Config                     : Ada_Lib.Configuration.Configuration_Type;
-
-  begin
-     Log_In (Debug, Quote ("name", Name) & " location " & Location'img);
-
-     Config.Load (Name, False);
-     Camera.Load (Config, Location, Name);
-
-     Log_Here (Debug,
-        Quote ("video address", Camera.Video_Address.Image) &
-        Quote ("video port", Camera.Video_Port'img));
-
-
-     Camera.Set_Loaded (True);
-     Log_Out (Debug);
-
-  exception
-
-     when Fault: Ada_Lib.Configuration.Failed =>
-        Trace_Exception (Debug, Fault);
-        Put_Line ("Invalid configuration file: " &
-           Ada.Exceptions.Exception_Message (Fault));
-        raise;
-
-     when Fault: others =>
-        Trace_Exception (Debug, Fault);
-        raise;
-
-  end Load;
+------------------------------------------------------------------
+--procedure Load (
+--   Camera                      : in out State_Type;
+--   Location                   : in     Video.Lib.Location_Type;
+--   Name                       : in     String) is
+------------------------------------------------------------------
+--
+--   Config                     : Ada_Lib.Configuration.Configuration_Type;
+--
+--begin
+--   Log_In (Debug, Quote ("name", Name) & " location " & Location'img);
+--
+--   Config.Load (Name, False);
+--   Camera.Load (Config, Location, Name);
+--
+--   Log_Here (Debug,
+--      Quote ("video address", Camera.Video_Address.Image) &
+--      Quote ("video port", Camera.Video_Port'img));
+--
+--
+--   Camera.Set_Loaded (True);
+--   Log_Out (Debug);
+--
+--exception
+--
+--   when Fault: Ada_Lib.Configuration.Failed =>
+--      Trace_Exception (Debug, Fault);
+--      Put_Line ("Invalid configuration file: " &
+--         Ada.Exceptions.Exception_Message (Fault));
+--      raise;
+--
+--   when Fault: others =>
+--      Trace_Exception (Debug, Fault);
+--      raise;
+--
+--end Load;
 
 ------------------------------------------------------------------
 --   overriding
@@ -902,4 +905,4 @@ begin
 --Trace_Options := True;
    Log_Here (Debug or Trace_Options or Elaborate);
 
-end Configuration.Camera.State;
+end Video.Configuration.Camera.State;

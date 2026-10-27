@@ -358,6 +358,17 @@ package body Camera.Lib.Base is
 
    ---------------------------------------------------------------
    overriding
+   function Image (
+      Camera                     : in     Base_Camera_Type
+   ) return String is
+   ---------------------------------------------------------------
+
+   begin
+      return Camera.Description.all;
+   end Image;
+
+   ---------------------------------------------------------------
+   overriding
    procedure IP_Open (
       Camera                     :    out Base_Camera_Type;
       IP_Address                 : in     Ada_Lib.Socket_IO.IP_Address_Type;

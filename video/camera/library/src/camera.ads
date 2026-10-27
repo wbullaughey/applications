@@ -3,11 +3,12 @@ with Ada_Lib.GNOGA;
 with Ada_Lib.Options;
 with Ada_Lib.Socket_IO.Stream_IO;
 with Ada_Lib.Trace;
---with Configuration.State;
+--with Video.Configuration.State;
 --with Gnoga_Ada_Lib;
 with Hex_IO;
 with Interfaces;
 with Video.Lib;
+with Video.Preset;
 
 package Camera is
 
@@ -168,8 +169,7 @@ package Camera is
 
    subtype Maximum_Command_Type  is Video.Lib.Maximum_Command_Type;
    subtype Response_Type         is Video.Lib.Response_Type;
-   subtype Preset_ID_Type        is Video.Lib.Preset_ID_Type;
-   subtype Preset_Range_Type     is Video.Lib.Preset_Range_Type;
+   subtype Preset_ID_Type        is Video.Preset.Preset_ID_Type;
    subtype Property_Type         is Data_Type range 0 .. 255; -- 2**8;
    subtype Relative_Type         is Video.Lib.Relative_Type range -2**15 .. 2**15;
    type Zoom_Type                is new Video.Lib.Value_Type range 0 .. 16#FFFF#;

@@ -3,7 +3,7 @@ with Ada_Lib.Strings.Unlimited;
 with AUnit.Test_Suites;
 with Camera.Commands;
 with Camera.Configurations;
-with Configuration.Camera.State;
+with Video.Configuration.Camera.State;
 with Gnoga.Application.Multi_Connect;
 with Gnoga.Gui.Element.Common;
 with Gnoga.Gui.Plugin.Message_Boxes;
@@ -67,7 +67,7 @@ package Camera.Main is
    -- allocates camera state if 1st time camera is
    function Get_Camera_State (
       Window_Connection                  : in      Window_Connection_Type
-   ) return Configuration.Camera.State.State_Access  is abstract;
+   ) return Video.Configuration.Camera.State.State_Access  is abstract;
 
    function Get_Configured_Card (
       Window_Connection                     : in out Window_Connection_Type
@@ -93,8 +93,9 @@ package Camera.Main is
       Window_Connection                  : in     Window_Connection_Type
    ) return Boolean is abstract;
 
-   function Has_Main_Window_Connection
-   return Boolean;
+   function Has_Main_Window_Connection (
+      Camera_ID            : in        Camera_ID_Type
+   ) return Boolean;
 
 -- function Has_Main_Window_Connection_ID
 -- return Boolean;

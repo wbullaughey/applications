@@ -1,6 +1,7 @@
 with Ada_Lib.Strings;
---with Configuration.Camera;
 with Video.Lib;
+with Video.Preset;
+
 package Camera.Commands.PTZ_Optics is
 
    Invalid_Command               : exception;
@@ -26,7 +27,12 @@ package Camera.Commands.PTZ_Optics is
 
    function Get_Default_Preset_Number (
       PTZ_Optics        : in     PTZ_Optics_Type   -- only ussed for dispatch
-   ) return Video.Lib.Preset_Range_Type;
+   ) return Video.Preset.Preset_ID_Type;
+
+   overriding
+   function Image (
+      PTZ_Optics        : in     PTZ_Optics_Type   -- only ussed for dispatch
+   ) return String;
 
    procedure Set_Default_Preset_Number (
       PTZ_Optics        : in     PTZ_Optics_Type);   -- only ussed for dispatch
@@ -53,7 +59,7 @@ private
 
 -- function Allocate_Preset_ID (
 --    Camera                     : in     PTZ_Optics_Type;
---    ID                         : in     Preset_Range_Type
+--    ID                         : in     Preset_ID_Type
 -- ) return Preset_ID_Type;
 
    overriding

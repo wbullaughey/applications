@@ -287,7 +287,7 @@ package body Camera.Lib.Base.Command_Tests is
    begin
       Log_In (Debug or Trace_Set_Up_Tear_Down);
       Camera.Lib.Unit_Test.With_Camera_No_GNOGA_Test_Type (Test).Set_Up;
-      Test.Camera_Info.Camera.Set_Preset (Video.Lib.Get_Default_Preset_ID);
+      Test.Camera_Info.Camera.Set_Preset (Video.Preset.Get_Default_Preset_ID);
       Log_Out (Debug or Trace_Set_Up_Tear_Down);
 
    exception
@@ -346,7 +346,7 @@ package body Camera.Lib.Base.Command_Tests is
 
    begin
       Log_In (Debug or Trace_Set_Up_Tear_Down);
-      Test.Camera_Info.Camera.Set_Preset (Video.Lib.Get_Default_Preset_ID,
+      Test.Camera_Info.Camera.Set_Preset (Video.Preset.Get_Default_Preset_ID,
          Speed  => Speed);
       -- normally same as preset 0
       Camera.Lib.Unit_Test.With_Camera_No_GNOGA_Test_Type (Test).Tear_Down;
@@ -1048,15 +1048,16 @@ package body Camera.Lib.Base.Command_Tests is
    begin
       Log_In (Debug);
       Pause (Local_Test.Manual, "set preset 3");
-      Local_Test.Camera_Info.Camera.Set_Preset (Video.Lib.Constructor (3));
---    Local_Test.Camera_Info.Camera.Process_Command (Camera.Memory_Recall,
---       Options     => (
---             1 => (
---                Data           => 3,   -- preset 3
---                Start          => 6,
---                Mode => Fixed
---             )
---          ));
+      Local_Test.Camera_Info.Camera.Set_Preset (
+         Preset_ID   => 3);
+      Local_Test.Camera_Info.Camera.Process_Command (Camera.Memory_Recall,
+         Options     => (
+               1 => (
+                  Data           => 3,   -- preset 3
+                  Start          => 6,
+                  Mode => Fixed
+               )
+            ));
 
       Assert (Ask_Pause (Local_Test.Manual,
             "verify that the preset is 3"),

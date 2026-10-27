@@ -64,7 +64,7 @@ Camera Lib Unit Test (-1)
       q               camera queue
       s               Configuration.Camera.State unit_test options
       S               Configuration.Camera.Setup unit_test options
-      t               unit_test trace
+      t               Camera.Lib.Unit_Test.Debug (Unit_Test_Debug)
       #c              Camera Command trace
 
 
@@ -79,21 +79,20 @@ Camera Lib trace options (-2)
       L               camera library options
       m               Camera.Main.Debug
       M               Camera_Control.Debug
-      s               Camera.Configuration.Debug (Camera_Debug)
       S               Camera.Configurations.Debug
       V               Trace Video widgets
       #a              Adjust Window
       #c              Widgets.Control debyg
       #C              Widgets.Configured debug
-      #D              Configuration.Debug
       #l              List camera commands
-      #p              Configuration.Camera.Setup.Debug
+      #p              Video.Configuration.Camera.Setup.Debug (Setup_Debug)
       #S              Configuration.Camera.State.Debug
 
 Video Lib trace options (-V)
       a               all
       d               Video.Lib.Debug: Library_Debug
-      s               Configuration.State.Debug: Configuration_State_Debug
+      D               Video.Configuration.Debug
+      s               Video.Lib.Debug: Configuration_State_Debug
 Ada_Lib.Options.AUnit_Lib.Program_Help trace options (-t)
       a               all
       A               AUnit debug
@@ -170,8 +169,10 @@ CAC ada_lib trace library options (-a)
       #E              Template Expand
       #l              Template Load
       #o              Trace_Options
+      #O              Ada_Lib.OS.Tests.Unit_Test_Trace (Trace)
       #p              Trace Pre and Post Condtion functions
       #P              Trace Pre and Post Condtion false
+      #r              Ada_Lib.OS.Tests.Run_Debug (Debug)
       #s              Strings
       #S              Socket_IO IO
       #t              Ada_Lib.Text

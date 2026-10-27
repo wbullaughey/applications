@@ -2,7 +2,7 @@
 --with Ada_lib.Lock;
 with Ada_Lib.Strings;
 with Ada_Lib.Time;
---with Configuration.Camera;
+--with Video.Configuration.Camera;
 with Camera.Lib.Base;
 --with Interfaces;
 
@@ -41,7 +41,7 @@ package Camera.Commands is
 
    function Get_Default_Preset_Number (
       PTZ_Optics        : in     Camera_Type   -- only ussed for dispatch
-   ) return Video.Lib.Preset_Range_Type is abstract;
+   ) return Video.Preset.Preset_ID_Type is abstract;
 
    function Get_Default_Speed (
       Camera            : in     Camera_Type

@@ -8,14 +8,15 @@ with AUnit.Test_Cases;
 with Camera.Base;
 with Camera.Lib.Options.Unit_Test;
 with Camera.Lib.Unit_Test;
-with Video.Lib;
+--with Video.Lib;
+with Video.Preset;
 
-package body Configuration.Camera.State.Unit_Tests is
+package body Video.Configuration.Camera.State.Unit_Tests is
 
 -- use type Ada_Lib.Strings.String_Access;
 -- use type Standard.Camera.Preset_ID_Type;
 -- use type Ada_Lib.Options.Interface_Options_Constant_Class_Access;
-   use type Video.Lib.Preset_ID_Type;
+   use type Preset.Preset_ID_Type;
 
    type Configuration_Load_Test_Type is new Standard.Camera.Lib.
       Unit_Test.With_Camera_No_GNOGA_Test_Type with null record;
@@ -217,7 +218,8 @@ package body Configuration.Camera.State.Unit_Tests is
    begin
       Log_In (Debug);
       Configuration.Load (Configuration_Path, Camera_Index => 1);
-      Standard.Camera.Configurations.Clear_Configuration;
+--    Standard.Camera.Configurations.Clear_Configuration;
+      Configuration.Deallocate;
       Configuration.Load (Configuration_Default_Path, Camera_Index => 1);
       Log_Out (Debug);
 
@@ -236,6 +238,8 @@ package body Configuration.Camera.State.Unit_Tests is
 -- pragma Unreferenced (Test);
    ---------------------------------------------------------------
 
+         Local_Test  : Configuration_Tests_Type renames
+                           Configuration_Tests_Type (Test);
       begin
          Log_In (Debug);
          declare
@@ -243,8 +247,7 @@ package body Configuration.Camera.State.Unit_Tests is
             Expected_Number_Rows    : constant := 4;
             Expected_Number_Configurations
                                     : constant := 4;
-            Expected_Last_Presets   : constant Video.Lib.Preset_ID_Type :=
-                                       Video.Lib.Constructor (5);
+            Expected_Last_Presets   : constant Preset.Preset_ID_Type := 5;
 
             type Expect_Image_Type  is array (Row_Type range 1 ..
                                              Expected_Number_Rows,
@@ -269,8 +272,6 @@ package body Configuration.Camera.State.Unit_Tests is
                                        2 => new String'("preset_3.png"),
                                        others => Null]];
 
-            Local_Test  : Configuration_Tests_Type renames
-                           Configuration_Tests_Type (Test);
 --          Options     : Standard.Camera.Lib.Unit_Test.
 --                         Unit_Test_Program_Options_Type'class
 --                            renames Standard.Camera.Lib.Unit_Test.
@@ -290,7 +291,7 @@ package body Configuration.Camera.State.Unit_Tests is
                Number_Configurations   : constant Configuration_ID_Type :=
                                           Configuration_State.Get_Number_Configurations;
                Last_Preset             : constant Standard.Camera.Preset_ID_Type :=
-                                          Video.Lib.Get_Last_Preset_ID;
+                                          Preset.Get_Last_Preset_ID;
                Number_Rows             : constant Row_Type :=
                                           Configuration_State.Get_Number_Rows;
 
@@ -366,4 +367,4 @@ begin
    end if;
 --debug := True;
 
-end Configuration.Camera.State.Unit_Tests;
+end Video.Configuration.Camera.State.Unit_Tests;

@@ -2,24 +2,26 @@
 with Ada.Text_IO;use Ada.Text_IO;
 with Ada_Lib.Help;
 with ADA_LIB.OS;
-with Ada_Lib.Parser;
+--with Ada_Lib.Parser;
 --with Ada_Lib.Options.Create;
 with Ada_Lib.Options.Runstring;
 --with Ada_Lib.Options.Unit_Test;
 with Ada_Lib.Socket_IO.Stream_IO;
 with Ada_Lib.String_Quote; use Ada_Lib.String_Quote;
 with Ada_Lib.Trace; use Ada_Lib.Trace;
-with Configuration;
+with Video.Configuration;
 -- with Debug_Options;
 with Interfaces;
 
-pragma Elaborate (Ada_Lib.Parser);
+--pragma Elaborate (Ada_Lib.Parser);
 
 package body Video.Lib is
 
    use type Ada_Lib.Options.Flag_List_Type;
    use type Index_Type;
 
+   Cameras     : array (Camera_ID_Type) of Camera_Class_Access :=
+                  (others => Null);
    Debug_Option: constant Character := 'V';
    Debug       : Boolean renames Video_Options.Library_Debug;
    Directory_Option
@@ -36,11 +38,12 @@ package body Video.Lib is
                         "rS", Ada_Lib.Options.Unmodified_Flag) &
                      Ada_Lib.Options.Initialize (
                         "N", Ada_Lib.Help.Modifier);
-   Presets     : array (Which_Preset_Type) of
-                  Preset_ID_Type := (
-                     others => (
-                        Is_Set      => False,
-                        ID          => 0));
+-- Presets     : array (Which_Preset_Type) of
+--                Preset_ID_Type := (
+--                   others => (
+--                      Camera   => Null,
+--                      ID       => 0,
+--                      Is_Set   => False));
 
 -- ---------------------------------------------------------------
 -- function Address_Kind (
@@ -56,123 +59,6 @@ package body Video.Lib is
 --
 --       when Video.Lib.No_Location => NOT_SET);
 -- end Address_Kind;
-
-   ---------------------------------------------------------------
-   function Constructor (
-      ID                         : in     Preset_Range_Type
-   ) return Preset_ID_Type is
-   ---------------------------------------------------------------
-
-   begin
-      Log_Here (Debug, "ID" & ID'img);
-      return (
-         ID       => ID,
-         Is_Set   => True);
-   end Constructor;
-
-   ---------------------------------------------------------------
-   procedure Dump (
-      Prefix_ID                  : in     Preset_ID_Type;
-      What                       : in     String := "";
-      From                       : in     String := Ada_Lib.Trace.Here) is
-   ---------------------------------------------------------------
-
-   begin
-      Put_Line ((if What'length > 0 then
-            What & " "
-         else
-            "") &
-         "prefix id " & Prefix_ID.Image);
-   end Dump;
-
-   ---------------------------------------------------------------
-   procedure Dump (
-      Description                : in     String;
-      Buffer                     : in     Buffer_Type;
-      Length                     : in     Natural;
-      From                       : in     String := Ada_Lib.Trace.Here) is
-   ---------------------------------------------------------------
-
-   begin
-      Ada_Lib.Socket_IO.Stream_IO.Dump (Description,
-         Buffer (Buffer'first .. Buffer'first + Index_Type (Length) - 1), From);
-   end Dump;
-
-   -------------------------------------------------------------------------
-   function Get_Default_Preset_ID
-   return Preset_ID_Type is
-   -------------------------------------------------------------------------
-
-   begin
-      Log_Here (Debug, "Default_Preset " & Presets (Default_Preset).Image);
-      return Presets (Default_Preset);
-   end Get_Default_Preset_ID;
-
-   -------------------------------------------------------------------------
-   function Get_First_Preset_ID
-   return Preset_ID_Type is
-   -------------------------------------------------------------------------
-
-   begin
-      Log_Here (Debug, "First_Presett " & Presets (First_Preset).Image);
-      return Presets (First_Preset);
-   end Get_First_Preset_ID;
-
-   -------------------------------------------------------------------------
-   function Get_ID (
-      Preset_ID                  : in     Preset_ID_Type;
-      From                       : in     String := Ada_Lib.Trace.Here
-   ) return Ada_Lib.Socket_IO.Data_Type is
-   -------------------------------------------------------------------------
-
-   begin
-      Log_Here (Debug, "Preset_ID " & Preset_ID.Image & " from " & From);
-      return Preset_ID.ID;
-   end Get_ID;
-
-   -------------------------------------------------------------------------
-   function Get_Last_Preset_ID
-   return Preset_ID_Type is
-   -------------------------------------------------------------------------
-
-   begin
-      Log_Here (Debug, "Last preset " & Presets (Last_Preset).Image);
-      return Presets (Last_Preset);
-   end Get_Last_Preset_ID;
-
-   -------------------------------------------------------------------------
-   function Get_Power_On_Preset_ID
-   return Preset_ID_Type is
-   -------------------------------------------------------------------------
-
-   begin
-      Log_Here (Debug, "Power_On_Preset " & Presets (Power_On_Preset).Image);
-      return Presets (Power_On_Preset);
-   end Get_Power_On_Preset_ID;
-
-   -------------------------------------------------------------------------
-   function Get_Preset (
-      Which_Preset               : in     Which_Preset_Type
-   ) return Preset_ID_Type is
-   -------------------------------------------------------------------------
-
-   begin
-      Log_Here (Debug, "Which_Preset " & Which_Preset'img &
-         " Preset_ID " & Presets (Which_Preset).Image);
-      return Presets (Which_Preset);
-   end Get_Preset;
-
-   -------------------------------------------------------------------------
-   function Get_Video_Lib_Read_Only_Nested_Options (
-      From                 : in     String := Ada_Lib.Trace.Here
-   ) return Video_Lib_Nested_Options_Constant_Class_Access is
-   -------------------------------------------------------------------------
-
-   begin
-      Log_Here (Trace_Conversions, "from " & From);
-      return Video_Lib_Nested_Options_Constant_Class_Access (
-         Ada_Lib.Options.Verification.Get_Ada_Lib_Read_Only_Nested_Options);
-   end Get_Video_Lib_Read_Only_Nested_Options;
 
    -------------------------------------------------------------------------
    function Camera_Configured
@@ -198,29 +84,50 @@ package body Video.Lib is
 
    end Camera_Configured;
 
+   ---------------------------------------------------------------
+   procedure Dump (
+      Description                : in     String;
+      Buffer                     : in     Buffer_Type;
+      Length                     : in     Natural;
+      From                       : in     String := Ada_Lib.Trace.Here) is
+   ---------------------------------------------------------------
+
+   begin
+      Ada_Lib.Socket_IO.Stream_IO.Dump (Description,
+         Buffer (Buffer'first .. Buffer'first + Index_Type (Length) - 1), From);
+   end Dump;
+
    -------------------------------------------------------------------------
-   function Have_Preset (
-      Which_Preset               : in     Which_Preset_Type
+   function Get_Camera (
+      Camera_ID                  : in     Camera_ID_Type
+   ) return Camera_Class_Access is
+   -------------------------------------------------------------------------
+
+   begin
+      return Cameras (Camera_ID);
+   end Get_Camera;
+
+   -------------------------------------------------------------------------
+   function Get_Video_Lib_Read_Only_Nested_Options (
+      From                 : in     String := Ada_Lib.Trace.Here
+   ) return Video_Lib_Nested_Options_Constant_Class_Access is
+   -------------------------------------------------------------------------
+
+   begin
+      Log_Here (Trace_Conversions, "from " & From);
+      return Video_Lib_Nested_Options_Constant_Class_Access (
+         Ada_Lib.Options.Verification.Get_Ada_Lib_Read_Only_Nested_Options);
+   end Get_Video_Lib_Read_Only_Nested_Options;
+
+   ---------------------------------------------------------------
+   function Has_Camera (
+      Camera_ID                  : in     Camera_ID_Type
    ) return Boolean is
-   -------------------------------------------------------------------------
-
-      Result         : constant Boolean := Presets (Which_Preset).Is_Set;
-
-   begin
-      return Log_Here (Result, Trace_Pre_Post (Result, Debug),
-         "Which_Preset " & Which_Preset'img &
-         " Preset_ID " & Presets (Which_Preset).Image);
-   end Have_Preset;
-
-   ---------------------------------------------------------------
-   function Image (
-      Preset_ID                  : in     Preset_ID_Type
-   ) return String is
    ---------------------------------------------------------------
 
    begin
-      return "id" & Preset_ID.ID'img & " Is_Set " & Preset_ID.Is_Set'img;
-   end Image;
+      return Cameras (Camera_ID) /= Null;
+   end Has_Camera;
 
    ---------------------------------------------------------------
    function Image (
@@ -258,34 +165,20 @@ package body Video.Lib is
          Debug or Trace_Options);
    end Initialize;
 
-   -------------------------------------------------------------------------
-   function Is_Set (
-      Preset_ID                  : in     Preset_ID_Type;
-      From                       : in     String := Ada_Lib.Trace.Here
-   ) return Boolean is
-   -------------------------------------------------------------------------
-
-      Result   : constant Boolean := Preset_ID.Is_Set;
-
-   begin
-      return Log_Here (Result, Debug,
-         "Preset_ID " & Preset_ID.Image & " from " & From);
-   end Is_Set;
-
-   ----------------------------------------------------------------
-   function Parse_Image_Value (
-      Value                      : in     String;
-      Preset                     :    out Preset_ID_Type'class
-   ) return String is
-   ----------------------------------------------------------------
-
-      Iterator                   : Ada_Lib.Parser.Iterator_Type :=
-                                    Ada_Lib.Parser.Initialize (Value, ",");
-   begin
-      Preset := Constructor (
-         Preset_Range_Type (Iterator.Get_Number (True)));
-      return Iterator.Get_Value (False);
-   end Parse_Image_Value;
+-- ----------------------------------------------------------------
+-- function Parse_Image_Value (
+--    Value                      : in     String;
+--    Preset                     :    out Preset_ID_Type'class
+-- ) return String is
+-- ----------------------------------------------------------------
+--
+--    Iterator                   : Ada_Lib.Parser.Iterator_Type :=
+--                                  Ada_Lib.Parser.Initialize (Value, ",");
+-- begin
+--    Preset := Constructor (
+--       Preset_ID_Type (Iterator.Get_Number (True)));
+--    return Iterator.Get_Value (False);
+-- end Parse_Image_Value;
 
 --   ----------------------------------------------------------------------------
 --   overriding
@@ -364,7 +257,7 @@ package body Video.Lib is
                case Option.Option is
 
                   when 'N' =>
-                     Configuration.No_Camera;
+                     Video.Configuration.No_Camera;
 
                   when others =>
                      Log_Exception (Trace_Options or Debug, " other option" &
@@ -417,6 +310,7 @@ package body Video.Lib is
          Put_Line (Component & " trace options (-" & Debug_Option & ")");
          Put_Line ("      a               all");
          Put_Line ("      d               Video.Lib.Debug: Library_Debug");
+         Put_Line ("      D               Video.Configuration.Debug");
          Put_Line ("      s               " &
             "Video.Lib.Debug: Configuration_State_Debug");
 
@@ -426,38 +320,6 @@ package body Video.Lib is
 --       Options).Program_Help (Help_Mode);
       Log_Out (Debug or Trace_Options);
    end Program_Help;
-
-   ----------------------------------------------------------------------------
-   procedure Set (
-      Preset_ID                  : in out Preset_ID_Type;
-      ID                         : in     Preset_Range_Type) is
-   ----------------------------------------------------------------------------
-
-   begin
-      Preset_ID.ID := ID;
-   end Set;
-
-   -------------------------------------------------------------------------
-   procedure Set_Default_Preset_ID (
-      ID                         : in     Preset_Range_Type) is
-   -------------------------------------------------------------------------
-
-   begin
-      Set_Preset_ID (Default_Preset, Constructor (ID));
-   end Set_Default_Preset_ID;
-
-   ----------------------------------------------------------------------------
-   procedure Set_Preset_ID (
-      Which_Preset               : in     Which_Preset_Type;
-      Preset_ID                  : in     Preset_ID_Type) is
-   ----------------------------------------------------------------------------
-
-   begin
-      Log_In (Debug, "which " & Which_Preset'img & " " &
-         Preset_ID.Image);
-      Presets (Which_Preset) := Preset_ID;
-      Log_Out (Debug);
-   end Set_Preset_ID;
 
    ----------------------------------------------------------------------------
    overriding
@@ -483,6 +345,9 @@ package body Video.Lib is
 
             when 'd' =>
                Video.Lib.Video_Options.Library_Debug := True;
+
+            when 'D' =>
+               Video.Lib.Video_Options.Configuration_Debug := True;
 
             when 's' =>
                Video.Lib.Video_Options.Configuration_State_Debug := True;

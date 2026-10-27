@@ -6,7 +6,7 @@ with AUnit.Test_Cases;
 with Ada_Lib.Options.Verification;
 with Camera.Lib.Options.Unit_Test;
 with Camera.Lib.Unit_Test;
-with Configuration.Camera.State;
+with Video.Configuration.Camera.State;
 
 separate (Camera.Main)
 package body Unit_Test is

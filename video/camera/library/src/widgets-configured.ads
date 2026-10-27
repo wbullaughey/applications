@@ -1,7 +1,7 @@
 with Ada_Lib.Strings.Unlimited;use Ada_Lib.Strings.Unlimited;
 with Ada_Lib.Trace;
 with Camera.Main;
-with Configuration.Camera;
+with Video.Configuration.Camera;
 --with GNOGA_Ada_Lib;
 with Gnoga.Gui.Base;
 with Gnoga.Gui.Element.Common;
@@ -29,15 +29,20 @@ with Widgets.Generic_Table;
 
 package Widgets.Configured is
 
-   use type Configuration.Configuration_ID_Type;
+   use type Video.Configuration.Configuration_ID_Type;
 
    Failed                        : exception;
 
    Debug                         : aliased Boolean := False;
    Widget_Name                   : constant String := "Configured_Card";
 
-   type Cell_Type                is new Gnoga.Gui.Element.Common.DIV_Type
-                                    with null record;
+   type Cell_Type    is new Gnoga.Gui.Element.Common.DIV_Type with record
+      Camera_ID      : Camera.Camera_ID_Type := Camera.Null_Camera_ID;
+   end record;
+
+   function Has_Camera (
+      Cell           : in     Cell_Type
+   ) return Boolean;
 
    type Preset_Column_Index_Type is (  -- need to be on order columns created
       Row_Header,    -- button for editing configuration id
@@ -51,17 +56,17 @@ package Widgets.Configured is
       Control_Grid_Field);
                      -- only 1st row has the control grid
    subtype Preset_Row_Index_Type
-                              is Configuration.Configuration_ID_Type;
+                              is Video.Configuration.Configuration_ID_Type;
 
    package Generic_Cell_Package
       is new Widgets.Generic_Table.Cell_Package (
          Column_Index_Type => Preset_Column_Index_Type,
-         Row_Index_Type    => Configuration.Row_Type);
+         Row_Index_Type    => Video.Configuration.Row_Type);
 
    -- package for web page with control grid
 -- package Control_Grid_Package is new Widgets.Generic_Table.Cell_Package (
 --                               Preset_Column_Index_Type,
---                               Configuration.Configuration_ID_Type);
+--                               Video.Configuration.Configuration_ID_Type);
 
    package Preset_Package is
       procedure Create (
@@ -77,8 +82,8 @@ package Widgets.Configured is
       end record;
 
       type Cell_Type is abstract new Generic_Cell_Package.Cell_Type with record
-         Configuration_ID        : Configuration.Configuration_ID_Type :=
-                                    Configuration.No_Configuration;
+         Configuration_ID        : Video.Configuration.Configuration_ID_Type :=
+                                    Video.Configuration.No_Configuration;
       end record;
 
       type Cell_Access           is access all Cell_Type;
@@ -93,10 +98,10 @@ package Widgets.Configured is
                                     Table_Row_Type'class;
          Column         : in out Generic_Cell_Package.GNOGA_Column_Type'class;
          Table_Column   : in     Preset_Column_Index_Type;
-         Table_Row      : in     Configuration.Row_Type
-      ) with Pre  => Camera.Main.Has_Main_Window_Connection,
+         Table_Row      : in     Video.Configuration.Row_Type
+      ) with Pre  => Camera.Main.Has_Main_Window_Connection (Cell.Camera_ID),
              Post => Cell.Configuration_ID /=
-                        Configuration.No_Configuration;
+                        Video.Configuration.No_Configuration;
 
       overriding
       procedure Dump (
@@ -114,8 +119,8 @@ package Widgets.Configured is
 
       type Column_Cell_Type is new Cell_Type with record
          Column_Coordinate : Gnoga.Gui.Element.Form.Number_Type;
-         Column_Number     : Configuration.Column_Type :=
-                              Configuration.Camera.Column_Not_Set;
+         Column_Number     : Video.Configuration.Column_Type :=
+                              Video.Configuration.Camera.Column_Not_Set;
       end record;
 
       overriding
@@ -127,10 +132,10 @@ package Widgets.Configured is
          Column         : in out Generic_Cell_Package.
                                     GNOGA_Column_Type'class;
          Table_Column   : in     Preset_Column_Index_Type;
-         Table_Row      : in     Configuration.Row_Type
-      ) with Pre  => Camera.Main.Has_Main_Window_Connection,
+         Table_Row      : in     Video.Configuration.Row_Type
+      ) with Pre  => Camera.Main.Has_Main_Window_Connection (Cell.Camera_ID),
              Post => Cell.Configuration_ID /=
-                        Configuration.No_Configuration;
+                        Video.Configuration.No_Configuration;
 
       overriding
       procedure Dump (
@@ -147,7 +152,7 @@ package Widgets.Configured is
       -- used in only 1st row of preset table.
       type Control_Grid_Cell_Type is new Cell_Type with record
 --       Control_Table     : Widgets.Control.Control_Card_Class_Access; 6/11/26
-         Table_Row         : Configuration.Row_Type;
+         Table_Row         : Video.Configuration.Row_Type;
       end record;
 
       overriding
@@ -160,11 +165,11 @@ package Widgets.Configured is
          Column                  : in out Generic_Cell_Package.
                                              GNOGA_Column_Type'class;
          Table_Column            : in     Preset_Column_Index_Type;
-         Table_Row               : in     Configuration.Row_Type
-      ) with Pre  => Camera.Main.Has_Main_Window_Connection, -- and then
+         Table_Row               : in     Video.Configuration.Row_Type
+      ) with Pre  => Camera.Main.Has_Main_Window_Connection (Cell.Camera_ID), -- and then
 --                   Cell.Has_Control_Table, 6/11/26
              Post => Cell.Configuration_ID /=
-                        Configuration.No_Configuration;
+                        Video.Configuration.No_Configuration;
 
       overriding
       procedure Dump (
@@ -197,10 +202,10 @@ package Widgets.Configured is
          Column                  : in out Generic_Cell_Package.
                                              GNOGA_Column_Type'class;
          Table_Column            : in     Preset_Column_Index_Type;
-         Table_Row               : in     Configuration.Row_Type
-      ) with Pre  => Camera.Main.Has_Main_Window_Connection,
+         Table_Row               : in     Video.Configuration.Row_Type
+      ) with Pre  => Camera.Main.Has_Main_Window_Connection (Cell.Camera_ID),
              Post => Cell.Configuration_ID /=
-                        Configuration.No_Configuration;
+                        Video.Configuration.No_Configuration;
 
       overriding
       procedure Dump (
@@ -229,10 +234,10 @@ package Widgets.Configured is
          Column                  : in out Generic_Cell_Package.
                                              GNOGA_Column_Type'class;
          Table_Column            : in     Preset_Column_Index_Type;
-         Table_Row               : in     Configuration.Row_Type
-      ) with Pre  => Camera.Main.Has_Main_Window_Connection,
+         Table_Row               : in     Video.Configuration.Row_Type
+      ) with Pre  => Camera.Main.Has_Main_Window_Connection (Cell.Camera_ID),
              Post => Cell.Configuration_ID /=
-                        Configuration.No_Configuration;
+                        Video.Configuration.No_Configuration;
 
       overriding
       procedure Dump (
@@ -270,10 +275,10 @@ package Widgets.Configured is
          Column                  : in out Generic_Cell_Package.
                                              GNOGA_Column_Type'class;
          Table_Column            : in     Preset_Column_Index_Type;
-         Table_Row               : in     Configuration.Row_Type
-      ) with Pre  => Camera.Main.Has_Main_Window_Connection,
+         Table_Row               : in     Video.Configuration.Row_Type
+      ) with Pre  => Camera.Main.Has_Main_Window_Connection (Cell.Camera_ID),
              Post => Cell.Configuration_ID /=
-                        Configuration.No_Configuration;
+                        Video.Configuration.No_Configuration;
 
       overriding
       procedure Update_Cell (
@@ -283,8 +288,8 @@ package Widgets.Configured is
 
       type Row_Cell_Type is new Cell_Type with record
          Row_Coordinate    : Gnoga.Gui.Element.Form.Number_Type;
-         Row_Number        : Configuration.Row_Type :=
-                              Configuration.Row_Not_Set;
+         Row_Number        : Video.Configuration.Row_Type :=
+                              Video.Configuration.Row_Not_Set;
       end record;
 
       overriding
@@ -297,10 +302,10 @@ package Widgets.Configured is
          Column                  : in out Generic_Cell_Package.
                                              GNOGA_Column_Type'class;
          Table_Column            : in     Preset_Column_Index_Type;
-         Table_Row               : in     Configuration.Row_Type
-      ) with Pre  => Camera.Main.Has_Main_Window_Connection,
+         Table_Row               : in     Video.Configuration.Row_Type
+      ) with Pre  => Camera.Main.Has_Main_Window_Connection (Cell.Camera_ID),
              Post => Cell.Configuration_ID /=
-                        Configuration.No_Configuration;
+                        Video.Configuration.No_Configuration;
 
       overriding
       procedure Dump (
@@ -327,10 +332,10 @@ package Widgets.Configured is
          Row            : in out Gnoga.Gui.Element.Table.Table_Row_Type'class;
          Column         : in out Generic_Cell_Package.GNOGA_Column_Type'class;
          Table_Column   : in     Preset_Column_Index_Type;
-         Table_Row      : in     Configuration.Row_Type
-      ) with Pre  => Camera.Main.Has_Main_Window_Connection,
+         Table_Row      : in     Video.Configuration.Row_Type
+      ) with Pre  => Camera.Main.Has_Main_Window_Connection (Cell.Camera_ID),
              Post => Cell.Configuration_ID /=
-                        Configuration.No_Configuration;
+                        Video.Configuration.No_Configuration;
 
       overriding
       procedure Dump (
@@ -364,15 +369,15 @@ package Widgets.Configured is
          Column                  : in out Generic_Cell_Package.
                                              GNOGA_Column_Class_Access;
          Column_Index            : in     Preset_Column_Index_Type;
-         Table_Row               : in     Configuration.Row_Type);
+         Table_Row               : in     Video.Configuration.Row_Type);
 
       overriding
       procedure Create_Column (
          Column                     : in out Preset_Column_Type;
          Row                        : in out Gnoga.Gui.Element.Table.
                                                 Table_Row_Type'class;
-         Number_Rows                : in     Configuration.Row_Type;
-         Row_Index                  : in     Configuration.Row_Type;
+         Number_Rows                : in     Video.Configuration.Row_Type;
+         Row_Index                  : in     Video.Configuration.Row_Type;
          Column_Index               : in     Preset_Column_Index_Type;
          ID                         : in     String);
 
@@ -382,14 +387,14 @@ package Widgets.Configured is
       overriding
       function Create_Column (
          Widget                  : in out Widget_Type;
-         Row                     : in     Configuration.Row_Type;
+         Row                     : in     Video.Configuration.Row_Type;
          Column                  : in     Preset_Column_Index_Type
       ) return Boolean;
 
       overriding
       function Create_Row (
          Widget                  : in out Widget_Type;
-         Row                     : in     Configuration.Row_Type
+         Row                     : in     Video.Configuration.Row_Type
       ) return Boolean;
 
       procedure On_Submit (
@@ -421,7 +426,7 @@ package Widgets.Configured is
       Header_Type          => Gnoga.Gui.Element.Table.Table_Heading_Type,
       On_Submit            => Preset_Package.On_Submit'access,
       Row_Header           => True,
-      Row_Index_Type       => Configuration.Row_Type);
+      Row_Index_Type       => Video.Configuration.Row_Type);
 
    type Configured_Card_Type
                            is new Configured_Package.Widget_Type with
@@ -436,7 +441,7 @@ package Widgets.Configured is
       Cards                      : in out Gnoga.Gui.View.View_Base_Type'Class;
       Camera_ID                  : in     Camera.Camera_ID_Type :=
                                              Camera.Null_Camera_ID
-   ) with Pre => Camera.Main.Has_Main_Window_Connection;
+   ) with Pre => Camera.Main.Has_Main_Window_Connection (Camera_ID);
 
    overriding
    function Get_Form (
@@ -456,11 +461,11 @@ package Widgets.Configured is
 -- procedure Update_Row_Fields (
 --    Configured_Card            : in     Configured_Card_Type;
 --    Row_Index                  : in     Row_Index_Type;
---    Configuration_ID           : in     Configuration.Configuration_ID_Type;
+--    Configuration_ID           : in     Video.Configuration.Configuration_ID_Type;
 --    Preset_ID                  : in     Camera.Preset_ID_Type;
 --    Label                      : in     String;
---    Control_Column             : in     Configuration.Column_Type;
---    Control_Row                : in     Configuration.Row_Type);
+--    Control_Column             : in     Video.Configuration.Column_Type;
+--    Control_Row                : in     Video.Configuration.Row_Type);
 
 -- overriding
 -- procedure Verify_Widget (
