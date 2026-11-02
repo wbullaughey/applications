@@ -1,0 +1,58 @@
+name = "camera_tests"
+description = ""
+version = "0.1.0-dev"
+
+authors = ["Your Name"]
+maintainers = ["Your Name <example@example.com>"]
+maintainers-logins = ["github-username"]
+licenses = "MIT OR Apache-2.0 WITH LLVM-exception"
+website = ""
+tags = []
+
+executables = ["camera_tests"]
+
+project-files = "camera_tests.gpr"
+
+[[depends-on]]
+alr_environment = "~0.1.0-dev"
+
+[[pins]]
+alr_environment = { path='../../../..' }
+
+[[depends-on]]
+ada_lib = "~0.1.0-dev"
+
+[[pins]]
+ada_lib = { path='../../../../ada_lib' }
+
+[[depends-on]]
+gnoga = "~0.1.0-dev"
+
+[[pins]]
+gnoga = { path='../../../../vendor/github.com/gnoga' }
+
+[[depends-on]]
+gnoga_ada_lib = "~0.1.0-dev"
+
+[[pins]]
+gnoga_ada_lib = { path='../../../../gnoga_lib' }
+
+[[depends-on]]
+aunit = "~0.1.0-dev"
+
+[[pins]]
+aunit = { path='../../../../aunit' }
+
+[[depends-on]]
+camera_lib = "~0.1.0-dev"
+
+[[pins]]
+camera_lib = { path='../library' }
+
+[[depends-on]]
+video_lib = "~0.1.0-dev"
+
+[[pins]]
+video_lib = { path='../../library' }
+
+

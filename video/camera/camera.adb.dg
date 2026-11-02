@@ -1,0 +1,1141 @@
+
+with configuration;
+with ada_lib;
+with ada_lib;
+with ada_lib.ada_lib__options;
+with ada_lib.ada_lib__options.ada_lib__options__runstring;
+with ada_lib.ada_lib__trace;
+use ada_lib.ada_lib__trace;
+with configuration.configuration__state;
+with ada__strings.ada__strings.ada__strings__text_buffers;
+with system.system__secondary_stack;
+with system.system__assertions;
+with system.system__concat_6;
+with system.system__concat_3;
+with system.system__concat_2;
+with ada.ada__exceptions;
+
+package body camera is
+   use type ada_lib.ada_lib__options.ada_lib__options__options_type;
+   use type video.video__lib.video__lib__location_type;
+   camera__trace_option : constant character := '3';
+   camera__M29b : constant system__secondary_stack__mark_id :=
+     $system__secondary_stack__ss_mark;
+   [program_error when
+     not (ada_lib__options_E /= 0)
+     "access before elaboration"]
+   [program_error when
+     not (ada_lib__options_E /= 0)
+     "access before elaboration"]
+   type camera__A6b is access all ada_lib__options__options_type;
+   freeze camera__A6b []
+   camera__R5b : constant camera__A6b := ada_lib.ada_lib__options.
+     ada_lib__options__create_options__4 ("", ada_lib.ada_lib__options.
+     ada_lib__options__unmodified, from => "camera.adb:16")'reference;
+   type camera__A10b is access all ada_lib__options__options_type;
+   freeze camera__A10b []
+   camera__R9b : constant camera__A10b := ada_lib.ada_lib__options.
+     ada_lib__options__create_options (camera__trace_option, ada_lib.
+     ada_lib__options.ada_lib__options__unmodified, from =>
+     "camera.adb:18")'reference;
+   camera__L8b : constant integer := camera__R5b.all'length;
+   camera__L12b : constant integer := camera__R9b.all'length;
+   camera__L13b : constant integer := camera__L8b + camera__L12b;
+   camera__L14b : constant integer := (if camera__L8b /= 0 then
+     camera__R5b.all'first else camera__R9b.all'first);
+   camera__R16b : constant integer := (if camera__L13b = 0 then
+     camera__R9b.all'first else camera__L14b);
+   camera__R17b : constant integer := (if camera__L13b = 0 then
+     camera__R9b.all'last else camera__L14b {+} (camera__L13b - 1));
+   subtype camera__TS15bS is ada_lib__options__options_type (
+     camera__R16b .. camera__R17b);
+   [constraint_error when
+     camera__R17b >= camera__R16b and then (camera__R16b < 1)
+     "range check failed"]
+   camera__S15b : ada_lib__options__options_type (camera__R16b ..
+     camera__R17b);
+   ada_lib__options__options_typeIP (camera__S15b);
+   if camera__L8b /= 0 then
+      [subtype camera__T18b is integer range camera__R16b ..
+        camera__R16b + (camera__L8b - 1)]
+      [subtype camera__T19b is ada_lib__options__options_type (
+        camera__T18b)]
+      reference camera__T19b
+      camera__R21b : constant integer := camera__R5b.all'first(1);
+      camera__R22b : constant integer := camera__R5b.all'last(1);
+      subtype camera__S20b is ada_lib__options__options_type (
+        camera__R21b .. camera__R22b);
+      freeze camera__S20b []
+      camera__S15b (camera__R16b .. camera__R16b + (camera__L8b - 1)) :=
+        camera__R5b.all;
+   end if;
+   if camera__L12b /= 0 then
+      [subtype camera__T23b is integer range camera__R16b + camera__L8b ..
+        camera__R16b + (camera__L13b - 1)]
+      [subtype camera__T24b is ada_lib__options__options_type (
+        camera__T23b)]
+      reference camera__T24b
+      camera__R26b : constant integer := camera__R9b.all'first(1);
+      camera__R27b : constant integer := camera__R9b.all'last(1);
+      subtype camera__S25b is ada_lib__options__options_type (
+        camera__R26b .. camera__R27b);
+      freeze camera__S25b []
+      camera__S15b (camera__R16b + camera__L8b .. camera__R16b + (
+        camera__L13b - 1)) := camera__R9b.all;
+   end if;
+   [subtype camera__T28b is camera__TS15bS]
+   subtype camera__T28b is camera__TS15bS;
+   camera__options_with_parameters : aliased constant camera__T28b :=
+     camera__S15b;
+   $system__secondary_stack__ss_release (camera__M29b);
+   camera__M59b : constant system__secondary_stack__mark_id :=
+     $system__secondary_stack__ss_mark;
+   [program_error when
+     not (ada_lib__options_E /= 0)
+     "access before elaboration"]
+   [program_error when
+     not (ada_lib__options_E /= 0)
+     "access before elaboration"]
+   type camera__A36b is access all ada_lib__options__options_type;
+   freeze camera__A36b []
+   camera__R35b : constant camera__A36b := ada_lib.ada_lib__options.
+     ada_lib__options__create_options__4 ("", ada_lib.ada_lib__options.
+     ada_lib__options__unmodified, from => "camera.adb:22")'reference;
+   type camera__A40b is access all ada_lib__options__options_type;
+   freeze camera__A40b []
+   camera__R39b : constant camera__A40b := ada_lib.ada_lib__options.
+     ada_lib__options__create_options__4 ("", ada_lib.ada_lib__options.
+     ada_lib__options__unmodified, from => "camera.adb:25")'reference;
+   camera__L38b : constant integer := camera__R35b.all'length;
+   camera__L42b : constant integer := camera__R39b.all'length;
+   camera__L43b : constant integer := camera__L38b + camera__L42b;
+   camera__L44b : constant integer := (if camera__L38b /= 0 then
+     camera__R35b.all'first else camera__R39b.all'first);
+   camera__R46b : constant integer := (if camera__L43b = 0 then
+     camera__R39b.all'first else camera__L44b);
+   camera__R47b : constant integer := (if camera__L43b = 0 then
+     camera__R39b.all'last else camera__L44b {+} (camera__L43b - 1));
+   subtype camera__TS45bS is ada_lib__options__options_type (
+     camera__R46b .. camera__R47b);
+   [constraint_error when
+     camera__R47b >= camera__R46b and then (camera__R46b < 1)
+     "range check failed"]
+   camera__S45b : ada_lib__options__options_type (camera__R46b ..
+     camera__R47b);
+   ada_lib__options__options_typeIP (camera__S45b);
+   if camera__L38b /= 0 then
+      [subtype camera__T48b is integer range camera__R46b ..
+        camera__R46b + (camera__L38b - 1)]
+      [subtype camera__T49b is ada_lib__options__options_type (
+        camera__T48b)]
+      reference camera__T49b
+      camera__R51b : constant integer := camera__R35b.all'first(1);
+      camera__R52b : constant integer := camera__R35b.all'last(1);
+      subtype camera__S50b is ada_lib__options__options_type (
+        camera__R51b .. camera__R52b);
+      freeze camera__S50b []
+      camera__S45b (camera__R46b .. camera__R46b + (camera__L38b -
+        1)) := camera__R35b.all;
+   end if;
+   if camera__L42b /= 0 then
+      [subtype camera__T53b is integer range camera__R46b +
+        camera__L38b .. camera__R46b + (camera__L43b - 1)]
+      [subtype camera__T54b is ada_lib__options__options_type (
+        camera__T53b)]
+      reference camera__T54b
+      camera__R56b : constant integer := camera__R39b.all'first(1);
+      camera__R57b : constant integer := camera__R39b.all'last(1);
+      subtype camera__S55b is ada_lib__options__options_type (
+        camera__R56b .. camera__R57b);
+      freeze camera__S55b []
+      camera__S45b (camera__R46b + camera__L38b .. camera__R46b + (
+        camera__L43b - 1)) := camera__R39b.all;
+   end if;
+   [subtype camera__T58b is camera__TS45bS]
+   subtype camera__T58b is camera__TS45bS;
+   camera__options_without_parameters : aliased constant camera__T58b :=
+     camera__S45b;
+   $system__secondary_stack__ss_release (camera__M59b);
+   camera__recursed : boolean := false;
+
+   function camera__initialize (options : in out
+     camera__camera_options_type; from : in string := ada_lib.
+     ada_lib__trace.ada_lib__trace__here) return boolean is
+      [program_error when not camera__initializeE109b "access before elaboration"]
+      subtype camera__initialize__S61b is string (from'first(1) .. from'
+        last(1));
+      [program_error when
+        not (ada_lib__options__actual_E /= 0)
+        "access before elaboration"]
+      R64b : constant boolean :=
+        ada_lib__options__actual__verify_preinitialize__2 (options,
+        from => "camera.ads:108");
+      [constraint_error when
+        not (short_short_unsigned!(R64b) <= 1)
+        "invalid data"]
+      if not R64b then
+         $system__assertions__raise_assert_failure (
+           "failed precondition from camera.ads:108");
+      end if;
+   begin
+      T66b : boolean := camera__debug_camera;
+      [constraint_error when
+        not (short_short_unsigned!(T66b) <= 1)
+        "invalid data"]
+      T67b : boolean := ada_lib__trace__trace_options;
+      [constraint_error when
+        not (short_short_unsigned!(T67b) <= 1)
+        "invalid data"]
+      B68b : declare
+         M94b : constant system__secondary_stack__mark_id :=
+           $system__secondary_stack__ss_mark;
+         procedure camera__initialize__B68b___finalizer;
+         freeze camera__initialize__B68b___finalizer []
+
+         procedure camera__initialize__B68b___finalizer is
+         begin
+            $system__secondary_stack__ss_release (M94b);
+            return;
+         end camera__initialize__B68b___finalizer;
+      begin
+         [program_error when
+           not (ada_lib__options_E /= 0)
+           "access before elaboration"]
+         [program_error when
+           not (ada_lib__options_E /= 0)
+           "access before elaboration"]
+         type camera__initialize__B68b__A73b is access all string;
+         freeze camera__initialize__B68b__A73b []
+         R72b : constant camera__initialize__B68b__A73b := ada_lib.
+           ada_lib__options.ada_lib__options__image__2 (
+           camera__options_with_parameters, false)'reference;
+         type camera__initialize__B68b__A79b is access all string;
+         freeze camera__initialize__B68b__A79b []
+         R78b : constant camera__initialize__B68b__A79b := ada_lib.
+           ada_lib__options.ada_lib__options__image__2 (
+           camera__options_without_parameters, false)'reference;
+         L75b : constant integer := R72b.all'length;
+         L76b : constant integer := 16 + L75b;
+         L77b : constant integer := L76b + 20;
+         L81b : constant integer := R78b.all'length;
+         L82b : constant integer := L77b + L81b;
+         L83b : constant integer := L82b + 6;
+         L84b : constant integer := from'length;
+         L85b : constant integer := L83b + L84b;
+         subtype camera__initialize__B68b__A87b is string (1 .. 1 + (
+           L85b - 1));
+         freeze camera__initialize__B68b__A87b []
+         type camera__initialize__B68b__A88b is access
+           camera__initialize__B68b__A87b;
+         freeze camera__initialize__B68b__A88b []
+         R89b : camera__initialize__B68b__A88b := new
+           camera__initialize__B68b__A87b[storage_pool =
+           system__secondary_stack__ss_pool][procedure_to_call =
+           system__secondary_stack__ss_allocate];
+         S86b : camera__initialize__B68b__A87b renames R89b.all;
+         $system__concat_6__str_concat_6 (S86b, "With Parameters ",
+           R72b.all, " Without Parameters ", R78b.all, " from ", from);
+         [program_error when
+           not (ada_lib__trace_E /= 0)
+           "access before elaboration"]
+         T93b : boolean := camera__recursed;
+         [constraint_error when
+           not (short_short_unsigned!(T93b) <= 1)
+           "invalid data"]
+         ada_lib__trace__log_in_checked (T93b, T66b or T67b, S86b,
+           where => "camera.adb:65", who => "Camera.Initialize");
+         camera__recursed := T93b;
+      end B68b;
+      at end
+         camera__initialize__B68b___finalizer;
+      [program_error when
+        not (ada_lib__options__runstring_E /= 0)
+        "access before elaboration"]
+      [program_error when
+        not (ada_lib__options__runstring_E /= 0)
+        "access before elaboration"]
+      ada_lib__options__runstring__registration_type__registerP (
+        ada_lib__options__runstring__registration_typeV!(ada_lib.
+        ada_lib__options.ada_lib__options__runstring.
+        ada_lib__options__runstring__options), ada_lib.ada_lib__options.
+        ada_lib__options__runstring.
+        ada_lib__options__runstring__with_parameters,
+        camera__options_with_parameters, from => "camera.adb:71");
+      [program_error when
+        not (ada_lib__options__runstring_E /= 0)
+        "access before elaboration"]
+      [program_error when
+        not (ada_lib__options__runstring_E /= 0)
+        "access before elaboration"]
+      ada_lib__options__runstring__registration_type__registerP (
+        ada_lib__options__runstring__registration_typeV!(ada_lib.
+        ada_lib__options.ada_lib__options__runstring.
+        ada_lib__options__runstring__options), ada_lib.ada_lib__options.
+        ada_lib__options__runstring.
+        ada_lib__options__runstring__without_parameters,
+        camera__options_without_parameters, from => "camera.adb:74");
+      [program_error when
+        not (video__lib_E /= 0)
+        "access before elaboration"]
+      T101b : boolean := camera__debug_camera;
+      [constraint_error when
+        not (short_short_unsigned!(T101b) <= 1)
+        "invalid data"]
+      T102b : boolean := ada_lib__trace__trace_options;
+      [constraint_error when
+        not (short_short_unsigned!(T102b) <= 1)
+        "invalid data"]
+      [program_error when
+        not (ada_lib__trace_E /= 0)
+        "access before elaboration"]
+      T106b : boolean := camera__recursed;
+      [constraint_error when
+        not (short_short_unsigned!(T106b) <= 1)
+        "invalid data"]
+      R107b : constant boolean := video__lib__initialize (video.
+        video__lib.video__lib__options_type(options), from =>
+        "camera.adb:79");
+      [constraint_error when
+        not (short_short_unsigned!(R107b) <= 1)
+        "invalid data"]
+      R108b : constant boolean := ada_lib__trace__log_out_checked__2 (
+        T106b, R107b, T101b or T102b, message => "", where =>
+        "camera.adb:78", who => "Camera.Initialize");
+      [constraint_error when
+        not (short_short_unsigned!(R108b) <= 1)
+        "invalid data"]
+      return R108b;
+   end camera__initialize;
+
+   camera__initializeE109b := true;
+
+   function camera__process_option (options : in out
+     camera__camera_options_type; iterator : in out ada_lib.
+     ada_lib__options.ada_lib__options__command_line_iterator_interface'
+     class; option : in ada_lib.ada_lib__options.
+     ada_lib__options__option_type'class) return boolean is
+      [program_error when not camera__process_optionE239b "access before elaboration"]
+      T112b : boolean := options.initialized;
+      [constraint_error when
+        not (short_short_unsigned!(T112b) <= 1)
+        "invalid data"]
+      if not T112b then
+         $system__assertions__raise_assert_failure (
+           "failed precondition from camera.ads:118");
+      end if;
+      B_1 : label
+   begin
+      T114b : boolean := ada_lib__trace__trace_options;
+      [constraint_error when
+        not (short_short_unsigned!(T114b) <= 1)
+        "invalid data"]
+      T115b : boolean := camera__debug_camera;
+      [constraint_error when
+        not (short_short_unsigned!(T115b) <= 1)
+        "invalid data"]
+      B116b : declare
+         M151b : constant system__secondary_stack__mark_id :=
+           $system__secondary_stack__ss_mark;
+         procedure camera__process_option__B116b___finalizer;
+         freeze camera__process_option__B116b___finalizer []
+
+         procedure camera__process_option__B116b___finalizer is
+         begin
+            $system__secondary_stack__ss_release (M151b);
+            return;
+         end camera__process_option__B116b___finalizer;
+      begin
+         subtype camera__process_option__B116b__S124b is string (1 ..
+           5);
+         T125b : constant camera__process_option__B116b__S124b := "TRUE ";
+         F126b : constant camera__process_option__B116b__S124b := "FALSE";
+         V127b : camera__process_option__B116b__S124b renames (if
+           ada_lib.ada_lib__help_test then T125b else F126b);
+         [subtype camera__process_option__B116b__T130b is integer range
+           1 .. (if ada_lib.ada_lib__help_test then 4 else 5)]
+         [subtype camera__process_option__B116b__T131b is string (
+           camera__process_option__B116b__T130b)]
+         reference camera__process_option__B116b__T131b
+         type camera__process_option__B116b__A133b is access all string;
+         freeze camera__process_option__B116b__A133b []
+         [type camera__process_option__B116b__T117b is function (option :
+           ada_lib__options__Toption_typeC, quote : boolean) return
+           string]
+         [subtype camera__process_option__B116b__T118b is access
+           camera__process_option__B116b__T117b]
+         R132b : constant camera__process_option__B116b__A133b :=
+           camera__process_option__B116b__T118b!(
+           ada_lib__options__option_typeH!(option._tag).all (2)).all (
+           option, true)'reference;
+         L135b : constant integer := R132b.all'length;
+         L136b : constant integer := L135b + 11;
+         L139b : constant integer := V127b (1 .. (if ada_lib.
+           ada_lib__help_test then 4 else 5))'length;
+         L142b : constant integer := L136b + L139b;
+         L143b : constant integer := (if L135b /= 0 then R132b.all'
+           first else 1);
+         subtype camera__process_option__B116b__A145b is string (L143b ..
+           L143b + (L142b - 1));
+         freeze camera__process_option__B116b__A145b []
+         type camera__process_option__B116b__A146b is access
+           camera__process_option__B116b__A145b;
+         freeze camera__process_option__B116b__A146b []
+         R147b : camera__process_option__B116b__A146b := new
+           camera__process_option__B116b__A145b[storage_pool =
+           system__secondary_stack__ss_pool][procedure_to_call =
+           system__secondary_stack__ss_allocate];
+         S144b : camera__process_option__B116b__A145b renames R147b.all;
+         $system__concat_3__str_concat_3 (S144b, R132b.all, " help test ",
+           V127b (1 .. (if ada_lib.ada_lib__help_test then 4 else 5)));
+         [program_error when
+           not (ada_lib__trace_E /= 0)
+           "access before elaboration"]
+         ada_lib__trace__log_in (T114b or T115b, S144b, where =>
+           "camera.adb:96", who => "Camera.Process_Option");
+      end B116b;
+      at end
+         camera__process_option__B116b___finalizer;
+      [type camera__process_option__T152b is function (option :
+        ada_lib__options__Toption_typeC, options_with_parameters :
+        ada_lib__options__options_type, options_without_parameters :
+        ada_lib__options__options_type) return boolean]
+      [subtype camera__process_option__T153b is access
+        camera__process_option__T152b]
+      if camera__process_option__T153b!(ada_lib__options__option_typeH!
+        (option._tag).all (6)).all (option,
+        camera__options_with_parameters,
+        camera__options_without_parameters) then
+         case option.option is
+            when 'c' =>
+               B154b : declare
+                  M157b : constant system__secondary_stack__mark_id :=
+                    $system__secondary_stack__ss_mark;
+                  procedure camera__process_option__B154b___finalizer;
+                  freeze camera__process_option__B154b___finalizer []
+
+                  procedure camera__process_option__B154b___finalizer is
+                  begin
+                     $system__secondary_stack__ss_release (M157b);
+                     return;
+                  end camera__process_option__B154b___finalizer;
+               begin
+                  [program_error when
+                    not (ada_lib__strings__unlimited_E /= 0)
+                    "access before elaboration"]
+                  ada_lib__strings__unlimited__construct (options.
+                  [type camera__process_option__B154b__T155b is function (
+                    iterator : in out
+                    ada_lib__options__Tcommand_line_iterator_interfaceC) return
+                    string]
+                  [subtype camera__process_option__B154b__T156b is access
+                    camera__process_option__B154b__T155b]
+                    directory, camera__process_option__B154b__T156b!(
+                    ada_lib__options__command_line_iterator_interfaceH!
+                    (iterator).all (7)).all (iterator));
+               end B154b;
+               at end
+                  camera__process_option__B154b___finalizer;
+            when 'p' =>
+               [type camera__process_option__T158b is function (
+                 iterator : in out
+                 ada_lib__options__Tcommand_line_iterator_interfaceC) return
+                 integer]
+               [subtype camera__process_option__T159b is access
+                 camera__process_option__T158b]
+               R160b : constant integer :=
+                 camera__process_option__T159b!(
+                 ada_lib__options__command_line_iterator_interfaceH!(
+                 iterator).all (8)).all (iterator);
+               [constraint_error when
+                 not (R160b in 0 .. 65535)
+                 "range check failed"]
+               options.port_number := camera__port_type(ada_lib.
+                 ada_lib__socket_io.ada_lib__socket_io__port_type(R160b));
+            when 'r' =>
+               T161b : boolean := options.simulate;
+               [constraint_error when
+                 not (short_short_unsigned!(T161b) <= 1)
+                 "invalid data"]
+               if T161b and then not ada_lib.ada_lib__help_test then
+                  B162b : declare
+                  begin
+                     [program_error when
+                       not (ada_lib__options__actual_E /= 0)
+                       "access before elaboration"]
+                     ada_lib__options__actual__bad_option__2 (options,
+                       "Remote option (r) and Simulate (E) are incompatable at camera.adb:115",
+                       message => "", where => "camera.adb:113");
+                  end B162b;
+               end if;
+               null;
+               options.location := configuration.configuration__state.
+                 configuration__state__remote;
+            when 'E' =>
+               if
+                  do
+                     T166b : video__lib__location_type := options.
+                       location;[constraint_error when
+                       not (short_short_unsigned!(T166b) <= 1)
+                       "invalid data"]
+                     null;
+                     F167b : constant boolean := T166b = configuration.
+                       configuration__state.
+                       configuration__state__remote;
+                  in F167b end
+                and then not ada_lib.ada_lib__help_test then
+                  B168b : declare
+                  begin
+                     [program_error when
+                       not (ada_lib__options__actual_E /= 0)
+                       "access before elaboration"]
+                     ada_lib__options__actual__bad_option__2 (options,
+                       "Remote option (r) and Simulate (E) are incompatable at camera.adb:125",
+                       message => "", where => "camera.adb:123");
+                  end B168b;
+               end if;
+               options.simulate := true;
+            when camera__trace_option =>
+               [program_error when
+                 not (camera__trace_parseE298b /= 0)
+                 "access before elaboration"]
+               camera__trace_parse (options, iterator);
+            when others =>
+               B_1 : declare
+                  M192b : constant system__secondary_stack__mark_id :=
+                    $system__secondary_stack__ss_mark;
+                  type camera__process_option__B_1__A177b is access
+                    all string;
+                  freeze camera__process_option__B_1__A177b []
+                  [type camera__process_option__B_1__T173b is function (
+                    option : ada_lib__options__Toption_typeC, quote :
+                    boolean) return string]
+                  [subtype camera__process_option__B_1__T174b is access
+                    camera__process_option__B_1__T173b]
+                  R176b : constant camera__process_option__B_1__A177b :=
+                    camera__process_option__B_1__T174b!(
+                    ada_lib__options__option_typeH!(option._tag).all (
+                    2)).all (option, true)'reference;
+                  L179b : constant integer := R176b.all'length;
+                  L180b : constant integer := 30 + L179b;
+                  subtype camera__process_option__B_1__A182b is string
+                    (1 .. 1 + (L180b - 1));
+                  freeze camera__process_option__B_1__A182b []
+                  type camera__process_option__B_1__A183b is access
+                    camera__process_option__B_1__A182b;
+                  freeze camera__process_option__B_1__A183b []
+                  R184b : camera__process_option__B_1__A183b := new
+                    camera__process_option__B_1__A182b[storage_pool =
+                    system__secondary_stack__ss_pool]
+                    [procedure_to_call =
+                    system__secondary_stack__ss_allocate];
+                  S181b : camera__process_option__B_1__A182b renames
+                    R184b.all;
+                  $system__concat_2__str_concat_2 (S181b,
+                    "Has_Option incorrectly passed ", R176b.all);
+                  [subtype camera__process_option__B_1__T186b is
+                    camera__process_option__B_1__A182b]
+                  subtype camera__process_option__B_1__T186b is
+                    camera__process_option__B_1__A182b;
+                  message : camera__process_option__B_1__T186b renames
+                    S181b;
+                  procedure camera__process_option__B_1___finalizer;
+                  freeze camera__process_option__B_1___finalizer []
+
+                  procedure camera__process_option__B_1___finalizer is
+                  begin
+                     $system__secondary_stack__ss_release (M192b);
+                     return;
+                  end camera__process_option__B_1___finalizer;
+               begin
+                  T187b : boolean := ada_lib__trace__trace_options;
+                  [constraint_error when
+                    not (short_short_unsigned!(T187b) <= 1)
+                    "invalid data"]
+                  T188b : boolean := camera__debug_camera;
+                  [constraint_error when
+                    not (short_short_unsigned!(T188b) <= 1)
+                    "invalid data"]
+                  [program_error when
+                    not (ada_lib__trace_E /= 0)
+                    "access before elaboration"]
+                  ada_lib__trace__log_exception (T187b or T188b,
+                    message, where => "camera.adb:137", who =>
+                    "Camera.Process_Option");
+                  $ada__exceptions__raise_exception_always (
+                    ada__exceptions__exception_id!(camera__failed
+                    'reference), message);
+               end B_1;
+               at end
+                  camera__process_option__B_1___finalizer;
+         end case;
+         T194b : boolean := camera__debug_camera;
+         [constraint_error when
+           not (short_short_unsigned!(T194b) <= 1)
+           "invalid data"]
+         T195b : boolean := ada_lib__trace__trace_options;
+         [constraint_error when
+           not (short_short_unsigned!(T195b) <= 1)
+           "invalid data"]
+         B196b : declare
+            M214b : constant system__secondary_stack__mark_id :=
+              $system__secondary_stack__ss_mark;
+            procedure camera__process_option__B196b___finalizer;
+            freeze camera__process_option__B196b___finalizer []
+
+            procedure camera__process_option__B196b___finalizer is
+            begin
+               $system__secondary_stack__ss_release (M214b);
+               return;
+            end camera__process_option__B196b___finalizer;
+         begin
+            type camera__process_option__B196b__A201b is access all
+              string;
+            freeze camera__process_option__B196b__A201b []
+            [type camera__process_option__B196b__T197b is function (
+              option : ada_lib__options__Toption_typeC, quote : boolean) return
+              string]
+            [subtype camera__process_option__B196b__T198b is access
+              camera__process_option__B196b__T197b]
+            R200b : constant camera__process_option__B196b__A201b :=
+              camera__process_option__B196b__T198b!(
+              ada_lib__options__option_typeH!(option._tag).all (2)).all
+              (option, true)'reference;
+            L203b : constant integer := R200b.all'length;
+            L204b : constant integer := L203b + 8;
+            L205b : constant integer := (if L203b /= 0 then R200b.all'
+              first else 1);
+            subtype camera__process_option__B196b__A207b is string (
+              L205b .. L205b + (L204b - 1));
+            freeze camera__process_option__B196b__A207b []
+            type camera__process_option__B196b__A208b is access
+              camera__process_option__B196b__A207b;
+            freeze camera__process_option__B196b__A208b []
+            R209b : camera__process_option__B196b__A208b := new
+              camera__process_option__B196b__A207b[storage_pool =
+              system__secondary_stack__ss_pool][procedure_to_call =
+              system__secondary_stack__ss_allocate];
+            S206b : camera__process_option__B196b__A207b renames R209b.all;
+            $system__concat_2__str_concat_2 (S206b, R200b.all, " handled");
+            [program_error when
+              not (ada_lib__trace_E /= 0)
+              "access before elaboration"]
+            R213b : constant boolean := ada_lib__trace__log_out__2 (
+              true, T194b or T195b, S206b, where => "camera.adb:142",
+              who => "Camera.Process_Option");
+            [constraint_error when
+              not (short_short_unsigned!(R213b) <= 1)
+              "invalid data"]
+            return R213b;
+         end B196b;
+         at end
+            camera__process_option__B196b___finalizer;
+      else
+         [program_error when
+           not (video__lib_E /= 0)
+           "access before elaboration"]
+         T216b : boolean := ada_lib__trace__trace_options;
+         [constraint_error when
+           not (short_short_unsigned!(T216b) <= 1)
+           "invalid data"]
+         T217b : boolean := camera__debug_camera;
+         [constraint_error when
+           not (short_short_unsigned!(T217b) <= 1)
+           "invalid data"]
+         B218b : declare
+            M236b : constant system__secondary_stack__mark_id :=
+              $system__secondary_stack__ss_mark;
+            procedure camera__process_option__B218b___finalizer;
+            freeze camera__process_option__B218b___finalizer []
+
+            procedure camera__process_option__B218b___finalizer is
+            begin
+               $system__secondary_stack__ss_release (M236b);
+               return;
+            end camera__process_option__B218b___finalizer;
+         begin
+            type camera__process_option__B218b__A223b is access all
+              string;
+            freeze camera__process_option__B218b__A223b []
+            [type camera__process_option__B218b__T219b is function (
+              option : ada_lib__options__Toption_typeC, quote : boolean) return
+              string]
+            [subtype camera__process_option__B218b__T220b is access
+              camera__process_option__B218b__T219b]
+            R222b : constant camera__process_option__B218b__A223b :=
+              camera__process_option__B218b__T220b!(
+              ada_lib__options__option_typeH!(option._tag).all (2)).all
+              (option, true)'reference;
+            L225b : constant integer := R222b.all'length;
+            L226b : constant integer := 6 + L225b;
+            subtype camera__process_option__B218b__A228b is string (
+              1 .. 1 + (L226b - 1));
+            freeze camera__process_option__B218b__A228b []
+            type camera__process_option__B218b__A229b is access
+              camera__process_option__B218b__A228b;
+            freeze camera__process_option__B218b__A229b []
+            R230b : camera__process_option__B218b__A229b := new
+              camera__process_option__B218b__A228b[storage_pool =
+              system__secondary_stack__ss_pool][procedure_to_call =
+              system__secondary_stack__ss_allocate];
+            S227b : camera__process_option__B218b__A228b renames R230b.all;
+            $system__concat_2__str_concat_2 (S227b, "other ", R222b.all);
+            [program_error when
+              not (ada_lib__trace_E /= 0)
+              "access before elaboration"]
+            R234b : constant boolean := video__lib__process_option (
+              video.video__lib.video__lib__options_type(options),
+              iterator, option);
+            [constraint_error when
+              not (short_short_unsigned!(R234b) <= 1)
+              "invalid data"]
+            R235b : constant boolean := ada_lib__trace__log_out__2 (
+              R234b, T216b or T217b, S227b, where => "camera.adb:145",
+              who => "Camera.Process_Option");
+            [constraint_error when
+              not (short_short_unsigned!(R235b) <= 1)
+              "invalid data"]
+            return R235b;
+         end B218b;
+         at end
+            camera__process_option__B218b___finalizer;
+      end if;
+   exception
+      when fault : others =>
+         [program_error when
+           not (ada_lib__trace_E /= 0)
+           "access before elaboration"]
+         ada_lib__trace__trace_exception__2 (fault, where =>
+           "camera.adb:152");
+         raise ;
+   end camera__process_option;
+
+   camera__process_optionE239b := true;
+
+   procedure camera__program_help (options : in
+     camera__camera_options_type; help_mode : in ada_lib.
+     ada_lib__options.ada_lib__options__help_mode_type) is
+      [program_error when not camera__program_helpE265b "access before elaboration"]
+   begin
+      T240b : boolean := camera__debug_camera;
+      [constraint_error when
+        not (short_short_unsigned!(T240b) <= 1)
+        "invalid data"]
+      T241b : boolean := ada_lib__trace__trace_options;
+      [constraint_error when
+        not (short_short_unsigned!(T241b) <= 1)
+        "invalid data"]
+      B242b : declare
+      begin
+         [constraint_error when
+           not (short_short_unsigned!(help_mode) <= 1)
+           "invalid data"]
+         P247b : constant natural := natural(short_short_unsigned?(
+           help_mode));
+         P248b : constant natural := natural(
+           ada_lib__options__help_mode_typeN (P247b));
+         P249b : constant natural := natural(
+           ada_lib__options__help_mode_typeN (P247b + 1));
+         [subtype camera__program_help__B242b__T252b is integer range
+           P248b .. P249b - 1]
+         [subtype camera__program_help__B242b__T253b is string (
+           camera__program_help__B242b__T252b)]
+         reference camera__program_help__B242b__T253b
+         P250b : string renames ada_lib__options__help_mode_typeS (
+           P248b .. P249b - 1);
+         subtype camera__program_help__B242b__S251b is string (1 ..
+           P249b - P248b);
+         L255b : constant integer := camera__program_help__B242b__S251b!
+           (P250b)'length;
+         L256b : constant integer := 10 + L255b;
+         subtype camera__program_help__B242b__TS257bS is string (1 ..
+           1 + (L256b - 1));
+         null;
+         S257b : string (1 .. 1 + (L256b - 1));
+         $system__concat_2__str_concat_2 (S257b, "help mode ",
+           camera__program_help__B242b__S251b!(P250b));
+         [program_error when
+           not (ada_lib__trace_E /= 0)
+           "access before elaboration"]
+         ada_lib__trace__log_in (T240b or T241b, S257b, where =>
+           "camera.adb:167", who => "Camera.Program_Help");
+      end B242b;
+      [program_error when
+        not (video__lib_E /= 0)
+        "access before elaboration"]
+      video__lib__program_help__2 (video.video__lib.
+        video__lib__options_type(options), help_mode);
+      T260b : boolean := camera__debug_camera;
+      [constraint_error when
+        not (short_short_unsigned!(T260b) <= 1)
+        "invalid data"]
+      T261b : boolean := ada_lib__trace__trace_options;
+      [constraint_error when
+        not (short_short_unsigned!(T261b) <= 1)
+        "invalid data"]
+      [program_error when
+        not (ada_lib__trace_E /= 0)
+        "access before elaboration"]
+      ada_lib__trace__log_out (T260b or T261b, message => "", where =>
+        "camera.adb:214", who => "Camera.Program_Help");
+      return;
+   end camera__program_help;
+
+   camera__program_helpE265b := true;
+
+   procedure camera__trace_parse (options : in out
+     camera__camera_options_type; iterator : in out ada_lib.
+     ada_lib__options.ada_lib__options__command_line_iterator_interface'
+     class) is
+      [program_error when not camera__trace_parseE297b "access before elaboration"]
+      M296b : constant system__secondary_stack__mark_id :=
+        $system__secondary_stack__ss_mark;
+      type camera__trace_parse__suboption_type is (plain, modified);
+      type camera__trace_parse__A271b is access all string;
+      freeze camera__trace_parse__A271b []
+      [type camera__trace_parse__T267b is function (iterator : in out
+        ada_lib__options__Tcommand_line_iterator_interfaceC) return
+        string]
+      [subtype camera__trace_parse__T268b is access
+        camera__trace_parse__T267b]
+      R270b : constant camera__trace_parse__A271b :=
+        camera__trace_parse__T268b!(
+        ada_lib__options__command_line_iterator_interfaceH!(iterator).all
+        (7)).all (iterator)'reference;
+      B269b : constant integer := R270b.all'first(1);
+      B273b : constant integer := R270b.all'last(1);
+      subtype camera__trace_parse__TparameterS is string (B269b ..
+        B273b);
+      [constraint_error when
+        B273b >= B269b and then (B269b < 1)
+        "range check failed"]
+      parameter : camera__trace_parse__TparameterS renames R270b.all;
+      subtype camera__trace_parse__Tsuboption_typeSS is string (1 ..
+        13);
+      suboption_typeS : constant string (1 .. 13) := "PLAINMODIFIED";
+      [type camera__trace_parse__Tsuboption_typeNB is array (0 .. 2 range <>) of
+        integer_8]
+      freeze camera__trace_parse__Tsuboption_typeNB []
+      [subtype camera__trace_parse__Tsuboption_typeNT275b is
+        camera__trace_parse__Tsuboption_typeNB (0 .. 2)]
+      freeze camera__trace_parse__Tsuboption_typeNT275b []
+      suboption_typeN : constant array (0 .. 2) of integer_8 := (1,
+        6, 14);
+      freeze camera__trace_parse__suboption_type []
+      suboption : camera__trace_parse__suboption_type := plain;
+      procedure camera__trace_parse___finalizer;
+      freeze camera__trace_parse___finalizer []
+
+      procedure camera__trace_parse___finalizer is
+      begin
+         $system__secondary_stack__ss_release (M296b);
+         return;
+      end camera__trace_parse___finalizer;
+   begin
+      T280b : boolean := ada_lib__trace__trace_options;
+      [constraint_error when
+        not (short_short_unsigned!(T280b) <= 1)
+        "invalid data"]
+      T281b : boolean := camera__debug_camera;
+      [constraint_error when
+        not (short_short_unsigned!(T281b) <= 1)
+        "invalid data"]
+      B283b : declare
+      begin
+         [program_error when
+           not (ada_lib__trace_E /= 0)
+           "access before elaboration"]
+         type camera__trace_parse__B283b__A287b is access all string;
+         freeze camera__trace_parse__B283b__A287b []
+         R286b : constant camera__trace_parse__B283b__A287b :=
+           ada_lib__trace__quote__6 (" Parameter", parameter)'reference;
+         L289b : constant integer := R286b.all'length;
+         L290b : constant integer := 18 + L289b;
+         subtype camera__trace_parse__B283b__A292b is string (1 ..
+           1 + (L290b - 1));
+         freeze camera__trace_parse__B283b__A292b []
+         type camera__trace_parse__B283b__A293b is access
+           camera__trace_parse__B283b__A292b;
+         freeze camera__trace_parse__B283b__A293b []
+         R294b : camera__trace_parse__B283b__A293b := new
+           camera__trace_parse__B283b__A292b[storage_pool =
+           system__secondary_stack__ss_pool][procedure_to_call =
+           system__secondary_stack__ss_allocate];
+         S291b : camera__trace_parse__B283b__A292b renames R294b.all;
+         $system__concat_2__str_concat_2 (S291b, "Camera.Trace_Parse",
+           R286b.all);
+         [program_error when
+           not (ada_lib__trace_E /= 0)
+           "access before elaboration"]
+         ada_lib__trace__log (T280b or T281b, "camera.adb:231", S291b);
+      end B283b;
+      return;
+   end camera__trace_parse;
+   at end
+      camera__trace_parse___finalizer;
+
+   camera__trace_parseE298b := 1;
+   camera__trace_parseE297b := true;
+begin
+   null;
+end camera;
+
+freeze_generic forward_iterator
+freeze_generic Tforward_iteratorC
+freeze_generic reversible_iterator
+freeze_generic Treversible_iteratorC
+freeze_generic list
+freeze_generic TlistC
+freeze_generic cursor
+[type T2s is procedure (element : element_type)]
+[subtype T1s is not null access T2s]
+freeze_generic T1s
+[type T4s is procedure (element : in out element_type)]
+[subtype T3s is not null access T4s]
+freeze_generic T3s
+freeze_generic constant_reference_type
+[subtype T5s is not null access constant element_type]
+freeze_generic T5s
+freeze_generic reference_type
+[subtype T6s is not null access element_type]
+freeze_generic T6s
+[type T8s is procedure (position : cursor)]
+[subtype T7s is not null access T8s]
+freeze_generic T7s
+[type T10s is procedure (position : cursor)]
+[subtype T9s is not null access T10s]
+freeze_generic T9s
+freeze_generic node_type
+freeze_generic node_access
+freeze_generic node_type
+freeze_generic list
+[subtype T17s is not null access ada__streams__Troot_stream_typeC]
+freeze_generic T17s
+[subtype T18s is not null access ada__streams__Troot_stream_typeC]
+freeze_generic T18s
+freeze_generic list_access
+freeze_generic cursor
+[subtype T19s is not null access ada__streams__Troot_stream_typeC]
+freeze_generic T19s
+[subtype T20s is access ada__streams__Troot_stream_typeC]
+freeze_generic T20s
+[subtype T21s is access ada__streams__Troot_stream_typeC]
+freeze_generic T21s
+[subtype T22s is not null access ada__streams__Troot_stream_typeC]
+freeze_generic T22s
+[subtype T23s is access ada__streams__Troot_stream_typeC]
+freeze_generic T23s
+[subtype T24s is access ada__streams__Troot_stream_typeC]
+freeze_generic T24s
+freeze_generic reference_control_type
+freeze_generic constant_reference_type
+[subtype T25s is not null access constant element_type]
+freeze_generic T25s
+[subtype T27s is not null access ada__streams__Troot_stream_typeC]
+freeze_generic T27s
+[subtype T28s is access ada__streams__Troot_stream_typeC]
+freeze_generic T28s
+[subtype T29s is access ada__streams__Troot_stream_typeC]
+freeze_generic T29s
+[subtype T30s is not null access ada__streams__Troot_stream_typeC]
+freeze_generic T30s
+[subtype T31s is access ada__streams__Troot_stream_typeC]
+freeze_generic T31s
+[subtype T32s is access ada__streams__Troot_stream_typeC]
+freeze_generic T32s
+freeze_generic reference_type
+[subtype T33s is not null access element_type]
+freeze_generic T33s
+[subtype T35s is not null access ada__streams__Troot_stream_typeC]
+freeze_generic T35s
+[subtype T36s is access ada__streams__Troot_stream_typeC]
+freeze_generic T36s
+[subtype T37s is access ada__streams__Troot_stream_typeC]
+freeze_generic T37s
+[subtype T38s is not null access ada__streams__Troot_stream_typeC]
+freeze_generic T38s
+[subtype T39s is access ada__streams__Troot_stream_typeC]
+freeze_generic T39s
+[subtype T40s is access ada__streams__Troot_stream_typeC]
+freeze_generic T40s
+freeze_generic element_access
+[subtype T41s is not null access element_type]
+freeze_generic T41s
+freeze_generic iterator
+freeze_generic TiteratorC
+[subtype T1s is String (1 .. 73);]
+freeze_generic T1s
+freeze_generic object_pointer
+freeze_generic map
+freeze_generic TmapC
+freeze_generic cursor
+[type T2s is procedure (key : key_type, element : element_type)]
+[subtype T1s is not null access T2s]
+freeze_generic T1s
+[type T4s is procedure (key : key_type, element : in out element_type)]
+[subtype T3s is not null access T4s]
+freeze_generic T3s
+freeze_generic constant_reference_type
+[subtype T5s is not null access constant element_type]
+freeze_generic T5s
+freeze_generic reference_type
+[subtype T6s is not null access element_type]
+freeze_generic T6s
+[type T8s is procedure (position : cursor)]
+[subtype T7s is not null access T8s]
+freeze_generic T7s
+freeze_generic node_type
+freeze_generic node_access
+freeze_generic key_access
+freeze_generic element_access
+freeze_generic node_type
+freeze_generic map
+[subtype T17s is not null access ada__streams__Troot_stream_typeC]
+freeze_generic T17s
+[subtype T18s is not null access ada__streams__Troot_stream_typeC]
+freeze_generic T18s
+freeze_generic map_access
+freeze_generic cursor
+[subtype T19s is not null access ada__streams__Troot_stream_typeC]
+freeze_generic T19s
+[subtype T20s is access ada__streams__Troot_stream_typeC]
+freeze_generic T20s
+[subtype T21s is access ada__streams__Troot_stream_typeC]
+freeze_generic T21s
+[subtype T22s is not null access ada__streams__Troot_stream_typeC]
+freeze_generic T22s
+[subtype T23s is access ada__streams__Troot_stream_typeC]
+freeze_generic T23s
+[subtype T24s is access ada__streams__Troot_stream_typeC]
+freeze_generic T24s
+freeze_generic reference_control_type
+freeze_generic constant_reference_type
+[subtype T25s is not null access constant element_type]
+freeze_generic T25s
+[subtype T27s is not null access ada__streams__Troot_stream_typeC]
+freeze_generic T27s
+[subtype T28s is access ada__streams__Troot_stream_typeC]
+freeze_generic T28s
+[subtype T29s is access ada__streams__Troot_stream_typeC]
+freeze_generic T29s
+[subtype T30s is not null access ada__streams__Troot_stream_typeC]
+freeze_generic T30s
+[subtype T31s is access ada__streams__Troot_stream_typeC]
+freeze_generic T31s
+[subtype T32s is access ada__streams__Troot_stream_typeC]
+freeze_generic T32s
+freeze_generic reference_type
+[subtype T33s is not null access element_type]
+freeze_generic T33s
+[subtype T35s is not null access ada__streams__Troot_stream_typeC]
+freeze_generic T35s
+[subtype T36s is access ada__streams__Troot_stream_typeC]
+freeze_generic T36s
+[subtype T37s is access ada__streams__Troot_stream_typeC]
+freeze_generic T37s
+[subtype T38s is not null access ada__streams__Troot_stream_typeC]
+freeze_generic T38s
+[subtype T39s is access ada__streams__Troot_stream_typeC]
+freeze_generic T39s
+[subtype T40s is access ada__streams__Troot_stream_typeC]
+freeze_generic T40s
+[subtype T41s is not null access element_type]
+freeze_generic T41s
+freeze_generic iterator
+freeze_generic TiteratorC
+freeze_generic vector
+freeze_generic TvectorC
+freeze_generic cursor
+[subtype T2s is String (1 .. 40);]
+freeze_generic T2s
+freeze_generic constant_reference_type
+[subtype T3s is not null access constant element_type]
+freeze_generic T3s
+freeze_generic reference_type
+[subtype T4s is not null access element_type]
+freeze_generic T4s
+[type T6s is procedure (element : element_type)]
+[subtype T5s is not null access T6s]
+freeze_generic T5s
+[type T8s is procedure (element : element_type)]
+[subtype T7s is not null access T8s]
+freeze_generic T7s
+[type T10s is procedure (element : in out element_type)]
+[subtype T9s is not null access T10s]
+freeze_generic T9s
+[type T12s is procedure (element : in out element_type)]
+[subtype T11s is not null access T12s]
+freeze_generic T11s
+[type T14s is procedure (position : cursor)]
+[subtype T13s is not null access T14s]
+freeze_generic T13s
+[type T16s is procedure (position : cursor)]
+[subtype T15s is not null access T16s]
+freeze_generic T15s
+freeze_generic element_access
+freeze_generic elements_array
+freeze_generic elements_type
+freeze_generic elements_access
+freeze_generic vector
+[subtype T27s is not null access ada__streams__Troot_stream_typeC]
+freeze_generic T27s
+[subtype T28s is not null access ada__streams__Troot_stream_typeC]
+freeze_generic T28s
+freeze_generic vector_access
+freeze_generic cursor
+[subtype T29s is not null access ada__streams__Troot_stream_typeC]
+freeze_generic T29s
+[subtype T30s is access ada__streams__Troot_stream_typeC]
+freeze_generic T30s
+[subtype T31s is access ada__streams__Troot_stream_typeC]
+freeze_generic T31s
+[subtype T32s is not null access ada__streams__Troot_stream_typeC]
+freeze_generic T32s
+[subtype T33s is access ada__streams__Troot_stream_typeC]
+freeze_generic T33s
+[subtype T34s is access ada__streams__Troot_stream_typeC]
+freeze_generic T34s
+freeze_generic reference_control_type
+freeze_generic constant_reference_type
+[subtype T35s is not null access constant element_type]
+freeze_generic T35s
+[subtype T37s is not null access ada__streams__Troot_stream_typeC]
+freeze_generic T37s
+[subtype T38s is access ada__streams__Troot_stream_typeC]
+freeze_generic T38s
+[subtype T39s is access ada__streams__Troot_stream_typeC]
+freeze_generic T39s
+[subtype T40s is not null access ada__streams__Troot_stream_typeC]
+freeze_generic T40s
+[subtype T41s is access ada__streams__Troot_stream_typeC]
+freeze_generic T41s
+[subtype T42s is access ada__streams__Troot_stream_typeC]
+freeze_generic T42s
+freeze_generic reference_type
+[subtype T43s is not null access element_type]
+freeze_generic T43s
+[subtype T45s is not null access ada__streams__Troot_stream_typeC]
+freeze_generic T45s
+[subtype T46s is access ada__streams__Troot_stream_typeC]
+freeze_generic T46s
+[subtype T47s is access ada__streams__Troot_stream_typeC]
+freeze_generic T47s
+[subtype T48s is not null access ada__streams__Troot_stream_typeC]
+freeze_generic T48s
+[subtype T49s is access ada__streams__Troot_stream_typeC]
+freeze_generic T49s
+[subtype T50s is access ada__streams__Troot_stream_typeC]
+freeze_generic T50s
+[subtype T51s is not null access element_type]
+freeze_generic T51s
+freeze_generic iterator
+freeze_generic TiteratorC
+[subtype T2s is String (1 .. 40);]
+freeze_generic T2s
+[subtype T3s is String (1 .. 41);]
+freeze_generic T3s
+[subtype T4s is String (1 .. 41);]
+freeze_generic T4s
+[subtype T5s is String (1 .. 40);]
+freeze_generic T5s
+[subtype T6s is String (1 .. 41);]
+freeze_generic T6s

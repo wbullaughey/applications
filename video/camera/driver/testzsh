@@ -1,0 +1,20 @@
+#!/bin/zsh
+echo $*
+export PARAMETERS=$*
+echo $PARAMETERS
+
+for PARAMETER in $*; do
+   echo option $PARAMETER
+   export FIRST=${PARAMETER:0:1}
+   echo FIRST $FIRST
+   if [[ "$FIRST" = "-" ]]; then
+     echo option: $PARAMETER | tee -a $OUTPUT
+     export OPTIONS="$OPTIONS $PARAMETER"
+     shift 1
+   else
+      break;
+   fi
+done
+echo OPTIONS $OPTIONS
+echo rest $*
+

@@ -1,0 +1,58 @@
+name = "camera_driver"
+description = ""
+version = "0.1.0-dev"
+
+authors = ["Your Name"]
+maintainers = ["Your Name <example@example.com>"]
+maintainers-logins = ["github-username"]
+licenses = "MIT OR Apache-2.0 WITH LLVM-exception"
+website = ""
+tags = []
+
+executables = ["camera_driver"]
+
+[[depends-on]]
+alr_environment = "~0.1.0-dev"
+
+[[pins]]
+alr_environment = { path='../../../..' }
+
+[[depends-on]]
+ada_lib = "~0.1.0-dev"
+
+[[pins]]
+ada_lib = { path='../../../../ada_lib' }
+
+[[depends-on]]
+ada_lib_aunit = "~0.1.0-dev"
+
+[[pins]]
+ada_lib_aunit = { path='../../../../ada_lib/aunit' }
+
+[[depends-on]]
+ada_lib_test_lib = "~0.1.0-dev"
+
+[[depends-on]]
+driver_lib = "~0.1.0-dev"
+
+[[pins]]
+driver_lib = { path='library' }
+
+[[depends-on]]
+camera_lib = "~0.1.0-dev"
+
+[[pins]]
+camera_lib = { path='../library' }
+
+[[depends-on]]
+gnoga = "~0.1.0-dev"
+
+[[pins]]
+gnoga = { path='../../../../vendor/github.com/gnoga' }
+
+[[depends-on]]
+gnoga_ada_lib = "~0.1.0-dev"
+
+[[pins]]
+gnoga_ada_lib = { path='../../../../gnoga_lib' }
+

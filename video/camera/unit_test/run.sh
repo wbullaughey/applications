@@ -1,0 +1,18 @@
+#!/bin/zsh
+#export MODE=$1
+#if [[ -z "$MODE" ]]; then
+#  echo "var is null/empty"
+#else
+#   shift 1
+#fi
+export OUTPUT=list-camera_aunit.txt
+export PROGRAM=bin/camera_aunit
+export DO_TRACE=0
+export HELP_TEST=" \
+   -E -h -P -r -v -x -@c -@d -@i -@l -@m -@p -@P -@S -@t -@u -@x"
+export USE_DBDAEMON=FALSE
+
+echo run string parameters $*
+source ../../../../global_run.sh $OUTPUT $PROGRAM $DO_TRACE $HELP_TEST $USE_DBDAEMON TRUE $*
+echo done
+

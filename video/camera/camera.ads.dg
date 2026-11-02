@@ -1,0 +1,1457 @@
+
+with video;
+with gnoga;
+with ada_lib;
+with ada_lib;
+with ada_lib.ada_lib__strings;
+with ada_lib;
+with ada_lib.ada_lib__socket_io;
+with ada_lib;
+with video;
+with gnoga;
+with ada_lib;
+with ada_lib;
+with ada_lib.ada_lib__strings;
+with ada_lib;
+with ada_lib.ada_lib__socket_io;
+with ada_lib;
+with ada_lib.ada_lib__options;
+with ada_lib.ada_lib__socket_io.ada_lib__socket_io__stream_io;
+with ada_lib.ada_lib__strings.ada_lib__strings__unlimited;
+with ada_lib.ada_lib__trace;
+with gnoga.gnoga__types;
+with hex_io;
+with interfaces;
+with video.video__lib;
+with ada__strings.ada__strings.ada__strings__text_buffers;
+with system;
+with system.system__standard_library;
+with system.system__exception_table;
+with system.system__soft_links;
+with ada.ada__tags;
+with ada.ada__exceptions;
+with system.system__put_images;
+with system.system__storage_pools;
+with system.system__finalization_masters;
+with system.system__wch_stw;
+with system.system__pool_global;
+camera_E : short_integer := 0;
+
+package camera is
+   subtype camera__T302s is natural range 0 .. 3;
+   camera__C301s : camera__T302s := 0;
+   camera___master : constant integer :=
+     system__soft_links__current_master.all;
+   camera__camera_options_class_accessM : integer renames
+     camera___master;
+   subtype camera__TfailedES is string (1 .. 14);
+   camera__failedE : static constant string (1 .. 14) := "CAMERA.FAILED["00"]";
+   camera__failed : static exception := (
+      not_handled_by_others => false,
+      lang => 'A',
+      name_length => 14,
+      full_name => standard_address?(camera__failedE'address),
+      htable_ptr => null,
+      foreign_data => 0,
+      raise_hook => null);
+   $system__exception_table__register_exception (
+     system__standard_library__exception_data_ptr!(camera__failed'
+     unrestricted_access));
+   use type video.video__lib.video__lib__relative_type;
+   subtype camera__address_type is video.video__lib.
+     video__lib__address_type;
+   subtype camera__address_constant_access is video.video__lib.
+     video__lib__address_constant_access;
+   subtype camera__address_kind_type is video.video__lib.
+     video__lib__address_kind_type;
+   type camera__brand_type is (camera__alptop_camera,
+     camera__ptz_optics_camera, camera__no_camera);
+   subtype camera__buffer_type is video.video__lib.
+     video__lib__buffer_type;
+   type camera__abstract_window_connection_type is abstract new gnoga.
+     gnoga__types.gnoga__types__connection_data_type with record
+      _parent : gnoga__types__connection_data_type;
+   end record;
+   type camera__camera_id_type is new ada_lib.ada_lib__socket_io.
+     ada_lib__socket_io__ip_address_type;
+   type camera__commands_type is (camera__auto_focus,
+     camera__manual_focus, camera__position_absolute,
+     camera__position_down_left, camera__position_down_right,
+     camera__position_down, camera__position_left,
+     camera__position_relative, camera__position_request,
+     camera__position_right, camera__position_stop, camera__position_up,
+     camera__position_up_left, camera__position_up_right,
+     camera__memory_recall, camera__memory_set, camera__memory_reset,
+     camera__power, camera__power_inquire, camera__recall_speed,
+     camera__zoom_direct, camera__zoom_inquire, camera__zoom_stop,
+     camera__zoom_tele_standard, camera__zoom_tele_variable,
+     camera__zoom_wide_standard, camera__zoom_wide_variable);
+   subtype camera__data_type is video.video__lib.video__lib__data_type;
+   subtype camera__index_type is video.video__lib.
+     video__lib__index_type;
+   subtype camera__maximum_response_type is video.video__lib.
+     video__lib__maximum_response_type;
+   type camera__mouse_click_action_type is (camera__any_scroll,
+     camera__horizontal_scroll, camera__no_action, camera__no_change,
+     camera__vertical_scroll);
+   type camera__options_mode_type is (camera__add, camera__fixed,
+     camera__variable);
+   subtype camera__value_type is video.video__lib.
+     video__lib__value_type;
+   subtype camera__Toptions_mode_typeSS is string (1 .. 16);
+   camera__options_mode_typeS : constant string (1 .. 16) :=
+     "ADDFIXEDVARIABLE";
+   [type camera__Toptions_mode_typeNB is array (0 .. 3 range <>) of
+     integer_8]
+   freeze camera__Toptions_mode_typeNB []
+   [subtype camera__Toptions_mode_typeNT4s is
+     camera__Toptions_mode_typeNB (0 .. 3)]
+   freeze camera__Toptions_mode_typeNT4s []
+   [subtype camera__T8s is camera__Toptions_mode_typeNB (0 .. 3)]
+   reference camera__T8s
+   reference camera__T8s
+   camera__options_mode_typeN : constant array (0 .. 3) of integer_8 :=
+     (1, 4, 9, 17);
+   freeze camera__options_mode_type []
+   type camera__command_option_type (mode : camera__options_mode_type :=
+     camera__fixed) is record
+      start : camera__index_type;
+      case mode is
+         when camera__add | camera__fixed =>
+            data : camera__data_type;
+         when others =>
+            value : camera__value_type;
+            width : camera__index_type;
+      end case
+   end record;
+   type camera__command_options_type is array (
+     -16#8000_0000_0000_0000# .. 16#7FFF_FFFF_FFFF_FFFF# range <>) of
+     camera__command_option_type;
+   subtype camera__Tbrand_typeSS is string (1 .. 39);
+   camera__brand_typeS : constant string (1 .. 39) :=
+     "ALPTOP_CAMERAPTZ_OPTICS_CAMERANO_CAMERA";
+   [type camera__Tbrand_typeNB is array (0 .. 3 range <>) of integer_8]
+   freeze camera__Tbrand_typeNB []
+   [subtype camera__Tbrand_typeNT12s is camera__Tbrand_typeNB (0 ..
+     3)]
+   freeze camera__Tbrand_typeNT12s []
+   [subtype camera__T16s is camera__Tbrand_typeNB (0 .. 3)]
+   reference camera__T16s
+   reference camera__T16s
+   camera__brand_typeN : constant array (0 .. 3) of integer_8 := (1,
+     14, 31, 40);
+   freeze camera__brand_type []
+   type camera__camera_options_type is new video.video__lib.
+     video__lib__options_type with record
+      _parent : video__lib__options_type;
+      brand : camera__brand_type := camera__ptz_optics_camera;
+      directory : ada_lib.ada_lib__strings.ada_lib__strings__unlimited.
+        ada_lib__strings__unlimited__string_type;
+      simulate : boolean := false;
+   end record;
+   [subtype camera__T153s is access camera__camera_options_type]
+   reference camera__T153s
+   type camera__camera_options_access is access all
+     camera__camera_options_type;
+   type camera__camera_options_class_access is access all
+     camera__camera_options_type'class;
+   camera__camera_options_constant_class_accessM : integer renames
+     camera___master;
+   type camera__camera_options_constant_class_access is access
+     constant camera__camera_options_type'class;
+   camera__initializeE109b : boolean := false;
+   function camera__initialize (options : in out
+     camera__camera_options_type; from : in string := ada_lib.
+     ada_lib__trace.ada_lib__trace__here) return boolean
+     with pre => options.camera__verify_preinitialize;
+   pragma precondition (check => camera__verify_preinitialize (options,
+     from => gnat.gnat__source_info.gnat__source_info__source_location),
+     message => "failed precondition from camera.ads:108");
+   camera__process_optionE239b : boolean := false;
+   function camera__process_option (options : in out
+     camera__camera_options_type; iterator : in out ada_lib.
+     ada_lib__options.ada_lib__options__command_line_iterator_interface'
+     class; option : in ada_lib.ada_lib__options.
+     ada_lib__options__option_type'class) return boolean
+     with pre => options.initialized;
+   pragma precondition (check => options.initialized, message =>
+     "failed precondition from camera.ads:118");
+   camera__program_helpE265b : boolean := false;
+   procedure camera__program_help (options : in
+     camera__camera_options_type; help_mode : in ada_lib.
+     ada_lib__options.ada_lib__options__help_mode_type);
+   camera__trace_parseE297b : boolean := false;
+   camera__trace_parseE298b : short_integer := 0;
+   procedure camera__trace_parse (options : in out
+     camera__camera_options_type; iterator : in out ada_lib.
+     ada_lib__options.ada_lib__options__command_line_iterator_interface'
+     class);
+   procedure camera__process_command (connection_data : in out
+     camera__abstract_window_connection_type; command : in
+     camera__commands_type; options : in camera__command_options_type;
+     timeout_time : in duration := 0.0) is abstract;
+   procedure camera__process_command__2 (connection_data : in out
+     camera__abstract_window_connection_type; command : in
+     camera__commands_type; options : in camera__command_options_type;
+     response : out camera__maximum_response_type; timeout_time : in
+     duration := 0.0) is abstract;
+   subtype camera__absolute_type is interfaces.interfaces__integer_16;
+   subtype camera__maximum_command_type is video.video__lib.
+     video__lib__maximum_command_type;
+   subtype camera__response_type is video.video__lib.
+     video__lib__response_type;
+   subtype camera__port_type is video.video__lib.video__lib__port_type;
+   subtype camera__preset_id_type is video.video__lib.
+     video__lib__preset_id_type;
+   subtype camera__preset_range_type is video.video__lib.
+     video__lib__preset_range_type;
+   subtype camera__property_type is camera__data_type range 0 .. 255;
+   subtype camera__relative_type is video.video__lib.
+     video__lib__relative_type range -32768 .. 32768;
+   type camera__zoom_type is new video.video__lib.
+     video__lib__value_type range 0 .. 65535;
+   procedure camera__dump (description : in string; data : in
+     camera__buffer_type; from : in string := ada_lib.ada_lib__trace.
+     ada_lib__trace__here) renames ada_lib.ada_lib__socket_io.
+     ada_lib__socket_io__stream_io.ada_lib__socket_io__stream_io__dump;
+   [program_error when
+     not (hex_io_E /= 0)
+     "access before elaboration"]
+
+   package camera__hexGP6608 is
+      subtype camera__hexGP6608__data_type is camera__data_type;
+      function camera__hex__2 (value : in camera__hexGP6608__data_type;
+        width : in positive := 2) return string;
+      function camera__hexGP6608__modular_hex (value : in
+        camera__hexGP6608__data_type; width : in positive := 2) return
+        string renames camera__hex__2;
+   end camera__hexGP6608;
+
+   package body camera__hexGP6608 is
+
+      function camera__hex__2 (value : in camera__hexGP6608__data_type;
+        width : in positive := 2) return string is
+      begin
+         [program_error when
+           not (hex_io_E /= 0)
+           "access before elaboration"]
+         [constraint_error when
+           not (unsigned!(width) in 1 .. 16#7FFF_FFFF#)
+           "invalid data"]
+         type camera__hex__A392s__2 is access all string;
+         freeze camera__hex__A392s__2 []
+         R391s : constant camera__hex__A392s__2 := hex_io__hex__17 (
+           interfaces.interfaces__unsigned_64(value), width)'reference;
+         return R391s.all;
+      end camera__hexGP6608__hexR;
+   end camera__hexGP6608;
+   function hex is new hex_io.hex_io__modular_hex (camera__data_type);
+   function camera__image (value : in camera__data_type) return string
+     renames video.video__lib.video__lib__image__2;
+   camera__debug_camera : boolean := true;
+   camera__ip : camera__address_kind_type := ada_lib.ada_lib__socket_io.
+     ada_lib__socket_io__ip;
+   camera__not_set : camera__address_kind_type := ada_lib.
+     ada_lib__socket_io.ada_lib__socket_io__not_set;
+   camera__url : camera__address_kind_type := ada_lib.
+     ada_lib__socket_io.ada_lib__socket_io__url;
+   function camera___size (x : camera__abstract_window_connection_type)
+     return long_long_integer;
+   procedure camera__abstract_window_connection_typePI (s : in out
+     ada__strings__text_buffers__Troot_buffer_typeC; v :
+     camera__abstract_window_connection_type);
+   procedure camera__abstract_window_connection_typeDF (v : in out
+     camera__abstract_window_connection_type; f : boolean := true);
+   freeze camera__abstract_window_connection_type [
+      null;
+      subtype camera__Tabstract_window_connection_typeTS is
+        ada__tags__dispatch_table_wrapper (2);
+      camera__abstract_window_connection_typeT : aliased constant
+        ada__tags__dispatch_table_wrapper (2);
+      $pragma import (ada, camera__abstract_window_connection_typeT, "camera__abstract_window_connection_typeT");
+      camera__abstract_window_connection_typeP : static constant
+        ada__tags__tag := ada__tags__tag!(
+        camera__abstract_window_connection_typeT.prims_ptr'address);
+      camera__abstract_window_connection_typeY : constant
+        system__address := camera__abstract_window_connection_typeT.
+        predef_prims'address;
+      subtype camera__abstract_window_connection_typeG is
+        ada__tags__address_array (1 .. 2);
+      type camera__abstract_window_connection_typeH is access
+        camera__abstract_window_connection_typeG;
+      freeze camera__abstract_window_connection_typeH []
+      freeze camera___size []
+      freeze camera__abstract_window_connection_typePI []
+      freeze camera__abstract_window_connection_typeDF []
+      procedure camera__abstract_window_connection_typeIP (_init : out
+        camera__abstract_window_connection_type; P20s : natural :=
+        0; _init_level : natural := 0) is
+      begin
+         if P20s = 0 then
+            _init._tag := camera__abstract_window_connection_typeP;
+         end if;
+         if P20s /= 3 then
+            gnoga__types__connection_data_typeIP (_init._parent, 1,
+              _init_level => 0);
+         end if;
+         if P20s /= 3 then
+         end if;
+         null;
+         return;
+      end camera__abstract_window_connection_typeIP;
+      function camera___size (x :
+        camera__abstract_window_connection_type) return
+        long_long_integer is
+      begin
+         return x'size;
+      end camera___size;
+      procedure camera__abstract_window_connection_typePI (s : in out
+        ada__strings__text_buffers__Troot_buffer_typeC; v :
+        camera__abstract_window_connection_type) is
+      begin
+         [type camera__abstract_window_connection_typePI__T23s is procedure (
+           buffer : in out
+           ada__strings__text_buffers__Troot_buffer_typeC, item :
+           ada__strings__utf_encoding__utf_8_string)]
+         [subtype camera__abstract_window_connection_typePI__T24s is access
+           camera__abstract_window_connection_typePI__T23s]
+         camera__abstract_window_connection_typePI__T24s!(
+           ada__strings__text_buffers__root_buffer_typeH!(s._tag).all (
+           4)).all (s, "(NULL RECORD)");
+         return;
+      end camera__abstract_window_connection_typePI;
+      procedure camera__abstract_window_connection_typeDF (v : in out
+        camera__abstract_window_connection_type; f : boolean := true) is
+      begin
+         null;
+         return;
+      end camera__abstract_window_connection_typeDF;
+   ]
+   freeze camera__Tabstract_window_connection_typeC [
+      procedure camera__Tabstract_window_connection_typeCFD (v :
+        system__address) is
+      begin
+         B26s : declare
+            system__soft_links__enter_master.all;
+            _master : constant integer :=
+              system__soft_links__current_master.all;
+            P25sM : integer renames _master;
+            type
+              camera__Tabstract_window_connection_typeCFD__B26s__P25s
+              is access all camera__Tabstract_window_connection_typeC;
+            for camera__Tabstract_window_connection_typeCFD__B26s__P25s'
+              storage_size use 0;
+            freeze
+              camera__Tabstract_window_connection_typeCFD__B26s__P25s []
+            procedure
+              camera__Tabstract_window_connection_typeCFD__B26s___finalizer;
+            freeze
+              camera__Tabstract_window_connection_typeCFD__B26s___finalizer []
+            procedure
+              camera__Tabstract_window_connection_typeCFD__B26s___finalizer is
+            begin
+               system__soft_links__abort_defer.all;
+               system__soft_links__complete_master.all;
+               system__soft_links__abort_undefer.all;
+               return;
+            end
+              camera__Tabstract_window_connection_typeCFD__B26s___finalizer;
+         begin
+            [subtype
+            [type
+              camera__Tabstract_window_connection_typeCFD__B26s__T27s is procedure (
+              v : in out camera__Tabstract_window_connection_typeC, f :
+              boolean)]
+              camera__Tabstract_window_connection_typeCFD__B26s__T28s is access
+              camera__Tabstract_window_connection_typeCFD__B26s__T27s]
+            camera__Tabstract_window_connection_typeCFD__B26s__T28s!(
+              ada__tags__predef_prims_table_ptr!(ada__tags__addr_ptr!(
+              $system__storage_elements__Osubtract (system__address!(
+              camera__Tabstract_window_connection_typeCFD__B26s__P25s!(
+              v).all._tag), ada__tags__dt_predef_prims_offset)).all).all
+              (9)).all (
+              camera__Tabstract_window_connection_typeCFD__B26s__P25s!(
+              v).all, true);
+         end B26s;
+         at end
+
+              camera__Tabstract_window_connection_typeCFD__B26s___finalizer;
+         return;
+      end camera__Tabstract_window_connection_typeCFD;
+   ]
+   [type camera__Tcamera_id_typeB is array (0 .. 16#7FFF_FFFF# range <>) of
+     gnat__sockets__inet_addr_comp_type]
+   freeze camera__Tcamera_id_typeB []
+   freeze camera__camera_id_type []
+   subtype camera__Tcommands_typeSS is string (1 .. 375);
+   camera__commands_typeS : constant string (1 .. 375) :=
+     "AUTO_FOCUSMANUAL_FOCUSPOSITION_ABSOLUTEPOSITION_DOWN_LEFTPOSITION_DOWN_RIGHTPOSITION_DOWNPOSITION_LEFTPOSITION_RELATIVEPOSITION_REQUESTPOSITION_RIGHTPOSITION_STOPPOSITION_UPPOSITION_UP_LEFTPOSITION_UP_RIGHTMEMORY_RECALLMEMORY_SETMEMORY_RESETPOWERPOWER_INQUIRERECALL_SPEEDZOOM_DIRECTZOOM_INQUIREZOOM_STOPZOOM_TELE_STANDARDZOOM_TELE_VARIABLEZOOM_WIDE_STANDARDZOOM_WIDE_VARIABLE";
+   [type camera__Tcommands_typeNB is array (0 .. 27 range <>) of
+     integer_16]
+   freeze camera__Tcommands_typeNB []
+   [subtype camera__Tcommands_typeNT38s is camera__Tcommands_typeNB (
+     0 .. 27)]
+   freeze camera__Tcommands_typeNT38s []
+   [subtype camera__T42s is camera__Tcommands_typeNB (0 .. 27)]
+   reference camera__T42s
+   reference camera__T42s
+   camera__commands_typeN : constant array (0 .. 27) of integer_16 := (
+     1, 11, 23, 40, 58, 77, 90, 103, 120, 136, 150, 163, 174, 190,
+     207, 220, 230, 242, 247, 260, 272, 283, 295, 304, 322, 340, 358,
+     376);
+
+   function camera__commands_typeH (S30s : string) return natural is
+      subtype camera__commands_typeH__S43s is string (S30s'first(1) ..
+        S30s'last(1));
+      [type camera__commands_typeH__Tcommands_typePB is array (0 ..
+        3 range <>) of natural]
+      freeze camera__commands_typeH__Tcommands_typePB []
+      [subtype camera__commands_typeH__Tcommands_typePT44s is
+        camera__commands_typeH__Tcommands_typePB (0 .. 3)]
+      freeze camera__commands_typeH__Tcommands_typePT44s []
+      [subtype camera__commands_typeH__T48s is
+        camera__commands_typeH__Tcommands_typePB (0 .. 3)]
+      reference camera__commands_typeH__T48s
+      reference camera__commands_typeH__T48s
+      commands_typeP : constant array (0 .. 3) of natural := (3, 6,
+        12, 15);
+      [type camera__commands_typeH__Tcommands_typeT1B is array (0 ..
+        3 range <>) of short_short_unsigned]
+      freeze camera__commands_typeH__Tcommands_typeT1B []
+      [subtype camera__commands_typeH__Tcommands_typeT1T49s is
+        camera__commands_typeH__Tcommands_typeT1B (0 .. 3)]
+      freeze camera__commands_typeH__Tcommands_typeT1T49s []
+      [subtype camera__commands_typeH__T53s is
+        camera__commands_typeH__Tcommands_typeT1B (0 .. 3)]
+      reference camera__commands_typeH__T53s
+      reference camera__commands_typeH__T53s
+      commands_typeT1 : constant array (0 .. 3) of short_short_unsigned :=
+        (43, 16, 30, 3);
+      [type camera__commands_typeH__Tcommands_typeT2B is array (0 ..
+        3 range <>) of short_short_unsigned]
+      freeze camera__commands_typeH__Tcommands_typeT2B []
+      [subtype camera__commands_typeH__Tcommands_typeT2T54s is
+        camera__commands_typeH__Tcommands_typeT2B (0 .. 3)]
+      freeze camera__commands_typeH__Tcommands_typeT2T54s []
+      [subtype camera__commands_typeH__T58s is
+        camera__commands_typeH__Tcommands_typeT2B (0 .. 3)]
+      reference camera__commands_typeH__T58s
+      reference camera__commands_typeH__T58s
+      commands_typeT2 : constant array (0 .. 3) of short_short_unsigned :=
+        (52, 7, 11, 30);
+      [type camera__commands_typeH__Tcommands_typeGB is array (0 ..
+        54 range <>) of short_short_unsigned]
+      freeze camera__commands_typeH__Tcommands_typeGB []
+      [subtype camera__commands_typeH__Tcommands_typeGT59s is
+        camera__commands_typeH__Tcommands_typeGB (0 .. 54)]
+      freeze camera__commands_typeH__Tcommands_typeGT59s []
+      [subtype camera__commands_typeH__T63s is
+        camera__commands_typeH__Tcommands_typeGB (0 .. 54)]
+      reference camera__commands_typeH__T63s
+      reference camera__commands_typeH__T63s
+      commands_typeG : constant array (0 .. 54) of short_short_unsigned :=
+        (0, 0, 0, 0, 16, 10, 0, 5, 0, 14, 0, 16, 10, 0, 17, 21, 0,
+        0, 0, 6, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 14, 0, 18, 0, 1, 14,
+        25, 0, 0, 0, 2, 18, 6, 7, 0, 13, 8, 0, 0, 4, 5, 11, 6, 9, 0);
+      F31s : natural := S30s'first - 1;
+      L32s : natural := S30s'length;
+      A33s : natural := 0;
+      B34s : natural := 0;
+      J35s : natural;
+   begin
+      L64s : for K36s in 0 .. 3 loop
+         exit when L32s < commands_typeP (K36s);
+         J35s := natural(short_short_unsigned?(S30s (commands_typeP (
+           K36s) + F31s)));
+         A33s := (A33s + natural(commands_typeT1 (K36s)) * J35s) rem
+           55;
+         B34s := (B34s + natural(commands_typeT2 (K36s)) * J35s) rem
+           55;
+      end loop L64s;
+      return natural((natural(commands_typeG (A33s)) + natural(
+        commands_typeG (B34s))) rem 27);
+   end camera__commands_typeH;
+
+   freeze camera__commands_type []
+   subtype camera__Tmouse_click_action_typeSS is string (1 .. 60);
+   camera__mouse_click_action_typeS : constant string (1 .. 60) :=
+     "ANY_SCROLLHORIZONTAL_SCROLLNO_ACTIONNO_CHANGEVERTICAL_SCROLL";
+   [type camera__Tmouse_click_action_typeNB is array (0 .. 5 range <>) of
+     integer_8]
+   freeze camera__Tmouse_click_action_typeNB []
+   [subtype camera__Tmouse_click_action_typeNT89s is
+     camera__Tmouse_click_action_typeNB (0 .. 5)]
+   freeze camera__Tmouse_click_action_typeNT89s []
+   [subtype camera__T93s is camera__Tmouse_click_action_typeNB (0 ..
+     5)]
+   reference camera__T93s
+   reference camera__T93s
+   camera__mouse_click_action_typeN : constant array (0 .. 5) of
+     integer_8 := (1, 11, 28, 37, 46, 61);
+
+   function camera__mouse_click_action_typeH (S81s : string) return
+     natural is
+      subtype camera__mouse_click_action_typeH__S94s is string (S81s'
+        first(1) .. S81s'last(1));
+      [type
+        camera__mouse_click_action_typeH__Tmouse_click_action_typePB is array (
+        0 .. 0 range <>) of natural]
+      freeze
+        camera__mouse_click_action_typeH__Tmouse_click_action_typePB []
+      [subtype
+        camera__mouse_click_action_typeH__Tmouse_click_action_typePT95s is
+        camera__mouse_click_action_typeH__Tmouse_click_action_typePB (
+        0 .. 0)]
+      freeze
+        camera__mouse_click_action_typeH__Tmouse_click_action_typePT95s []
+      [subtype camera__mouse_click_action_typeH__T99s is
+        camera__mouse_click_action_typeH__Tmouse_click_action_typePB (
+        0 .. 0)]
+      reference camera__mouse_click_action_typeH__T99s
+      reference camera__mouse_click_action_typeH__T99s
+      mouse_click_action_typeP : constant array (0 .. 0) of natural :=
+        (4);
+      [type
+        camera__mouse_click_action_typeH__Tmouse_click_action_typeT1B is array (
+        0 .. 0 range <>) of short_short_unsigned]
+      freeze
+        camera__mouse_click_action_typeH__Tmouse_click_action_typeT1B []
+      [subtype
+        camera__mouse_click_action_typeH__Tmouse_click_action_typeT1T100s is
+        camera__mouse_click_action_typeH__Tmouse_click_action_typeT1B (
+        0 .. 0)]
+      freeze
+        camera__mouse_click_action_typeH__Tmouse_click_action_typeT1T100s []
+      [subtype camera__mouse_click_action_typeH__T104s is
+        camera__mouse_click_action_typeH__Tmouse_click_action_typeT1B (
+        0 .. 0)]
+      reference camera__mouse_click_action_typeH__T104s
+      reference camera__mouse_click_action_typeH__T104s
+      mouse_click_action_typeT1 : constant array (0 .. 0) of
+        short_short_unsigned := (13);
+      [type
+        camera__mouse_click_action_typeH__Tmouse_click_action_typeT2B is array (
+        0 .. 0 range <>) of short_short_unsigned]
+      freeze
+        camera__mouse_click_action_typeH__Tmouse_click_action_typeT2B []
+      [subtype
+        camera__mouse_click_action_typeH__Tmouse_click_action_typeT2T105s is
+        camera__mouse_click_action_typeH__Tmouse_click_action_typeT2B (
+        0 .. 0)]
+      freeze
+        camera__mouse_click_action_typeH__Tmouse_click_action_typeT2T105s []
+      [subtype camera__mouse_click_action_typeH__T109s is
+        camera__mouse_click_action_typeH__Tmouse_click_action_typeT2B (
+        0 .. 0)]
+      reference camera__mouse_click_action_typeH__T109s
+      reference camera__mouse_click_action_typeH__T109s
+      mouse_click_action_typeT2 : constant array (0 .. 0) of
+        short_short_unsigned := (15);
+      [type
+        camera__mouse_click_action_typeH__Tmouse_click_action_typeGB is array (
+        0 .. 17 range <>) of short_short_unsigned]
+      freeze
+        camera__mouse_click_action_typeH__Tmouse_click_action_typeGB []
+      [subtype
+        camera__mouse_click_action_typeH__Tmouse_click_action_typeGT110s is
+        camera__mouse_click_action_typeH__Tmouse_click_action_typeGB (
+        0 .. 17)]
+      freeze
+        camera__mouse_click_action_typeH__Tmouse_click_action_typeGT110s []
+      [subtype camera__mouse_click_action_typeH__T114s is
+        camera__mouse_click_action_typeH__Tmouse_click_action_typeGB (
+        0 .. 17)]
+      reference camera__mouse_click_action_typeH__T114s
+      reference camera__mouse_click_action_typeH__T114s
+      mouse_click_action_typeG : constant array (0 .. 17) of
+        short_short_unsigned := (0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0,
+        4, 0, 0, 1, 0, 2);
+      F82s : natural := S81s'first - 1;
+      L83s : natural := S81s'length;
+      A84s : natural := 0;
+      B85s : natural := 0;
+      J86s : natural;
+   begin
+      L115s : for K87s in 0 .. 0 loop
+         exit when L83s < mouse_click_action_typeP (K87s);
+         J86s := natural(short_short_unsigned?(S81s (
+           mouse_click_action_typeP (K87s) + F82s)));
+         A84s := (A84s + natural(mouse_click_action_typeT1 (K87s)) *
+           J86s) rem 18;
+         B85s := (B85s + natural(mouse_click_action_typeT2 (K87s)) *
+           J86s) rem 18;
+      end loop L115s;
+      return natural((natural(mouse_click_action_typeG (A84s)) +
+        natural(mouse_click_action_typeG (B85s))) rem 5);
+   end camera__mouse_click_action_typeH;
+
+   freeze camera__mouse_click_action_type []
+   freeze camera__command_option_type [
+      function camera__command_option_typeD2 (mode :
+        camera__options_mode_type) return boolean is
+      begin
+         case mode is
+            when camera__add | camera__fixed =>
+               return false;
+            when others =>
+               return true;
+         end case;
+      end camera__command_option_typeD2;
+      function camera__command_option_typeD3 (mode :
+        camera__options_mode_type) return boolean is
+      begin
+         return not (mode = camera__variable);
+      end camera__command_option_typeD3;
+      function camera__command_option_typeEQ (x :
+        camera__command_option_type; y : camera__command_option_type)
+        return boolean is
+         subtype camera__command_option_typeEQ__S137s is
+           camera__command_option_type (y.mode);
+         subtype camera__command_option_typeEQ__S136s is
+           camera__command_option_type (x.mode);
+      begin
+         if x.mode /= y.mode then
+            return false;
+         end if;
+         if x.start /= y.start then
+            return false;
+         end if;
+         case x.mode is
+            when camera__add | camera__fixed =>
+               if x.data /= y.data then
+                  return false;
+               end if;
+            when others =>
+               if x.value /= y.value or else x.width /= y.width then
+                  return false;
+               end if;
+         end case;
+         return true;
+      end camera__command_option_typeEQ;
+      procedure camera__command_option_typeIP (_init : out
+        camera__command_option_type; mode : camera__options_mode_type) is
+      begin
+         _init.mode := mode;
+         case mode is
+            when camera__add | camera__fixed =>
+               null;
+            when others =>
+               null;
+         end case;
+         return;
+      end camera__command_option_typeIP;
+   ]
+   freeze camera__command_options_type [
+      procedure camera__command_options_typeIP (_init : in out
+        camera__command_options_type) is
+         subtype camera__command_options_typeIP__S143s is
+           camera__command_options_type (_init'first(1) .. _init'last(
+           1));
+      begin
+         L144s : for J1 in _init'first(1) .. _init'last(1) loop
+            camera__command_option_typeIP (_init (J1), camera__fixed);
+         end loop L144s;
+         return;
+      end camera__command_options_typeIP;
+   ]
+   function camera___size__2 (x : camera__camera_options_type) return
+     long_long_integer;
+   procedure camera__camera_options_typePI (s : in out
+     ada__strings__text_buffers__Troot_buffer_typeC; v :
+     camera__camera_options_type);
+   procedure camera__camera_options_typeDF (v : in out
+     camera__camera_options_type; f : boolean := true);
+   freeze camera__camera_options_type [
+      null;
+      subtype camera__Tcamera_options_typeTS is
+        ada__tags__dispatch_table_wrapper (14);
+      camera__camera_options_typeT : aliased constant
+        ada__tags__dispatch_table_wrapper (14);
+      $pragma import (ada, camera__camera_options_typeT, "camera__camera_options_typeT");
+      camera__camera_options_typeP : static constant ada__tags__tag :=
+        ada__tags__tag!(camera__camera_options_typeT.prims_ptr'address);
+      camera__camera_options_typeY : constant system__address :=
+        camera__camera_options_typeT.predef_prims'address;
+      subtype camera__camera_options_typeG is ada__tags__address_array
+        (1 .. 14);
+      type camera__camera_options_typeH is access
+        camera__camera_options_typeG;
+      freeze camera__camera_options_typeH []
+      freeze camera___size__2 []
+      freeze camera__camera_options_typePI []
+      freeze camera__camera_options_typeDF []
+      procedure camera__camera_options_typeDI (v : in out
+        camera__camera_options_type) is
+      begin
+         return;
+      end camera__camera_options_typeDI;
+      procedure camera__camera_options_typeDF (v : in out
+        camera__camera_options_type; f : boolean := true) is
+      begin
+         B154s : declare
+            A148s : constant boolean :=
+              $ada__exceptions__triggered_by_abort;
+            R147s : boolean := false;
+         begin
+            B155s : declare
+            begin
+               B156s : begin
+                  ada_lib__strings__unlimited__string_typeDF (v.
+                    directory, f => true);
+               exception
+                  when others =>
+                     R147s := true;
+               end B156s;
+            end B155s;
+            if R147s and then not A148s then
+               [program_error "finalize raised exception"]
+            end if;
+         end B154s;
+         return;
+      end camera__camera_options_typeDF;
+      procedure camera__camera_options_typeFD (v : system__address) is
+      begin
+         B157s : declare
+            type camera__camera_options_typeFD__B157s__P149s is access
+              all camera__camera_options_type;
+            for camera__camera_options_typeFD__B157s__P149s'
+              storage_size use 0;
+            freeze camera__camera_options_typeFD__B157s__P149s []
+         begin
+            camera__camera_options_typeDF (
+              camera__camera_options_typeFD__B157s__P149s!(v).all, f =>
+              true);
+         end B157s;
+         return;
+      end camera__camera_options_typeFD;
+      procedure camera__camera_options_typeIP (_init : out
+        camera__camera_options_type; P150s : natural := 0; _init_level :
+        natural := 0) is
+         C1 : integer := 0;
+         procedure camera__camera_options_typeIP___finalizer (v : in
+           out camera__camera_options_type; f : boolean := true) is
+         begin
+            B158s : declare
+               A152s : constant boolean :=
+                 $ada__exceptions__triggered_by_abort;
+               R151s : boolean := false;
+            begin
+               B159s : declare
+                  L1 : label
+                  L0 : label
+               begin
+                  if C1 = 1 then
+                     goto L1;
+                  else
+                     goto L0;
+                  end if;
+                  <<L1>>
+                  B160s : begin
+                     [program_error when
+                       not (ada_lib__strings__unlimited_E /= 0)
+                       "access before elaboration"]
+                     ada_lib__strings__unlimited__string_typeDF (v.
+                       directory, f => true);
+                  exception
+                     when others =>
+                        R151s := true;
+                  end B160s;
+                  <<L0>>
+               end B159s;
+               if R151s and then not A152s then
+                  [program_error "finalize raised exception"]
+               end if;
+            end B158s;
+            return;
+         end camera__camera_options_typeIP___finalizer;
+      begin
+         if P150s = 0 then
+            _init._tag := camera__camera_options_typeP;
+         end if;
+         if P150s /= 3 then
+            video__lib__options_typeIP (_init._parent, 1, _init_level =>
+              0);
+         end if;
+         if P150s /= 3 then
+            _init.brand := camera__ptz_optics_camera;
+            ada_lib__strings__unlimited__string_typeIP (_init.directory,
+              P11s => 0);
+            ada_lib__strings__unlimited__string_typeDI (_init.directory);
+            C1 := C1 {+} 1;
+            _init.simulate := false;
+         end if;
+         null;
+         return;
+      exception
+         when others =>
+            camera__camera_options_typeIP___finalizer (_init, false);
+            raise ;
+      end camera__camera_options_typeIP;
+      function camera___size__2 (x : camera__camera_options_type)
+        return long_long_integer is
+      begin
+         return x'size;
+      end camera___size;
+      procedure camera__camera_options_typePI (s : in out
+        ada__strings__text_buffers__Troot_buffer_typeC; v :
+        camera__camera_options_type) is
+      begin
+         $system__put_images__record_before (s);
+         [type camera__camera_options_typePI__T163s is procedure (
+           buffer : in out
+           ada__strings__text_buffers__Troot_buffer_typeC, item :
+           ada__strings__utf_encoding__utf_8_string)]
+         [subtype camera__camera_options_typePI__T164s is access
+           camera__camera_options_typePI__T163s]
+         camera__camera_options_typePI__T164s!(
+           ada__strings__text_buffers__root_buffer_typeH!(s._tag).all (
+           4)).all (s, "INITIALIZED => ");
+         subtype camera__camera_options_typePI__TS165sS is
+           wide_wide_string (1 .. 5);
+         S165s : wide_wide_string (1 .. 5);
+         P166s : natural;
+         subtype camera__camera_options_typePI__S169s is string (1 ..
+           5);
+         T170s : constant camera__camera_options_typePI__S169s := "TRUE ";
+         F171s : constant camera__camera_options_typePI__S169s := "FALSE";
+         V172s : camera__camera_options_typePI__S169s renames (if v.
+           initialized then T170s else F171s);
+         [subtype camera__camera_options_typePI__T175s is integer range
+           1 .. (if v.initialized then 4 else 5)]
+         [subtype camera__camera_options_typePI__T176s is string (
+           camera__camera_options_typePI__T175s)]
+         reference camera__camera_options_typePI__T176s
+         $system__wch_stw__string_to_wide_wide_string (V172s (1 .. (if
+           v.initialized then 4 else 5)), S165s, P166s, 6);
+         R177s : constant natural := P166s;
+         [subtype camera__camera_options_typePI__T179s is
+         [subtype camera__camera_options_typePI__T178s is integer range
+           1 .. R177s]
+           wide_wide_string (camera__camera_options_typePI__T178s)]
+         reference camera__camera_options_typePI__T179s
+         [type camera__camera_options_typePI__T180s is procedure (
+           buffer : in out
+           ada__strings__text_buffers__Troot_buffer_typeC, item :
+           wide_wide_string)]
+         [subtype camera__camera_options_typePI__T181s is access
+           camera__camera_options_typePI__T180s]
+         camera__camera_options_typePI__T181s!(
+           ada__strings__text_buffers__root_buffer_typeH!(s._tag).all (
+           3)).all (s, S165s (1 .. R177s));
+         $system__put_images__record_between (s);
+         [type camera__camera_options_typePI__T183s is procedure (
+           buffer : in out
+           ada__strings__text_buffers__Troot_buffer_typeC, item :
+           ada__strings__utf_encoding__utf_8_string)]
+         [subtype camera__camera_options_typePI__T184s is access
+           camera__camera_options_typePI__T183s]
+         camera__camera_options_typePI__T184s!(
+           ada__strings__text_buffers__root_buffer_typeH!(s._tag).all (
+           4)).all (s, "ADDRESS_KIND => ");
+         subtype camera__camera_options_typePI__TS185sS is
+           wide_wide_string (1 .. 7);
+         S185s : wide_wide_string (1 .. 7);
+         P186s : natural;
+         P189s : constant natural := natural(short_short_unsigned?(
+           ada_lib__socket_io__address_kind_type?(v.address_kind)));
+         P190s : constant natural := natural(
+           ada_lib__socket_io__address_kind_typeN (P189s));
+         P191s : constant natural := natural(
+           ada_lib__socket_io__address_kind_typeN (P189s + 1));
+         [subtype camera__camera_options_typePI__T194s is integer range
+           P190s .. P191s - 1]
+         [subtype camera__camera_options_typePI__T195s is string (
+           camera__camera_options_typePI__T194s)]
+         reference camera__camera_options_typePI__T195s
+         P192s : string renames ada_lib__socket_io__address_kind_typeS
+           (P190s .. P191s - 1);
+         subtype camera__camera_options_typePI__S193s is string (1 ..
+           P191s - P190s);
+         $system__wch_stw__string_to_wide_wide_string (
+           camera__camera_options_typePI__S193s!(P192s), S185s, P186s,
+           6);
+         R196s : constant natural := P186s;
+         [subtype camera__camera_options_typePI__T198s is
+         [subtype camera__camera_options_typePI__T197s is integer range
+           1 .. R196s]
+           wide_wide_string (camera__camera_options_typePI__T197s)]
+         reference camera__camera_options_typePI__T198s
+         [type camera__camera_options_typePI__T199s is procedure (
+           buffer : in out
+           ada__strings__text_buffers__Troot_buffer_typeC, item :
+           wide_wide_string)]
+         [subtype camera__camera_options_typePI__T200s is access
+           camera__camera_options_typePI__T199s]
+         camera__camera_options_typePI__T200s!(
+           ada__strings__text_buffers__root_buffer_typeH!(s._tag).all (
+           3)).all (s, S185s (1 .. R196s));
+         $system__put_images__record_between (s);
+         [type camera__camera_options_typePI__T202s is procedure (
+           buffer : in out
+           ada__strings__text_buffers__Troot_buffer_typeC, item :
+           ada__strings__utf_encoding__utf_8_string)]
+         [subtype camera__camera_options_typePI__T203s is access
+           camera__camera_options_typePI__T202s]
+         camera__camera_options_typePI__T203s!(
+           ada__strings__text_buffers__root_buffer_typeH!(s._tag).all (
+           4)).all (s, "IF_EMULATION => ");
+         subtype camera__camera_options_typePI__TS204sS is
+           wide_wide_string (1 .. 5);
+         S204s : wide_wide_string (1 .. 5);
+         P205s : natural;
+         subtype camera__camera_options_typePI__S208s is string (1 ..
+           5);
+         T209s : constant camera__camera_options_typePI__S208s := "TRUE ";
+         F210s : constant camera__camera_options_typePI__S208s := "FALSE";
+         V211s : camera__camera_options_typePI__S208s renames (if v.
+           if_emulation then T209s else F210s);
+         [subtype camera__camera_options_typePI__T214s is integer range
+           1 .. (if v.if_emulation then 4 else 5)]
+         [subtype camera__camera_options_typePI__T215s is string (
+           camera__camera_options_typePI__T214s)]
+         reference camera__camera_options_typePI__T215s
+         $system__wch_stw__string_to_wide_wide_string (V211s (1 .. (if
+           v.if_emulation then 4 else 5)), S204s, P205s, 6);
+         R216s : constant natural := P205s;
+         [subtype camera__camera_options_typePI__T218s is
+         [subtype camera__camera_options_typePI__T217s is integer range
+           1 .. R216s]
+           wide_wide_string (camera__camera_options_typePI__T217s)]
+         reference camera__camera_options_typePI__T218s
+         [type camera__camera_options_typePI__T219s is procedure (
+           buffer : in out
+           ada__strings__text_buffers__Troot_buffer_typeC, item :
+           wide_wide_string)]
+         [subtype camera__camera_options_typePI__T220s is access
+           camera__camera_options_typePI__T219s]
+         camera__camera_options_typePI__T220s!(
+           ada__strings__text_buffers__root_buffer_typeH!(s._tag).all (
+           3)).all (s, S204s (1 .. R216s));
+         $system__put_images__record_between (s);
+         [type camera__camera_options_typePI__T222s is procedure (
+           buffer : in out
+           ada__strings__text_buffers__Troot_buffer_typeC, item :
+           ada__strings__utf_encoding__utf_8_string)]
+         [subtype camera__camera_options_typePI__T223s is access
+           camera__camera_options_typePI__T222s]
+         camera__camera_options_typePI__T223s!(
+           ada__strings__text_buffers__root_buffer_typeH!(s._tag).all (
+           4)).all (s, "LOCATION => ");
+         subtype camera__camera_options_typePI__TS224sS is
+           wide_wide_string (1 .. 6);
+         S224s : wide_wide_string (1 .. 6);
+         P225s : natural;
+         P228s : constant natural := natural(short_short_unsigned?(v.
+           location));
+         P229s : constant natural := natural(video__lib__location_typeN
+           (P228s));
+         P230s : constant natural := natural(video__lib__location_typeN
+           (P228s + 1));
+         [subtype camera__camera_options_typePI__T233s is integer range
+           P229s .. P230s - 1]
+         [subtype camera__camera_options_typePI__T234s is string (
+           camera__camera_options_typePI__T233s)]
+         reference camera__camera_options_typePI__T234s
+         P231s : string renames video__lib__location_typeS (P229s ..
+           P230s - 1);
+         subtype camera__camera_options_typePI__S232s is string (1 ..
+           P230s - P229s);
+         $system__wch_stw__string_to_wide_wide_string (
+           camera__camera_options_typePI__S232s!(P231s), S224s, P225s,
+           6);
+         R235s : constant natural := P225s;
+         [subtype camera__camera_options_typePI__T237s is
+         [subtype camera__camera_options_typePI__T236s is integer range
+           1 .. R235s]
+           wide_wide_string (camera__camera_options_typePI__T236s)]
+         reference camera__camera_options_typePI__T237s
+         [type camera__camera_options_typePI__T238s is procedure (
+           buffer : in out
+           ada__strings__text_buffers__Troot_buffer_typeC, item :
+           wide_wide_string)]
+         [subtype camera__camera_options_typePI__T239s is access
+           camera__camera_options_typePI__T238s]
+         camera__camera_options_typePI__T239s!(
+           ada__strings__text_buffers__root_buffer_typeH!(s._tag).all (
+           3)).all (s, S224s (1 .. R235s));
+         $system__put_images__record_between (s);
+         [type camera__camera_options_typePI__T241s is procedure (
+           buffer : in out
+           ada__strings__text_buffers__Troot_buffer_typeC, item :
+           ada__strings__utf_encoding__utf_8_string)]
+         [subtype camera__camera_options_typePI__T242s is access
+           camera__camera_options_typePI__T241s]
+         camera__camera_options_typePI__T242s!(
+           ada__strings__text_buffers__root_buffer_typeH!(s._tag).all (
+           4)).all (s, "CAMERA_ADDRESS => ");
+         $system__put_images__put_image_thin_pointer (s,
+           system__put_images__thin_pointer!(v.camera_address));
+         $system__put_images__record_between (s);
+         [type camera__camera_options_typePI__T244s is procedure (
+           buffer : in out
+           ada__strings__text_buffers__Troot_buffer_typeC, item :
+           ada__strings__utf_encoding__utf_8_string)]
+         [subtype camera__camera_options_typePI__T245s is access
+           camera__camera_options_typePI__T244s]
+         camera__camera_options_typePI__T245s!(
+           ada__strings__text_buffers__root_buffer_typeH!(s._tag).all (
+           4)).all (s, "PORT_NUMBER => ");
+         $system__put_images__put_image_integer (s, integer!(v.
+           port_number));
+         $system__put_images__record_between (s);
+         [type camera__camera_options_typePI__T247s is procedure (
+           buffer : in out
+           ada__strings__text_buffers__Troot_buffer_typeC, item :
+           ada__strings__utf_encoding__utf_8_string)]
+         [subtype camera__camera_options_typePI__T248s is access
+           camera__camera_options_typePI__T247s]
+         camera__camera_options_typePI__T248s!(
+           ada__strings__text_buffers__root_buffer_typeH!(s._tag).all (
+           4)).all (s, "BRAND => ");
+         subtype camera__camera_options_typePI__TS249sS is
+           wide_wide_string (1 .. 17);
+         S249s : wide_wide_string (1 .. 17);
+         P250s : natural;
+         P253s : constant natural := natural(short_short_unsigned?(v.
+           brand));
+         P254s : constant natural := natural(camera__brand_typeN (P253s));
+         P255s : constant natural := natural(camera__brand_typeN (P253s +
+           1));
+         [subtype camera__camera_options_typePI__T258s is integer range
+           P254s .. P255s - 1]
+         [subtype camera__camera_options_typePI__T259s is string (
+           camera__camera_options_typePI__T258s)]
+         reference camera__camera_options_typePI__T259s
+         P256s : string renames camera__brand_typeS (P254s .. P255s -
+           1);
+         subtype camera__camera_options_typePI__S257s is string (1 ..
+           P255s - P254s);
+         $system__wch_stw__string_to_wide_wide_string (
+           camera__camera_options_typePI__S257s!(P256s), S249s, P250s,
+           6);
+         R260s : constant natural := P250s;
+         [subtype camera__camera_options_typePI__T262s is
+         [subtype camera__camera_options_typePI__T261s is integer range
+           1 .. R260s]
+           wide_wide_string (camera__camera_options_typePI__T261s)]
+         reference camera__camera_options_typePI__T262s
+         [type camera__camera_options_typePI__T263s is procedure (
+           buffer : in out
+           ada__strings__text_buffers__Troot_buffer_typeC, item :
+           wide_wide_string)]
+         [subtype camera__camera_options_typePI__T264s is access
+           camera__camera_options_typePI__T263s]
+         camera__camera_options_typePI__T264s!(
+           ada__strings__text_buffers__root_buffer_typeH!(s._tag).all (
+           3)).all (s, S249s (1 .. R260s));
+         $system__put_images__record_between (s);
+         [type camera__camera_options_typePI__T266s is procedure (
+           buffer : in out
+           ada__strings__text_buffers__Troot_buffer_typeC, item :
+           ada__strings__utf_encoding__utf_8_string)]
+         [subtype camera__camera_options_typePI__T267s is access
+           camera__camera_options_typePI__T266s]
+         camera__camera_options_typePI__T267s!(
+           ada__strings__text_buffers__root_buffer_typeH!(s._tag).all (
+           4)).all (s, "DIRECTORY => ");
+         ada_lib__strings__unlimited__string_typePI (s, v.directory);
+         $system__put_images__record_between (s);
+         [type camera__camera_options_typePI__T269s is procedure (
+           buffer : in out
+           ada__strings__text_buffers__Troot_buffer_typeC, item :
+           ada__strings__utf_encoding__utf_8_string)]
+         [subtype camera__camera_options_typePI__T270s is access
+           camera__camera_options_typePI__T269s]
+         camera__camera_options_typePI__T270s!(
+           ada__strings__text_buffers__root_buffer_typeH!(s._tag).all (
+           4)).all (s, "SIMULATE => ");
+         subtype camera__camera_options_typePI__TS271sS is
+           wide_wide_string (1 .. 5);
+         S271s : wide_wide_string (1 .. 5);
+         P272s : natural;
+         subtype camera__camera_options_typePI__S275s is string (1 ..
+           5);
+         T276s : constant camera__camera_options_typePI__S275s := "TRUE ";
+         F277s : constant camera__camera_options_typePI__S275s := "FALSE";
+         V278s : camera__camera_options_typePI__S275s renames (if v.
+           simulate then T276s else F277s);
+         [subtype camera__camera_options_typePI__T281s is integer range
+           1 .. (if v.simulate then 4 else 5)]
+         [subtype camera__camera_options_typePI__T282s is string (
+           camera__camera_options_typePI__T281s)]
+         reference camera__camera_options_typePI__T282s
+         $system__wch_stw__string_to_wide_wide_string (V278s (1 .. (if
+           v.simulate then 4 else 5)), S271s, P272s, 6);
+         R283s : constant natural := P272s;
+         [subtype camera__camera_options_typePI__T285s is
+         [subtype camera__camera_options_typePI__T284s is integer range
+           1 .. R283s]
+           wide_wide_string (camera__camera_options_typePI__T284s)]
+         reference camera__camera_options_typePI__T285s
+         [type camera__camera_options_typePI__T286s is procedure (
+           buffer : in out
+           ada__strings__text_buffers__Troot_buffer_typeC, item :
+           wide_wide_string)]
+         [subtype camera__camera_options_typePI__T287s is access
+           camera__camera_options_typePI__T286s]
+         camera__camera_options_typePI__T287s!(
+           ada__strings__text_buffers__root_buffer_typeH!(s._tag).all (
+           3)).all (s, S271s (1 .. R283s));
+         $system__put_images__record_after (s);
+         return;
+      end camera__camera_options_typePI;
+   ]
+   freeze camera__Tcamera_options_typeC [
+      procedure camera__Tcamera_options_typeCFD (v : system__address) is
+      begin
+         B289s : declare
+            system__soft_links__enter_master.all;
+            _master : constant integer :=
+              system__soft_links__current_master.all;
+            P288sM : integer renames _master;
+            type camera__Tcamera_options_typeCFD__B289s__P288s is
+              access all camera__Tcamera_options_typeC;
+            for camera__Tcamera_options_typeCFD__B289s__P288s'
+              storage_size use 0;
+            freeze camera__Tcamera_options_typeCFD__B289s__P288s []
+            procedure
+              camera__Tcamera_options_typeCFD__B289s___finalizer;
+            freeze camera__Tcamera_options_typeCFD__B289s___finalizer []
+            procedure
+              camera__Tcamera_options_typeCFD__B289s___finalizer is
+            begin
+               system__soft_links__abort_defer.all;
+               system__soft_links__complete_master.all;
+               system__soft_links__abort_undefer.all;
+               return;
+            end camera__Tcamera_options_typeCFD__B289s___finalizer;
+         begin
+            [type camera__Tcamera_options_typeCFD__B289s__T290s is procedure (
+              v : in out camera__Tcamera_options_typeC, f : boolean)]
+            [subtype camera__Tcamera_options_typeCFD__B289s__T291s is access
+              camera__Tcamera_options_typeCFD__B289s__T290s]
+            camera__Tcamera_options_typeCFD__B289s__T291s!(
+              ada__tags__predef_prims_table_ptr!(ada__tags__addr_ptr!(
+              $system__storage_elements__Osubtract (system__address!(
+              camera__Tcamera_options_typeCFD__B289s__P288s!(v).all.
+              _tag), ada__tags__dt_predef_prims_offset)).all).all (
+              9)).all (camera__Tcamera_options_typeCFD__B289s__P288s!(v).all,
+              true);
+         end B289s;
+         at end
+            camera__Tcamera_options_typeCFD__B289s___finalizer;
+         return;
+      end camera__Tcamera_options_typeCFD;
+   ]
+   freeze camera__camera_options_access [
+      camera__camera_options_accessFM : aliased
+        system__finalization_masters__finalization_master;
+      camera__B292s : begin
+         system__soft_links__abort_defer.all;
+         $system__finalization_masters__finalization_masterIP (
+           camera__camera_options_accessFM, P8s => 0, _init_level =>
+           0);
+         $system__finalization_masters__initialize__2 (
+           camera__camera_options_accessFM);
+         camera__C301s := 1;
+      at end
+         system__standard_library__abort_undefer_direct;
+      end camera__B292s;
+      $system__finalization_masters__set_base_pool (
+        camera__camera_options_accessFM,
+        system__pool_global__global_pool_object'unrestricted_access);
+      $system__finalization_masters__set_finalize_address (
+        camera__camera_options_accessFM, camera__camera_options_typeFD'
+        unrestricted_access);
+   ]
+   freeze camera__camera_options_class_access [
+      camera__camera_options_class_accessFM : aliased
+        system__finalization_masters__finalization_master;
+      camera__B295s : begin
+         system__soft_links__abort_defer.all;
+         $system__finalization_masters__finalization_masterIP (
+           camera__camera_options_class_accessFM, P8s => 0, _init_level =>
+           0);
+         $system__finalization_masters__initialize__2 (
+           camera__camera_options_class_accessFM);
+         camera__C301s := 2;
+      at end
+         system__standard_library__abort_undefer_direct;
+      end camera__B295s;
+      $system__finalization_masters__set_base_pool (
+        camera__camera_options_class_accessFM,
+        system__pool_global__global_pool_object'unrestricted_access);
+      $system__finalization_masters__set_finalize_address (
+        camera__camera_options_class_accessFM,
+        camera__Tcamera_options_typeCFD'unrestricted_access);
+   ]
+   freeze camera__camera_options_constant_class_access [
+      camera__camera_options_constant_class_accessFM : aliased
+        system__finalization_masters__finalization_master;
+      camera__B298s : begin
+         system__soft_links__abort_defer.all;
+         $system__finalization_masters__finalization_masterIP (
+           camera__camera_options_constant_class_accessFM, P8s => 0,
+           _init_level => 0);
+         $system__finalization_masters__initialize__2 (
+           camera__camera_options_constant_class_accessFM);
+         camera__C301s := 3;
+      at end
+         system__standard_library__abort_undefer_direct;
+      end camera__B298s;
+      $system__finalization_masters__set_base_pool (
+        camera__camera_options_constant_class_accessFM,
+        system__pool_global__global_pool_object'unrestricted_access);
+      $system__finalization_masters__set_finalize_address (
+        camera__camera_options_constant_class_accessFM,
+        camera__Tcamera_options_typeCFD'unrestricted_access);
+   ]
+   freeze camera__initialize []
+   freeze camera__process_option []
+   freeze camera__program_help []
+   freeze camera__trace_parse []
+   freeze camera__process_command []
+   freeze camera__process_command__2 []
+   [type camera__Tzoom_typeB is mod 16#1000_0000_0#]
+   freeze camera__Tzoom_typeB []
+   freeze camera__zoom_type []
+   null;
+   null;
+   null;
+   null;
+   null;
+   null;
+   null;
+   null;
+   null;
+   null;
+   null;
+   null;
+   null;
+   procedure camera__finalize_spec;
+   freeze camera__finalize_spec []
+
+   procedure camera__finalize_spec is
+      L0 : label
+      L1 : label
+      L2 : label
+      L3 : label
+      R303s : boolean := false;
+   begin
+      system__soft_links__abort_defer.all;
+      $ada__tags__unregister_tag (camera__camera_options_typeP);
+      case camera__C301s is
+         when 1 =>
+            goto L1;
+         when 2 =>
+            goto L2;
+         when 3 =>
+            goto L3;
+         when others =>
+            goto L0;
+      end case;
+      <<L3>>
+      B304s : begin
+         $system__finalization_masters__finalize (
+           camera__camera_options_constant_class_accessFM);
+      exception
+         when others =>
+            if not R303s then
+               R303s := true;
+               $system__soft_links__save_library_occurrence (null);
+            end if;
+      end B304s;
+      <<L2>>
+      B305s : begin
+         $system__finalization_masters__finalize (
+           camera__camera_options_class_accessFM);
+      exception
+         when others =>
+            if not R303s then
+               R303s := true;
+               $system__soft_links__save_library_occurrence (null);
+            end if;
+      end B305s;
+      <<L1>>
+      B306s : begin
+         $system__finalization_masters__finalize (
+           camera__camera_options_accessFM);
+      exception
+         when others =>
+            if not R303s then
+               R303s := true;
+               $system__soft_links__save_library_occurrence (null);
+            end if;
+      end B306s;
+      <<L0>>
+      system__soft_links__abort_undefer.all;
+      return;
+   end camera__finalize_spec;
+
+   [type camera__T307s is any type'Class]
+   freeze camera__T307s [
+      subtype camera__Tabstract_window_connection_typeE309sS is string
+        (1 .. 39);
+      camera__abstract_window_connection_typeE309s : static constant
+        string (1 .. 39) := "CAMERA.ABSTRACT_WINDOW_CONNECTION_TYPE["00"]";
+      camera__abstract_window_connection_typeH310s : ada__tags__tag :=
+        ada__tags__no_tag;
+      subtype camera__Tabstract_window_connection_typeB313sS is
+        ada__tags__type_specific_data (1);
+      [subtype camera__T322s is ada__tags__tag_table (0 .. 1)]
+      reference camera__T322s
+      camera__abstract_window_connection_typeB313s : static aliased
+        constant ada__tags__type_specific_data (1) := (
+         idepth => 1,
+         access_level => 0,
+         alignment => camera__abstract_window_connection_type'alignment,
+         expanded_name => ada__tags__cstring_ptr!(
+           camera__abstract_window_connection_typeE309s'address),
+         external_tag => ada__tags__cstring_ptr!(
+           camera__abstract_window_connection_typeE309s'address),
+         ht_link => ada__tags__tag_ptr!(
+           camera__abstract_window_connection_typeH310s'address),
+         transportable => false,
+         is_abstract => true,
+         needs_finalization => false,
+         size_func => ada__tags__size_ptr!(camera___size'
+           unrestricted_access),
+         interfaces_table => null,
+         ssd => null,
+         tags_table => (camera__abstract_window_connection_typeP,
+           gnoga__types__connection_data_typeP));
+      subtype camera__S314s is ada__tags__address_array;
+      camera__abstract_window_connection_typeR311s : static aliased
+      [subtype camera__T327s is ada__tags__address_array (1 .. 10)]
+        constant camera__T327s := (camera___size'unrestricted_access,
+        null, null, null, null, null, null, null,
+        camera__abstract_window_connection_typeDF'unrestricted_access,
+        camera__abstract_window_connection_typePI'unrestricted_access);
+      subtype camera__Tabstract_window_connection_typeT308sS is
+        ada__tags__dispatch_table_wrapper (2);
+      [subtype camera__T332s is ada__tags__address_array (1 .. 2)]
+      reference camera__T332s
+      camera__abstract_window_connection_typeT : static aliased
+        constant ada__tags__dispatch_table_wrapper (2) := (
+         num_prims => 2,
+         signature => ada__tags__primary_dt,
+         tag_kind => ada__tags__tk_abstract_limited_tagged,
+         predef_prims => camera__abstract_window_connection_typeR311s'
+           address,
+         offset_to_top => 0,
+         tsd => camera__abstract_window_connection_typeB313s'address,
+         prims_ptr => (null, null));
+      $pragma export (ada, camera__abstract_window_connection_typeT, "camera__abstract_window_connection_typeT");
+      $ada__tags__check_tsd (
+        camera__abstract_window_connection_typeB313s'unchecked_access);
+      $ada__tags__register_tag (
+        camera__abstract_window_connection_typeP);
+   ]
+   [type camera__T335s is any type'Class]
+   freeze camera__T335s [
+      camera__camera_options_typeP342s : constant
+        camera__camera_options_type;
+      $pragma import (ada, camera__camera_options_typeP342s, "camera__camera_options_typeP342s");
+      subtype camera__Tcamera_options_typeE337sS is string (1 .. 27);
+      camera__camera_options_typeE337s : static constant string (1 ..
+        27) := "CAMERA.CAMERA_OPTIONS_TYPE["00"]";
+      camera__camera_options_typeH338s : ada__tags__tag :=
+        ada__tags__no_tag;
+      subtype camera__Tcamera_options_typeIS is
+        ada__tags__interface_data (1);
+      [subtype camera__T349s is ada__tags__interfaces_array (1 .. 1)]
+      reference camera__T349s
+      camera__camera_options_typeI : static aliased constant
+        ada__tags__interface_data (1) := (
+         nb_ifaces => 1,
+         ifaces_table => ((
+            iface_tag => ada_lib__options__interface_options_typeP,
+            static_offset_to_top => true,
+            offset_to_top_value =>
+              system__storage_elements__storage_offset(-
+              camera__camera_options_typeP342s._tag'position),
+            offset_to_top_func => null,
+            secondary_dt => camera__camera_options_typeP)));
+      subtype camera__Tcamera_options_typeB341sS is
+        ada__tags__type_specific_data (5);
+      [subtype camera__T357s is ada__tags__tag_table (0 .. 5)]
+      reference camera__T357s
+      camera__camera_options_typeB341s : static aliased constant
+        ada__tags__type_specific_data (5) := (
+         idepth => 5,
+         access_level => 0,
+         alignment => camera__camera_options_type'alignment,
+         expanded_name => ada__tags__cstring_ptr!(
+           camera__camera_options_typeE337s'address),
+         external_tag => ada__tags__cstring_ptr!(
+           camera__camera_options_typeE337s'address),
+         ht_link => ada__tags__tag_ptr!(
+           camera__camera_options_typeH338s'address),
+         transportable => false,
+         is_abstract => false,
+         needs_finalization => true,
+         size_func => ada__tags__size_ptr!(camera___size__2'
+           unrestricted_access),
+         interfaces_table => camera__camera_options_typeI'
+           unchecked_access,
+         ssd => null,
+         tags_table => (camera__camera_options_typeP,
+           video__lib__options_typeP,
+           ada_lib__options__actual__nested_options_typeP,
+           ada_lib__options__actual__verification_options_typeP,
+           ada_lib__options__actual__abstract_options_typeP,
+           ada_lib__options__interface_options_typeP));
+      subtype camera__S343s is ada__tags__address_array;
+      [subtype camera__T368s is ada__tags__address_array (1 .. 16)]
+      camera__camera_options_typeR339s : static aliased constant
+        camera__T368s := (camera___size__2'unrestricted_access, null,
+        null, null, null, null, null, null,
+        camera__camera_options_typeDF'unrestricted_access,
+        camera__camera_options_typePI'unrestricted_access,
+        ada_lib__options__actual___disp_asynchronous_select'
+        unrestricted_access,
+        ada_lib__options__actual___disp_conditional_select'
+        unrestricted_access,
+        ada_lib__options__actual___disp_get_prim_op_kind'
+        unrestricted_access,
+        ada_lib__options__actual___disp_get_task_id'unrestricted_access,
+        ada_lib__options__actual___disp_requeue'unrestricted_access,
+        ada_lib__options__actual___disp_timed_select'
+        unrestricted_access);
+      subtype camera__Tcamera_options_typeT336sS is
+        ada__tags__dispatch_table_wrapper (14);
+      [subtype camera__T387s is ada__tags__address_array (1 .. 14)]
+      reference camera__T387s
+      camera__camera_options_typeT : static aliased constant
+        ada__tags__dispatch_table_wrapper (14) := (
+         num_prims => 14,
+         signature => ada__tags__primary_dt,
+         tag_kind => ada__tags__tk_limited_tagged,
+         predef_prims => camera__camera_options_typeR339s'address,
+         offset_to_top => 0,
+         tsd => camera__camera_options_typeB341s'address,
+         prims_ptr => (ada_lib__options__actual__bad_option'
+           unrestricted_access, ada_lib__options__actual__bad_option__2'
+           unrestricted_access, ada_lib__options__actual__bad_option__3'
+           unrestricted_access,
+           ada_lib__options__actual__bad_trace_option'
+           unrestricted_access,
+           ada_lib__options__actual__display_help__4'
+           unrestricted_access, camera__initialize'unrestricted_access,
+           ada_lib__options__actual__process_argument__2'
+           unrestricted_access, camera__process_option'
+           unrestricted_access, camera__program_help'
+           unrestricted_access, camera__trace_parse'unrestricted_access,
+           ada_lib__options__actual__update_filter'unrestricted_access,
+           ada_lib__options__actual__verify_initialized__2'
+           unrestricted_access,
+           ada_lib__options__actual__verify_preinitialize__2'
+           unrestricted_access, video__lib__address_kind'
+           unrestricted_access));
+      $pragma export (ada, camera__camera_options_typeT, "camera__camera_options_typeT");
+      $ada__tags__check_tsd (camera__camera_options_typeB341s'
+        unchecked_access);
+      $ada__tags__register_tag (camera__camera_options_typeP);
+   ]
+   freeze camera__hexGP6608 []
+end camera;

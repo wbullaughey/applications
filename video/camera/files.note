@@ -1,0 +1,59 @@
+configuration file
+   extension *.cfg
+   keys
+      preset_<N>
+      configuration_<N>
+
+   preset fields
+      row
+      column
+
+   configuration fields
+      row
+      label
+
+state file
+   extension *.cfg
+   keys
+      css_path
+      configurations
+      last_preset
+      grid_columns
+      grid_rows
+      local_camera
+      local_port
+      remote_camera
+      remote_port
+
+      image_<N>
+
+   image fields
+      file name
+
+   css_path fields
+      file name
+
+   configurations
+      number of configurations in setup file
+
+   grid_columns fields
+      number of grid columns in screen
+
+   grid_rows fields
+      number of grid rows in screen
+
+   local_camera fields
+      IP address for camera on same network as application is running
+
+   local_port
+      port number for camera on same network as application is running
+
+   remote_camera fields
+      address type URL |
+      address for camera on different network as application is running
+         either IP or URL
+
+   remote_port
+      port number for camera on different network as application is running
+
+
